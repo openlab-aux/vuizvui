@@ -128,14 +128,7 @@
     cacert
   ];
 
-  nixpkgs = {
-    config = {
-      git = {
-        svnSupport = true;
-        guiSupport = true;
-      };
-    };
-  };
+  nixpkgs.config = import ./nixpkgs/config.nix;
 
   system.fsPackages = with pkgs; [
     sshfsFuse
