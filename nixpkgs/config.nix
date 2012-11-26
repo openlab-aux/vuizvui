@@ -102,11 +102,11 @@ in {
     };
 
     kernelSourceAszlig = {
-      version = "3.7.0-rc6";
+      version = "3.7.0-rc7";
       src = pkgs.fetchgit {
         url = /home/aszlig/linux;
-        rev = "c56dcc86b9a0a140ae0b35abb4b2ecd1b45e8bda";
-        sha256 = "1km8dgfgdcgngcdnj5jzy98zyn7mrfryygnrp2wvzk5vi53wksmx";
+        rev = "9489e9dcae718d5fde988e4a684a0f55b5f94d17";
+        sha256 = "0wp3c7i37nk32mw2l6smka2pqg7qqi3z85cjjag57dviplnjg58a";
       };
     };
 
