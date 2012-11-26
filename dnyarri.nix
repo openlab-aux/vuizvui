@@ -14,6 +14,33 @@
   };
 
   boot = let
+    patch51Name = "patch51.fw";
+    extraKernelParams = [ "snd-hda-intel.patch=${patch51Name}" ];
+
+    patch51 = pkgs.writeText patch51Name ''
+      [codec]
+      0x10ec0889 0x80860033 2
+
+      [pincfg]
+      0x11 0x01442130
+      0x12 0x411111f0
+      0x14 0x01014410
+      0x15 0x0321403f
+      0x16 0x40f000f0
+      0x17 0x40f000f0
+      0x18 0x03a19020
+      0x19 0x40f000f0
+      0x1a 0x01014412
+      0x1b 0x01014411
+      0x1c 0x411111f0
+      0x1d 0x411111f0
+      0x1e 0x01451140
+      0x1f 0x01c51170
+
+      [model]
+      auto
+    '';
+
     builtinFW = [
       "${pkgs.radeonR600}/radeon/R600_rlc.bin"
       "${pkgs.radeonR700}/radeon/R700_rlc.bin"
@@ -34,6 +61,8 @@
           buildCommand = ''
             mkdir -p "$out/radeon"
             ${pkgs.lib.concatMapStrings (x: "cp -Lv -t \"$out/radeon\" \"${x}\";") builtinFW}
+
+            cp "${patch51}" "$out/${patch51Name}"
           '';
         };
       };
@@ -41,6 +70,7 @@
     };
   in rec {
     kernelPackages = pkgs.linuxPackagesFor linuxAszlig kernelPackages;
+    inherit extraKernelParams;
 
     cleanTmpDir = true;
 
