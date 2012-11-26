@@ -1,17 +1,9 @@
 {config, pkgs, ...}:
-{
-  require = [
-    <nixos/modules/programs/virtualbox.nix>
-  ];
 
-  nix = {
-    maxJobs = 8;
-    useChroot = true;
-    readOnlyStore = true;
-    extraOptions = ''
-      build-cores = 0
-    '';
-  };
+with pkgs.lib;
+
+{
+  require = singleton ../common.nix;
 
   boot = let
     patch51Name = "patch51.fw";
@@ -66,7 +58,7 @@
           name = "builtin-firmware";
           buildCommand = ''
             mkdir -p "$out/radeon"
-            ${pkgs.lib.concatMapStrings (x: "cp -Lv -t \"$out/radeon\" \"${x}\";") builtinFW}
+            ${concatMapStrings (x: "cp -Lv -t \"$out/radeon\" \"${x}\";") builtinFW}
 
             cp "${patch51}" "$out/${patch51Name}"
           '';
@@ -77,8 +69,6 @@
   in rec {
     kernelPackages = pkgs.linuxPackagesFor linuxAszlig kernelPackages;
     inherit extraKernelParams;
-
-    cleanTmpDir = true;
 
     initrd = {
       mdadmConf = ''
@@ -94,33 +84,13 @@
       ];
     };
 
-    loader.grub = {
-      enable = true;
-      version = 2;
-
-      memtest86 = true;
-
-      devices = [
-        "/dev/disk/by-id/ata-ST31500541AS_5XW0AMNH"
-        "/dev/disk/by-id/ata-ST31500541AS_6XW0M217"
-      ];
-    };
+    loader.grub.devices = [
+      "/dev/disk/by-id/ata-ST31500541AS_5XW0AMNH"
+      "/dev/disk/by-id/ata-ST31500541AS_6XW0M217"
+    ];
   };
 
-  hardware = {
-    cpu.intel.updateMicrocode = true;
-    pulseaudio.enable = true;
-    pulseaudio.package = pkgs.pulseaudio.override {
-      useSystemd = true;
-    };
-  };
-
-  users.defaultUserShell = "/var/run/current-system/sw/bin/zsh";
-
-  networking = {
-    hostName = "dnyarri";
-    wireless.enable = false;
-  };
+  networking.hostName = "dnyarri";
 
   fileSystems = {
     "/boot" = {
@@ -131,30 +101,6 @@
       device = "/dev/shofixti/root";
       fsType = "xfs";
     };
-    /*
-    "/run/nix/remote-stores/mmrnmhrm/nix" = {
-      device = "root@mmrnmhrm:/nix";
-      fsType = "sshfs";
-      noCheck = true;
-      options = pkgs.lib.concatStringsSep "," [
-        "comment=x-systemd.automount"
-        "compression=yes"
-        "ssh_command=${pkgs.openssh}/bin/ssh"
-        "Ciphers=arcfour"
-        "IdentityFile=/root/.ssh/id_buildfarm"
-      ];
-    };
-    */
-  };
-
-  fonts = {
-    enableCoreFonts = true;
-    enableFontDir = true;
-    enableGhostscriptFonts = true;
-    extraFonts = [
-      pkgs.dosemu_fonts
-      pkgs.liberation_ttf
-    ];
   };
 
   powerManagement.powerUpCommands = ''
@@ -162,111 +108,9 @@
     ${pkgs.hdparm}/sbin/hdparm -B 255 /dev/disk/by-id/ata-ST31500541AS_6XW0M217
   '';
 
-  swapDevices = [
-    { device = "/dev/shofixti/swap"; }
-  ];
-
-  i18n = {
-    consoleKeyMap = "dvorak";
+  swapDevices = singleton {
+    device = "/dev/shofixti/swap";
   };
 
-  services = {
-    openssh = {
-      enable = true;
-      permitRootLogin = "without-password";
-    };
-
-    /*
-    nfs.server = {
-      enable = true;
-      exports = ''
-        /nix mmrnmhrm.redmoon(ro,no_root_squash)
-      '';
-    };
-    */
-
-    /* mingetty.ttys = [
-      "tty1" "tty2" "tty3" "tty4" "tty5" "tty6"
-      "tty8" "tty9" "tty10" "tty11" "tty12"
-    ]; */
-
-    syslogd.tty = "tty13";
-
-    xfs.enable = false;
-
-    gpm = {
-      enable = true;
-      protocol = "exps2";
-    };
-
-    nixosManual.showManual = false;
-
-    pulseaudio.enable = false;
-
-    printing = {
-      enable = true;
-      drivers = [ pkgs.foo2zjs pkgs.foomatic_filters ];
-    };
-
-    xserver = {
-      enable = true;
-      layout = "dvorak";
-      videoDrivers = [ "ati" ];
-
-      windowManager = {
-        i3.enable = true;
-        default = "i3";
-      };
-
-      desktopManager.default = "none";
-
-      displayManager.sessionCommands = ''
-        ${pkgs.synergy}/bin/synergyc mmrnmhrm
-        # work around synergy bug:
-        ${pkgs.xorg.setxkbmap}/bin/setxkbmap dvorak
-      '';
-
-      displayManager.slim.theme = pkgs.fetchurl {
-        url = "mirror://sourceforge/slim.berlios/slim-fingerprint.tar.gz";
-        sha256 = "0i1igl4iciml3d46n5hl3bbmqsdzzv56akw2l36i9f779kw07ds8";
-      };
-    };
-  };
-
-  /*
-  jobs.vlock_all = {
-    name = "vlock-all";
-    startOn = "keyboard-request";
-    path = [ pkgs.vlock ];
-    script = "vlock -asn";
-    task = true;
-    restartIfChanged = false;
-  };
-  */
-
-  environment.nix = pkgs.nixUnstable;
-  environment.systemPackages = with pkgs; [
-    zsh
-    wget
-    vim_configurable
-    cacert
-  ];
-
-  nixpkgs = {
-    config = {
-      git = {
-        svnSupport = true;
-        guiSupport = true;
-      };
-    };
-  };
-
-  system.fsPackages = with pkgs; [
-    sshfsFuse
-  ];
-
-  # broken -> chroot build -> FIXME
-  #system.copySystemConfiguration = true;
-
-  time.timeZone = "Europe/Berlin";
+  services.xserver.videoDrivers = [ "ati" ];
 }
