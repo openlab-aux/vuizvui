@@ -11,6 +11,11 @@
     extraOptions = ''
       build-cores = 0
     '';
+    /*
+    buildMachines = [
+      { hostName = "
+    ];
+    */
   };
 
   boot = let
@@ -18,13 +23,13 @@
       version = "3.7.0-rc6";
       src = pkgs.fetchgit {
         url = /home/aszlig/linux;
-        rev = "f4a75d2eb7b1e2206094b901be09adb31ba63681";
-        sha256 = "1r3y3z79yw8pcxrm6nc8iacdy0w13favgd53ra0w6hn1186vmg21";
+        rev = "c56dcc86b9a0a140ae0b35abb4b2ecd1b45e8bda";
+        sha256 = "1km8dgfgdcgngcdnj5jzy98zyn7mrfryygnrp2wvzk5vi53wksmx";
       };
       configfile = pkgs.fetchurl {
         name = "aszlig.kconf";
         url = "file:///home/aszlig/linux/.config";
-        md5 = "6e533e2e9b6ce0632678b83da093d22e";
+        md5 = "0c632194689797846127b47fa135c516";
       };
       allowImportFromDerivation = true; # XXX
     };
@@ -32,8 +37,6 @@
     kernelPackages = pkgs.linuxPackagesFor linuxAszlig kernelPackages;
 
     cleanTmpDir = true;
-
-    supportedFilesystems = [ "btrfs" ];
 
     initrd = {
       luks.enable = true;
@@ -43,8 +46,6 @@
           preLVM = true;
         }
       ];
-
-      inherit supportedFilesystems;
     };
 
     loader.grub = {
@@ -59,7 +60,10 @@
 
   hardware = {
     cpu.intel.updateMicrocode = true;
-    pulseaudio.enable = false;
+    pulseaudio.enable = true;
+    pulseaudio.package = pkgs.pulseaudio.override {
+      useSystemd = true;
+    };
   };
 
   users.defaultUserShell = "/var/run/current-system/sw/bin/zsh";
@@ -69,16 +73,34 @@
     wireless.enable = false;
   };
 
-  fileSystems."/boot".label = "boot";
-  fileSystems."/" = {
-    device = "/dev/system/root";
-    options = pkgs.lib.concatStringsSep "," [
-      "autodefrag"
-      "space_cache"
-      "inode_cache"
-      "compress=lzo"
-      "noatime"
-    ];
+  fileSystems = {
+    "/boot" = {
+      label = "boot";
+      fsType = "ext2";
+    };
+    "/" = {
+      device = "/dev/system/root";
+      fsType = "btrfs";
+      options = pkgs.lib.concatStringsSep "," [
+        "autodefrag"
+        "space_cache"
+        "inode_cache"
+        "compress=lzo"
+        "noatime"
+      ];
+    };
+    /*
+    "/run/nix/remote-stores/dnyarri/nix" = {
+      device = "root@dnyarri:/nix";
+      fsType = "sshfs";
+      options = pkgs.lib.concatStringsSep "," [
+        "compression=yes"
+        "ssh_command=${pkgs.openssh}/bin/ssh"
+        "Ciphers=arcfour"
+        "IdentityFile=/root/.ssh/id_buildfarm"
+      ];
+    };
+    */
   };
 
   fonts = {
@@ -102,8 +124,18 @@
   services = {
     openssh = {
       enable = true;
-      permitRootLogin = "no";
+      permitRootLogin = "without-password";
     };
+
+    /*
+    nfs.server = {
+      enable = true;
+      exports = ''
+        /nix dnyarri.redmoon(ro,no_root_squash)
+        /nix/var/nix/db dnyarri.redmoon(rw,no_root_squash)
+      '';
+    };
+    */
 
     /* mingetty.ttys = [
       "tty1" "tty2" "tty3" "tty4" "tty5" "tty6"
@@ -174,6 +206,10 @@
       };
     };
   };
+
+  system.fsPackages = with pkgs; [
+    sshfsFuse
+  ];
 
   # broken -> chroot build -> FIXME
   #system.copySystemConfiguration = true;

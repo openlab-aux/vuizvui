@@ -50,8 +50,8 @@
       version = "3.7.0-rc6";
       src = pkgs.fetchgit {
         url = /home/aszlig/linux;
-        rev = "f4a75d2eb7b1e2206094b901be09adb31ba63681";
-        sha256 = "1r3y3z79yw8pcxrm6nc8iacdy0w13favgd53ra0w6hn1186vmg21";
+        rev = "f60c7ab5c56292820f96d8fcb21124c53ae02d0e";
+        sha256 = "0zy6p14qjnk3dl3hy725m9mlavdklq2zjk64jk75ajmfygbz2q56";
       };
       configfile = pkgs.substituteAll {
         src = ./kernel.config;
@@ -74,8 +74,6 @@
 
     cleanTmpDir = true;
 
-    supportedFilesystems = [ "xfs" ];
-
     initrd = {
       mdadmConf = ''
         ARRAY /dev/md0 metadata=1.2 UUID=f5e9de04:89efc509:4e184fcc:166b0b67
@@ -88,13 +86,13 @@
           preLVM = true;
         }
       ];
-
-      inherit supportedFilesystems;
     };
 
     loader.grub = {
       enable = true;
       version = 2;
+
+      memtest86 = true;
 
       devices = [
         "/dev/disk/by-id/ata-ST31500541AS_5XW0AMNH"
@@ -118,8 +116,30 @@
     wireless.enable = false;
   };
 
-  fileSystems."/boot".label = "boot";
-  fileSystems."/".device = "/dev/shofixti/root";
+  fileSystems = {
+    "/boot" = {
+      label = "boot";
+      fsType = "ext2";
+    };
+    "/" = {
+      device = "/dev/shofixti/root";
+      fsType = "xfs";
+    };
+    /*
+    "/run/nix/remote-stores/mmrnmhrm/nix" = {
+      device = "root@mmrnmhrm:/nix";
+      fsType = "sshfs";
+      noCheck = true;
+      options = pkgs.lib.concatStringsSep "," [
+        "comment=x-systemd.automount"
+        "compression=yes"
+        "ssh_command=${pkgs.openssh}/bin/ssh"
+        "Ciphers=arcfour"
+        "IdentityFile=/root/.ssh/id_buildfarm"
+      ];
+    };
+    */
+  };
 
   fonts = {
     enableCoreFonts = true;
@@ -147,8 +167,17 @@
   services = {
     openssh = {
       enable = true;
-      permitRootLogin = "no";
+      permitRootLogin = "without-password";
     };
+
+    /*
+    nfs.server = {
+      enable = true;
+      exports = ''
+        /nix mmrnmhrm.redmoon(ro,no_root_squash)
+      '';
+    };
+    */
 
     /* mingetty.ttys = [
       "tty1" "tty2" "tty3" "tty4" "tty5" "tty6"
@@ -185,6 +214,12 @@
 
       desktopManager.default = "none";
 
+      displayManager.sessionCommands = ''
+        ${pkgs.synergy}/bin/synergyc mmrnmhrm
+        # work around synergy bug:
+        ${pkgs.xorg.setxkbmap}/bin/setxkbmap dvorak
+      '';
+
       displayManager.slim.theme = pkgs.fetchurl {
         url = "mirror://sourceforge/slim.berlios/slim-fingerprint.tar.gz";
         sha256 = "0i1igl4iciml3d46n5hl3bbmqsdzzv56akw2l36i9f779kw07ds8";
@@ -219,6 +254,10 @@
       };
     };
   };
+
+  system.fsPackages = with pkgs; [
+    sshfsFuse
+  ];
 
   # broken -> chroot build -> FIXME
   #system.copySystemConfiguration = true;
