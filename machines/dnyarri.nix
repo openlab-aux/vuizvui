@@ -39,12 +39,8 @@ with pkgs.lib;
     ];
 
     linuxAszlig = pkgs.linuxManualConfig {
-      version = "3.7.0-rc6";
-      src = pkgs.fetchgit {
-        url = /home/aszlig/linux;
-        rev = "f60c7ab5c56292820f96d8fcb21124c53ae02d0e";
-        sha256 = "0zy6p14qjnk3dl3hy725m9mlavdklq2zjk64jk75ajmfygbz2q56";
-      };
+      version = pkgs.kernelSourceAszlig.version;
+      src = pkgs.kernelSourceAszlig.src;
       configfile = pkgs.substituteAll {
         name = "aszlig-with-firmware.kconf";
 

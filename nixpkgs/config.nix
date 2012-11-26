@@ -101,6 +101,15 @@ in {
       useSystemd = true;
     };
 
+    kernelSourceAszlig = {
+      version = "3.7.0-rc6";
+      src = pkgs.fetchgit {
+        url = /home/aszlig/linux;
+        rev = "c56dcc86b9a0a140ae0b35abb4b2ecd1b45e8bda";
+        sha256 = "1km8dgfgdcgngcdnj5jzy98zyn7mrfryygnrp2wvzk5vi53wksmx";
+      };
+    };
+
     #ffmpeg = pkgs.ffmpeg.override {
     #  x11grabSupport = true;
     #  faacSupport = true;
