@@ -54,7 +54,13 @@
         sha256 = "0zy6p14qjnk3dl3hy725m9mlavdklq2zjk64jk75ajmfygbz2q56";
       };
       configfile = pkgs.substituteAll {
-        src = ./kernel.config;
+        name = "aszlig-with-firmware.kconf";
+
+        src = pkgs.fetchurl {
+          name = "aszlig.kconf";
+          url = "file:///home/aszlig/linux/.config";
+          md5 = "318762752f2831d26a315d040437f42a";
+        };
 
         builtin_firmware = pkgs.stdenv.mkDerivation {
           name = "builtin-firmware";
