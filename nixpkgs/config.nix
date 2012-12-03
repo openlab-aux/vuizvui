@@ -72,7 +72,7 @@ let
 
     misc = with pkgs; [
       lastwatch
-      chromeWrapper
+      chromiumBetaWrapper
       glxinfo
       imagemagick
       graphviz
@@ -85,7 +85,6 @@ let
   tkabberRev = 2009;
 in {
   pulseaudio = true;
-  chromium.channel = "beta";
   chromium.enableGoogleTalkPlugin = true;
   chromium.jre = true;
 
@@ -216,14 +215,12 @@ in {
     testChromiumBuild = let
       buildChannels = [ "stable" "beta" "dev" ];
       buildChromium = chan: chromium.override {
-        config.chromium = {
-          channel = chan;
-          gnome = true;
-          gnomeKeyring = true;
-          proprietaryCodecs = true;
-          cups = true;
-          pulseaudio = true;
-        };
+        channel = chan;
+        gnomeSupport = true;
+        gnomeKeyringSupport = true;
+        proprietaryCodecs = true;
+        cupsSupport = true;
+        pulseSupport = true;
       };
     in stdenv.mkDerivation {
       name = "test-chromium-build";
