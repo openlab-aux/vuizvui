@@ -267,18 +267,6 @@ in {
       ];
     };
 
-    vbindiff = stdenv.mkDerivation rec {
-      name = "vbindiff-${version}";
-      version = "3.0_beta4";
-
-      buildInputs = [ ncurses ];
-
-      src = fetchurl {
-        url = "http://www.cjmweb.net/vbindiff/${name}.tar.gz";
-        sha256 = "0gcqy4ggp60qc6blq1q1gc90xmhip1m6yvvli4hdqlz9zn3mlpbx";
-      };
-    };
-
     pvolctrl = stdenv.mkDerivation rec {
       name = "pvolctrl-0.23";
 
@@ -311,16 +299,6 @@ in {
       '';
 
       buildInputs = [ pkgconfig pulseaudio ];
-    };
-
-    samplicator = stdenv.mkDerivation rec {
-      name = "samplicator-${version}";
-      version = "1.3.7-beta6";
-
-      src = fetchurl {
-        url = "http://samplicator.googlecode.com/files/${name}.tar.gz";
-        sha1 = "2091af1898d6508ad9fd338a07e352e2387522d4";
-      };
     };
 
     axbo_research = stdenv.mkDerivation rec {
