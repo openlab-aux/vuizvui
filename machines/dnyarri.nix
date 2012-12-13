@@ -44,11 +44,18 @@ with pkgs.lib;
       configfile = pkgs.substituteAll {
         name = "aszlig-with-firmware.kconf";
 
-        src = pkgs.fetchurl {
-          name = "aszlig.kconf";
-          url = "file:///home/aszlig/linux/.config";
-          md5 = "318762752f2831d26a315d040437f42a";
-        };
+        # XXX: in mmrnmhrm.nix as well, factor out!
+        src = let
+          isNumber = c: elem c ["0" "1" "2" "3" "4" "5" "6" "7" "8" "9"];
+          mkValue = val:
+            if val == "" then "\"\""
+            else if val == "y" || val == "m" || val == "n" then val
+            else if all isNumber (stringToCharacters val) then val
+            else if substring 0 2 val == "0x" then val
+            else "\"${val}\"";
+          mkConfigLine = key: val: "${key}=${mkValue val}";
+          mkConf = cfg: concatStringsSep "\n" (mapAttrsToList mkConfigLine cfg);
+        in pkgs.writeText "aszlig.kconf" (mkConf (import ./dnyarri-kconf.nix));
 
         builtin_firmware = pkgs.stdenv.mkDerivation {
           name = "builtin-firmware";
