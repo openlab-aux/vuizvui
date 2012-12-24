@@ -109,34 +109,6 @@ in {
       };
     };
 
-    #ffmpeg = pkgs.ffmpeg.override {
-    #  x11grabSupport = true;
-    #  faacSupport = true;
-    #};
-
-    /*
-    gitAndTools = recurseIntoAttrs (
-      import <nixpkgs/pkgs/applications/version-management/git-and-tools> {
-        inherit pkgs;
-      } // {
-        git = lib.overrideDerivation gitAndTools.git (ogit: {
-          patches = let
-            alwaysSignPatch = writeText "always-sign.patch" ''
-              --- a/builtin/commit.c
-              +++ b/builtin/commit.c
-              @@ -91 +91 @@ static char *untracked_files_arg, *force_date, *ignore_submodule_arg;
-              -static char *sign_commit;
-              +static char *sign_commit = (intptr_t) "";
-              @@ -1391 +1391 @@ int cmd_commit(int argc, const char **argv, const char *prefix)
-              -${"\t\t"}  "GPG sign commit", PARSE_OPT_OPTARG, NULL, (intptr_t) "" },
-              +${"\t\t"}  "Do not GPG sign commit", PARSE_OPT_OPTARG, (intptr_t) "", NULL },
-            '';
-          in ogit.patches ++ [alwaysSignPatch];
-        });
-      }
-    );
-    */
-
     blop = stdenv.mkDerivation rec {
       name = "blop-${version}";
       version = "0.2.8";
