@@ -120,6 +120,17 @@
   };
   */
 
+  users.extraUsers.aszlig = {
+    description = "aszlig";
+    group = "users";
+    extraGroups = [ "vboxusers" "wheel" ];
+    home = "/home/aszlig";
+    isSystemUser = false;
+    useDefaultShell = true;
+    createHome = true;
+    createUser = true;
+  };
+
   environment.nix = pkgs.nixUnstable;
   environment.systemPackages = with pkgs; [
     zsh
