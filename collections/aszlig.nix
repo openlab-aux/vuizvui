@@ -1,7 +1,9 @@
 pkgs:
 
+with pkgs;
+
 {
-  haskell = with pkgs.haskellPackages; [
+  haskell = with haskellPackages; [
     ghc cabalInstall hlint
     darcs
     diagrams
@@ -9,14 +11,14 @@ pkgs:
     hjsmin persistentSqlite
   ];
 
-  python = with pkgs.pythonPackages; [
+  python = with pythonPackages; [
     pkgs.python3
     pkgs.python
     pep8
     polib
   ];
 
-  shell = with pkgs; [
+  shell = [
     zsh dash
     taskwarrior
     screen
@@ -32,7 +34,7 @@ pkgs:
     vlock
   ];
 
-  multimedia = with pkgs; [
+  multimedia = [
     pulseaudio pvolctrl
     MPlayer
     vorbisTools
@@ -40,12 +42,12 @@ pkgs:
     mp3info
   ];
 
-  crypto = with pkgs; [
+  crypto = [
     gnupg1compat openssh
     keychain
   ];
 
-  dev = with pkgs; [
+  dev = [
     manpages
     posix_man_pages
     gitFull
@@ -55,20 +57,20 @@ pkgs:
     ltrace strace
   ];
 
-  net = with pkgs; [
+  net = [
     netrw
     nmap
     socat
   ];
 
-  x11 = with pkgs; [
+  x11 = [
     i3 i3lock i3status dmenu conky
     tkabber
     tkabber_plugins
     xpdf
   ];
 
-  misc = with pkgs; [
+  misc = [
     lastwatch
     chromiumBetaWrapper
     glxinfo
