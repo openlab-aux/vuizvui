@@ -51,5 +51,23 @@ with pkgs.lib;
     label = "swap";
   };
 
-  services.xserver.videoDrivers = [ "nouveau" ];
+  services.xserver = {
+    videoDrivers = [ "nouveau" ];
+
+    deviceSection = ''
+      Option "monitor-DVI-I-2" "left monitor"
+      Option "monitor-DVI-I-1" "right monitor"
+    '';
+
+    extraXorgOptions = ''
+      Section "Monitor"
+        Identifier  "left monitor"
+      EndSection
+
+      Section "Monitor"
+        Identifier  "right monitor"
+        Option      "RightOf"       "left monitor"
+      EndSection
+    '';
+  };
 }
