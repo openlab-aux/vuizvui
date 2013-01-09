@@ -95,6 +95,9 @@
       enable = true;
       layout = "dvorak";
 
+      startGnuPGAgent = true;
+      startOpenSSHAgent = false;
+
       windowManager = {
         i3.enable = true;
         default = "i3";
