@@ -69,5 +69,9 @@ with pkgs.lib;
         Option      "RightOf"       "left monitor"
       EndSection
     '';
+
+    displayManager.sessionCommands = ''
+      ${pkgs.synergy}/bin/synergys -c "${../cfgfiles/synergy.conf}"
+    '';
   };
 }
