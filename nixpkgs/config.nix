@@ -70,6 +70,7 @@ let
       i3 i3lock i3status dmenu conky
       tkabber
       tkabber_plugins
+      xpdf
     ];
 
     misc = with pkgs; [
