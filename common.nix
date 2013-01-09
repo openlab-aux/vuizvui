@@ -133,10 +133,17 @@
 
   environment.nix = pkgs.nixUnstable;
   environment.systemPackages = with pkgs; [
-    zsh
-    wget
-    vim_configurable
     cacert
+    file
+    htop
+    psmisc
+    unrar
+    unzip
+    vim_configurable
+    vlock
+    wget
+    xz
+    zsh
   ];
 
   nixpkgs.config = import ./nixpkgs/config.nix;
