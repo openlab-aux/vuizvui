@@ -54,21 +54,7 @@ with pkgs.lib;
   services.xserver = {
     videoDrivers = [ "nouveau" ];
 
-    deviceSection = ''
-      Option "monitor-DVI-I-2" "left monitor"
-      Option "monitor-DVI-I-1" "right monitor"
-    '';
-
-    extraXorgOptions = ''
-      Section "Monitor"
-        Identifier  "left monitor"
-      EndSection
-
-      Section "Monitor"
-        Identifier  "right monitor"
-        Option      "RightOf"       "left monitor"
-      EndSection
-    '';
+    xrandrHeads = [ "DVI-I-2" "DVI-I-1" ];
 
     displayManager.sessionCommands = ''
       ${pkgs.synergy}/bin/synergys -c "${../cfgfiles/synergy.conf}"
