@@ -22,7 +22,7 @@ with pkgs;
     zsh dash
     taskwarrior
     screen
-    htop
+    hexedit
     bc
     lftp
     mmv
