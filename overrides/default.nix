@@ -6,7 +6,7 @@ with {
 with pkgs;
 
 rec {
-  pulseaudio = pulseaudio.override {
+  pulseaudio = pkgs.pulseaudio.override {
     useSystemd = true;
   };
 
@@ -58,7 +58,7 @@ rec {
     };
   };
 
-  tkabber = lib.overrideDerivation tkabber (o: {
+  tkabber = lib.overrideDerivation pkgs.tkabber (o: {
     name = "tkabber-1.0pre";
     src = fetchsvn {
       url = "http://svn.xmpp.ru/repos/tkabber/trunk/tkabber";
@@ -67,7 +67,7 @@ rec {
     };
   });
 
-  tkabber_plugins = lib.overrideDerivation tkabber_plugins (o: {
+  tkabber_plugins = lib.overrideDerivation pkgs.tkabber_plugins (o: {
     name = "tkabber-plugins-1.0pre";
     src = fetchsvn {
       url = "http://svn.xmpp.ru/repos/tkabber/trunk/tkabber-plugins";
@@ -76,11 +76,11 @@ rec {
     };
   });
 
-  w3m = w3m.override {
+  w3m = pkgs.w3m.override {
     graphicsSupport = true;
   };
 
-  netrw = netrw.override {
+  netrw = pkgs.netrw.override {
     checksumType = "mhash";
   };
 
