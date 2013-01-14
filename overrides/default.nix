@@ -4,11 +4,6 @@ with {
   tkabberRev = 2009;
 };
 with pkgs; let p = {
-  aszligEnv = (buildEnv {
-    name = "aszlig-env";
-    paths = aszligCollections (pkgs // p);
-  });
-
   pulseaudio = pulseaudio.override {
     useSystemd = true;
   };
@@ -283,4 +278,4 @@ with pkgs; let p = {
       sha256 = "1zc3bpqfa5pdpl7masigvv98mi5phl04p80fyd2ink33xbmik70z";
     };
   };
-}; in p
+}; in p // (import ../envs (pkgs // p))
