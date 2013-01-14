@@ -140,6 +140,7 @@
     file
     htop
     psmisc
+    binutils
     unrar
     unzip
     vim_configurable
