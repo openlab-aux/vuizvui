@@ -199,20 +199,100 @@ in {
       buildInputs = [ pkgconfig pulseaudio ];
     };
 
-    axbo_research = stdenv.mkDerivation rec {
-      name = "axbo-research-${version}";
-      version = "2_0_18";
+    librxtx_java = stdenv.mkDerivation rec {
+      name = "rxtx-${version}";
+      version = "2.1-7r2";
 
-      unpackPhase = ''
-        offset="$(sed -n 's/^ *tail *-c *\([0-9]\+\).*$/\1/p' "$src")"
-        tail -c "$offset" "$src" | tar xz
-        ls -la
-        #${unzip}/bin/unzip i4jruntime.jar
-        cat i4jparams.conf
+      buildInputs = [ unzip jdk ];
+
+      NIX_CFLAGS_COMPILE = "-DUTS_RELEASE=\"3.8.0\"";
+
+      makeFlags = [
+        "JHOME=$(out)/lib/java"
+        "RXTX_PATH=$(out)/lib"
+      ];
+
+      preInstall = ''
+        mkdir -p "$out/lib/java"
       '';
 
       src = fetchurl {
-        url = "http://www.axbo.com/webstart/aXbo_unix_${version}.sh";
+        url = "http://rxtx.qbang.org/pub/rxtx/${name}.zip";
+        sha256 = "1nfxdbiamr8dmls4zbdcdk4hf916gnr1jmcpb1kpc1b1m193inri";
+      };
+    };
+
+    axbo_research = stdenv.mkDerivation rec {
+      name = "axbo-research-${version}";
+      version = "2.0.18";
+
+      buildInputs = [ jre p.librxtx_java ];
+
+      unpackCmd = let
+        fontconfigFile = makeFontsConf {
+          fontDirectories = lib.singleton dejavu_fonts;
+        };
+      in ''
+        datalen="$(sed -n 's/^.*totalDataLength=\([0-9]\+\).*$/\1/p' "$src")"
+        installer_offset="$(sed -n 's/^ *tail *-c *\([0-9]\+\).*$/\1/p' "$src")"
+
+        installer_dir="$(mktemp -d)"
+        mkdir -p "$installer_dir"
+        tail -c "$installer_offset" "$src" | tar xz -C "$installer_dir"
+
+        cat > "$installer_dir/responses" <<EOF
+        executeLauncherAction$Boolean=false
+        sys.programGroup.linkDir=/dev/null
+        sys.component.73$Boolean=true
+        sys.languageId=en
+        sys.installationDir=$(pwd)/${name}
+        sys.programGroup.enabled$Boolean=false
+        sys.programGroup.allUsers$Boolean=true
+        sys.programGroup.name=aXbo
+        EOF
+
+        cd "$installer_dir"
+        export FONTCONFIG_FILE="${fontconfigFile}"
+        java -client -Dinstall4j.jvmDir="${jre}" \
+                     -Dexe4j.moduleName="$src" \
+                     -Dexe4j.totalDataLength="$datalen" \
+                     -Dinstall4j.cwd="$installer_dir" \
+                     -Djava.ext.dirs="${jre}/lib/ext" \
+                     -Dsun.java2d.noddraw=true \
+                     -classpath i4jruntime.jar:user.jar \
+                     com.install4j.runtime.Launcher launch \
+                     com.install4j.runtime.installer.Installer \
+                     false false "" "" false true false "" true true \
+                     0 0 "" 20 20 Arial 0,0,0 8 500 'version 2.0.18' \
+                     20 40 Arial 0,0,0 8 500 \
+                     -1 -q -varfile "$installer_dir/responses"
+        cd -
+        rm -rf "$installer_dir"
+      '';
+
+      installPhase = ''
+        mkdir -p "$out/lib/java" "$out/libexec" "$out/bin"
+        for jarfile in lib/*; do
+          case "''${jarfile##*/}" in
+            axbo.jar) cp -vt "$out/libexec" "$jarfile";;
+            RXTXcomm.jar) ;; # ignore
+            *.jar) cp -vt "$out/lib/java" "$jarfile";;
+          esac
+        done
+
+        cat > "$out/bin/axbo-research" <<WRAPPER
+        #!${stdenv.shell}
+        ${jre}/bin/java -Djava.library.path="${p.librxtx_java}/lib" \
+          -classpath "${p.librxtx_java}/lib/java/*:$out/lib/java/*" \
+          -jar "$out/libexec/axbo.jar"
+        WRAPPER
+        chmod +x "$out/bin/axbo-research"
+      '';
+
+      src = fetchurl {
+        url = let
+          upstream_version = lib.replaceChars ["."] ["_"] version;
+        in "http://www.axbo.com/webstart/aXbo_unix_${upstream_version}.sh";
         sha256 = "1zc3bpqfa5pdpl7masigvv98mi5phl04p80fyd2ink33xbmik70z";
       };
     };
