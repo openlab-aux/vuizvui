@@ -3,7 +3,9 @@ pkgs:
 with {
   tkabberRev = 2009;
 };
-with pkgs; let p = {
+with pkgs;
+
+rec {
   pulseaudio = pulseaudio.override {
     useSystemd = true;
   };
@@ -208,7 +210,7 @@ with pkgs; let p = {
     name = "axbo-research-${version}";
     version = "2.0.18";
 
-    buildInputs = [ jre p.librxtx_java ];
+    buildInputs = [ jre librxtx_java ];
 
     unpackCmd = let
       fontconfigFile = makeFontsConf {
@@ -264,8 +266,8 @@ with pkgs; let p = {
 
       cat > "$out/bin/axbo-research" <<WRAPPER
       #!${stdenv.shell}
-      ${jre}/bin/java -Djava.library.path="${p.librxtx_java}/lib" \
-        -classpath "${p.librxtx_java}/lib/java/*:$out/lib/java/*" \
+      ${jre}/bin/java -Djava.library.path="${librxtx_java}/lib" \
+        -classpath "${librxtx_java}/lib/java/*:$out/lib/java/*" \
         -jar "$out/libexec/axbo.jar"
       WRAPPER
       chmod +x "$out/bin/axbo-research"
@@ -278,4 +280,4 @@ with pkgs; let p = {
       sha256 = "1zc3bpqfa5pdpl7masigvv98mi5phl04p80fyd2ink33xbmik70z";
     };
   };
-}; in p // (import ../envs (pkgs // p))
+}

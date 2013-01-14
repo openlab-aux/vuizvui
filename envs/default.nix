@@ -1,15 +1,17 @@
 pkgs:
 
+with pkgs;
+
 {
-  aszligEnv = (pkgs.buildEnv {
+  aszligEnv = buildEnv {
     name = "aszlig-env";
     paths = let
-      genAszligEnv = name: paths: pkgs.buildEnv {
+      genAszligEnv = name: paths: buildEnv {
         name = "aszlig-${name}-packages";
         inherit paths;
         ignoreCollisions = true;
       };
       collection = import ../collections/aszlig.nix pkgs;
-    in pkgs.lib.mapAttrsToList genAszligEnv collection;
-  });
+    in lib.mapAttrsToList genAszligEnv collection;
+  };
 }

@@ -5,5 +5,8 @@
 
   firefox.jre = true;
 
-  packageOverrides = import ../overrides;
+  packageOverrides = pkgs: let
+    mainOverrides = import ../overrides pkgs;
+    envs = import ../envs (pkgs // mainOverrides);
+  in mainOverrides // envs;
 }
