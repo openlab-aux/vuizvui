@@ -108,19 +108,6 @@ rec {
     '';
   };
 
-  catapultEnv = myEnvFun {
-    name = "catapult";
-    buildInputs = [
-      stdenv python pil
-      pythonPackages.matplotlib
-      pythonPackages.django
-      pythonPackages.sqlite3
-      pythonPackages.markdown
-      pythonPackages.MySQL_python
-      pythonPackages.setuptools
-    ];
-  };
-
   pvolctrl = stdenv.mkDerivation rec {
     name = "pvolctrl-0.23";
 

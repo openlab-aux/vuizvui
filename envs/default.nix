@@ -15,6 +15,19 @@ with pkgs;
     in lib.mapAttrsToList genAszligEnv collection;
   };
 
+  catapultEnv = myEnvFun {
+    name = "catapult";
+    buildInputs = [
+      stdenv python pil
+      pythonPackages.matplotlib
+      pythonPackages.django
+      pythonPackages.sqlite3
+      pythonPackages.markdown
+      pythonPackages.MySQL_python
+      pythonPackages.setuptools
+    ];
+  };
+
   kernelEnv = myEnvFun {
     name = "kernel";
     extraCmds = ''
