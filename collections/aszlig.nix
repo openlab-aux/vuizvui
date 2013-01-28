@@ -36,7 +36,7 @@ with pkgs;
 
   multimedia = [
     pulseaudio pvolctrl
-    MPlayer
+    mplayer
     vorbisTools
     mpg321
     mp3info
