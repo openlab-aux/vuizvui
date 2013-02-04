@@ -67,6 +67,7 @@ with pkgs;
     i3 i3lock i3status dmenu conky
     tkabber
     tkabber_plugins
+    tkabber_urgent_plugin
     xpdf
   ];
 

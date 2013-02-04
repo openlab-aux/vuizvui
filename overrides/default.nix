@@ -50,6 +50,7 @@ let
     libCMT = callPackage ./libcmt { };
     librxtx_java = callPackage ./librxtx-java { };
     pvolctrl = callPackage ./pvolctrl { };
+    tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
   };
 
   # misc
