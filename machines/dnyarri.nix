@@ -104,5 +104,13 @@ with import ../lib;
     device = "/dev/shofixti/swap";
   };
 
-  services.xserver.videoDrivers = [ "ati" ];
+  services.xserver = {
+    videoDrivers = [ "ati" ];
+
+    xrandrHeads = [ "HDMI-0" "DVI-0" ];
+
+    displayManager.sessionCommands = ''
+      ${pkgs.synergy}/bin/synergyc mmrnmhrm
+    '';
+  };
 }
