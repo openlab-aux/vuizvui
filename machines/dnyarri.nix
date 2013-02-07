@@ -104,6 +104,11 @@ with import ../lib;
     device = "/dev/shofixti/swap";
   };
 
+  # TODO: Try to avoid this, but as there is only a single user using audio on
+  # this machine, it's okay for now. But remember that this will break heavily,
+  # should there be another user accessing the audio devices.
+  users.extraUsers.aszlig.extraGroups = [ "audio" ];
+
   services.xserver = {
     videoDrivers = [ "ati" ];
 
