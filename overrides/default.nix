@@ -56,11 +56,11 @@ let
   # misc
   misc = {
     kernelSourceAszlig = {
-      version = "3.8.0";
+      version = "3.9.0-pre-rc1";
       src = everything.fetchgit {
         url = /home/aszlig/linux;
-        rev = "e3c4877de8b9d93bd47b6ee88eb594b1c1e10da5";
-        sha256 = "1f1wn5nqi2kldn5cqa4waaaf7jjipd5ry8fa1vqj8chvhijlxb45";
+        rev = "79de04ca251a0b063e55d66eeb2e2248bd1ad97f";
+        sha256 = "1zmyg8qzr2xs50f5gz0s2yhgj8la8bfrgrrsqinsba28d8p480sg";
       };
     };
 
