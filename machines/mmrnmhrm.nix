@@ -8,8 +8,7 @@ with import ../lib;
 
   boot = let
     linuxAszlig = pkgs.linuxManualConfig {
-      version = pkgs.kernelSourceAszlig.version;
-      src = pkgs.kernelSourceAszlig.src;
+      inherit (pkgs.kernelSourceAszlig) version src;
 
       configfile = generateKConf (import ./mmrnmhrm-kconf.nix);
       allowImportFromDerivation = true;

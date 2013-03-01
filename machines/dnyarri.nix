@@ -40,8 +40,8 @@ with import ../lib;
     ];
 
     linuxAszlig = pkgs.linuxManualConfig {
-      version = pkgs.kernelSourceAszlig.version;
-      src = pkgs.kernelSourceAszlig.src;
+      inherit (pkgs.kernelSourceAszlig) version src;
+
       configfile = pkgs.substituteAll {
         name = "aszlig-with-firmware.kconf";
         src = generateKConf (import ./dnyarri-kconf.nix);
