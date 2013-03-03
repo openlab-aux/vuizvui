@@ -59,8 +59,8 @@ let
       version = "3.9.0-pre-rc1";
       src = everything.fetchgit {
         url = /home/aszlig/linux;
-        rev = "79de04ca251a0b063e55d66eeb2e2248bd1ad97f";
-        sha256 = "1zmyg8qzr2xs50f5gz0s2yhgj8la8bfrgrrsqinsba28d8p480sg";
+        rev = "9811cc24e6aa037ce315729a9a81fb46a29c6e7f";
+        sha256 = "05d25fa36jkd3hf6nh3rjmyhhi8mwdsb3g1rh3fclh7rnan8jxqa";
       };
     };
 
