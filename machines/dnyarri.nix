@@ -59,7 +59,8 @@ with import ../lib;
       allowImportFromDerivation = true; # XXX
     };
   in rec {
-    kernelPackages = pkgs.linuxPackagesFor linuxAszlig;
+    kernelPackages = pkgs.recurseIntoAttrs
+      (pkgs.linuxPackagesFor linuxAszlig kernelPackages);
     inherit extraKernelParams;
 
     initrd = {

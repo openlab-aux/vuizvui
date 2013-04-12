@@ -14,7 +14,8 @@ with import ../lib;
       allowImportFromDerivation = true;
     };
   in rec {
-    kernelPackages = pkgs.linuxPackagesFor linuxAszlig;
+    kernelPackages = pkgs.recurseIntoAttrs
+      (pkgs.linuxPackagesFor linuxAszlig kernelPackages);
 
     loader.grub.devices = singleton
       "/dev/disk/by-id/ata-WDC_WD6401AALS-00L3B2_WD-WMASY3263730";
