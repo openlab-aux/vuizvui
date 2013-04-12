@@ -22,14 +22,14 @@ let
 
   # derivation overrides
   drvOverrides = let
-    tkabberRev = 2009;
+    tkabberRev = 2010;
   in mapOverride overrideDerivation argOverrides {
     tkabber = o: {
       name = "tkabber-1.0pre";
       src = everything.fetchsvn {
         url = "http://svn.xmpp.ru/repos/tkabber/trunk/tkabber";
         rev = tkabberRev;
-        sha256 = "0lfh3bapqsfw142bndp11x7cs9crrcccw242lgwlh103r9gs123s";
+        sha256 = "0ixvp3frpx7zhb7jyi0w463n78kafdzgmspkm2jhh6x28rimj0lz";
       };
     };
 
