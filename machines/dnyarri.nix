@@ -59,7 +59,7 @@ with import ../lib;
       allowImportFromDerivation = true; # XXX
     };
   in rec {
-    kernelPackages = pkgs.linuxPackagesFor linuxAszlig kernelPackages;
+    kernelPackages = pkgs.linuxPackagesFor linuxAszlig;
     inherit extraKernelParams;
 
     initrd = {
