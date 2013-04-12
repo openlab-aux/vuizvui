@@ -5,6 +5,7 @@ with pkgs;
 {
   haskell = with haskellPackages; [
     ghc cabalInstall hlint
+    cabal2nix
     darcs
     diagrams
     yesod yesodStatic yesodDefault yesodTest
@@ -22,6 +23,7 @@ with pkgs;
     zsh dash
     taskwarrior
     screen
+    figlet
     hexedit
     bc
     lftp
@@ -32,6 +34,7 @@ with pkgs;
     fbida
     mutt
     vlock
+    rlwrap
   ];
 
   multimedia = [
@@ -55,12 +58,15 @@ with pkgs;
     gnumake
     vim_configurable
     ltrace strace
+    valgrind
   ];
 
   net = [
     netrw
     nmap
     socat
+    samplicator
+    jwhois
   ];
 
   x11 = [
