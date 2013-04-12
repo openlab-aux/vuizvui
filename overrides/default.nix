@@ -56,11 +56,11 @@ let
   # misc
   misc = {
     kernelSourceAszlig = {
-      version = "3.9.0-pre-rc1";
+      version = "3.9.0-rc2";
       src = everything.fetchgit {
         url = /home/aszlig/linux;
-        rev = "9811cc24e6aa037ce315729a9a81fb46a29c6e7f";
-        sha256 = "05d25fa36jkd3hf6nh3rjmyhhi8mwdsb3g1rh3fclh7rnan8jxqa";
+        rev = "a2362d24764a4e9a3187fc46b14e1d2cd0657700";
+        sha256 = "180msa29z9d5qii0q6p45bx8c51ii1f7qpz5ydp52nhgkx98c8mg";
       };
     };
 
@@ -74,12 +74,19 @@ let
         cupsSupport = true;
         pulseSupport = true;
       };
+      mkTest = chan: everything.writeScript "test-chromium-${chan}.sh" ''
+        #!${everything.stdenv.shell}
+        if datadir="$(${everything.coreutils}/bin/mktemp -d)"; then
+          ${buildChromium chan}/bin/chromium --user-data-dir="$datadir"
+          rm -rf "$datadir"
+        fi
+      '';
     in everything.stdenv.mkDerivation {
       name = "test-chromium-build";
 
       buildCommand = let
         chanResults = flip map buildChannels (chan: ''
-          echo "Build result for ${chan}: ${buildChromium chan}"
+          echo "Test script for ${chan}: ${mkTest chan}"
         '');
       in ''
         echo "Builds finished, the following derivations have been built:"
