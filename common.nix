@@ -84,8 +84,6 @@
 
     nixosManual.showManual = false;
 
-    pulseaudio.enable = false;
-
     printing = {
       enable = true;
       drivers = [ pkgs.foo2zjs pkgs.foomatic_filters ];
