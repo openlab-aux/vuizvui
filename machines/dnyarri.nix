@@ -59,8 +59,12 @@ with import ../lib;
       allowImportFromDerivation = true; # XXX
     };
   in rec {
-    kernelPackages = pkgs.recurseIntoAttrs
-      (pkgs.linuxPackagesFor linuxAszlig kernelPackages);
+    kernelPackages = let
+      kpkgs = pkgs.linuxPackagesFor linuxAszlig kernelPackages;
+      virtualbox = kpkgs.virtualbox.override {
+        enableExtensionPack = true;
+      };
+    in pkgs.recurseIntoAttrs (kpkgs // { inherit virtualbox; });
     inherit extraKernelParams;
 
     initrd = {
