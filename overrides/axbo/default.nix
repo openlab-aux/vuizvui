@@ -1,10 +1,10 @@
-{ stdenv, fetchurl, jre, librxtx_java, makeFontsConf, dejavu_fonts }:
+{ stdenv, fetchurl, oraclejre, librxtx_java, makeFontsConf, dejavu_fonts }:
 
 stdenv.mkDerivation rec {
   name = "axbo-research-${version}";
   version = "2.0.18";
 
-  buildInputs = [ jre librxtx_java ];
+  buildInputs = [ oraclejre librxtx_java ];
 
   unpackCmd = let
     fontconfigFile = makeFontsConf {
@@ -31,11 +31,11 @@ stdenv.mkDerivation rec {
 
     cd "$installer_dir"
     export FONTCONFIG_FILE="${fontconfigFile}"
-    java -client -Dinstall4j.jvmDir="${jre}" \
+    java -client -Dinstall4j.jvmDir="${oraclejre}" \
                  -Dexe4j.moduleName="$src" \
                  -Dexe4j.totalDataLength="$datalen" \
                  -Dinstall4j.cwd="$installer_dir" \
-                 -Djava.ext.dirs="${jre}/lib/ext" \
+                 -Djava.ext.dirs="${oraclejre}/lib/ext" \
                  -Dsun.java2d.noddraw=true \
                  -classpath i4jruntime.jar:user.jar \
                  com.install4j.runtime.Launcher launch \
@@ -49,19 +49,20 @@ stdenv.mkDerivation rec {
   '';
 
   installPhase = ''
-    mkdir -p "$out/lib/java" "$out/libexec" "$out/bin"
+    mkdir -p "$out/libexec/lib" "$out/bin"
     for jarfile in lib/*; do
       case "''${jarfile##*/}" in
         axbo.jar) cp -vt "$out/libexec" "$jarfile";;
-        RXTXcomm.jar) ;; # ignore
-        *.jar) cp -vt "$out/lib/java" "$jarfile";;
+        RXTXcomm.jar) ln -s "${librxtx_java}/lib/java/RXTXcomm.jar" \
+                            "$out/libexec/lib";;
+        *.jar) cp -vt "$out/libexec/lib" "$jarfile";;
       esac
     done
 
     cat > "$out/bin/axbo-research" <<WRAPPER
     #!${stdenv.shell}
-    ${jre}/bin/java -Djava.library.path="${librxtx_java}/lib" \
-      -classpath "${librxtx_java}/lib/java/*:$out/lib/java/*" \
+    ${oraclejre}/bin/java -Djava.library.path="${librxtx_java}/lib" \
+      -classpath "${librxtx_java}/lib/java/RXTXcomm.jar" \
       -jar "$out/libexec/axbo.jar"
     WRAPPER
     chmod +x "$out/bin/axbo-research"
@@ -69,8 +70,8 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = let
-      upstream_version = stdenv.lib.replaceChars ["."] ["_"] version;
-    in "http://www.axbo.com/webstart/aXbo_unix_${upstream_version}.sh";
+      urlversion = stdenv.lib.replaceChars ["."] ["_"] version;
+    in "https://www.dropbox.com/s/shy0yqcyivonobi/aXbo_unix_${urlversion}.sh";
     sha256 = "1zc3bpqfa5pdpl7masigvv98mi5phl04p80fyd2ink33xbmik70z";
   };
 }
