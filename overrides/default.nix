@@ -18,6 +18,7 @@ let
     netrw.checksumType = "mhash";
     pulseaudio.useSystemd = true;
     w3m.graphicsSupport = true;
+    uqm.use3DOVideos = true;
   };
 
   # derivation overrides
