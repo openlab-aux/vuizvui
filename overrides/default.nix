@@ -50,6 +50,7 @@ let
     blop = callPackage ./blop { };
     libCMT = callPackage ./libcmt { };
     librxtx_java = callPackage ./librxtx-java { };
+    lockdev = callPackage ./lockdev { };
     pvolctrl = callPackage ./pvolctrl { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
   };
