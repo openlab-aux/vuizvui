@@ -2,7 +2,7 @@
 
 stdenv.mkDerivation rec {
   name = "rxtx-${version}";
-  version = "2.1-7r2";
+  version = "2.2pre2";
 
   buildInputs = [ unzip jdk lockdev ];
 
@@ -21,6 +21,6 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "http://rxtx.qbang.org/pub/rxtx/${name}.zip";
-    sha256 = "1nfxdbiamr8dmls4zbdcdk4hf916gnr1jmcpb1kpc1b1m193inri";
+    sha256 = "00sv9604hkq81mshih0fhqfzn4mf01d6rish6vplsi0gfqz3fc1w";
   };
 }
