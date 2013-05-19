@@ -48,6 +48,7 @@ let
   newPackages = {
     axbo = callPackage ./axbo { };
     blop = callPackage ./blop { };
+    fish = callPackage ./fish { };
     libCMT = callPackage ./libcmt { };
     librxtx_java = callPackage ./librxtx-java { };
     lockdev = callPackage ./lockdev { };
