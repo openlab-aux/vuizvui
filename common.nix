@@ -89,6 +89,11 @@
       drivers = [ pkgs.foo2zjs pkgs.foomatic_filters ];
     };
 
+    udev.extraRules = ''
+      SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", \
+        ATTRS{serial}=="0001", OWNER="aszlig", SYMLINK+="axbo"
+    '';
+
     xserver = {
       enable = true;
       layout = "dvorak";
