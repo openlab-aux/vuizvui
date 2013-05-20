@@ -1,12 +1,10 @@
-{ stdenv, fetchurl, autoconf, ncurses, groff, makeWrapper, pythonPackages }:
+{ stdenv, fetchurl, autoconf, ncurses, groff, pythonPackages }:
 
 stdenv.mkDerivation rec {
   name = "fish-${version}";
   version = "2.0.0";
 
-  buildInputs = [
-    autoconf ncurses makeWrapper pythonPackages.wrapPython pythonPackages.python
-  ];
+  buildInputs = [ autoconf ncurses pythonPackages.python ];
 
   pythonPath = [ pythonPackages.curses ];
 
@@ -18,9 +16,23 @@ stdenv.mkDerivation rec {
   '';
 
   postFixup = ''
-    wrapPythonPrograms
+    gen_inserts() {
+      for i in $pythonPath; do
+        echo -n "; sys.path.insert(0, '$(toPythonPath "$i")')"
+      done
+    }
 
-    sed -i 's|nroff|${groff}/bin/nroff|g' \
+    find "$out/share/fish/tools" -type f -perm +0100 -name '*.py' |
+    xargs sed -i -r \
+      -e '1 { /^#!/c #!${pythonPackages.python}/bin/python
+            }' \
+      -e '0,/^(from|import)/{/^(from|import)/a import sys'"$(gen_inserts)"'
+                            }'
+
+    sed -i -e "/Popen/s/'manpath'/'man', '-w'/p" \
+      "$out/share/fish/tools/create_manpage_completions.py"
+
+    sed -i -e 's|nroff|${groff}/bin/nroff|g' \
       "$out/share/fish/functions/__fish_print_help.fish"
   '';
 
