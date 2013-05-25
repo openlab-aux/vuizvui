@@ -1,0 +1,80 @@
+diff --git a/src/common/optparser.py b/src/common/optparser.py
+index f84b18a..0078317 100644
+--- a/src/common/optparser.py
++++ b/src/common/optparser.py
+@@ -30,6 +30,7 @@ import os
+ import sys
+ import locale
+ import re
++from itertools import chain
+ from time import time
+ from common import gajim
+ from common import helpers
+@@ -46,19 +47,25 @@ class OptionsParser:
+ 
+     def read(self):
+         try:
+-            fd = open(self.__filename)
++            cfg = nixfd = open("@nix_config@", 'r')
+         except Exception:
+             if os.path.exists(self.__filename):
+                 #we talk about a file
+                 print _('Error: cannot open %s for reading') % self.__filename
+             return False
+ 
++        try:
++            fd = open(self.__filename)
++            cfg = chain(cfg, fd)
++        except Exception:
++            fd = None
++
+         new_version = gajim.config.get('version')
+         new_version = new_version.split('-', 1)[0]
+         seen = set()
+         regex = re.compile(r"(?P<optname>[^.]+)(?:(?:\.(?P<key>.+))?\.(?P<subname>[^.]+))?\s=\s(?P<value>.*)")
+ 
+-        for line in fd:
++        for line in cfg:
+             try:
+                 line = line.decode('utf-8')
+             except UnicodeDecodeError:
+@@ -79,10 +86,13 @@ class OptionsParser:
+         self.update_config(old_version, new_version)
+         self.old_values = {} # clean mem
+ 
+-        fd.close()
++        if fd is not None:
++            fd.close()
++
++        nixfd.close()
+         return True
+ 
+-    def write_line(self, fd, opt, parents, value):
++    def write_line(self, (fd, nixcfg), opt, parents, value):
+         if value is None:
+             return
+         value = value[1]
+@@ -102,17 +112,21 @@ class OptionsParser:
+                     p = p.encode('utf-8')
+                 s += p + '.'
+         s += opt
+-        fd.write(s + ' = ' + value + '\n')
++        line = s + ' = ' + value + '\n'
++        if not nixcfg.startswith(line) and not ('\n' + line) in nixcfg:
++            fd.write(line)
+ 
+     def write(self):
+         (base_dir, filename) = os.path.split(self.__filename)
+         self.__tempfile = os.path.join(base_dir, '.' + filename)
++
+         try:
++            nixcfg = open("@nix_config@", 'r').read()
+             f = open(self.__tempfile, 'w')
+         except IOError, e:
+             return str(e)
+         try:
+-            gajim.config.foreach(self.write_line, f)
++            gajim.config.foreach(self.write_line, (f, nixcfg))
+         except IOError, e:
+             return str(e)
+         f.flush()

@@ -21,26 +21,49 @@ let
     uqm.use3DOVideos = true;
   };
 
-  # derivation overrides
-  drvOverrides = let
-    tkabberRev = 2010;
-  in mapOverride overrideDerivation argOverrides {
-    tkabber = o: {
-      name = "tkabber-1.0pre";
-      src = everything.fetchsvn {
-        url = "http://svn.xmpp.ru/repos/tkabber/trunk/tkabber";
-        rev = tkabberRev;
-        sha256 = "0ixvp3frpx7zhb7jyi0w463n78kafdzgmspkm2jhh6x28rimj0lz";
-      };
-    };
+  gajimGtkTheme = everything.writeText "gajim.gtkrc" ''
+    style "default" {
+      fg[NORMAL] = "#d5faff"
+      fg[ACTIVE] = "#fffeff"
+      fg[SELECTED] = "#fffeff"
+      fg[INSENSITIVE] = "#85aaaf"
+      fg[PRELIGHT] = "#d7f2ff"
 
-    tkabber_plugins = o: {
-      name = "tkabber-plugins-1.0pre";
-      src = everything.fetchsvn {
-        url = "http://svn.xmpp.ru/repos/tkabber/trunk/tkabber-plugins";
-        rev = tkabberRev;
-        sha256 = "181jxd7iwpcl7wllwciqshzznahdw69fy7r604gj4m2kq6qmynqf";
-      };
+      text[NORMAL] = "#fffefe"
+      text[ACTIVE] = "#fffeff"
+      text[SELECTED] = "#fffeff"
+      text[INSENSITIVE] = "#85aaaf"
+      text[PRELIGHT] = "#d7f2ff"
+
+      bg[NORMAL] = "#0f4866"
+      bg[ACTIVE] = "#0c232e"
+      bg[SELECTED] = "#005a56"
+      bg[INSENSITIVE] = "#103040"
+      bg[PRELIGHT] = "#1d5875"
+
+      base[NORMAL] = "#0c232e"
+      base[ACTIVE] = "#0f4864"
+      base[SELECTED] = "#005a56"
+      base[INSENSITIVE] = "#103040"
+      base[PRELIGHT] = "#1d5875"
+    }
+
+    class "GtkWidget" style "default"
+  '';
+
+  gajimPatch = everything.substituteAll {
+    src = ./gajim/config.patch;
+    nix_config = ../cfgfiles/gajim.config;
+  };
+
+  # derivation overrides
+  drvOverrides = mapOverride overrideDerivation argOverrides {
+    gajim = o: {
+      patches = o.patches ++ singleton gajimPatch;
+      postPatch = o.postPatch + ''
+        sed -i -e '/^export/i export GTK2_RC_FILES="${gajimGtkTheme}"' \
+          scripts/gajim.in
+      '';
     };
   };
 
