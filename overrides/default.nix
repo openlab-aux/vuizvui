@@ -53,7 +53,8 @@ let
 
   gajimPatch = everything.substituteAll {
     src = ./gajim/config.patch;
-    nix_config = ../cfgfiles/gajim.config;
+    nix_config = everything.writeText "gajim.config"
+      (import ../cfgfiles/gajim.nix);
   };
 
   # derivation overrides
