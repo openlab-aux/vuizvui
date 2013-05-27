@@ -22,7 +22,7 @@ in mkConfig {
   always_english_wiktionary = true;
   ascii_formatting = true;
   ask_avatars_on_startup = true;
-  ask_offline_status = false;
+  ask_offline_status = true;
   ask_offline_status_on_connection = false;
   ask_online_status = false;
   attach_notifications_to_systray = false;
