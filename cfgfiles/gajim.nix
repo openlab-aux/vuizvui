@@ -74,7 +74,7 @@ in mkConfig {
   displayed_chat_state_notifications = "all";
   emoticons_theme = "";
   enable_negative_priority = false;
-  escape_key_closes = true;
+  escape_key_closes = false;
   esession_modp = "5,14";
   file_transfers_port = "28011";
   ft_add_hosts_to_send = "";
