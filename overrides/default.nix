@@ -49,6 +49,8 @@ let
     }
 
     class "GtkWidget" style "default"
+
+    gtk-enable-animations = 0
   '';
 
   gajimPatch = everything.substituteAll {

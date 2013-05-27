@@ -43,7 +43,7 @@ in mkConfig {
   autoxa_message = "$S (Not available as a result of being"
                  + " idle more than $T min)";
   autoxatime = "15";
-  avatar_position_in_roster = "right";
+  avatar_position_in_roster = "left";
   before_nickname = "<";
   change_roster_title = true;
   change_status_window_timeout = "15";
@@ -72,7 +72,7 @@ in mkConfig {
   custommailapp = "";
   dictionary_url = "WIKTIONARY";
   displayed_chat_state_notifications = "all";
-  emoticons_theme = "animated";
+  emoticons_theme = "";
   enable_negative_priority = false;
   escape_key_closes = true;
   esession_modp = "5,14";
@@ -88,7 +88,7 @@ in mkConfig {
   gc_proposed_nick_char = "_";
   gc_refer_to_nick_char = ":";
   global_proxy = "";
-  hide_avatar_of_transport = false;
+  hide_avatar_of_transport = true;
   hide_chat_banner = false;
   hide_groupchat_banner = false;
   hide_groupchat_occupants_list = false;
@@ -98,7 +98,7 @@ in mkConfig {
   "history_window_y-position" = "20";
   iconset = "dcraven";
   ignore_incoming_xhtml = false;
-  inmsgcolor = "#add8e6";
+  inmsgcolor = "#ff7f50";
   inmsgfont = "";
   inmsgtxtcolor = "";
   inmsgtxtfont = "";
@@ -146,7 +146,7 @@ in mkConfig {
   one_message_window = "always_with_roster";
   openwith = "xdg-open";
   outgoing_chat_state_notifications = "all";
-  outmsgcolor = "#ff7f50";
+  outmsgcolor = "#add8e6";
   outmsgfont = "";
   outmsgtxtcolor = "";
   outmsgtxtfont = "";
@@ -162,7 +162,7 @@ in mkConfig {
   restore_lines = "10";
   restore_timeout = "60";
   restored_messages_color = "#555753";
-  restored_messages_small = true;
+  restored_messages_small = false;
   roster_avatar_height = "16";
   roster_avatar_width = "16";
   roster_height = "1156";
@@ -192,7 +192,7 @@ in mkConfig {
   show_status_msgs_in_roster = true;
   show_transports_group = true;
   show_tunes_in_roster = true;
-  show_unread_tab_icon = false;
+  show_unread_tab_icon = true;
   showoffline = false;
   "single-msg-height" = "280";
   "single-msg-width" = "400";
@@ -207,7 +207,7 @@ in mkConfig {
   statusmsgcolor = "#4e9a06";
   statusmsgfont = "";
   stun_server = "";
-  tabs_always_visible = false;
+  tabs_always_visible = true;
   tabs_border = false;
   tabs_close_button = true;
   tabs_position = "top";
