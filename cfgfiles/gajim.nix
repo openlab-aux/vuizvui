@@ -64,7 +64,7 @@ in mkConfig {
   confirm_close_muc_rooms = "";
   confirm_close_multiple_tabs = true;
   confirm_custom_status = "no";
-  confirm_metacontacts = "";
+  confirm_metacontacts = "no";
   conversation_font = "Liberation Mono 10";
   ctrl_tab_go_to_next_composing = true;
   custom_file_manager = "";
