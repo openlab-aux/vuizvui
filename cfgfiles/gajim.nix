@@ -256,7 +256,7 @@ in mkConfig {
   vcard_avatar_height = "200";
   vcard_avatar_width = "200";
   verbose = false;
-  version = "0.15.3";
+  version = "0.15.4";
   video_framerate = "";
   video_input_device = "v4l2src device=/dev/video0";
   video_output_device = "ximagesink";
