@@ -20,7 +20,7 @@ with pkgs;
   ];
 
   shell = [
-    zsh dash
+    dash
     taskwarrior
     screen
     figlet
@@ -33,7 +33,6 @@ with pkgs;
     w3m
     fbida
     mutt
-    vlock
     rlwrap
   ];
 
@@ -56,7 +55,6 @@ with pkgs;
     gitFull
     gdb
     gnumake
-    vim_configurable
     ltrace strace
     valgrind
   ];
