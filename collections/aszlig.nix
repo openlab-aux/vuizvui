@@ -59,6 +59,8 @@ with pkgs;
     valgrind
   ];
 
+  dicts = with aspellDicts; [ de en ];
+
   net = [
     netrw
     nmap

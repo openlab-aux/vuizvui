@@ -203,7 +203,7 @@ in mkConfig {
   sounddnd = false;
   soundplayer = "aplay -q";
   sounds_on = false;
-  speller_language = "";
+  speller_language = "de.en";
   statusmsgcolor = "#4e9a06";
   statusmsgfont = "";
   stun_server = "";
@@ -249,7 +249,7 @@ in mkConfig {
   use_latex = false;
   use_notif_daemon = true;
   use_smooth_scrolling = true;
-  use_speller = false;
+  use_speller = true;
   use_stun_server = false;
   use_transports_iconsets = true;
   use_urgency_hint = true;
