@@ -101,6 +101,8 @@
       startGnuPGAgent = true;
       startOpenSSHAgent = false;
 
+      driSupport32Bit = true;
+
       windowManager = {
         i3.enable = true;
         default = "i3";
