@@ -38,7 +38,7 @@ in mkConfig {
   autoawaytime = "5";
   autodetect_browser_mailer = false;
   autopopup = true;
-  autopopupaway = false;
+  autopopupaway = true;
   autoxa = false;
   autoxa_message = "$S (Not available as a result of being"
                  + " idle more than $T min)";
@@ -145,7 +145,7 @@ in mkConfig {
   notify_on_signout = false;
   one_message_window = "always_with_roster";
   openwith = "xdg-open";
-  outgoing_chat_state_notifications = "all";
+  outgoing_chat_state_notifications = "composing_only";
   outmsgcolor = "#add8e6";
   outmsgfont = "";
   outmsgtxtcolor = "";
