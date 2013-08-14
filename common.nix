@@ -108,8 +108,34 @@
       '';
 
       windowManager = {
-        i3.enable = true;
         default = "i3";
+
+        i3.enable = true;
+        i3.configFile = with pkgs.lib; pkgs.substituteAll {
+          name = "i3.conf";
+          src = ./cfgfiles/i3.conf;
+
+          inherit (pkgs) conky dmenu xterm;
+          inherit (pkgs.xorg) xsetroot;
+          leftHead = head config.services.xserver.xrandrHeads;
+          rightHead = last config.services.xserver.xrandrHeads;
+
+          conkyrc = pkgs.writeText "conkyrc" ''
+            cpu_avg_samples 2
+            net_avg_samples 2
+            no_buffers yes
+            out_to_console yes
+            out_to_ncurses no
+            out_to_stderr no
+            extra_newline no
+            update_interval 1.0
+            uppercase no
+            use_spacer none
+            pad_percents 3
+            use_spacer left
+            TEXT
+          '';
+        };
       };
 
       desktopManager.default = "none";
