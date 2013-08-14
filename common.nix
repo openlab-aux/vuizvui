@@ -103,6 +103,10 @@
 
       driSupport32Bit = true;
 
+      displayManager.sessionCommands = ''
+        ${pkgs.redshift}/bin/redshift -l 48.428404:10.866007 &
+      '';
+
       windowManager = {
         i3.enable = true;
         default = "i3";
