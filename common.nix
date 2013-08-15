@@ -120,6 +120,8 @@
           leftHead = head config.services.xserver.xrandrHeads;
           rightHead = last config.services.xserver.xrandrHeads;
 
+          primaryNetInterface = "enp0s25";
+
           conkyrc = pkgs.writeText "conkyrc" ''
             cpu_avg_samples 2
             net_avg_samples 2
