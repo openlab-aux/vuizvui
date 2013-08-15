@@ -35,8 +35,9 @@ with import ../lib;
     '';
 
     builtinFW = [
-      "${pkgs.radeonR600}/radeon/R600_rlc.bin"
-      "${pkgs.radeonR700}/radeon/R700_rlc.bin"
+      "${pkgs.firmwareLinuxNonfree}/radeon/R600_rlc.bin"
+      "${pkgs.firmwareLinuxNonfree}/radeon/R700_rlc.bin"
+      "${pkgs.firmwareLinuxNonfree}/radeon/RV710_uvd.bin"
     ];
 
     linuxAszlig = pkgs.linuxManualConfig {
