@@ -111,7 +111,7 @@
         default = "i3";
 
         i3.enable = true;
-        i3.configFile = with pkgs.lib; pkgs.substituteAll {
+        i3.configFile = with pkgs.lib; pkgs.substituteAll ({
           name = "i3.conf";
           src = ./cfgfiles/i3.conf;
 
@@ -135,7 +135,20 @@
             use_spacer left
             TEXT
           '';
-        };
+        } // (let
+          wsConfig = if config.networking.hostName == "mmrnmhrm"
+                     then [ "XMPP" null "chromium" null null
+                            null   null null       null null ]
+                     else [ "chromium" null null null null
+                            null       null null null null ];
+
+          mkWsName = num: name: let
+            mkPair = nameValuePair "ws${toString num}";
+          in if name == null
+             then mkPair (toString num)
+             else mkPair "${toString num}: ${name}";
+
+        in listToAttrs (imap mkWsName wsConfig)));
       };
 
       desktopManager.default = "none";
