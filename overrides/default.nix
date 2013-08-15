@@ -19,6 +19,7 @@ let
     pulseaudio.useSystemd = true;
     w3m.graphicsSupport = true;
     uqm.use3DOVideos = true;
+    uqm.useRemixPacks = true;
   };
 
   gajimGtkTheme = everything.writeText "gajim.gtkrc" ''
