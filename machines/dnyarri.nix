@@ -34,10 +34,12 @@ with import ../lib;
       auto
     '';
 
-    builtinFW = [
-      "${pkgs.firmwareLinuxNonfree}/radeon/R600_rlc.bin"
-      "${pkgs.firmwareLinuxNonfree}/radeon/R700_rlc.bin"
-      "${pkgs.firmwareLinuxNonfree}/radeon/RV710_uvd.bin"
+    radeonFW = [
+      "radeon/R600_rlc.bin"
+      "radeon/R700_rlc.bin"
+      "radeon/RV710_uvd.bin"
+      "radeon/RV710_smc.bin"
+      "radeon/RV730_smc.bin"
     ];
 
     linuxAszlig = pkgs.linuxManualConfig {
@@ -47,11 +49,17 @@ with import ../lib;
         name = "aszlig-with-firmware.kconf";
         src = generateKConf (import ./dnyarri-kconf.nix);
 
+        extra_firmware = concatStringsSep " " (radeonFW ++ [
+          "patch51.fw"
+        ]);
+
         builtin_firmware = pkgs.stdenv.mkDerivation {
           name = "builtin-firmware";
           buildCommand = ''
             mkdir -p "$out/radeon"
-            ${concatMapStrings (x: "cp -Lv -t \"$out/radeon\" \"${x}\";") builtinFW}
+            ${concatMapStrings (x: ''
+              cp -Lv -t "$out/radeon" "${pkgs.firmwareLinuxNonfree}/${x}";
+            '') radeonFW}
 
             cp "${patch51}" "$out/${patch51Name}"
           '';

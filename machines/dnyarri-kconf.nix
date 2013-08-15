@@ -636,7 +636,7 @@
   "CONFIG_DEVTMPFS_MOUNT" = "y";
   "CONFIG_FW_LOADER" = "y";
   "CONFIG_FIRMWARE_IN_KERNEL" = "y";
-  "CONFIG_EXTRA_FIRMWARE" = "radeon/R600_rlc.bin radeon/R700_rlc.bin patch51.fw";
+  "CONFIG_EXTRA_FIRMWARE" = "@extra_firmware@";
   "CONFIG_EXTRA_FIRMWARE_DIR" = "@builtin_firmware@";
   "CONFIG_DMA_SHARED_BUFFER" = "y";
   "CONFIG_CONNECTOR" = "y";
