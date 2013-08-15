@@ -138,6 +138,13 @@
             TEXT
           '';
         } // (let
+          # Workaround for Synergy: we need to have polarizing heads.
+          leftHead = head config.services.xserver.xrandrHeads;
+          rightHead = last config.services.xserver.xrandrHeads;
+        in if config.networking.hostName == "mmrnmhrm"
+           then { inherit leftHead rightHead; }
+           else { leftHead = rightHead; rightHead = leftHead; }
+        ) // (let
           wsConfig = if config.networking.hostName == "mmrnmhrm"
                      then [ "XMPP" null "chromium" null null
                             null   null null       null null ]
