@@ -115,7 +115,7 @@
           name = "i3.conf";
           src = ./cfgfiles/i3.conf;
 
-          inherit (pkgs) conky dmenu xterm;
+          inherit (pkgs) conky dmenu xterm pvolctrl;
           inherit (pkgs.xorg) xsetroot;
           leftHead = head config.services.xserver.xrandrHeads;
           rightHead = last config.services.xserver.xrandrHeads;
