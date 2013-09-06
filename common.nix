@@ -183,7 +183,7 @@
   users.extraUsers.aszlig = {
     description = "aszlig";
     group = "users";
-    extraGroups = [ "vboxusers" "wheel" ];
+    extraGroups = [ "vboxusers" "wheel" "video" ];
     home = "/home/aszlig";
     isSystemUser = false;
     useDefaultShell = true;
