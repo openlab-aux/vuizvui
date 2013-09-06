@@ -55,10 +55,12 @@ with import ../lib;
 
         builtin_firmware = pkgs.stdenv.mkDerivation {
           name = "builtin-firmware";
-          buildCommand = ''
+          buildCommand = let
+            firmwareBasePath = "${pkgs.firmwareLinuxNonfree}/lib/firmware";
+          in ''
             mkdir -p "$out/radeon"
             ${concatMapStrings (x: ''
-              cp -Lv -t "$out/radeon" "${pkgs.firmwareLinuxNonfree}/${x}";
+              cp -Lv -t "$out/radeon" "${firmwareBasePath}/${x}";
             '') radeonFW}
 
             cp "${patch51}" "$out/${patch51Name}"
