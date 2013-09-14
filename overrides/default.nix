@@ -89,8 +89,8 @@ let
       version = "3.11.0";
       src = everything.fetchgit {
         url = /home/aszlig/linux;
-        rev = "2e032852245b3dcfe5461d7353e34eb6da095ccf";
-        sha256 = "0j7imbmw1zp28b6slmcvwgdiy5ddbj89wlyr8xchw5rr9dal5329";
+        rev = "3711d86a2de17e967b576af8b8a1e9351a7d1466";
+        sha256 = "0g0zmdyy2s4z34kxvr11a2bgk9aiwnig9bnsrljxxpzdv471y0j0";
       };
     };
 
