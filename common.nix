@@ -1,7 +1,7 @@
 {config, pkgs, ...}:
 {
   require = [
-    <nixos/modules/programs/virtualbox.nix>
+    <nixpkgs/nixos/modules/programs/virtualbox.nix>
   ];
 
   nix = {
