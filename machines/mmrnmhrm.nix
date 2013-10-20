@@ -41,13 +41,11 @@ with import ../lib;
     label = "swap";
   };
 
+  services.synergy.server.enable = true;
+  services.synergy.server.configFile = ../cfgfiles/synergy.conf;
+
   services.xserver = {
     videoDrivers = [ "nouveau" ];
-
     xrandrHeads = [ "DVI-I-2" "DVI-I-1" ];
-
-    displayManager.sessionCommands = ''
-      ${pkgs.synergy}/bin/synergys -c "${../cfgfiles/synergy.conf}"
-    '';
   };
 }

@@ -125,13 +125,12 @@ with import ../lib;
   # should there be another user accessing the audio devices.
   users.extraUsers.aszlig.extraGroups = [ "audio" ];
 
+  services.synergy.client.enable = true;
+  services.synergy.client.serverAddress = "mmrnmhrm";
+
   services.xserver = {
     videoDrivers = [ "ati" ];
 
     xrandrHeads = [ "HDMI-0" "DVI-0" ];
-
-    displayManager.sessionCommands = ''
-      ${pkgs.synergy}/bin/synergyc mmrnmhrm
-    '';
   };
 }
