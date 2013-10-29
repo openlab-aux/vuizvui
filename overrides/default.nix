@@ -88,7 +88,7 @@ let
     kernelSourceAszlig = {
       version = "3.12.0-rc7";
       src = everything.fetchgit {
-        url = /home/aszlig/linux;
+        url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;
         rev = "c9ca72fc568403db192e199b752c9c253e5f5fd9";
         sha256 = "1mv6srfa0n8xi6dfxvmbhjwibqqv1r5kr6wlr93mph7a26m6g9dj";
       };
