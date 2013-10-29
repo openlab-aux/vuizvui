@@ -5,6 +5,7 @@
   ];
 
   nix = {
+    package = pkgs.nixUnstable;
     maxJobs = 8;
     useChroot = true;
     readOnlyStore = true;
@@ -192,7 +193,6 @@
     createUser = true;
   };
 
-  environment.nix = pkgs.nixUnstable;
   environment.systemPackages = with pkgs; [
     cacert
     file
