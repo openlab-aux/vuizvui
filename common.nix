@@ -163,11 +163,9 @@
       };
 
       desktopManager.default = "none";
+      desktopManager.xterm.enable = false;
 
-      displayManager.slim.theme = pkgs.fetchurl {
-        url = "mirror://sourceforge/slim.berlios/slim-fingerprint.tar.gz";
-        sha256 = "0i1igl4iciml3d46n5hl3bbmqsdzzv56akw2l36i9f779kw07ds8";
-      };
+      displayManager.lightdm.enable = true;
     };
   };
 
