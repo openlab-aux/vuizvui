@@ -5,5 +5,7 @@ with import <nixpkgs/lib>;
     inherit configuration;
   }).system) (import ./network.nix);
 
-  envs = (import ./envs) (import <nixpkgs> {});
+  envs = (import ./envs) (import <nixpkgs> {
+    config = ./nixpkgs/config.nix;
+  });
 }
