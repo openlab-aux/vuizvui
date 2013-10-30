@@ -6,6 +6,6 @@ with import <nixpkgs/lib>;
   }).system) (import ./network.nix);
 
   envs = (import ./envs) (import <nixpkgs> {
-    config = ./nixpkgs/config.nix;
+    config = import ./nixpkgs/config.nix;
   });
 }
