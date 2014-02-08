@@ -95,15 +95,17 @@
         ATTRS{serial}=="0001", OWNER="aszlig", SYMLINK+="axbo"
     '';
 
+    mesa = {
+      driSupport32Bit = true;
+      s3tcSupport = true;
+    };
+
     xserver = {
       enable = true;
       layout = "dvorak";
 
       startGnuPGAgent = true;
       startOpenSSHAgent = false;
-
-      driSupport32Bit = true;
-      s3tcSupport = true;
 
       displayManager.sessionCommands = ''
         ${pkgs.redshift}/bin/redshift -l 48.428404:10.866007 &
