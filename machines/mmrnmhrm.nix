@@ -7,7 +7,7 @@ with import ../lib;
   require = singleton ../common.nix;
 
   boot = let
-    linuxAszlig = pkgs.linuxManualConfig {
+    linuxAszlig = pkgs.buildLinux {
       inherit (pkgs.kernelSourceAszlig) version src;
 
       configfile = generateKConf (import ./mmrnmhrm-kconf.nix);

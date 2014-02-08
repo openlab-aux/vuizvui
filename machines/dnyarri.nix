@@ -42,7 +42,7 @@ with import ../lib;
       "radeon/RV730_smc.bin"
     ];
 
-    linuxAszlig = pkgs.linuxManualConfig {
+    linuxAszlig = pkgs.buildLinux {
       inherit (pkgs.kernelSourceAszlig) version src;
 
       configfile = pkgs.substituteAll {
