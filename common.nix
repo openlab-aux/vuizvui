@@ -183,11 +183,11 @@
   */
 
   users.extraUsers.aszlig = {
+    uid = 1000;
     description = "aszlig";
     group = "users";
     extraGroups = [ "vboxusers" "wheel" "video" ];
     home = "/home/aszlig";
-    isSystemUser = false;
     useDefaultShell = true;
     createHome = true;
     createUser = true;
