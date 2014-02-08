@@ -8,7 +8,7 @@ with import ../lib;
 
   boot = let
     patch51Name = "patch51.fw";
-    extraKernelParams = [ "snd-hda-intel.patch=${patch51Name}" ];
+    kernelParams = [ "snd-hda-intel.patch=${patch51Name}" ];
 
     patch51 = pkgs.writeText patch51Name ''
       [codec]
@@ -83,7 +83,6 @@ with import ../lib;
         ARRAY /dev/md0 metadata=1.2 UUID=f5e9de04:89efc509:4e184fcc:166b0b67
         ARRAY /dev/md1 metadata=0.90 UUID=b85aa8be:cea0faf2:7abcbee8:eeae037b
       '';
-      luks.enable = true;
       luks.devices = [
         { name = "system_crypt";
           device = "/dev/md1";
