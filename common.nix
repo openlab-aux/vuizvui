@@ -21,6 +21,8 @@
       enable = true;
       version = 2;
     };
+
+    kernelParams = [ "zswap.enabled=1" ];
   };
 
   hardware = {
