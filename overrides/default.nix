@@ -86,11 +86,11 @@ let
   # misc
   misc = {
     kernelSourceAszlig = {
-      version = "3.14.0-rc1";
+      version = "3.14.0-rc6";
       src = everything.fetchgit {
         url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;
-        rev = "34a9bff4abd4db833c3c338d2f942eafe927ca92";
-        sha256 = "02dc0fn00crymwpjf2gdhjcbw5m1mvx8pys3wkxnhm9g49hpch6k";
+        rev = "a4ecdf82f8ea49f7d3a072121dcbd0bf3a7cb93a";
+        sha256 = "1bv20qp33ahgh26h9xfcgb1s67z0jmglx17l0rlqig5d9dybwfrw";
       };
     };
 
