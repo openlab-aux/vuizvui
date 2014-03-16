@@ -29,6 +29,10 @@
     pulseaudio.package = pkgs.pulseaudio.override {
       useSystemd = true;
     };
+    opengl = {
+      driSupport32Bit = true;
+      s3tcSupport = true;
+    };
   };
 
   users.defaultUserShell = "/var/run/current-system/sw/bin/zsh";
@@ -94,11 +98,6 @@
       SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", \
         ATTRS{serial}=="0001", OWNER="aszlig", SYMLINK+="axbo"
     '';
-
-    mesa = {
-      driSupport32Bit = true;
-      s3tcSupport = true;
-    };
 
     xserver = {
       enable = true;

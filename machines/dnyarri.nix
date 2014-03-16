@@ -127,7 +127,7 @@ with import ../lib;
   services.synergy.client.enable = true;
   services.synergy.client.serverAddress = "mmrnmhrm";
 
-  services.mesa.videoDrivers = [ "ati" ];
+  hardware.opengl.videoDrivers = [ "ati" ];
 
   services.xserver.xrandrHeads = [ "HDMI-0" "DVI-0" ];
 }
