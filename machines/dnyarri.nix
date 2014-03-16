@@ -76,7 +76,7 @@ with import ../lib;
         enableExtensionPack = true;
       };
     in pkgs.recurseIntoAttrs (kpkgs // { inherit virtualbox; });
-    inherit extraKernelParams;
+    inherit kernelParams;
 
     initrd = {
       mdadmConf = ''
