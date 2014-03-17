@@ -4,20 +4,26 @@ with pkgs;
 
 {
   haskell = with haskellPackages; [
-    ghc cabalInstall hlint
+    bytedump
     cabal2nix
+    cabalInstall
     darcs
     diagrams
-    bytedump
-    yesod yesodStatic yesodDefault yesodTest
-    hjsmin persistentSqlite
+    ghc
+    hjsmin
+    hlint
+    persistentSqlite
+    yesod
+    yesodDefault
+    yesodStatic
+    yesodTest
   ];
 
   python = with pythonPackages; [
-    pkgs.python3
-    pkgs.python
     pep8
     polib
+    pkgs.python
+    pkgs.python3
   ];
 
   games = [
@@ -25,85 +31,89 @@ with pkgs;
   ];
 
   shell = [
-    ascii
     apg
+    ascii
+    bc
     dash
     dos2unix
-    taskwarrior
-    screen
+    fbida
     figlet
     hexedit
-    bc
     lftp
     mmv
-    ncdu
-    surfraw
-    w3m
-    fbida
     mutt
+    ncdu
     p7zip
     rlwrap
+    screen
+    surfraw
+    taskwarrior
     unzip
     vbindiff
+    w3m
   ];
 
   multimedia = [
-    pulseaudio pvolctrl
     miro
-    mplayer
-    picard
-    vorbisTools
-    mpg321
     mp3info
+    mpg321
+    mplayer
     pavucontrol
+    picard
+    pulseaudio
+    pvolctrl
+    vorbisTools
   ];
 
   crypto = [
-    gnupg1compat openssh
+    gnupg1compat
     keychain
+    openssh
   ];
 
   dev = [
-    manpages
-    posix_man_pages
-    gitFull
     gdb
+    gitFull
     gnumake
     gitAndTools.hub
+    ltrace
+    manpages
     nix-repl
     nixpkgs-lint
-    ltrace strace
+    posix_man_pages
+    strace
     valgrind
   ];
 
   dicts = with aspellDicts; [ de en ];
 
   net = [
+    jwhois
     mtr
     netrw
     nmap
-    socat
     samplicator
-    jwhois
+    socat
   ];
 
   x11 = [
-    scrot
-    i3 i3lock
     gajim
+    i3
+    i3lock
+    scrot
     xpdf
   ];
 
   misc = [
-    lastwatch
     chromiumBetaWrapper
     firefox
-    glxinfo
-    imagemagick
-    gimp
-    graphviz
-    youtubeDL
     ghostscript
+    gimp
+    glxinfo
+    graphviz
+    imagemagick
+    lastwatch
     rtorrent
+    youtubeDL
   ];
 }

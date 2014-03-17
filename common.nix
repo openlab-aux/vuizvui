@@ -195,12 +195,12 @@
   };
 
   environment.systemPackages = with pkgs; [
+    binutils
     cacert
     file
     htop
     iotop
     psmisc
-    binutils
     unrar
     unzip
     vim_configurable
