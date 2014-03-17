@@ -198,6 +198,7 @@
     cacert
     file
     htop
+    iotop
     psmisc
     binutils
     unrar

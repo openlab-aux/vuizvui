@@ -8,6 +8,7 @@ with pkgs;
     cabal2nix
     darcs
     diagrams
+    bytedump
     yesod yesodStatic yesodDefault yesodTest
     hjsmin persistentSqlite
   ];
@@ -19,8 +20,15 @@ with pkgs;
     polib
   ];
 
+  games = [
+    uqm
+  ];
+
   shell = [
+    ascii
+    apg
     dash
+    dos2unix
     taskwarrior
     screen
     figlet
@@ -33,15 +41,21 @@ with pkgs;
     w3m
     fbida
     mutt
+    p7zip
     rlwrap
+    unzip
+    vbindiff
   ];
 
   multimedia = [
     pulseaudio pvolctrl
+    miro
     mplayer
+    picard
     vorbisTools
     mpg321
     mp3info
+    pavucontrol
   ];
 
   crypto = [
@@ -55,6 +69,9 @@ with pkgs;
     gitFull
     gdb
     gnumake
+    gitAndTools.hub
+    nix-repl
+    nixpkgs-lint
     ltrace strace
     valgrind
   ];
@@ -62,6 +79,7 @@ with pkgs;
   dicts = with aspellDicts; [ de en ];
 
   net = [
+    mtr
     netrw
     nmap
     socat
@@ -70,7 +88,8 @@ with pkgs;
   ];
 
   x11 = [
-    i3 i3lock i3status dmenu conky
+    scrot
+    i3 i3lock
     gajim
     xpdf
   ];
@@ -78,8 +97,10 @@ with pkgs;
   misc = [
     lastwatch
     chromiumBetaWrapper
+    firefox
     glxinfo
     imagemagick
+    gimp
     graphviz
     youtubeDL
     ghostscript
