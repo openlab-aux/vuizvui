@@ -4,6 +4,13 @@ stdenv.mkDerivation rec {
   name = "axbo-research-${version}";
   version = "2.0.18";
 
+  src = fetchurl {
+    url = let
+      urlversion = stdenv.lib.replaceChars ["."] ["_"] version;
+    in "https://www.dropbox.com/s/shy0yqcyivonobi/aXbo_unix_${urlversion}.sh";
+    sha256 = "1zc3bpqfa5pdpl7masigvv98mi5phl04p80fyd2ink33xbmik70z";
+  };
+
   buildInputs = [ oraclejre librxtx_java ];
 
   unpackCmd = let
@@ -67,11 +74,4 @@ stdenv.mkDerivation rec {
     WRAPPER
     chmod +x "$out/bin/axbo-research"
   '';
-
-  src = fetchurl {
-    url = let
-      urlversion = stdenv.lib.replaceChars ["."] ["_"] version;
-    in "https://www.dropbox.com/s/shy0yqcyivonobi/aXbo_unix_${urlversion}.sh";
-    sha256 = "1zc3bpqfa5pdpl7masigvv98mi5phl04p80fyd2ink33xbmik70z";
-  };
 }
