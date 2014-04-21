@@ -74,6 +74,8 @@
     consoleKeyMap = "dvorak";
   };
 
+  programs.ssh.startAgent = false;
+
   services = {
     openssh = {
       enable = true;
@@ -106,7 +108,6 @@
       layout = "dvorak";
 
       startGnuPGAgent = true;
-      startOpenSSHAgent = false;
 
       displayManager.sessionCommands = ''
         ${pkgs.redshift}/bin/redshift -l 48.428404:10.866007 &
