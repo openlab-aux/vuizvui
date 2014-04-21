@@ -105,7 +105,10 @@ with pkgs;
   ];
 
   misc = [
-    chromiumBetaWrapper
+    (chromiumBeta.override {
+      enablePepperFlash = true;
+      enablePepperPDF = true;
+    })
     firefox
     ghostscript
     gimp
