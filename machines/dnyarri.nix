@@ -45,6 +45,7 @@ with import ../lib;
     linuxAszlig = pkgs.buildLinux {
       inherit (pkgs.kernelSourceAszlig) version src;
 
+      kernelPatches = singleton pkgs.aszligKernelPatches.bfqsched;
       configfile = pkgs.substituteAll {
         name = "aszlig-with-firmware.kconf";
         src = generateKConf (import ./dnyarri-kconf.nix);

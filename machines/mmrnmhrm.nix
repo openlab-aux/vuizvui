@@ -10,6 +10,7 @@ with import ../lib;
     linuxAszlig = pkgs.buildLinux {
       inherit (pkgs.kernelSourceAszlig) version src;
 
+      kernelPatches = singleton pkgs.aszligKernelPatches.bfqsched;
       configfile = generateKConf (import ./mmrnmhrm-kconf.nix);
       allowImportFromDerivation = true;
     };
