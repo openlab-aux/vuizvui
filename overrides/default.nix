@@ -81,6 +81,10 @@ let
     lockdev = callPackage ./lockdev { };
     pvolctrl = callPackage ./pvolctrl { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
+
+    aszligKernelPatches = {
+      bfqsched = callPackage ./kpatches/bfqsched.nix { };
+    };
   };
 
   # misc
