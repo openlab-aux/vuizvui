@@ -41,6 +41,7 @@
 
   networking = {
     wireless.enable = false;
+    firewall.enable = false;
   };
 
   fileSystems = {
