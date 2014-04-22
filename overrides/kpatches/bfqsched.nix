@@ -23,6 +23,7 @@ let
       name = "0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r2-for-3.14.0";
       sha256 = "0dsj6hvk0dh1f3p88zyqm31sj0hczjm8k9bmsqvhn38z0c88qi8v";
     })
+    ./bfqsched-3.15.patch
   ];
 
   patch = stdenv.mkDerivation {

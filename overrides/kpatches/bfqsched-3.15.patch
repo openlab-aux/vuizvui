@@ -1,0 +1,82 @@
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index bcecdb4..c841aac 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -401,7 +401,7 @@ static struct bfq_group *bfq_bic_update_cgroup(struct bfq_io_cq *bic)
+ 	BUG_ON(bfqd == NULL);
+ 
+ 	rcu_read_lock();
+-	css = task_css(current, bfqio_subsys_id);
++	css = task_css(current, bfqio_cgrp_id);
+ 	bfqg = __bfq_bic_change_cgroup(bfqd, bic, css);
+ 	rcu_read_unlock();
+ 
+@@ -764,7 +764,7 @@ static int bfqio_can_attach(struct cgroup_subsys_state *css,
+ 	struct io_context *ioc;
+ 	int ret = 0;
+ 
+-	cgroup_taskset_for_each(task, css, tset) {
++	cgroup_taskset_for_each(task, tset) {
+ 		/*
+ 		 * task_lock() is needed to avoid races with
+ 		 * exit_io_context()
+@@ -798,7 +798,7 @@ static void bfqio_attach(struct cgroup_subsys_state *css,
+ 	 * IMPORTANT NOTE: The move of more than one process at a time to a
+ 	 * new group has not yet been tested.
+ 	 */
+-	cgroup_taskset_for_each(task, css, tset) {
++	cgroup_taskset_for_each(task, tset) {
+ 		ioc = get_task_io_context(task, GFP_ATOMIC, NUMA_NO_NODE);
+ 		if (ioc) {
+ 			/*
+@@ -858,15 +858,13 @@ static void bfqio_css_offline(struct cgroup_subsys_state *css)
+ 	mutex_unlock(&bfqio_mutex);
+ }
+ 
+-struct cgroup_subsys bfqio_subsys = {
+-	.name = "bfqio",
++struct cgroup_subsys bfqio_cgrp_subsys = {
+ 	.css_alloc = bfqio_create,
+ 	.css_online = bfqio_css_online,
+ 	.css_offline = bfqio_css_offline,
+ 	.can_attach = bfqio_can_attach,
+ 	.attach = bfqio_attach,
+ 	.css_free = bfqio_destroy,
+-	.subsys_id = bfqio_subsys_id,
+ 	.base_cftypes = bfqio_files,
+ };
+ #else
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 0d3503d..f733e4a 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -754,9 +754,9 @@ static void bfq_merged_requests(struct request_queue *q, struct request *rq,
+ 	 * Reposition in fifo if next is older than rq.
+ 	 */
+ 	if (!list_empty(&rq->queuelist) && !list_empty(&next->queuelist) &&
+-	    time_before(rq_fifo_time(next), rq_fifo_time(rq))) {
++	    time_before(next->fifo_time, rq->fifo_time)) {
+ 		list_move(&rq->queuelist, &next->queuelist);
+-		rq_set_fifo_time(rq, rq_fifo_time(next));
++		rq->fifo_time = next->fifo_time;
+ 	}
+ 
+ 	if (bfqq->next_rq == next)
+@@ -1341,7 +1341,7 @@ static struct request *bfq_check_fifo(struct bfq_queue *bfqq)
+ 
+ 	rq = rq_entry_fifo(bfqq->fifo.next);
+ 
+-	if (time_before(jiffies, rq_fifo_time(rq)))
++	if (time_before(jiffies, rq->fifo_time))
+ 		return NULL;
+ 
+ 	return rq;
+@@ -2769,7 +2769,7 @@ static void bfq_insert_request(struct request_queue *q, struct request *rq)
+ 	 */
+ 	if (bfqq->bic != NULL)
+ 		bfqq->bic->raising_time_left = 0;
+-	rq_set_fifo_time(rq, jiffies + bfqd->bfq_fifo_expire[rq_is_sync(rq)]);
++	rq->fifo_time = jiffies + bfqd->bfq_fifo_expire[rq_is_sync(rq)];
+ 	list_add_tail(&rq->queuelist, &bfqq->fifo);
+ 
+ 	bfq_rq_enqueued(bfqd, bfqq, rq);
