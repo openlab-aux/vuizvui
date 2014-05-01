@@ -107,7 +107,6 @@ with pkgs;
   misc = [
     (chromiumBeta.override {
       enablePepperFlash = true;
-      enablePepperPDF = true;
     })
     firefox
     ghostscript
