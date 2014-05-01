@@ -45,6 +45,6 @@ with import ../lib;
   services.synergy.server.enable = true;
   services.synergy.server.configFile = ../cfgfiles/synergy.conf;
 
-  hardware.opengl.videoDrivers = [ "nouveau" ];
+  services.xserver.videoDrivers = [ "nouveau" ];
   services.xserver.xrandrHeads = [ "DVI-I-2" "DVI-I-1" ];
 }
