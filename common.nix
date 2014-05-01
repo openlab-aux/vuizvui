@@ -65,7 +65,7 @@
     enableCoreFonts = true;
     enableFontDir = true;
     enableGhostscriptFonts = true;
-    extraFonts = [
+    fonts = [
       pkgs.dosemu_fonts
       pkgs.liberation_ttf
     ];
