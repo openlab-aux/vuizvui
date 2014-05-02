@@ -13,6 +13,7 @@ with pkgs;
       };
       collection = import ../collections/aszlig.nix pkgs;
     in lib.mapAttrsToList genAszligEnv collection;
+    ignoreCollisions = true;
   };
 
   catapultEnv = myEnvFun {

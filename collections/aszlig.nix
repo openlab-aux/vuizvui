@@ -20,6 +20,7 @@ with pkgs;
   ];
 
   python = with pythonPackages; [
+    hetzner
     pep8
     polib
     pkgs.python
@@ -43,6 +44,7 @@ with pkgs;
     mmv
     mutt
     ncdu
+    openssl
     p7zip
     rlwrap
     screen
@@ -54,6 +56,8 @@ with pkgs;
   ];
 
   multimedia = [
+    ffmpeg
+    flac
     miro
     mp3info
     mpg321
@@ -72,12 +76,16 @@ with pkgs;
   ];
 
   dev = [
+    erlang
+    gcc
     gdb
+    gitAndTools.hub
     gitFull
     gnumake
-    gitAndTools.hub
+    haxe
     ltrace
     manpages
+    neko
     nix-repl
     nixpkgs-lint
     posix_man_pages
@@ -91,9 +99,12 @@ with pkgs;
     jwhois
     mtr
     netrw
+    nixops
     nmap
     samplicator
     socat
+    telnet
+    wireshark
   ];
 
   x11 = [
@@ -105,6 +116,7 @@ with pkgs;
   ];
 
   misc = [
+    axbo
     (chromiumBeta.override {
       enablePepperFlash = true;
     })
@@ -116,6 +128,7 @@ with pkgs;
     imagemagick
     lastwatch
     rtorrent
+    sqlite
     youtubeDL
   ];
 }
