@@ -3,7 +3,7 @@
 with pkgs.lib;
 
 let
-  mkConfig = text: pkgs.writeText "conkyrc" ''
+  baseConfig = pkgs.writeText "conkyrc" ''
     cpu_avg_samples 2
     net_avg_samples 2
     no_buffers yes
@@ -17,26 +17,11 @@ let
     pad_percents 3
     use_spacer left
     TEXT
-    ${text}
   '';
 
-  cexpr = name: args: "\${${name} ${concatStringsSep " " args}}";
+  cexpr = name: args: "\\\${${name} ${concatStringsSep " " args}}";
 
   primaryNetInterface = "enp0s25";
-
-  mkCpuLoad = threads: let
-    mkThread = thread: (cexpr "cpu" [ "cpu${toString thread}" ]) + "%";
-    loads = map mkThread (range 1 threads);
-  in concatStringsSep " " loads;
-
-  mkCpuTemp = cores: let
-    mkCore = core: (cexpr "platform" [
-      "coretemp.0"
-      "temp"
-      "${toString (core + 1)}"
-    ]) + "C";
-    temps = map mkCore (range 1 cores);
-  in concatStringsSep " " temps;
 
   mkNetInfo = iface: let
     upspeed = cexpr "upspeed" [ iface ];
@@ -62,23 +47,41 @@ let
     conky = pkgs.conky.override {
       weatherMetar = true;
     };
-    cfg = mkConfig text;
   in pkgs.writeScript "conky-run.sh" ''
     #!${pkgs.stdenv.shell}
-    ${conky}/bin/conky -c "${cfg}"
+    PATH="${pkgs.coreutils}/bin"
+    cpuload() {
+      for i in $(seq 1 $(nproc))
+      do
+        [ $i -eq 1 ] || echo -n ' '
+        echo -n "\''${cpu cpu$i}%"
+      done
+    }
+    cputemp_collect() {
+      for i in /sys/bus/platform/devices/coretemp.?/hwmon/hwmon?/temp?_input
+      do
+        [ -e "$i" ] || continue
+        echo "$i" | ${pkgs.gnused}/bin/sed -re \
+          's/^.*hwmon([0-9]+)[^0-9]*([0-9]+).*$/''${hwmon \1 temp \2}/'
+      done
+    }
+    cputemp() {
+      echo $(cputemp_collect)
+    }
+    ${conky}/bin/conky -c "${baseConfig}" -t "${text}"
   '';
 
 in {
   left = mkConky [
-    "CPU: ${mkCpuLoad 8} - ${cexpr "cpu" [ "cpu0" ]}%"
-    "MEM: $mem/$memmax - $memperc%"
-    "SWAP: $swap/$swapmax $swapperc%"
+    "CPU: $(cpuload) - ${cexpr "cpu" [ "cpu0" ]}%"
+    "MEM: \\$mem/\\$memmax - \\$memperc%"
+    "SWAP: \\$swap/\\$swapmax \\$swapperc%"
   ];
 
   right = mkConky [
     "NET: ${mkNetInfo primaryNetInterface}"
     "DF: ${mkDiskFree "/"}"
-    "LAVG: $loadavg"
-    "TEMP - CPU: ${mkCpuTemp 4} - GPU: ${gpuTemp} - OUTSIDE: ${weather}"
+    "LAVG: \\$loadavg"
+    "TEMP - CPU: $(cputemp) - GPU: ${gpuTemp} - OUTSIDE: ${weather}"
   ];
 }
