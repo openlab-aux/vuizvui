@@ -77,7 +77,6 @@ with pkgs;
 
   dev = [
     erlang
-    gcc
     gdb
     gitAndTools.hub
     gitFull
