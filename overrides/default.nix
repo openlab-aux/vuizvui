@@ -69,6 +69,18 @@ let
           scripts/gajim.in
       '';
     };
+
+    erlang = o: let
+      manpages = pkgs.fetchurl {
+        url = "http://www.erlang.org/download/otp_doc_man_${o.version}.tar.gz";
+        sha256 = "16dkz3w1q4ahy37c8a8r2h8zjcr7cxz7pd9z38chbxf6frc2pxxc";
+      };
+    in {
+      postInstall = (o.postInstall or "") + ''
+        ensureDir "$out/lib/erlang"
+        tar xf "${manpages}" -C "$out/lib/erlang"
+      '';
+    };
   };
 
   # new packages
