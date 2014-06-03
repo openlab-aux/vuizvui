@@ -9,11 +9,6 @@ with import ../lib;
   nix.maxJobs = 2;
 
   boot = let
-    kernelParams = [
-      "video=DVI-I-1:1600x1200"
-      "video=VGA-1:1600x1200@60"
-    ];
-
     linuxAszlig = pkgs.buildLinux {
       inherit (pkgs.kernelSourceAszlig) version src;
 
@@ -22,6 +17,11 @@ with import ../lib;
       allowImportFromDerivation = true;
     };
   in rec {
+    kernelParams = [
+      "video=DVI-I-1:1600x1200"
+      "video=VGA-1:1600x1200@60"
+    ];
+
     kernelPackages = pkgs.recurseIntoAttrs
       (pkgs.linuxPackagesFor linuxAszlig kernelPackages);
 
