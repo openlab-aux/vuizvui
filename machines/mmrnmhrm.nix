@@ -25,8 +25,10 @@ with import ../lib;
     kernelPackages = pkgs.recurseIntoAttrs
       (pkgs.linuxPackagesFor linuxAszlig kernelPackages);
 
-    loader.grub.devices = singleton
-      "/dev/disk/by-id/ata-WDC_WD6401AALS-00L3B2_WD-WMASY3263730";
+    loader.grub.devices = map (i: "/dev/disk/by-id/${i}") [
+      "ata-WDC_WD10EZEX-00BN5A0_WD-WCC3F5756955"
+      "ata-WDC_WD10EZEX-00BN5A0_WD-WCC3F5790537"
+    ];
   };
 
   networking.hostName = "mmrnmhrm";
@@ -45,9 +47,10 @@ with import ../lib;
     };
   };
 
-  swapDevices = singleton {
-    label = "swap";
-  };
+  swapDevices = [
+    { label = "swap1"; }
+    { label = "swap2"; }
+  ];
 
   services.synergy.server.enable = true;
   services.synergy.server.configFile = ../cfgfiles/synergy.conf;
