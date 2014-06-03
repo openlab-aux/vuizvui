@@ -6,7 +6,14 @@ with import ../lib;
 {
   require = singleton ../common.nix;
 
+  nix.maxJobs = 2;
+
   boot = let
+    kernelParams = [
+      "video=DVI-I-1:1600x1200"
+      "video=VGA-1:1600x1200@60"
+    ];
+
     linuxAszlig = pkgs.buildLinux {
       inherit (pkgs.kernelSourceAszlig) version src;
 
@@ -46,5 +53,5 @@ with import ../lib;
   services.synergy.server.configFile = ../cfgfiles/synergy.conf;
 
   services.xserver.videoDrivers = [ "nouveau" ];
-  services.xserver.xrandrHeads = [ "DVI-I-2" "DVI-I-1" ];
+  services.xserver.xrandrHeads = [ "DVI-I-1" "VGA-1" ];
 }

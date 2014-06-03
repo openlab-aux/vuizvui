@@ -7,7 +7,6 @@
 
   nix = {
     package = pkgs.nixUnstable;
-    maxJobs = 8;
     useChroot = true;
     readOnlyStore = true;
     extraOptions = ''

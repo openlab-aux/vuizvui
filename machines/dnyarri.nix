@@ -6,6 +6,8 @@ with import ../lib;
 {
   require = singleton ../common.nix;
 
+  nix.maxJobs = 8;
+
   boot = let
     patch51Name = "patch51.fw";
     kernelParams = [ "snd-hda-intel.patch=${patch51Name}" ];
