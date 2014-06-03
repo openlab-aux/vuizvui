@@ -17,11 +17,6 @@ with import ../lib;
       allowImportFromDerivation = true;
     };
   in rec {
-    kernelParams = [
-      "video=DVI-I-1:1600x1200"
-      "video=VGA-1:1600x1200@60"
-    ];
-
     kernelPackages = pkgs.recurseIntoAttrs
       (pkgs.linuxPackagesFor linuxAszlig kernelPackages);
 
