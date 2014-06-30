@@ -63,8 +63,8 @@ let
   # derivation overrides
   drvOverrides = mapOverride overrideDerivation argOverrides {
     gajim = o: {
-      patches = o.patches ++ singleton gajimPatch;
-      postPatch = o.postPatch + ''
+      patches = (o.patches or []) ++ singleton gajimPatch;
+      postPatch = (o.postPatch or "") + ''
         sed -i -e '/^export/i export GTK2_RC_FILES="${gajimGtkTheme}"' \
           scripts/gajim.in
       '';
