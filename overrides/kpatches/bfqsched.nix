@@ -28,6 +28,7 @@ let
            + "${bfqVersion}-for-${kernelVersion}.0";
       sha256 = "1q3fn6gl3lhvbqfhaarpv399id9sa32zx6ygqx4x98zmixwrsn9z";
     })
+    ./bfqsched.patch
   ];
 
   patch = stdenv.mkDerivation {
