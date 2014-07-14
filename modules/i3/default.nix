@@ -34,8 +34,8 @@ with pkgs.lib;
       wsConfig = if config.networking.hostName == "mmrnmhrm"
                  then [ "XMPP" null "chromium" null null
                         null   null null       null null ]
-                 else [ "chromium" null null null null
-                        null       null null null null ];
+                 else [ null       null null null null
+                        "chromium" null null null null ];
 
       mkWsName = num: name: let
         mkPair = nameValuePair "ws${toString num}";
