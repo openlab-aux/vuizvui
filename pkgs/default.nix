@@ -17,6 +17,7 @@ let
     nbxmpp = callPackage ./nbxmpp { };
     pvolctrl = callPackage ./pvolctrl { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
+    twitchstream = callPackage ./twitchstream { };
 
     aszligKernelPatches = {
       bfqsched = callPackage ./kpatches/bfqsched.nix { };
