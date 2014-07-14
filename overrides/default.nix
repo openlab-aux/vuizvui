@@ -3,10 +3,8 @@ pkgs:
 with pkgs.lib;
 
 let
-  allPackages = newPackages // misc;
+  allPackages = (import ../pkgs { pkgs = everything; }).aszlig // misc;
   everything = pkgs // allPackages // drvOverrides // argOverrides;
-
-  callPackage = callPackageWith everything;
 
   mapOverride = overrideFun: includePackages: let
     packages = pkgs // allPackages // includePackages;
@@ -55,7 +53,7 @@ let
   '';
 
   gajimPatch = everything.substituteAll {
-    src = ./gajim/config.patch;
+    src = ../pkgs/gajim/config.patch;
     nix_config = everything.writeText "gajim.config"
       (import ../cfgfiles/gajim.nix);
   };
@@ -80,26 +78,6 @@ let
         ensureDir "$out/lib/erlang"
         tar xf "${manpages}" -C "$out/lib/erlang"
       '';
-    };
-  };
-
-  # new packages
-  newPackages = {
-    axbo = callPackage ./axbo { };
-    blop = callPackage ./blop { };
-    fish = callPackage ./fish { };
-    gajim = callPackage ./gajim/0.16-pre.nix {
-      inherit (pkgs.xlibs) libX11;
-    };
-    libCMT = callPackage ./libcmt { };
-    librxtx_java = callPackage ./librxtx-java { };
-    lockdev = callPackage ./lockdev { };
-    nbxmpp = callPackage ./nbxmpp { };
-    pvolctrl = callPackage ./pvolctrl { };
-    tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
-
-    aszligKernelPatches = {
-      bfqsched = callPackage ./kpatches/bfqsched.nix { };
     };
   };
 
