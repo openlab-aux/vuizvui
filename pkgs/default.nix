@@ -7,7 +7,6 @@ let
   self = {
     axbo = callPackage ./axbo { };
     blop = callPackage ./blop { };
-    fish = callPackage ./fish { };
     gajim = callPackage ./gajim/0.16-pre.nix {
       inherit (pkgs.xlibs) libX11;
     };
