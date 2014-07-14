@@ -16,6 +16,7 @@ let
     lockdev = callPackage ./lockdev { };
     nbxmpp = callPackage ./nbxmpp { };
     pvolctrl = callPackage ./pvolctrl { };
+    sidplayfp = callPackage ./sidplayfp { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
     twitchstream = callPackage ./twitchstream { };
 
