@@ -1,9 +1,56 @@
-{ pkgs, config, ... }:
+{ pkgs, lib, config, ... }:
 
-with pkgs.lib;
+with lib;
 
+let
+  # The symbols if you press shift and a number key.
+  wsNumberSymbols = [
+    "exclam" "at" "numbersign" "dollar" "percent"
+    "asciicircum" "ampersand" "asterisk" "parenleft" "parenright"
+  ];
+
+  wsCount = length wsNumberSymbols;
+
+  headCount = length config.services.xserver.xrandrHeads;
+  wsPerHead = wsCount / headCount;
+  excessWs = wsCount - (headCount * wsPerHead);
+  getHeadAt = elemAt config.services.xserver.xrandrHeads;
+
+  mkDefaultWorkspace = number: numberSymbol: {
+    name = toString number;
+    value = mkDefault {
+      label = null;
+      labelPrefix = "${toString number}: ";
+      keys.switchTo = "$mod+${toString number}";
+      keys.moveTo = "$mod+Shift+${numberSymbol}";
+      head = getHeadAt ((number - (excessWs + 1)) / wsPerHead);
+    };
+  };
+
+  wsCfgList = mapAttrsToList (_: getAttr "config") config.aszlig.i3.workspaces;
+  wsConfig = concatStrings wsCfgList;
+  defaultWorkspaces = listToAttrs (imap mkDefaultWorkspace wsNumberSymbols);
+in
 {
-  services.xserver.windowManager = {
+  options.aszlig.i3 = {
+    workspaces = mkOption {
+      type = types.attrsOf (types.submodule ./workspace.nix);
+      default = listToAttrs (imap mkDefaultWorkspace wsNumberSymbols);
+      description = ''
+        Workspace to monitor assignment.
+
+        Workspaces are by default assigned starting from the leftmost monitor
+        being workspace 1 and the rightmost monitor being workspace 10. The
+        workspaces are divided by the number of available heads, so if you have
+        a dual head system, you'll end up having workspace 1 to 5 on the left
+        monitor and 6 to 10 on the right.
+      '';
+    };
+  };
+
+  config.aszlig.i3.workspaces = defaultWorkspaces;
+
+  config.services.xserver.windowManager = {
     default = "i3";
 
     i3.enable = true;
@@ -17,6 +64,7 @@ with pkgs.lib;
 
       inherit (pkgs) dmenu xterm pvolctrl;
       inherit (pkgs.xorg) xsetroot;
+      inherit wsConfig;
 
       leftHead = head config.services.xserver.xrandrHeads;
       rightHead = last config.services.xserver.xrandrHeads;
@@ -30,19 +78,6 @@ with pkgs.lib;
     in if config.networking.hostName == "mmrnmhrm"
        then { inherit leftHead rightHead; }
        else { leftHead = rightHead; rightHead = leftHead; }
-    ) // (let
-      wsConfig = if config.networking.hostName == "mmrnmhrm"
-                 then [ "XMPP" null "chromium" null null
-                        null   null null       null null ]
-                 else [ null       null null null null
-                        "chromium" null null null null ];
-
-      mkWsName = num: name: let
-        mkPair = nameValuePair "ws${toString num}";
-      in if name == null
-         then mkPair (toString num)
-         else mkPair "${toString num}: ${name}";
-
-    in listToAttrs (imap mkWsName wsConfig)));
+    ));
   };
 }

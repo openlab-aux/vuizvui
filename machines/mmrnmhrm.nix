@@ -52,4 +52,14 @@ with import ../lib;
 
   services.xserver.videoDrivers = [ "nouveau" ];
   services.xserver.xrandrHeads = [ "DVI-I-1" "VGA-1" ];
+
+  aszlig.i3.workspaces."1" = {
+    label = "XMPP";
+    assign = singleton { class = "^(?:Tkabber|Gajim)\$"; };
+  };
+
+  aszlig.i3.workspaces."3" = {
+    label = "Chromium";
+    assign = singleton { class = "^Chromium(?:-browser)?\$"; };
+  };
 }

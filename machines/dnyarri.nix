@@ -132,4 +132,9 @@ with import ../lib;
 
   services.xserver.videoDrivers = [ "ati" ];
   services.xserver.xrandrHeads = [ "HDMI-0" "DVI-0" ];
+
+  aszlig.i3.workspaces."6" = {
+    label = "Chromium";
+    assign = singleton { class = "^Chromium(?:-browser)?\$"; };
+  };
 }
