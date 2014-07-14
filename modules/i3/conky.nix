@@ -21,8 +21,6 @@ let
 
   cexpr = name: args: "\\\${${name} ${concatStringsSep " " args}}";
 
-  primaryNetInterface = "enp0s25";
-
   mkNetInfo = iface: let
     upspeed = cexpr "upspeed" [ iface ];
     downspeed = cexpr "downspeed" [ iface ];
@@ -68,6 +66,14 @@ let
     cputemp() {
       echo $(cputemp_collect)
     }
+    while ! raw_netinfo="$(${
+      "${pkgs.iproute}/sbin/ip route get 8.8.8.8 2> /dev/null"
+    })"; do
+      echo "Waiting for primary network interface to become available..."
+      sleep 1
+    done
+    primary_netdev="$(echo "$raw_netinfo" | \
+      ${pkgs.gnused}/bin/sed -nre 's/^.*dev *([^ ]+).*$/\1/p')"
     ${conky}/bin/conky -c "${baseConfig}" -t "${text}"
   '';
 
@@ -79,7 +85,7 @@ in {
   ];
 
   right = mkConky [
-    "NET: ${mkNetInfo primaryNetInterface}"
+    "NET: ${mkNetInfo "$primary_netdev"}"
     "DF: ${mkDiskFree "/"}"
     "LAVG: \\$loadavg"
     "TEMP - CPU: $(cputemp) - GPU: ${gpuTemp} - OUTSIDE: ${weather}"
