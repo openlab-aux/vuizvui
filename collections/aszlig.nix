@@ -75,6 +75,7 @@ with pkgs;
     ltrace
     manpages
     neko
+    nix-prefetch-scripts
     nix-repl
     nixpkgs-lint
     posix_man_pages
