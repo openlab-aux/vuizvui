@@ -21,7 +21,7 @@ let
     value = mkDefault {
       label = null;
       labelPrefix = "${toString number}: ";
-      keys.switchTo = "$mod+${toString number}";
+      keys.switchTo = "$mod+${if number == 10 then "0" else toString number}";
       keys.moveTo = "$mod+Shift+${numberSymbol}";
       head = getHeadAt ((number - (excessWs + 1)) / wsPerHead);
     };
