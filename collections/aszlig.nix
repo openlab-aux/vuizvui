@@ -6,7 +6,7 @@ with pkgs;
   haskell = with haskellPackages; [
     cabal2nix
     hlint
-    yesod
+    yesodBin
   ];
 
   python = with pythonPackages; [
