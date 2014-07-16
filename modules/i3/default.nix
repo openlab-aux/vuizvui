@@ -14,7 +14,8 @@ let
   headCount = length config.services.xserver.xrandrHeads;
   wsPerHead = wsCount / headCount;
   excessWs = wsCount - (headCount * wsPerHead);
-  getHeadAt = elemAt config.services.xserver.xrandrHeads;
+  headModifier = if config.aszlig.i3.reverseHeads then reverseList else id;
+  getHeadAt = elemAt (headModifier config.services.xserver.xrandrHeads);
 
   mkDefaultWorkspace = number: numberSymbol: {
     name = toString number;
@@ -44,6 +45,16 @@ in
         workspaces are divided by the number of available heads, so if you have
         a dual head system, you'll end up having workspace 1 to 5 on the left
         monitor and 6 to 10 on the right.
+      '';
+    };
+
+    reverseHeads = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Reverse the order of the heads, so if enabled and you have two heads,
+        you'll end up having workspaces 1 to 5 on the right head and 6 to 10 on
+        the left head.
       '';
     };
   };
