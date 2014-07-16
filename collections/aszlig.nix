@@ -4,19 +4,9 @@ with pkgs;
 
 {
   haskell = with haskellPackages; [
-    bytedump
     cabal2nix
-    cabalInstall
-    darcs
-    diagrams
-    ghc
-    hjsmin
     hlint
-    persistentSqlite
     yesod
-    yesodDefault
-    yesodStatic
-    yesodTest
   ];
 
   python = with pythonPackages; [
