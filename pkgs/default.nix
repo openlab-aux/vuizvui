@@ -7,13 +7,9 @@ let
   self = {
     axbo = callPackage ./axbo { };
     blop = callPackage ./blop { };
-    gajim = callPackage ./gajim/0.16-pre.nix {
-      inherit (pkgs.xlibs) libX11;
-    };
     libCMT = callPackage ./libcmt { };
     librxtx_java = callPackage ./librxtx-java { };
     lockdev = callPackage ./lockdev { };
-    nbxmpp = callPackage ./nbxmpp { };
     pvolctrl = callPackage ./pvolctrl { };
     sidplayfp = callPackage ./sidplayfp { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
