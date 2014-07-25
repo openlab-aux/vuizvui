@@ -102,6 +102,8 @@
     udev.extraRules = ''
       SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", \
         ATTRS{serial}=="0001", OWNER="aszlig", SYMLINK+="axbo"
+      SUBSYSTEM=="usb*|tty", ACTION=="add|change", ATTRS{idVendor}=="0403", \
+        ATTRS{idProduct}=="6001", OWNER="aszlig" # Enttec
     '';
 
     xserver = {
