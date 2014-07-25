@@ -4,7 +4,7 @@ with pkgs.lib;
 with import ../lib;
 
 {
-  require = singleton ../common.nix;
+  imports = singleton ../common-workstation.nix;
 
   nix.maxJobs = 2;
 
