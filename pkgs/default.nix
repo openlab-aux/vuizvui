@@ -7,6 +7,7 @@ let
   self = {
     axbo = callPackage ./axbo { };
     blop = callPackage ./blop { };
+    grandpa = callPackage ./grandpa { };
     libCMT = callPackage ./libcmt { };
     librxtx_java = callPackage ./librxtx-java { };
     lockdev = callPackage ./lockdev { };
