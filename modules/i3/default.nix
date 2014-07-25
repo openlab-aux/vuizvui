@@ -24,7 +24,8 @@ let
       labelPrefix = "${toString number}: ";
       keys.switchTo = "$mod+${if number == 10 then "0" else toString number}";
       keys.moveTo = "$mod+Shift+${numberSymbol}";
-      head = getHeadAt ((number - (excessWs + 1)) / wsPerHead);
+      head = if headCount == 0 then null
+             else getHeadAt ((number - (excessWs + 1)) / wsPerHead);
     };
   };
 
@@ -77,11 +78,13 @@ in
       inherit (pkgs.xorg) xsetroot;
       inherit wsConfig;
 
-      leftHead = head config.services.xserver.xrandrHeads;
-      rightHead = last config.services.xserver.xrandrHeads;
 
       leftConky = conky.left;
       rightConky = conky.right;
+    } // optionalAttrs (config.networking.hostName == "mmrnmhrm" || # <- XXX
+                        config.networking.hostName == "dnyarri") ({
+      leftHead = head config.services.xserver.xrandrHeads;
+      rightHead = last config.services.xserver.xrandrHeads;
     } // (let
       # Workaround for Synergy: we need to have polarizing heads.
       leftHead = head config.services.xserver.xrandrHeads;
@@ -89,6 +92,6 @@ in
     in if config.networking.hostName == "mmrnmhrm"
        then { inherit leftHead rightHead; }
        else { leftHead = rightHead; rightHead = leftHead; }
-    ));
+    )));
   };
 }
