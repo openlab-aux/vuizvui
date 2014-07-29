@@ -16,8 +16,8 @@ let
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
     twitchstream = callPackage ./twitchstream { };
 
-    aszligKernelPatches = {
+    vuizvuiKernelPatches = {
       bfqsched = callPackage ./kpatches/bfqsched.nix { };
     };
   };
-in { aszlig = self; }
+in { vuizvui = self; }

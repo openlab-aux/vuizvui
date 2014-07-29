@@ -9,16 +9,16 @@ with import ../lib;
   nix.maxJobs = 2;
 
   boot = let
-    linuxAszlig = pkgs.buildLinux {
-      inherit (pkgs.kernelSourceAszlig) version src;
+    linuxVuizvui = pkgs.buildLinux {
+      inherit (pkgs.kernelSourceVuizvui) version src;
 
-      kernelPatches = singleton pkgs.aszligKernelPatches.bfqsched;
+      kernelPatches = singleton pkgs.vuizvuiKernelPatches.bfqsched;
       configfile = generateKConf (import ./mmrnmhrm-kconf.nix);
       allowImportFromDerivation = true;
     };
   in rec {
     kernelPackages = pkgs.recurseIntoAttrs
-      (pkgs.linuxPackagesFor linuxAszlig kernelPackages);
+      (pkgs.linuxPackagesFor linuxVuizvui kernelPackages);
 
     loader.grub.devices = map (i: "/dev/disk/by-id/${i}") [
       "ata-WDC_WD10EZEX-00BN5A0_WD-WCC3F5756955"
@@ -53,12 +53,12 @@ with import ../lib;
   services.xserver.videoDrivers = [ "nouveau" ];
   services.xserver.xrandrHeads = [ "DVI-I-1" "VGA-1" ];
 
-  aszlig.i3.workspaces."1" = {
+  vuizvui.i3.workspaces."1" = {
     label = "XMPP";
     assign = singleton { class = "^(?:Tkabber|Gajim)\$"; };
   };
 
-  aszlig.i3.workspaces."3" = {
+  vuizvui.i3.workspaces."3" = {
     label = "Chromium";
     assign = singleton { class = "^Chromium(?:-browser)?\$"; };
   };

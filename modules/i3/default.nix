@@ -14,7 +14,7 @@ let
   headCount = length config.services.xserver.xrandrHeads;
   wsPerHead = wsCount / headCount;
   excessWs = wsCount - (headCount * wsPerHead);
-  headModifier = if config.aszlig.i3.reverseHeads then reverseList else id;
+  headModifier = if config.vuizvui.i3.reverseHeads then reverseList else id;
   getHeadAt = elemAt (headModifier config.services.xserver.xrandrHeads);
 
   mkDefaultWorkspace = number: numberSymbol: {
@@ -29,12 +29,12 @@ let
     };
   };
 
-  wsCfgList = mapAttrsToList (_: getAttr "config") config.aszlig.i3.workspaces;
+  wsCfgList = mapAttrsToList (_: getAttr "config") config.vuizvui.i3.workspaces;
   wsConfig = concatStrings wsCfgList;
   defaultWorkspaces = listToAttrs (imap mkDefaultWorkspace wsNumberSymbols);
 in
 {
-  options.aszlig.i3 = {
+  options.vuizvui.i3 = {
     workspaces = mkOption {
       type = types.attrsOf (types.submodule ./workspace.nix);
       default = listToAttrs (imap mkDefaultWorkspace wsNumberSymbols);
@@ -60,7 +60,7 @@ in
     };
   };
 
-  config.aszlig.i3.workspaces = defaultWorkspaces;
+  config.vuizvui.i3.workspaces = defaultWorkspaces;
 
   config.services.xserver.windowManager = {
     default = "i3";

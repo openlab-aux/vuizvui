@@ -44,12 +44,12 @@ with import ../lib;
       "radeon/RV730_smc.bin"
     ];
 
-    linuxAszlig = pkgs.buildLinux {
-      inherit (pkgs.kernelSourceAszlig) version src;
+    linuxVuizvui = pkgs.buildLinux {
+      inherit (pkgs.kernelSourceVuizvui) version src;
 
-      kernelPatches = singleton pkgs.aszligKernelPatches.bfqsched;
+      kernelPatches = singleton pkgs.vuizvuiKernelPatches.bfqsched;
       configfile = pkgs.substituteAll {
-        name = "aszlig-with-firmware.kconf";
+        name = "vuizvui-with-firmware.kconf";
         src = generateKConf (import ./dnyarri-kconf.nix);
 
         extra_firmware = concatStringsSep " " (radeonFW ++ [
@@ -74,7 +74,7 @@ with import ../lib;
     };
   in rec {
     kernelPackages = let
-      kpkgs = pkgs.linuxPackagesFor linuxAszlig kernelPackages;
+      kpkgs = pkgs.linuxPackagesFor linuxVuizvui kernelPackages;
       virtualbox = kpkgs.virtualbox.override {
         enableExtensionPack = true;
       };
@@ -133,8 +133,8 @@ with import ../lib;
   services.xserver.videoDrivers = [ "ati" ];
   services.xserver.xrandrHeads = [ "HDMI-0" "DVI-0" ];
 
-  aszlig.i3.reverseHeads = true;
-  aszlig.i3.workspaces."6" = {
+  vuizvui.i3.reverseHeads = true;
+  vuizvui.i3.workspaces."6" = {
     label = "Chromium";
     assign = singleton { class = "^Chromium(?:-browser)?\$"; };
   };

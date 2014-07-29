@@ -3,7 +3,7 @@ pkgs:
 with pkgs.lib;
 
 let
-  allPackages = (import ../pkgs { pkgs = everything; }).aszlig // misc;
+  allPackages = (import ../pkgs { pkgs = everything; }).vuizvui // misc;
   everything = pkgs // allPackages // drvOverrides // argOverrides;
 
   mapOverride = overrideFun: includePackages: let
@@ -83,7 +83,7 @@ let
 
   # misc
   misc = {
-    kernelSourceAszlig = {
+    kernelSourceVuizvui = {
       version = "3.16.0-rc7";
       src = everything.fetchgit {
         url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;
