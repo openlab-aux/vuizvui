@@ -92,11 +92,12 @@ in
   };
 
   config.config = let
-    maybeOutput = optionalString (config.head != null) " output ${config.head}";
     mkAssign = mapAttrsToList (criteria: value: "${criteria}=\"${value}\"");
     mkSym = sym: rest: optionalString (sym != null) "bindsym ${sym} ${rest}";
   in ''
-    workspace "${finalLabel}"${maybeOutput}
+    ${optionalString (config.head != null) ''
+    workspace "${finalLabel}" output ${config.head}
+    ''}
     ${mkSym config.keys.switchTo "workspace \"${finalLabel}\""}
     ${mkSym config.keys.moveTo "move workspace \"${finalLabel}\""}
     ${concatMapStrings (assign: ''
