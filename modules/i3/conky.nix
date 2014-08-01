@@ -10,6 +10,7 @@ let
     out_to_console yes
     out_to_ncurses no
     out_to_stderr no
+    out_to_x no
     extra_newline no
     update_interval 1.0
     uppercase no
