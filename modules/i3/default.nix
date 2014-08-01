@@ -3,6 +3,8 @@
 with lib;
 
 let
+  inherit (config.services.xserver) xrandrHeads;
+
   # The symbols if you press shift and a number key.
   wsNumberSymbols = [
     "exclam" "at" "numbersign" "dollar" "percent"
@@ -11,11 +13,11 @@ let
 
   wsCount = length wsNumberSymbols;
 
-  headCount = length config.services.xserver.xrandrHeads;
+  headCount = length xrandrHeads;
   wsPerHead = wsCount / headCount;
   excessWs = wsCount - (headCount * wsPerHead);
   headModifier = if config.vuizvui.i3.reverseHeads then reverseList else id;
-  getHeadAt = elemAt (headModifier config.services.xserver.xrandrHeads);
+  getHeadAt = elemAt (headModifier xrandrHeads);
 
   mkDefaultWorkspace = number: numberSymbol: {
     name = toString number;
@@ -32,6 +34,31 @@ let
   wsCfgList = mapAttrsToList (_: getAttr "config") config.vuizvui.i3.workspaces;
   wsConfig = concatStrings wsCfgList;
   defaultWorkspaces = listToAttrs (imap mkDefaultWorkspace wsNumberSymbols);
+
+  conky = import ./conky.nix {
+    inherit pkgs;
+  };
+
+  mkBar = output: statusCmd: ''
+    bar {
+      ${optionalString (output != null) "output ${output}"}
+      ${optionalString (statusCmd != null) "status_command ${statusCmd}"}
+      colors {
+        focused_workspace  #5c5cff #e5e5e5
+        active_workspace   #ffffff #0000ee
+        inactive_workspace #00cdcd #0000ee
+        urgent_workspace   #ffff00 #cd0000
+      }
+    }
+  '';
+
+  barConfig =
+    if headCount == 0 then mkBar null conky.single
+    else if headCount == 1 then mkBar (head xrandrHeads) conky.single
+    else let inner = take (length xrandrHeads - 2) (tail xrandrHeads);
+    in mkBar (head xrandrHeads) conky.left
+     + map (flip mkBar null) inner
+     + mkBar (last xrandrHeads) conky.right;
 in
 {
   options.vuizvui.i3 = {
@@ -68,32 +95,13 @@ in
     default = "i3";
 
     i3.enable = true;
-    i3.configFile = let
-      conky = import ./conky.nix {
-        inherit pkgs;
-      };
-    in pkgs.substituteAll ({
+    i3.configFile = pkgs.substituteAll {
       name = "i3.conf";
       src = ./i3.conf;
 
       inherit (pkgs) dmenu xterm pvolctrl;
       inherit (pkgs.xorg) xsetroot;
-      inherit wsConfig;
-
-
-      leftConky = conky.left;
-      rightConky = conky.right;
-    } // optionalAttrs (config.networking.hostName == "mmrnmhrm" || # <- XXX
-                        config.networking.hostName == "dnyarri") ({
-      leftHead = head config.services.xserver.xrandrHeads;
-      rightHead = last config.services.xserver.xrandrHeads;
-    } // (let
-      # Workaround for Synergy: we need to have polarizing heads.
-      leftHead = head config.services.xserver.xrandrHeads;
-      rightHead = last config.services.xserver.xrandrHeads;
-    in if config.networking.hostName == "mmrnmhrm"
-       then { inherit leftHead rightHead; }
-       else { leftHead = rightHead; rightHead = leftHead; }
-    )));
+      inherit wsConfig barConfig;
+    };
   };
 }
