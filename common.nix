@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = import ./modules/module-list.nix;
+
   nix = {
     package = pkgs.nixUnstable;
     useChroot = true;

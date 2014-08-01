@@ -35,6 +35,8 @@ let
 in
 {
   options.vuizvui.i3 = {
+    enable = mkEnableOption "i3";
+
     workspaces = mkOption {
       type = types.attrsOf (types.submodule ./workspace.nix);
       default = listToAttrs (imap mkDefaultWorkspace wsNumberSymbols);
@@ -62,7 +64,7 @@ in
 
   config.vuizvui.i3.workspaces = defaultWorkspaces;
 
-  config.services.xserver.windowManager = {
+  config.services.xserver.windowManager = mkIf config.vuizvui.i3.enable {
     default = "i3";
 
     i3.enable = true;

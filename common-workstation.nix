@@ -4,7 +4,6 @@
   imports = [
     ./common.nix
     <nixpkgs/nixos/modules/programs/virtualbox.nix>
-    ./modules/i3
   ];
 
   boot.kernelParams = [ "zswap.enabled=1" ];
@@ -30,6 +29,8 @@
       pkgs.liberation_ttf
     ];
   };
+
+  vuizvui.i3.enable = true;
 
   services = {
     openssh = {
