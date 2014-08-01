@@ -57,7 +57,7 @@ let
     else if headCount == 1 then mkBar (head xrandrHeads) conky.single
     else let inner = take (length xrandrHeads - 2) (tail xrandrHeads);
     in mkBar (head xrandrHeads) conky.left
-     + map (flip mkBar null) inner
+     + concatMapStrings (flip mkBar null) inner
      + mkBar (last xrandrHeads) conky.right;
 in
 {
