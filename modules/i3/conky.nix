@@ -49,6 +49,7 @@ let
   in pkgs.writeScript "conky-run.sh" ''
     #!${pkgs.stdenv.shell}
     PATH="${pkgs.coreutils}/bin"
+
     cpuload() {
       for i in $(seq 1 $(nproc))
       do
@@ -56,6 +57,7 @@ let
         echo -n "\''${cpu cpu$i}%"
       done
     }
+
     cputemp_collect() {
       for i in /sys/bus/platform/devices/coretemp.?/hwmon/hwmon?/temp?_input
       do
@@ -64,17 +66,21 @@ let
           's/^.*hwmon([0-9]+)[^0-9]*([0-9]+).*$/''${hwmon \1 temp \2}/'
       done
     }
+
     cputemp() {
       echo $(cputemp_collect)
     }
+
     while ! raw_netinfo="$(${
       "${pkgs.iproute}/sbin/ip route get 8.8.8.8 2> /dev/null"
     })"; do
       echo "Waiting for primary network interface to become available..."
       sleep 1
     done
+
     primary_netdev="$(echo "$raw_netinfo" | \
       ${pkgs.gnused}/bin/sed -nre 's/^.*dev *([^ ]+).*$/\1/p')"
+
     ${conky}/bin/conky -c "${baseConfig}" -t "${text}"
   '';
 
@@ -90,5 +96,12 @@ in {
     "DF: ${mkDiskFree "/"}"
     "LAVG: \\$loadavg"
     "TEMP - CPU: $(cputemp) - GPU: ${gpuTemp} - OUTSIDE: ${weather}"
+  ];
+
+  single = mkConky [
+    "CPU: $(cpuload) - ${cexpr "cpu" [ "cpu0" ]}%"
+    "MEM: \\$mem/\\$memmax - \\$memperc%"
+    "NET: ${mkNetInfo "$primary_netdev"}"
+    "TEMP - CPU: $(cputemp) - OUTSIDE: ${weather}"
   ];
 }
