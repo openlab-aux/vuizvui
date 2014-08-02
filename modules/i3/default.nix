@@ -102,6 +102,10 @@ in
       inherit (pkgs) dmenu xterm pvolctrl;
       inherit (pkgs.xorg) xsetroot;
       inherit wsConfig barConfig;
+
+      postInstall = ''
+        ${pkgs.i3}/bin/i3 -c "$target" -C
+      '';
     };
   };
 }

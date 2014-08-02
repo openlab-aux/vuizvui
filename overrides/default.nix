@@ -67,6 +67,14 @@ let
           scripts/gajim.in
       '';
     };
+
+    i3 = o: {
+      patches = (o.patches or []) ++ (singleton (everything.fetchurl {
+        url = "http://bugs.i3wm.org/report/raw-attachment/ticket/1332/"
+            + "i3-validate-config-without-x.patch";
+        sha256 = "1njmrvqr3h5wf8dwg5di136cjvnn5miaj7by3q93x8028hdpigag";
+      }));
+    };
   };
 
   # misc
