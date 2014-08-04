@@ -3,6 +3,7 @@
 {
   imports = [
     ./common.nix
+    ./packages.nix
     <nixpkgs/nixos/modules/programs/virtualbox.nix>
   ];
 
