@@ -80,11 +80,11 @@ let
   # misc
   misc = {
     kernelSourceVuizvui = {
-      version = "3.16.0-rc7";
+      version = "3.16.0";
       src = everything.fetchgit {
         url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;
-        rev = "64aa90f26c06e1cb2aacfb98a7d0eccfbd6c1a91";
-        sha256 = "014693asvaya3vw9fl558q6w02j0xc82xs4giyqzr8zzqmjhqib6";
+        rev = "19583ca584d6f574384e17fe7613dfaeadcdc4a6";
+        sha256 = "0fn5zpc341scjq2qmin7l9qi7h6mmv1fdzscsqql00c26q5r2yqq";
       };
     };
 
