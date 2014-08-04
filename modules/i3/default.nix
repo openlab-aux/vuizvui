@@ -39,7 +39,7 @@ let
     inherit pkgs;
   };
 
-  mkBar = output: statusCmd: ''
+  mkBar = output: statusCmd: singleton ''
     bar {
       ${optionalString (output != null) "output ${output}"}
       ${optionalString (statusCmd != null) "status_command ${statusCmd}"}
@@ -52,13 +52,15 @@ let
     }
   '';
 
-  barConfig =
-    if headCount == 0 then mkBar null conky.single
-    else if headCount == 1 then mkBar (head xrandrHeads) conky.single
-    else let inner = take (length xrandrHeads - 2) (tail xrandrHeads);
-    in mkBar (head xrandrHeads) conky.left
-     + concatMapStrings (flip mkBar null) inner
-     + mkBar (last xrandrHeads) conky.right;
+  barConfig = let
+    bars = if headCount == 0 then mkBar null conky.single
+      else if headCount == 1 then mkBar (head xrandrHeads) conky.single
+      else let inner = take (length xrandrHeads - 2) (tail xrandrHeads);
+           in mkBar (head xrandrHeads) conky.left
+           ++ map (flip mkBar null) inner
+           ++ mkBar (last xrandrHeads) conky.right;
+  in concatStrings (headModifier bars);
+
 in
 {
   options.vuizvui.i3 = {
