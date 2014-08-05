@@ -53,12 +53,13 @@ let
   '';
 
   barConfig = let
+    barHeads = headModifier xrandrHeads;
     bars = if headCount == 0 then mkBar null conky.single
-      else if headCount == 1 then mkBar (head xrandrHeads) conky.single
-      else let inner = take (length xrandrHeads - 2) (tail xrandrHeads);
-           in mkBar (head xrandrHeads) conky.left
+      else if headCount == 1 then mkBar (head barHeads) conky.single
+      else let inner = take (length barHeads - 2) (tail barHeads);
+           in mkBar (head barHeads) conky.left
            ++ map (flip mkBar null) inner
-           ++ mkBar (last xrandrHeads) conky.right;
+           ++ mkBar (last barHeads) conky.right;
   in concatStrings (headModifier bars);
 
 in
