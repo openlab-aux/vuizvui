@@ -75,6 +75,14 @@ let
         sha256 = "1njmrvqr3h5wf8dwg5di136cjvnn5miaj7by3q93x8028hdpigag";
       }));
     };
+
+    mpv = o: {
+      installPhase = o.installPhase + ''
+        cat > "$out/etc/mpv/mpv.conf" <<CONFIG
+        ao=pulse
+        CONFIG
+      '';
+    };
   };
 
   # misc
