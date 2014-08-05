@@ -45,7 +45,7 @@
     mmv
     mp3info
     mpg321
-    mplayer
+    mpv
     mtr
     mutt
     ncdu
