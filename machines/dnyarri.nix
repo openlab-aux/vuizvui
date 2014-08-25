@@ -74,7 +74,8 @@ with import ../lib;
     };
   in rec {
     kernelPackages = let
-      kpkgs = pkgs.linuxPackagesFor linuxVuizvui kernelPackages;
+      kpkgs = import ../patch-vbox.nix pkgs
+        (pkgs.linuxPackagesFor linuxVuizvui kernelPackages);
       virtualbox = kpkgs.virtualbox.override {
         enableExtensionPack = true;
       };
