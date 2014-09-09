@@ -85,6 +85,5 @@
     home = "/home/aszlig";
     useDefaultShell = true;
     createHome = true;
-    createUser = true;
   };
 }
