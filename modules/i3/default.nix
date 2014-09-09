@@ -68,7 +68,7 @@ in
     enable = mkEnableOption "i3";
 
     workspaces = mkOption {
-      type = types.attrsOf (types.submodule ./workspace.nix);
+      type = types.attrsOf (types.submodule (import ./workspace.nix));
       default = listToAttrs (imap mkDefaultWorkspace wsNumberSymbols);
       description = ''
         Workspace to monitor assignment.
