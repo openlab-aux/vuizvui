@@ -28,6 +28,7 @@
     gnupg1compat
     graphviz
     haskellPackages.cabal2nix
+    haskellPackages.cabalInstall
     haskellPackages.hlint
     haskellPackages.yesodBin
     haxe
@@ -43,6 +44,7 @@
     manpages
     miro
     mmv
+    mosh
     mp3info
     mpg321
     mpv
@@ -75,6 +77,7 @@
     screen
     scrot
     socat
+    sox
     sqlite
     strace
     surfraw
