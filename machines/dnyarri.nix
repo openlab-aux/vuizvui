@@ -74,12 +74,12 @@ with import ../lib;
     };
   in rec {
     kernelPackages = let
-      kpkgs = pkgs.linuxPackagesFor linuxVuizvui kernelPackages;
+      kpkgs = pkgs.recurseIntoAttrs
+        (pkgs.linuxPackagesFor linuxVuizvui kernelPackages);
       virtualbox = kpkgs.virtualbox.override {
         enableExtensionPack = true;
       };
-      patcher = import ../patch-vbox.nix pkgs;
-    in pkgs.recurseIntoAttrs (patcher (kpkgs // { inherit virtualbox; }));
+    in pkgs.recurseIntoAttrs (kpkgs // { inherit virtualbox; });
     inherit kernelParams;
 
     initrd = {

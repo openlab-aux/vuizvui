@@ -17,8 +17,8 @@ with import ../lib;
       allowImportFromDerivation = true;
     };
   in rec {
-    kernelPackages = pkgs.recurseIntoAttrs (import ../patch-vbox.nix pkgs
-      (pkgs.linuxPackagesFor linuxVuizvui kernelPackages));
+    kernelPackages = pkgs.recurseIntoAttrs
+      (pkgs.linuxPackagesFor linuxVuizvui kernelPackages);
 
     loader.grub.devices = map (i: "/dev/disk/by-id/${i}") [
       "ata-WDC_WD10EZEX-00BN5A0_WD-WCC3F5756955"
