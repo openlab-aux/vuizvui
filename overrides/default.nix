@@ -97,11 +97,11 @@ let
   # misc
   misc = {
     kernelSourceVuizvui = {
-      version = "3.17.0-rc5";
+      version = "3.17.0-rc6";
       src = everything.fetchgit {
         url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;
-        rev = "46be7b73e82453447cd97b3440d523159eab09f8";
-        sha256 = "1m8w1h7jzzxnfyf89dahba1ih4j8d50w51d65bxivvr58nkajcnh";
+        rev = "c6ff6486e5b306f76bf60b0dbfc63a6ed70d0a78";
+        sha256 = "078qvqfxmmkjh1xjcwqn39xgvyagcjqwbd9f7ap5w9awys1f0vx8";
       };
     };
 
