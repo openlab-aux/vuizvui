@@ -92,6 +92,25 @@ let
         CONFIG
       '';
     };
+
+    nixops = o: let
+      master = everything.fetchgit {
+        url = "git://github.com/NixOS/nixops.git";
+        rev = "523369cf3602a56f504c17432720c5b176f831f9";
+        sha256 = "04svqdnwaf4h1bdgz92zm7hkzkg4niqvzl2vh5ivd72a051j7y2f";
+      };
+      release = import "${master}/release.nix" {
+        officialRelease = true;
+      };
+      build = getAttr o.stdenv.system release.build;
+    in with everything; build.drvAttrs // {
+      name = "nixops-1.3git";
+      patches = (build.drvAttrs.patches or []) ++ singleton (fetchpatch {
+        url = "https://github.com/NixOS/nixops/pull/201.diff";
+        sha256 = "1i5yycqayxggg3l1i6wk8lp64lqlxw5nmfya9fcrgmck8ls0rxid";
+      });
+      patchFlags = "--merge -p1";
+    };
   };
 
   # misc
