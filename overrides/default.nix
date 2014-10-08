@@ -60,20 +60,11 @@ let
 
   # derivation overrides
   drvOverrides = mapOverride overrideDerivation argOverrides {
-    gajim = o: rec {
-      name = "gajim-${version}";
-      version = "0.16-rc2";
-      src = everything.fetchurl {
-        url = "http://gajim.org/downloads/0.16/${name}.tar.gz";
-        sha256 = "0fl6mf5ws14spcx6wbb8zxay7j2109sxr4f3fz23z5nplab3i2aj";
-      };
-      patches = tail o.patches ++ singleton gajimPatch;
+    gajim = o: {
+      patches = (o.patches or []) ++ singleton gajimPatch;
       postPatch = (o.postPatch or "") + ''
         sed -i -e '/^export/i export GTK2_RC_FILES="${gajimGtkTheme}"' \
           scripts/gajim.in
-      '';
-      prePatch = (o.preConfigure or "") + ''
-        addPythonPath "${everything.pythonPackages.nbxmpp}"
       '';
     };
 
