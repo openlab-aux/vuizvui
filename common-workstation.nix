@@ -69,6 +69,27 @@
 
       displayManager.sessionCommands = ''
         ${pkgs.redshift}/bin/redshift -l 48.428404:10.866007 &
+        ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
+          Rxvt*font:                 vga
+          Rxvt*background:           black
+          Rxvt*foreground:           grey
+          Rxvt*scrollBar:            false
+          Rxvt*saveLines:            2000
+
+          Rxvt*keysym.Home:          \033[1~
+          Rxvt*keysym.End:           \033[4~
+
+          Rxvt*urgentOnBell:         true
+
+          XTerm*font:                vga
+          XTerm*saveLines:           10000
+          XTerm*bellIsUrgent:        true
+          XTerm*background:          black
+          XTerm*foreground:          grey
+
+          XTerm*backarrowKeyIsErase: true
+          XTerm*ptyInitialErase:     true
+        ''}"
       '';
 
       desktopManager.default = "none";
