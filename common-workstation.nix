@@ -4,6 +4,7 @@
   imports = [
     ./common.nix
     ./packages.nix
+    ./zsh.nix
     <nixpkgs/nixos/modules/programs/virtualbox.nix>
   ];
 
