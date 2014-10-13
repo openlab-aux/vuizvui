@@ -40,6 +40,10 @@ in {
     device = "/dev/disk/by-uuid/${swapUUID}";
   };
 
+  powerManagement.powerUpCommands = ''
+    ${pkgs.hdparm}/sbin/hdparm -B 254 "/dev/disk/by-id/${diskID}"
+  '';
+
   services.xserver.videoDrivers = [ "intel" ];
 
   nix.maxJobs = 4;
