@@ -35,7 +35,6 @@ with import ../lib;
       options = concatStringsSep "," [
         "autodefrag"
         "space_cache"
-        "inode_cache"
         "compress=lzo"
         "noatime"
       ];
