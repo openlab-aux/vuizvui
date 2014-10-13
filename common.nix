@@ -38,7 +38,7 @@
     psmisc
     unrar
     unzip
-    vim_configurable
+    vim
     vlock
     wget
     xz

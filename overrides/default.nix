@@ -76,14 +76,6 @@ let
       }));
     };
 
-    vim_configurable = o: let
-      vimrc = import ../cfgfiles/vim.nix { pkgs = everything; };
-    in {
-      postInstall = (o.postInstall or "") + ''
-        ln -sf "${vimrc}" "$out/share/vim/vimrc"
-      '';
-    };
-
     mpv = o: {
       installPhase = o.installPhase + ''
         cat > "$out/etc/mpv/mpv.conf" <<CONFIG

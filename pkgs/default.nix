@@ -15,6 +15,7 @@ let
     sidplayfp = callPackage ./sidplayfp { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
     twitchstream = callPackage ./twitchstream { };
+    vim = callPackage ./vim { };
 
     vuizvuiKernelPatches = {
       bfqsched = callPackage ./kpatches/bfqsched.nix { };
