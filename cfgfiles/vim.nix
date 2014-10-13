@@ -1,6 +1,198 @@
 { pkgs ? import <nixpkgs> {} }:
 
+with pkgs.lib;
+
 let
+  fetchVimScript = { srcId, sha256, type }: let
+    baseUrl = "http://www.vim.org/scripts/download_script.php";
+    src = pkgs.fetchurl {
+      name = "script${toString srcId}.vim";
+      url = "${baseUrl}?src_id=${toString srcId}";
+      inherit sha256;
+    };
+  in pkgs.stdenv.mkDerivation {
+    name = "vim-${type}-${toString srcId}";
+    buildCommand = ''
+      install -vD -m 0644 "${src}" "$out/${type}/script${toString srcId}.vim"
+    '';
+  };
+
+  extractSubdir = subdir: src: pkgs.stdenv.mkDerivation {
+    name = "${src.name}-subdir";
+    phases = [ "unpackPhase" "installPhase" ];
+    inherit src;
+    installPhase = ''
+      cp -Rd "${subdir}" "$out"
+    '';
+  };
+
+  mkVimPlugins = plugins: pkgs.buildEnv {
+    name = "vim-plugins";
+    paths = mapAttrsToList (const id) plugins;
+    ignoreCollisions = true;
+    postBuild = ''
+      find -L "$out" -mindepth 1 -maxdepth 1 -type f -delete
+    '';
+  };
+
+  pluginDeps = {
+    vimAddonMwUtils = pkgs.fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-mw-utils";
+      rev = "0c5612fa31ee434ba055e21c76f456244b3b5109";
+      sha256 = "147s1k4n45d3x281vj35l26sv4waxjlpqdn83z3k9n51556h1d45";
+    };
+
+    vimAddonCompletion = pkgs.fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-completion";
+      rev = "80f717d68df5b0d7b32228229ddfd29c3e86e435";
+      sha256 = "08acffzy847w8b5j8pdw6qsidm2859ki5q351n4r7fkr969p80mi";
+    };
+
+    vimAddonActions = pkgs.fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-actions";
+      rev = "a5d20500fb8812958540cf17862bd73e7af64936";
+      sha256 = "1wfkwr89sn2w97i94d0dqylcg9mr6pirjadi0a4l492nfnsh99bc";
+    };
+
+    vimAddonBackgroundCmd = pkgs.fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-background-cmd";
+      rev = "14df72660a95804a57c02b9ff0ae3198608e2491";
+      sha256 = "09lh6hqbx05gm7njhpqvhqdwig3pianq9rddxmjsr6b1vylgdgg4";
+    };
+
+    vimAddonToggleBuffer = pkgs.fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-toggle-buffer";
+      rev = "a1b38b9c5709cba666ed2d84ef06548f675c6b0b";
+      sha256 = "1xq38kfdm36c34ln66znw841q797w5gm8bpq1x64bsf2h6n3ml03";
+    };
+
+    tlib = pkgs.fetchFromGitHub {
+      owner = "tomtom";
+      repo = "tlib_vim";
+      rev = "bc4097bd38c4bc040fe1e74df68dec6c9adfcb6a";
+      sha256 = "19v7bgmkk4k2g1z62bd0kky29xxfq96l7wfrl27wb2zijlhbrnpz";
+    };
+
+    vamStub = pkgs.writeTextFile {
+      name = "vam-stub";
+      destination = "/autoload/vam.vim";
+      text = ''
+        fun! vam#DefineAndBind(local, global, default)
+          return ' if !exists('.string(a:global).') |
+                 \ let '.a:global.' = '.a:default.' |
+                 \ endif | let '.a:local.' = '.a:global
+        endfun
+      '';
+    };
+  };
+
+  plugins = mkVimPlugins (pluginDeps // {
+    vimErl = pkgs.fetchFromGitHub {
+      owner = "jimenezrick";
+      repo = "vimerl";
+      rev = "823bf8cb515bb10396c705cdc017aa9121cc4d12";
+      sha256 = "0sybkx8iy8qhr6nlwn52j7zd5v99rn0b8wbg43d112z2px4yq5x3";
+    };
+
+    vimHaxe = pkgs.fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-haxe";
+      rev = "8efc705db41a01713d67d437f29866a1ff831e8a";
+      sha256 = "15kv13gvpgf23p0566qrlw7gmpir2z7g5dnkfs1knmcwzw45am5d";
+    };
+
+    factor = extractSubdir "misc/vim" (pkgs.fetchFromGitHub {
+      owner = "slavapestov";
+      repo = "factor";
+      rev = "0d6f70cc7cf35cc627ee78886e2932091a651fe6";
+      sha256 = "0lmqzvrmwgmxpcpwgn59y033sf4jybmw3lffbjwww5d7ch90333q";
+    });
+
+    opaLang = extractSubdir "tools/editors/vim" (pkgs.fetchFromGitHub {
+      owner = "MLstate";
+      repo = "opalang";
+      rev = "94e4e6d9d8da9a72214f4f28dd1ffa1a987997eb";
+      sha256 = "0d6b67868cfqakkz63y5ynpz549lbpfzc3c3x7kx3ffsv10xy3bb";
+    });
+
+    lslvim = pkgs.fetchFromGitHub {
+      owner = "sukima";
+      repo = "LSLvim";
+      rev = "f269de39a1c713a43470e90d0ec78208c0f05e0b";
+      sha256 = "1plwx5id3jsj4y6yhshlf3rishxhf1b9k47g2cpzaczvqb5bl40w";
+    };
+
+    vimSyntaxShakespeare = pkgs.fetchFromGitHub {
+      owner = "pbrisbin";
+      repo = "vim-syntax-shakespeare";
+      rev = "29085ae94ee3dbd7f39f2a7705d86692ef5bc365";
+      sha256 = "0kvys81jiwqzwmpbk1lvbciw28yha4shd1xby5saiy4b68l6d8rk";
+    };
+
+    glsl = fetchVimScript {
+      srcId = 3194;
+      sha256 = "1vqfcpjmfyjc95wns3i84kgd1k5r2lwjjvjcprygi9g9vng7i5xc";
+      type = "syntax";
+    };
+
+    actionScript = fetchVimScript {
+      srcId = 1205;
+      sha256 = "0pdzqg678lhn7lmqf3z9icpj6ff2nnghsxy983kxkn8sblnzlhfs";
+      type = "syntax";
+    };
+
+    indentPython = fetchVimScript {
+      srcId = 4316;
+      sha256 = "1pgdiaqd1hm0qpspy1asj7i103pq0846lnjrxvl6pk17ymww9pmk";
+      type = "indent";
+    };
+
+    nixAddon = pkgs.fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-nix";
+      rev = "a4bbc85c659ce9f7ed7a1d96e0ceeccd5a362e49";
+      sha256 = "1s05ip16spjmhvr1x1lmi82j3i9c8xwf63v0afcd7w8fh5c6wf1y";
+    };
+
+    urwebAddon = pkgs.fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-urweb";
+      rev = "49ea3960a9924a5dd7ff70956d1a7c0479a55773";
+      sha256 = "090ww8nxqsabrwf4r8g7a93kawnp6zwpsx65yxpacwwwlbc73m7s";
+    };
+
+    indentHaskell = fetchVimScript {
+      srcId = 7407;
+      sha256 = "1lj44jkyihmcnj2kcfckhqzr9gfipda9frbzicix2wrc5728kjsv";
+      type = "indent";
+    };
+
+    fishSyntax = fetchVimScript {
+      srcId = 20242;
+      sha256 = "12gfmyxxf84f19bp8xfmkb9phbfkifn89sjgi8hnv6dn0a5y1zpj";
+      type = "syntax";
+    };
+
+    elmVim = pkgs.fetchFromGitHub {
+      owner = "lambdatoast";
+      repo = "elm.vim";
+      rev = "ad556c97e26072b065825852ceead0fe6a1f7d7c";
+      sha256 = "19k6b6m5ngm5qn2f3p13hzjyvha53fpdgq691z8n0lwfn8831b21";
+    };
+
+    flake8 = pkgs.fetchFromGitHub {
+      owner = "nvie";
+      repo = "vim-flake8";
+      rev = "293613dbe731a2875ce93739e7b64ee504d8bbab";
+      sha256 = "0xmqmbh66g44vhx9769mzs820k6ksbpfnsfvivmbhzlps2hjqpqg";
+    };
+  });
+
   generic = ''
     syntax on
     colorscheme elflord
@@ -38,6 +230,10 @@ let
     let python_highlight_numbers = 1
     let python_highlight_builtins = 1
     let python_highlight_exceptions = 1
+
+    " all plugins
+    set runtimepath^=${plugins}
+    set runtimepath+=${plugins}/after
   '';
 
   autocmd = ''
