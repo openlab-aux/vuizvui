@@ -71,6 +71,13 @@ let
       sha256 = "1xq38kfdm36c34ln66znw841q797w5gm8bpq1x64bsf2h6n3ml03";
     };
 
+    vimAddonGotoThingAtCursor = fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-goto-thing-at-cursor";
+      rev = "f052e094bdb351829bf72ae3435af9042e09a6e4";
+      sha256 = "1ksm2b0j80zn8sz2y227bpcx4jsv76lwgr2gpgy2drlyqhn2vlv0";
+    };
+
     tlib = fetchFromGitHub {
       owner = "tomtom";
       repo = "tlib_vim";
