@@ -18,6 +18,7 @@ let
     w3m.graphicsSupport = true;
     uqm.use3DOVideos = true;
     uqm.useRemixPacks = true;
+    miro.enableBonjour = true;
   };
 
   gajimGtkTheme = everything.writeText "gajim.gtkrc" ''
