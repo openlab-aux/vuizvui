@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, lib, ... }:
 
 {
   imports = [
@@ -10,6 +10,19 @@
 
   boot.kernelParams = [ "zswap.enabled=1" ];
   boot.cleanTmpDir = true;
+
+  environment.systemPackages = with lib; let
+    mkRandrConf = acc: name: acc ++ singleton {
+      inherit name;
+      value = "--output '${name}' --preferred"
+            + optionalString (acc != []) " --right-of '${(head acc).name}'";
+    };
+    randrHeads = config.services.xserver.xrandrHeads;
+    randrConf = map (getAttr "value") (foldl mkRandrConf [] randrHeads);
+  in singleton (pkgs.writeScriptBin "xreset" ''
+    #!${pkgs.stdenv.shell}
+    ${pkgs.xorg.xrandr}/bin/xrandr ${concatStringsSep " " randrConf}
+  '');
 
   hardware = {
     pulseaudio.enable = true;
