@@ -107,8 +107,9 @@
 
       desktopManager.default = "none";
       desktopManager.xterm.enable = false;
-
-      displayManager.lightdm.enable = true;
+      displayManager.slim.enable = true;
+      displayManager.slim.defaultUser = "aszlig";
+      displayManager.slim.theme = pkgs.slimThemes.nixosSlim;
     };
   };
 
