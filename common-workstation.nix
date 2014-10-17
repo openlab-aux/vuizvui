@@ -115,7 +115,8 @@ in {
         src = pkgs.slimThemes.nixosSlim;
         phases = [ "unpackPhase" "patchPhase" "installPhase" ];
         patchPhase = let
-          centerLeft = 100 / (lib.length randrHeads * 2);
+          headFactor = if randrHeads == [] then 1 else lib.length randrHeads;
+          centerLeft = 100 / (headFactor * 2);
         in ''
           ${pkgs.imagemagick}/bin/mogrify \
             -fill '#080010' -draw 'color 0,0 reset' \
