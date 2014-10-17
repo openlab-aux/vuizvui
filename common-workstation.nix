@@ -1,6 +1,8 @@
 { pkgs, config, lib, ... }:
 
-{
+let
+  randrHeads = config.services.xserver.xrandrHeads;
+in {
   imports = [
     ./common.nix
     ./packages.nix
@@ -17,7 +19,6 @@
       value = "--output '${name}' --preferred"
             + optionalString (acc != []) " --right-of '${(head acc).name}'";
     };
-    randrHeads = config.services.xserver.xrandrHeads;
     randrConf = map (getAttr "value") (foldl mkRandrConf [] randrHeads);
   in singleton (pkgs.writeScriptBin "xreset" ''
     #!${pkgs.stdenv.shell}
@@ -109,7 +110,33 @@
       desktopManager.xterm.enable = false;
       displayManager.slim.enable = true;
       displayManager.slim.defaultUser = "aszlig";
-      displayManager.slim.theme = pkgs.slimThemes.nixosSlim;
+      displayManager.slim.theme = pkgs.stdenv.mkDerivation {
+        name = "nixos-theme-vuizvui";
+        src = pkgs.slimThemes.nixosSlim;
+        phases = [ "unpackPhase" "patchPhase" "installPhase" ];
+        patchPhase = let
+          centerLeft = 100 / (lib.length randrHeads * 2);
+        in ''
+          ${pkgs.imagemagick}/bin/mogrify \
+            -fill '#080010' -draw 'color 0,0 reset' \
+            share/slim/themes/nixos-slim-testing/background.png
+          ${pkgs.imagemagick}/bin/mogrify -negate \
+            share/slim/themes/nixos-slim-testing/panel.png
+          sed -i \
+            -e 's/^\([a-z_]\+_x[^0-9]*\)[0-9]\+%/\1${toString centerLeft}%/' \
+            share/slim/themes/nixos-slim-testing/slim.theme
+          cat >> share/slim/themes/nixos-slim-testing/slim.theme <<EOF
+          session_x      ${toString centerLeft}%
+          msg_color      #ffffff
+          username_color #ffffff
+          password_color #ffffff
+          input_color    #ffffff
+          EOF
+        '';
+        installPhase = ''
+          cp -R share/slim/themes/nixos-slim-testing "$out"
+        '';
+      };
     };
   };
 
