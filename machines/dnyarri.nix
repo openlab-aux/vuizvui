@@ -131,8 +131,8 @@ with import ../lib;
   services.synergy.client.enable = true;
   services.synergy.client.serverAddress = "mmrnmhrm";
 
-  systemd.services."synergy-client".CPUSchedulingPolicy = "rr";
-  systemd.services."synergy-client".CPUSchedulingPriority = 50;
+  systemd.services."synergy-client".serviceConfig.CPUSchedulingPolicy = "rr";
+  systemd.services."synergy-client".serviceConfig.CPUSchedulingPriority = 50;
 
   services.xserver.videoDrivers = [ "ati" ];
   services.xserver.xrandrHeads = [ "HDMI-0" "DVI-0" ];

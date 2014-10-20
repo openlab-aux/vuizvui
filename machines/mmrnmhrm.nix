@@ -49,8 +49,8 @@ with import ../lib;
   services.synergy.server.enable = true;
   services.synergy.server.configFile = ../cfgfiles/synergy.conf;
 
-  systemd.services."synergy-server".CPUSchedulingPolicy = "rr";
-  systemd.services."synergy-server".CPUSchedulingPriority = 50;
+  systemd.services."synergy-server".serviceConfig.CPUSchedulingPolicy = "rr";
+  systemd.services."synergy-server".serviceConfig.CPUSchedulingPriority = 50;
 
   services.xserver.videoDrivers = [ "nouveau" ];
   services.xserver.xrandrHeads = [ "DVI-I-1" "VGA-1" ];
