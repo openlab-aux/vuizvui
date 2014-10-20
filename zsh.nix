@@ -19,6 +19,8 @@
     export HISTSIZE=100000
     export SAVEHIST=100000
 
+    unsetopt SHARE_HISTORY
+
     setopt extendedglob
     setopt extendedhistory
     setopt globcomplete
