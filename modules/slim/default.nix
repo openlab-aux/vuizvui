@@ -10,7 +10,6 @@ in {
 
   config.services.xserver.displayManager.slim = mkIf cfg.enable {
     enable = true;
-    defaultUser = "aszlig";
     theme = pkgs.stdenv.mkDerivation {
       name = "nixos-theme-vuizvui";
       src = pkgs.slimThemes.nixosSlim;
