@@ -121,7 +121,8 @@ in {
           ${pkgs.imagemagick}/bin/mogrify \
             -fill '#080010' -draw 'color 0,0 reset' \
             share/slim/themes/nixos-slim-testing/background.png
-          ${pkgs.imagemagick}/bin/mogrify -negate \
+          ${pkgs.imagemagick}/bin/mogrify \
+            -negate -region 100x110+0+0 -negate -fill white -colorize 20% \
             share/slim/themes/nixos-slim-testing/panel.png
           sed -i \
             -e 's/^\([a-z_]\+_x[^0-9]*\)[0-9]\+%/\1${toString centerLeft}%/' \
