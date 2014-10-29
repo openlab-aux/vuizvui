@@ -88,8 +88,8 @@ let
     nixops = o: let
       master = everything.fetchgit {
         url = "git://github.com/NixOS/nixops.git";
-        rev = "523369cf3602a56f504c17432720c5b176f831f9";
-        sha256 = "04svqdnwaf4h1bdgz92zm7hkzkg4niqvzl2vh5ivd72a051j7y2f";
+        rev = "260af26504027b7ad11a6e38e02e0e4d7a820505";
+        sha256 = "0nai6nkccl7qxq1756qip0zy14d68inj60ai7gnn1gd97pxn7yq0";
       };
       release = import "${master}/release.nix" {
         officialRelease = true;
