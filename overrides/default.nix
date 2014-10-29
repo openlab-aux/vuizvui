@@ -115,36 +115,5 @@ let
         sha256 = "0r26friccy3dywrdm963cxkxjkgqwgr5r7j61zz8wc0md3n8ici3";
       };
     };
-
-    testChromiumBuild = let
-      buildChannels = [ "stable" "beta" "dev" ];
-      buildChromium = chan: everything.chromium.override {
-        channel = chan;
-        gnomeSupport = true;
-        gnomeKeyringSupport = true;
-        proprietaryCodecs = true;
-        cupsSupport = true;
-        pulseSupport = true;
-      };
-      mkTest = chan: everything.writeScript "test-chromium-${chan}.sh" ''
-        #!${everything.stdenv.shell}
-        if datadir="$(${everything.coreutils}/bin/mktemp -d)"; then
-          ${buildChromium chan}/bin/chromium --user-data-dir="$datadir"
-          rm -rf "$datadir"
-        fi
-      '';
-    in everything.stdenv.mkDerivation {
-      name = "test-chromium-build";
-
-      buildCommand = let
-        chanResults = flip map buildChannels (chan: ''
-          echo "Test script for ${chan}: ${mkTest chan}"
-        '');
-      in ''
-        echo "Builds finished, the following derivations have been built:"
-        ${concatStrings chanResults}
-        false
-      '';
-    };
   };
 in allPackages // drvOverrides // argOverrides
