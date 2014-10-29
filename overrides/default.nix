@@ -111,6 +111,12 @@ let
       ];
       patchFlags = "--merge -p1";
     };
+
+    zsh = o: {
+      postInstall = (o.postInstall or "") + ''
+        find "$out" -type f -name zsh-newuser-install -delete
+      '';
+    };
   };
 
   # misc

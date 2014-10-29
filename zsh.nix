@@ -71,8 +71,6 @@
     compinit
 
     autoload -Uz zmv
-
-    zsh-newuser-install() { :; }
   '';
 
   programs.zsh.promptInit = ''
