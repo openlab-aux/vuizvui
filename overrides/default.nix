@@ -113,8 +113,8 @@ let
     };
 
     zsh = o: {
-      postInstall = (o.postInstall or "") + ''
-        find "$out" -type f -name zsh-newuser-install -delete
+      postConfigure = (o.postConfigure or "") + ''
+        sed -i -e '/^name=zsh\/newuser/d' config.modules
       '';
     };
   };
