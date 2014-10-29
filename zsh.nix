@@ -12,8 +12,6 @@
 
   programs.zsh.shellAliases.t = "task";
 
-  programs.zsh.shellInit = "zsh-newuser-install() { :; }";
-
   programs.zsh.interactiveShellInit = lib.mkAfter ''
     export HISTFILE=~/.histfile
     export HISTSIZE=100000
@@ -73,6 +71,8 @@
     compinit
 
     autoload -Uz zmv
+
+    zsh-newuser-install() { :; }
   '';
 
   programs.zsh.promptInit = ''
