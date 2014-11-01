@@ -3,7 +3,7 @@
 }:
 
 let
-  fetchVimScript = { srcId, sha256, type }: let
+  fetchVimScript = { srcId, sha256, type, name }: let
     baseUrl = "http://www.vim.org/scripts/download_script.php";
     src = fetchurl {
       name = "script${toString srcId}.vim";
@@ -13,7 +13,7 @@ let
   in stdenv.mkDerivation {
     name = "vim-${type}-${toString srcId}";
     buildCommand = ''
-      install -vD -m 0644 "${src}" "$out/${type}/script${toString srcId}.vim"
+      install -vD -m 0644 "${src}" "$out/${type}/${name}.vim"
     '';
   };
 
@@ -142,18 +142,21 @@ let
     };
 
     glsl = fetchVimScript {
+      name = "glsl";
       srcId = 3194;
       sha256 = "1vqfcpjmfyjc95wns3i84kgd1k5r2lwjjvjcprygi9g9vng7i5xc";
       type = "syntax";
     };
 
     actionScript = fetchVimScript {
+      name = "actionscript";
       srcId = 1205;
       sha256 = "0pdzqg678lhn7lmqf3z9icpj6ff2nnghsxy983kxkn8sblnzlhfs";
       type = "syntax";
     };
 
     indentPython = fetchVimScript {
+      name = "python";
       srcId = 4316;
       sha256 = "1pgdiaqd1hm0qpspy1asj7i103pq0846lnjrxvl6pk17ymww9pmk";
       type = "indent";
@@ -174,12 +177,14 @@ let
     };
 
     indentHaskell = fetchVimScript {
+      name = "haskell";
       srcId = 7407;
       sha256 = "1lj44jkyihmcnj2kcfckhqzr9gfipda9frbzicix2wrc5728kjsv";
       type = "indent";
     };
 
     fishSyntax = fetchVimScript {
+      name = "fish";
       srcId = 20242;
       sha256 = "12gfmyxxf84f19bp8xfmkb9phbfkifn89sjgi8hnv6dn0a5y1zpj";
       type = "syntax";
