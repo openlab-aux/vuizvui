@@ -48,6 +48,7 @@ in {
 
   vuizvui.i3.enable = true;
   vuizvui.slim.enable = true;
+  vuizvui.vlock.enable = true;
 
   services = {
     openssh = {

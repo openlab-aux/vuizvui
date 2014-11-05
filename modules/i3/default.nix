@@ -106,6 +106,12 @@ in
       inherit (pkgs.xorg) xsetroot;
       inherit wsConfig barConfig;
 
+      lockall = pkgs.writeScript "lockvt.sh" ''
+        #!${pkgs.stdenv.shell}
+        "${pkgs.socat}/bin/socat" - UNIX-CONNECT:/run/console-lock.sock \
+          < /dev/null
+      '';
+
       postInstall = ''
         ${pkgs.i3}/bin/i3 -c "$target" -C
       '';
