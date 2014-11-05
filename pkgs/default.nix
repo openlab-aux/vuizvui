@@ -5,6 +5,7 @@ let
   callPackage = pkgs.lib.callPackageWith (pkgs // self);
 
   self = {
+    aacolorize = callPackage ./aacolorize { };
     axbo = callPackage ./axbo { };
     blop = callPackage ./blop { };
     grandpa = callPackage ./grandpa { };
