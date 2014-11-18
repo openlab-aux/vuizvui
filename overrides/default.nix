@@ -85,33 +85,6 @@ let
       '';
     };
 
-    nixops = o: let
-      master = everything.fetchgit {
-        url = "git://github.com/NixOS/nixops.git";
-        rev = "260af26504027b7ad11a6e38e02e0e4d7a820505";
-        sha256 = "0nai6nkccl7qxq1756qip0zy14d68inj60ai7gnn1gd97pxn7yq0";
-      };
-      release = import "${master}/release.nix" {
-        officialRelease = true;
-      };
-      build = getAttr o.stdenv.system release.build;
-    in with everything; build.drvAttrs // {
-      name = "nixops-1.3git";
-      patches = (build.drvAttrs.patches or []) ++ [
-        (fetchpatch {
-          url = "https://github.com/NixOS/nixops/pull/201.diff";
-          sha256 = "1i5yycqayxggg3l1i6wk8lp64lqlxw5nmfya9fcrgmck8ls0rxid";
-        })
-        (fetchpatch rec {
-          name = "read-write-by-default.diff";
-          url = "https://github.com/aszlig/nixops/compare/"
-              + "NixOS:master...aszlig:${name}";
-          sha256 = "0a1jcqrqfi7dfvlha5r0609bzvin7p7nj523xxcrvwpgp6ag0zsa";
-        })
-      ];
-      patchFlags = "--merge -p1";
-    };
-
     zsh = o: {
       postConfigure = (o.postConfigure or "") + ''
         sed -i -e '/^name=zsh\/newuser/d' config.modules

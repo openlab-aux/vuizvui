@@ -9,6 +9,7 @@ let
     axbo = callPackage ./axbo { };
     blop = callPackage ./blop { };
     grandpa = callPackage ./grandpa { };
+    nixops = callPackage ./nixops { };
     libCMT = callPackage ./libcmt { };
     librxtx_java = callPackage ./librxtx-java { };
     lockdev = callPackage ./lockdev { };
