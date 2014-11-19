@@ -6,7 +6,6 @@ in {
   imports = [
     ./common.nix
     ./packages.nix
-    ./zsh.nix
     <nixpkgs/nixos/modules/programs/virtualbox.nix>
   ];
 
@@ -49,6 +48,7 @@ in {
   vuizvui.i3.enable = true;
   vuizvui.slim.enable = true;
   vuizvui.vlock.enable = true;
+  vuizvui.zsh.enable = true;
 
   services = {
     openssh = {
