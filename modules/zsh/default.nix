@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ config, lib, ... }:
 
 with lib;
 
@@ -7,7 +7,7 @@ with lib;
     enable = mkEnableOption "zsh";
   };
 
-  config = {
+  config = mkIf config.vuizvui.zsh.enable {
     environment.shellInit = ''
       export EDITOR="vim"
       export EMAIL="aszlig@redmoonstudios.org"
@@ -61,8 +61,10 @@ with lib;
         %SAt %p: Hit TAB for more, or the character to insert%s
       zstyle ':completion:*' list-suffixes true
       zstyle ':completion:*' matcher-list ''' \
-        'm:{[:lower:]}={[:upper:]} m:{[:lower:][:upper:]}={[:upper:][:lower:]}' \
-        'l:|=* r:|=*' 'r:|[._-]=** r:|=**'
+        'm:{[:lower:]}={[:upper:]}' \
+        'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' \
+        'l:|=* r:|=*' \
+        'r:|[._-]=** r:|=**'
       zstyle ':completion:*' max-errors 2 numeric
       zstyle ':completion:*' menu select=long
       zstyle ':completion:*' original true
