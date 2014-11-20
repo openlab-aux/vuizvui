@@ -23,7 +23,6 @@
     ghostscript
     gimp
     gitAndTools.hub
-    gitFull
     glxinfo
     gnumake
     gnupg1compat

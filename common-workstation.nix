@@ -50,6 +50,28 @@ in {
   vuizvui.vlock.enable = true;
   vuizvui.zsh.enable = true;
 
+  vuizvui.git.enable = true;
+  vuizvui.git.config = {
+    color.ui = "auto";
+    merge.tool = "vimdiff3";
+    user.email = "aszlig@redmoonstudios.org";
+    user.name = "aszlig";
+    user.signkey = "8C2DC961";
+    gpg.program = "${pkgs.gnupg}/bin/gpg2";
+    push.default = "current";
+    tar."tar.xz".command = "${pkgs.xz}/bin/xz -c";
+    rebase.autosquash = true;
+    rerere.enabled = true;
+    rerere.autoupdate = true;
+    commit.gpgsign = true;
+
+    alias.backport = let
+      release = "14.04";
+      message = "Merge release ${release} into backports.";
+    in "!git fetch upstream release-${release} &&"
+     + " git merge -m \"${message}\" --log FETCH_HEAD";
+  };
+
   services = {
     openssh = {
       enable = true;
