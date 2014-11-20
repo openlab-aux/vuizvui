@@ -10,8 +10,23 @@ let
 in {
   imports = singleton ../common-workstation.nix;
 
-  boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+  boot = rec {
+    kernelPackages = let
+      origKernel = pkgs.linux_testing;
+      bfqsched = pkgs.vuizvuiKernelPatches.bfqsched // {
+        extraConfig = ''
+          IOSCHED_BFQ y
+          CGROUP_BFQIO y
+          DEFAULT_BFQ y
+          DEFAULT_CFQ n
+          DEFAULT_IOSCHED "bfq"
+        '';
+      };
+      kernel = origKernel.override {
+        kernelPatches = origKernel.kernelPatches ++ singleton bfqsched;
+      };
+    in pkgs.linuxPackagesFor kernel kernelPackages;
+
     initrd.kernelModules = [ "fbcon" "usb_storage" ];
     loader.grub.device = "/dev/disk/by-id/${diskID}";
     loader.grub.timeout = 0;
