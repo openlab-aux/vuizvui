@@ -87,10 +87,7 @@ in {
       protocol = "exps2";
     };
 
-    printing = {
-      enable = true;
-      drivers = [ pkgs.foo2zjs pkgs.foomatic_filters ];
-    };
+    printing.enable = true;
 
     udev.extraRules = ''
       SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", \
