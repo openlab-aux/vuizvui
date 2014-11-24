@@ -3,6 +3,7 @@
   "CONFIG_X86_64" = "y";
   "CONFIG_X86" = "y";
   "CONFIG_INSTRUCTION_DECODER" = "y";
+  "CONFIG_PERF_EVENTS_INTEL_UNCORE" = "y";
   "CONFIG_OUTPUT_FORMAT" = "elf64-x86-64";
   "CONFIG_ARCH_DEFCONFIG" = "arch/x86/configs/x86_64_defconfig";
   "CONFIG_LOCKDEP_SUPPORT" = "y";
@@ -132,6 +133,7 @@
   "CONFIG_HAVE_UID16" = "y";
   "CONFIG_SYSCTL_EXCEPTION_TRACE" = "y";
   "CONFIG_HAVE_PCSPKR_PLATFORM" = "y";
+  "CONFIG_BPF" = "y";
   "CONFIG_UID16" = "y";
   "CONFIG_SGETMASK_SYSCALL" = "y";
   "CONFIG_SYSFS_SYSCALL" = "y";
@@ -728,6 +730,7 @@
   "CONFIG_FIRMWARE_IN_KERNEL" = "y";
   "CONFIG_EXTRA_FIRMWARE" = "@extra_firmware@";
   "CONFIG_EXTRA_FIRMWARE_DIR" = "@builtin_firmware@";
+  "CONFIG_ALLOW_DEV_COREDUMP" = "y";
   "CONFIG_GENERIC_CPU_AUTOPROBE" = "y";
   "CONFIG_DMA_SHARED_BUFFER" = "y";
   "CONFIG_CONNECTOR" = "y";
@@ -1141,7 +1144,7 @@
   "CONFIG_AUTOFS4_FS" = "y";
   "CONFIG_FUSE_FS" = "y";
   "CONFIG_CUSE" = "m";
-  "CONFIG_OVERLAYFS_FS" = "m";
+  "CONFIG_OVERLAY_FS" = "y";
   "CONFIG_ISO9660_FS" = "y";
   "CONFIG_JOLIET" = "y";
   "CONFIG_UDF_FS" = "y";
