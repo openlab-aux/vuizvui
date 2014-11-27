@@ -78,8 +78,6 @@ in {
       permitRootLogin = "without-password";
     };
 
-    syslogd.tty = "tty13";
-
     xfs.enable = false;
 
     gpm = {
