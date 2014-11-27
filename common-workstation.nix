@@ -6,7 +6,6 @@ in {
   imports = [
     ./common.nix
     ./packages.nix
-    <nixpkgs/nixos/modules/programs/virtualbox.nix>
   ];
 
   boot.kernelParams = [ "zswap.enabled=1" ];
@@ -93,6 +92,8 @@ in {
       SUBSYSTEM=="usb*|tty", ACTION=="add|change", ATTRS{idVendor}=="0403", \
         ATTRS{idProduct}=="6001", OWNER="aszlig" # Enttec
     '';
+
+    virtualboxHost.enable = true;
 
     xserver = {
       enable = true;
