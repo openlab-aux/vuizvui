@@ -78,6 +78,27 @@ let
       sha256 = "1ksm2b0j80zn8sz2y227bpcx4jsv76lwgr2gpgy2drlyqhn2vlv0";
     };
 
+    vimAddonViews = fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-views";
+      rev = "d1383ad56d0a07d7350880adbadf9de501729fa8";
+      sha256 = "09gqh7w5rk4lmra706schqaj8dnisf396lpsipm7xv6gy1qbslnv";
+    };
+
+    vimAddonSwfMill = fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-swfmill";
+      rev = "726777e02cbe3ad8f82e37421fb37674f446a148";
+      sha256 = "0ablzl5clgfzhzwvzzbaj0cda0b4cyrj3pbv02f26hx7rfnssaqm";
+    };
+
+    vimHaxeSyntax = fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-haxe-syntax";
+      rev = "500acc2f2ab92d77ff6cd04fdc7868800c033dfa";
+      sha256 = "1ipm0igplplfmscm3bk95qpf9rw71h133l9shmw54mxr4h0ymnmj";
+    };
+
     tlib = fetchFromGitHub {
       owner = "tomtom";
       repo = "tlib_vim";
