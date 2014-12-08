@@ -40,6 +40,18 @@ with lib;
       if [[ "$TERM" = xterm ]]; then
         bindkey -v '\e[H' vi-beginning-of-line
         bindkey -v '\e[F' vi-end-of-line
+
+        function set-title() {
+          echo -en "\e]2;$2\a"
+        }
+
+        function reset-title() {
+          echo -en "\e]2;''${(%):-%~}\a"
+        }
+
+        autoload -Uz add-zsh-hook
+        add-zsh-hook preexec set-title
+        add-zsh-hook precmd reset-title
       else
         bindkey -v '\e[1~' vi-beginning-of-line
         bindkey -v '\e[4~' vi-end-of-line
