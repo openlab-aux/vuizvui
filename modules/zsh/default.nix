@@ -11,8 +11,6 @@ with lib;
     environment.shellInit = ''
       export EDITOR="vim"
       export EMAIL="aszlig@redmoonstudios.org"
-      export AUDIOSERVER="tcp/linx:8000"
-      export SCUMMVM_PORT="128:0"
     '';
 
     programs.zsh.enable = true;
