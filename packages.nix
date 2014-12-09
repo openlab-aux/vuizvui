@@ -83,6 +83,7 @@
     surfraw
     taskwarrior
     telnet
+    tomahawk
     unzip
     uqm
     valgrind
