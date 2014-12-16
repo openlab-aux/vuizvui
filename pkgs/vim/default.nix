@@ -64,6 +64,13 @@ let
       sha256 = "09lh6hqbx05gm7njhpqvhqdwig3pianq9rddxmjsr6b1vylgdgg4";
     };
 
+    vimAddonErrorFormats = fetchFromGitHub {
+      owner = "MarcWeber";
+      repo = "vim-addon-errorformats";
+      rev = "dcbb203ad5f56e47e75fdee35bc92e2ba69e1d28";
+      sha256 = "159zqm69fxbxcv3b2y99g57bf20qrzsijcvb5rzy2njxah3049m1";
+    };
+
     vimAddonToggleBuffer = fetchFromGitHub {
       owner = "MarcWeber";
       repo = "vim-addon-toggle-buffer";
@@ -186,8 +193,8 @@ let
     nixAddon = fetchFromGitHub {
       owner = "MarcWeber";
       repo = "vim-addon-nix";
-      rev = "a4bbc85c659ce9f7ed7a1d96e0ceeccd5a362e49";
-      sha256 = "1s05ip16spjmhvr1x1lmi82j3i9c8xwf63v0afcd7w8fh5c6wf1y";
+      rev = "7b0a376bb1797fef8da2dc14e768f318bcb671e8";
+      sha256 = "00dsba2a0az9bw1sni12km1vdga9x32dapxaj5gmq98hzqlhklyp";
     };
 
     urwebAddon = fetchFromGitHub {
