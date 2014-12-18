@@ -137,7 +137,7 @@ in {
     uid = 1000;
     description = "aszlig";
     group = "users";
-    extraGroups = [ "vboxusers" "wheel" "video" ];
+    extraGroups = [ "wheel" "video" ];
     home = "/home/aszlig";
     useDefaultShell = true;
     createHome = true;

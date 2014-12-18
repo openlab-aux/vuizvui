@@ -126,7 +126,7 @@ with import ../lib;
   # TODO: Try to avoid this, but as there is only a single user using audio on
   # this machine, it's okay for now. But remember that this will break heavily,
   # should there be another user accessing the audio devices.
-  users.extraUsers.aszlig.extraGroups = [ "audio" ];
+  users.extraUsers.aszlig.extraGroups = [ "audio" "vboxusers" ];
 
   services.synergy.client.enable = true;
   services.synergy.client.serverAddress = "mmrnmhrm";
