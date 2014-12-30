@@ -9,6 +9,7 @@
     aspellDicts.en
     axbo
     bc
+    beets
     chromiumBeta
     dash
     dos2unix
