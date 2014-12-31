@@ -1,4 +1,4 @@
-{ email, password }:
+{ email ? null, password ? null }:
 
 with import <nixpkgs> {};
 
