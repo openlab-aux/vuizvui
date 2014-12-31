@@ -477,71 +477,8 @@ in mkConfig {
     };
   };
 
-  statusmsg = {
-    "Back soon" = {
-      activity = "";
-      activity_text = "";
-      message = "Back in some minutes.";
-      mood = "";
-      mood_text = "";
-      subactivity = "";
-    };
-
-    Eating = {
-      activity = "eating";
-      activity_text = "";
-      message = "I'm eating, so leave me a message.";
-      mood = "";
-      mood_text = "";
-      subactivity = "other";
-    };
-
-    Movie = {
-      activity = "relaxing";
-      activity_text = "";
-      message = "I'm watching a movie.";
-      mood = "";
-      mood_text = "";
-      subactivity = "watching_a_movie";
-    };
-
-    Out = {
-      activity = "relaxing";
-      activity_text = "";
-      message = "I'm out enjoying life.";
-      mood = "";
-      mood_text = "";
-      subactivity = "going_out";
-    };
-
-    Phone = {
-      activity = "talking";
-      activity_text = "";
-      message = "I'm on the phone.";
-      mood = "";
-      mood_text = "";
-      subactivity = "on_the_phone";
-    };
-
-    Sleeping = {
-      activity = "inactive";
-      activity_text = "";
-      message = "ZZZZzzzzzZZZZZ";
-      mood = "sleepy";
-      mood_text = "";
-      subactivity = "sleeping";
-    };
-
-    Working = {
-      activity = "working";
-      activity_text = "";
-      message = "I'm working.";
-      mood = "";
-      mood_text = "";
-      subactivity = "other";
-    };
-
-    _last_away = {
+  statusmsg = let
+    defaults = {
       activity = "";
       activity_text = "";
       message = "";
@@ -549,60 +486,32 @@ in mkConfig {
       mood_text = "";
       subactivity = "";
     };
+    applyDefaults = const (attrs: defaults // attrs);
+  in mapAttrs applyDefaults {
+    zone.activity = "working";
+    zone.subactivity = "coding";
+    zone.message = "In The Zone[TM]";
 
-    _last_chat = {
-      activity = "";
-      activity_text = "";
-      message = "";
-      mood = "";
-      mood_text = "";
-      subactivity = "";
-    };
+    rofa.activity = "working";
+    rofa.activity_text = "Blinded by the lights...";
+    rofa.subactivity = "other";
+    rofa.message = "RoFa";
 
-    _last_dnd = {
-      activity = "";
-      activity_text = "";
-      message = "";
-      mood = "";
-      mood_text = "";
-      subactivity = "";
-    };
+    kernel.mood = "happy";
+    kernel.message = "Kerneling down for reboot NOW.";
 
-    _last_invisible = {
-      activity = "";
-      activity_text = "";
-      message = "";
-      mood = "";
-      mood_text = "";
-      subactivity = "";
-    };
+    sleep.activity = "inactive";
+    sleep.subactivity = "sleeping";
+    sleep.mood = "sleepy";
+    sleep.message = "Sleeping the hell out of here...";
 
-    _last_offline = {
-      activity = "";
-      activity_text = "";
-      message = "";
-      mood = "";
-      mood_text = "";
-      subactivity = "";
-    };
-
-    _last_online = {
-      activity = "";
-      activity_text = "";
-      message = "";
-      mood = "";
-      mood_text = "";
-      subactivity = "";
-    };
-
-    _last_xa = {
-      activity = "";
-      activity_text = "";
-      message = "";
-      mood = "";
-      mood_text = "";
-      subactivity = "";
-    };
+    _last_away = {};
+    _last_chat = {};
+    _last_dnd = {};
+    _last_invisible = {};
+    _last_offline = {};
+    _last_online = {};
+    _last_xa = {};
   };
 
   soundevents = {
