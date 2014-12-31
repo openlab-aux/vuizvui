@@ -65,6 +65,7 @@ in {
   config = mkIf config.vuizvui.git.enable {
     environment.systemPackages = [
       gitPatched
+      pkgs.gitAndTools.git-remote-hg
       pkgs.gitAndTools.hub
     ];
   };
