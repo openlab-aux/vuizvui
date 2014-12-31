@@ -23,7 +23,6 @@
     gdb
     ghostscript
     gimp
-    gitAndTools.hub
     glxinfo
     gnumake
     gnupg1compat

@@ -63,6 +63,9 @@ in {
   };
 
   config = mkIf config.vuizvui.git.enable {
-    environment.systemPackages = singleton gitPatched;
+    environment.systemPackages = [
+      gitPatched
+      pkgs.gitAndTools.hub
+    ];
   };
 }
