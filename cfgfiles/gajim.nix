@@ -210,7 +210,7 @@ in mkConfig {
   tabs_always_visible = true;
   tabs_border = false;
   tabs_close_button = true;
-  tabs_position = "top";
+  tabs_position = "right";
   time_stamp = "[%H:%M:%S]";
   tooltip_account_name_color = "#888A85";
   tooltip_affiliation_administrator_color = "#F57900";
