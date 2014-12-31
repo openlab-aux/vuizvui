@@ -45,7 +45,7 @@ in stdenv.mkDerivation rec {
     mkdir -p "$out/share"
     mv Archives "$out/share/jamestown"
 
-    makeWrapper "$(cat "$NIX_GCC/nix-support/dynamic-linker")" \
+    makeWrapper "$(cat "$NIX_CC/nix-support/dynamic-linker")" \
       "$out/bin/jamestown" \
       --add-flags "$libexec/jamestown" \
       --set LD_LIBRARY_PATH "${rpath}"

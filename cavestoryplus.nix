@@ -19,7 +19,7 @@ stdenv.mkDerivation rec {
     ];
   in ''
     patchelf \
-      --set-interpreter "$(cat $NIX_GCC/nix-support/dynamic-linker)" \
+      --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
       --set-rpath "${rpath}" CaveStory+_64
   '';
 

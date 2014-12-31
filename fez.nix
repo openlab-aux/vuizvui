@@ -21,7 +21,7 @@ in stdenv.mkDerivation rec {
 
   buildPhase = ''
     patchelf \
-      --set-interpreter "$(cat $NIX_GCC/nix-support/dynamic-linker)" \
+      --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
       --set-rpath "${stdenv.lib.makeLibraryPath [ mono openal SDL2 ]}" \
       FEZ.bin.x86_64
   '';
