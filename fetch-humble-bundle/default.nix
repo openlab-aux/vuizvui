@@ -1,5 +1,5 @@
 { stdenv, curl, cacert, email, password, writeText, fetchFromGitHub
-, python, buildPythonPackage, pythonPackages
+, python, buildPythonPackage, pythonPackages, fetchpatch
 }:
 
 { machineName, downloadName ? "Download", suffix ? "humblebundle", md5 }: let
@@ -15,6 +15,11 @@
       rev = version;
       sha256 = "04kwghlwgdrhhr8dzc7avr5banpcwcaflh1v81r35jm0yf8inzsa";
     };
+
+    patches = stdenv.lib.singleton (fetchpatch {
+      url = "https://github.com/saik0/humblebundle-python/pull/7.patch";
+      sha256 = "106306029drs6pi8jp520bm3903w06j7sh1hq57ncbd85h15fzzx";
+    });
 
     propagatedBuildInputs = with pythonPackages; [ requests2 ];
   };
