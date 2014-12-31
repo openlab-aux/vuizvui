@@ -118,7 +118,7 @@ in mkConfig {
   mergeaccounts = false;
   mood_iconset = "default";
   "msgwin-height" = "1156";
-  "msgwin-max-state" = false;
+  "msgwin-max-state" = true;
   "msgwin-width" = "1336";
   "msgwin-x-position" = "0";
   "msgwin-y-position" = "20";
