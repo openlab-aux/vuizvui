@@ -3,7 +3,6 @@
 {
   services = {
     openssh.enable = true;
-    openssh.permitRootLogin = "false";
     udisks2.enable = true;
     virtualboxHost.enable = true;
     gpm.enable = true;
