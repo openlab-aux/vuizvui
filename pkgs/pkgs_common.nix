@@ -1,0 +1,152 @@
+{ config, pkgs, lib, ... }:
+
+{
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.conky = {
+    weatherMetar = true;
+    mpdSupport = true;
+    wireless = true;
+  };
+
+  environment.systemPackages = with pkgs; [
+    # canto // TODO: needs package
+    #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
+    abook
+    accountsservice
+    apg
+    ascii
+    aspell
+    aspellDicts.de
+    aspellDicts.en
+    audacity
+    axel
+    bc
+    biber
+    bup
+    cacert
+    ccrypt
+    chromaprint
+    chromium
+    cmake
+    conky
+    cryptsetup
+#ctodo
+    dcfldd
+    ddrescue
+    dmenu
+    dmidecode
+    dos2unix
+    easytag
+    emacs
+    enhanced-ctorrent
+    ethtool
+    evince
+    fbida
+    feh
+    ffmpeg
+    figlet
+    file
+    firefox
+    flac
+    freerdpUnstable
+    gajim
+    gcc
+    gdb
+    ghostscript
+    gimp
+    gitAndTools.darcsToGit
+    gitAndTools.git-extras
+    gitAndTools.git-remote-hg
+    gitAndTools.git2cl
+    gitAndTools.gitFastExport
+    gitAndTools.gitFull
+    gitAndTools.gitRemoteGcrypt
+    gitAndTools.gitSVN
+    gitAndTools.gitflow
+    gitAndTools.svn2git
+    gitAndTools.tig
+    glxinfo
+    gnufdisk
+    gnupg
+    gnupg1compat
+    gptfdisk
+    graphviz
+    hdparm
+    hexedit
+    htop
+    i3lock
+    i3status
+    icedtea7_jdk
+    icedtea7_web
+    iftop
+    imagemagick
+    inkscape
+    iotop
+    jwhois
+    keepassx
+    lftp
+    libreoffice
+    lm_sensors
+    lxappearance
+    lxc
+    lynx
+    manpages
+    mcabber
+    mediainfo
+    mkvtoolnix
+    mmv
+    mosh
+    mp3gain
+    mpc
+    mpc_cli
+    mpv
+    mtr
+    ncdu
+    ncmpcpp
+    netrw
+    nix-prefetch-scripts
+    nixops
+    nmap
+    openssl
+    p7zip
+    pasystray
+    pavucontrol
+    picard
+    posix_man_pages
+    powertop
+    profanity
+    python2
+    python3
+    rake
+    ruby
+    screen
+    scrot
+    silver-searcher
+    sleuthkit
+    smartmontools
+    sox
+    strace
+    surfraw
+    taskwarrior
+    telnet
+    tomahawk
+    tree
+    tribler
+    unrar
+    unzip
+    vim_configurable
+    vlock
+    vorbisTools
+    vorbisgain
+    w3m
+    weechat
+    wget
+    which
+    wireshark
+    xlibs.xev
+    xpdf
+    xscreensaver
+    youtube-dl
+    zotero
+  ];
+}
