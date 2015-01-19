@@ -30,7 +30,7 @@
     cmake
     conky
     cryptsetup
-#ctodo
+    ctodo
     dcfldd
     ddrescue
     dmenu
