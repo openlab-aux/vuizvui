@@ -1,22 +1,16 @@
-{ stdenv, runCommand, fetchgit, fetchpatch, git }:
+{ stdenv, fetchFromGitHub, fetchpatch, git }:
 
 let
-  mkRaw = cmd: import (runCommand "genraw.nix" {} ''
-    (${cmd}) > "$out"
-  '');
-
-  mkString = cmd: import (runCommand "genstring.nix" {} ''
-    echo "\"$(${cmd})\"" > "$out"
-  '');
+  rev = "9d7fbce08380107d3ff6e2546add817b4ac40ee0";
+  sha256 = "167silv9p27gayrlrzpm88rj60gj3hlxhkhnsp4ccpbvq6yw1wr3";
 
   master = stdenv.mkDerivation rec {
     name = "nixops-upstream-patched";
 
-    src = fetchgit {
-      url = "git://github.com/NixOS/nixops.git";
-      rev = "dd589dcf54f2e9530ec4ee4cd45a8a6474d7ce46";
-      sha256 = "0m5rxkggf4rxxwzk9bhffirgla8xjn0vacb8jjh751sn92h07az7";
-      leaveDotGit = true;
+    src = fetchFromGitHub {
+      owner = "NixOS";
+      repo = "nixops";
+      inherit rev sha256;
     };
 
     phases = [ "unpackPhase" "patchPhase" "installPhase" ];
@@ -36,10 +30,6 @@ let
 
     patchFlags = "--merge -p1";
 
-    postPatch = ''
-      sed -i -e '/git ls-files/d' release.nix
-    '';
-
     installPhase = ''
       cp -a . "$out"
     '';
@@ -48,15 +38,9 @@ let
   release = import "${master}/release.nix" {
     nixopsSrc = {
       outPath = master;
-      inherit (master.src) rev;
-      revCount = mkRaw ''
-        # FIXME: It's a shallow clone, so we always get 1.
-        ${git}/bin/git -C "${master}" rev-list --count HEAD
-      '';
-
-      shortRev = mkString ''
-        ${git}/bin/git -C "${master}" rev-parse --short HEAD
-      '';
+      inherit rev;
+      revCount = 0;
+      shortRev = builtins.substring 0 7 rev;
     };
     officialRelease = false;
   };
