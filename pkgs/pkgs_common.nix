@@ -71,6 +71,7 @@
     gnupg1compat
     gptfdisk
     graphviz
+    gstreamer
     hdparm
     hexedit
     htop
@@ -115,6 +116,7 @@
     posix_man_pages
     powertop
     profanity
+    python
     python2
     python3
     rake
