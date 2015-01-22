@@ -5,6 +5,7 @@
 
   environment.systemPackages = with pkgs; [
     aircrackng
+    atom
     kismet
     minicom
     networkmanagerapplet
