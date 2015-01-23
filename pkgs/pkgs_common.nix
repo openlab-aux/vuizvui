@@ -22,6 +22,7 @@
     axel
     bc
     biber
+    bind
     bup
     cacert
     ccrypt
