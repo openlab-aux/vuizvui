@@ -111,6 +111,7 @@
     nmap
     openssl
     p7zip
+    pandoc
     pasystray
     pavucontrol
     picard
