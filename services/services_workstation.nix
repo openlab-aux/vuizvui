@@ -4,6 +4,7 @@
   services.printing.enable = true;
   services.timesyncd.enable = true;
   services.resolved.enable = true;
+  services.haveged.enable = true;
 
   services.redshift = {
     enable = true;
