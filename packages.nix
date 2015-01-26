@@ -3,6 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     aacolorize
+    acpi
     apg
     ascii
     aspellDicts.de
