@@ -27,10 +27,10 @@
     gnumake
     gnupg1compat
     graphviz
-    haskellPackages.cabal2nix
-    haskellPackages.cabalInstall
-    haskellPackages.hlint
-    haskellPackages.yesodBin
+    haskellngPackages.cabal2nix
+    haskellngPackages.cabal-install
+    haskellngPackages.hlint
+    haskellngPackages.yesod-bin
     haxe
     hexedit
     i3
