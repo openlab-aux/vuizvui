@@ -37,6 +37,7 @@ let
 
   conky = import ./conky.nix {
     inherit pkgs;
+    timeout = config.vuizvui.i3.networkTimeout;
   };
 
   mkBar = output: statusCmd: singleton ''
@@ -88,6 +89,14 @@ in
         Reverse the order of the heads, so if enabled and you have two heads,
         you'll end up having workspaces 1 to 5 on the right head and 6 to 10 on
         the left head.
+      '';
+    };
+
+    networkTimeout = mkOption {
+      type = types.int;
+      default = 300;
+      description = ''
+        Maximum number of seconds to wait for network device detection.
       '';
     };
   };

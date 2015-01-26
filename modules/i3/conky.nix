@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> {}, timeout ? 300 }:
 
 with pkgs.lib;
 
@@ -20,7 +20,8 @@ let
     TEXT
   '';
 
-  cexpr = name: args: "\\\${${name} ${concatStringsSep " " args}}";
+  optexpr = name: expr: "\${${name}_disabled:-\\\${${name} ${expr}\\}}";
+  cexpr = name: args: "${optexpr name (concatStringsSep " " args)}";
 
   mkNetInfo = iface: let
     upspeed = cexpr "upspeed" [ iface ];
@@ -71,10 +72,17 @@ let
       echo $(cputemp_collect)
     }
 
+    tries=0
     while ! raw_netinfo="$(${
       "${pkgs.iproute}/sbin/ip route get 8.8.8.8 2> /dev/null"
     })"; do
+      if [ $tries -ge ${toString timeout} ]; then
+        upspeed_disabled=N/A
+        downspeed_disabled=N/A
+        break
+      fi
       echo "Waiting for primary network interface to become available..."
+      tries=$(($tries + 1))
       sleep 1
     done
 
