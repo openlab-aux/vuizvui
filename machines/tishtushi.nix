@@ -55,9 +55,7 @@ in {
     device = "/dev/disk/by-uuid/${swapUUID}";
   };
 
-  powerManagement.powerUpCommands = ''
-    ${pkgs.hdparm}/sbin/hdparm -B 254 "/dev/disk/by-id/${diskID}"
-  '';
+  services.tlp.enable = true;
 
   services.xserver.videoDrivers = [ "intel" ];
 
