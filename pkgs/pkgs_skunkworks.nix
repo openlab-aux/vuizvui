@@ -12,7 +12,6 @@
     hplip
     mutt-with-sidebar
     urlview
-    texLiveFull
     gtkvnc
   ];
 }

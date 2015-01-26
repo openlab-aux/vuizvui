@@ -133,6 +133,7 @@
     surfraw
     taskwarrior
     telnet
+    texLiveFull
     tomahawk
     tree
     tribler
