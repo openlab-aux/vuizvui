@@ -109,6 +109,7 @@
     nix-prefetch-scripts
     nixops
     nmap
+    monodevelop
     openssl
     p7zip
     pandoc
@@ -121,7 +122,6 @@
     python
     python2
     python3
-    rake
     ruby
     screen
     scrot
