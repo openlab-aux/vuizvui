@@ -6,9 +6,7 @@
 
   environment.systemPackages = with pkgs; [
     abook
-    androidsdk_4_4
     beets
-    heimdall
     hplip
     mkvtoolnix
     mutt-with-sidebar
