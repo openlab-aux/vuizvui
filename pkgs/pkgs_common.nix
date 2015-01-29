@@ -71,6 +71,7 @@
     gnufdisk
     gnupg
     gnupg1compat
+    gpgme
     gptfdisk
     graphviz
     gstreamer
