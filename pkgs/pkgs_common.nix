@@ -50,7 +50,6 @@
     firefox
     flac
     freerdpUnstable
-    fsharp
     gajim
     gcc
     gdb
