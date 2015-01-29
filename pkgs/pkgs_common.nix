@@ -68,6 +68,8 @@
     gitAndTools.svn2git
     gitAndTools.tig
     glxinfo
+    gnome3.dconf
+    gnome3.gnome_themes_standard
     gnufdisk
     gnupg
     gnupg1compat
@@ -97,7 +99,6 @@
     manpages
     mcabber
     mediainfo
-    mkvtoolnix
     mmv
     mono
     monodevelop
