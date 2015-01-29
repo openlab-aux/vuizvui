@@ -50,6 +50,7 @@
     firefox
     flac
     freerdpUnstable
+    fsharp
     gajim
     gcc
     gdb
@@ -97,6 +98,8 @@
     mediainfo
     mkvtoolnix
     mmv
+    mono
+    monodevelop
     mosh
     mp3gain
     mpc
@@ -109,7 +112,6 @@
     nix-prefetch-scripts
     nixops
     nmap
-    monodevelop
     openssl
     p7zip
     pandoc
