@@ -10,8 +10,8 @@
     beets
     heimdall
     hplip
+    mkvtoolnix
     mutt-with-sidebar
     urlview
-    gtkvnc
   ];
 }
