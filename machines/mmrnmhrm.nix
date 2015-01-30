@@ -4,7 +4,7 @@ with pkgs.lib;
 with import ../lib;
 
 {
-  imports = singleton ../common-workstation.nix;
+  imports = [ ../common-workstation.nix ../redmoon-static.nix ];
 
   nix.maxJobs = 2;
 
