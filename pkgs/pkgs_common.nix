@@ -88,6 +88,7 @@
     imagemagick
     inkscape
     iotop
+    ipv6calc
     jwhois
     keepassx
     lftp
