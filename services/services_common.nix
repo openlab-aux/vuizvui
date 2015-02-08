@@ -36,10 +36,19 @@
       input {
         plugin "curl"
       }
+
+      audio_output {
+        type "fifo"
+        name "FIFO Output"
+        path "/tmp/mpd.fifo"
+        format "44100:16:2"
+      }
+
       audio_output {
         type "pulse"
         name "Pulse Output"
       }
+
       replaygain "album"
     '';
   };
