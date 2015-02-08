@@ -86,6 +86,7 @@
     icedtea7_web
     iftop
     imagemagick
+    impressive
     inkscape
     iotop
     ipv6calc
