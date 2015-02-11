@@ -73,6 +73,7 @@
     gnufdisk
     gnupg
     gnupg1compat
+    gource
     gpgme
     gptfdisk
     graphviz
