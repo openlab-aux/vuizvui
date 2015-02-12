@@ -126,6 +126,7 @@
     posix_man_pages
     powertop
     profanity
+    profile-sync-daemon
     python
     python2
     python3
