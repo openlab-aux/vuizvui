@@ -9,6 +9,7 @@
     readOnlyStore = true;
     extraOptions = ''
       build-cores = 0
+      auto-optimise-store = true
     '';
   };
 
