@@ -22,6 +22,7 @@
   services.xserver.displayManager.sessionCommands = ''
     ${pkgs.xorg.xsetroot}/bin/xsetroot -solid black
     ${pkgs.networkmanagerapplet}/bin/nm-applet &
+    ${pkgs.xscreensaver}/bin/xscreensaver --no-splash &
     ${pkgs.pasystray}/bin/pasystray &
     ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
       Xft.dpi:              96
