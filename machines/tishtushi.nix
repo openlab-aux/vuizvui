@@ -11,9 +11,11 @@ in {
   imports = singleton ../common-workstation.nix;
 
   boot = rec {
-    kernelPackages = let
-      origKernel = pkgs.linux_testing;
-      bfqsched = pkgs.vuizvuiKernelPatches.bfqsched // {
+    kernelPackages = with pkgs; let
+      trimVer = ver: take 2 (splitString "." (replaceChars ["-"] ["."] ver));
+      tooOld = trimVer linux_latest.version == trimVer linux_testing.version;
+      origKernel = if tooOld then linux_latest else linux_testing;
+      bfqsched = vuizvuiKernelPatches.bfqsched // {
         extraConfig = ''
           IOSCHED_BFQ y
           CGROUP_BFQIO y
@@ -25,7 +27,7 @@ in {
       kernel = origKernel.override {
         kernelPatches = origKernel.kernelPatches ++ singleton bfqsched;
       };
-    in pkgs.linuxPackagesFor kernel kernelPackages;
+    in linuxPackagesFor kernel kernelPackages;
 
     initrd.kernelModules = [ "fbcon" "usb_storage" ];
     loader.grub.device = "/dev/disk/by-id/${diskID}";
