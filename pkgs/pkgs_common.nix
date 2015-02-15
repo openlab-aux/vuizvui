@@ -114,6 +114,7 @@
     ncdu
     ncmpcpp
     netrw
+    nitrogen
     nix-prefetch-scripts
     nixops
     nmap
