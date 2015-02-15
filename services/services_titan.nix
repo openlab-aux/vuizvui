@@ -20,7 +20,7 @@
   };
 
   services.xserver.displayManager.sessionCommands = ''
-    ${pkgs.xorg.xsetroot}/bin/xsetroot -solid black
+    ${pkgs.nitrogen}/bin/nitrogen --restore &
     ${pkgs.networkmanagerapplet}/bin/nm-applet &
     ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
     ${pkgs.pasystray}/bin/pasystray &
