@@ -1,1 +1,1 @@
-with import <nixpkgs> {}; { inherit hello; }
+with import <nixpkgs> {}; { inherit mp3gain; }
