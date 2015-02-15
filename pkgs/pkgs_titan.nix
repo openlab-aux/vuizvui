@@ -11,6 +11,7 @@
     kismet
     minicom
     networkmanagerapplet
+    reaverwps
     snort
   ];
 }
