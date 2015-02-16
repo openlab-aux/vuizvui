@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [ ./services_common.nix ];
+
   services.printing.enable = true;
   services.timesyncd.enable = true;
   services.resolved.enable = true;
@@ -103,7 +105,7 @@
         *foreground:          #babdb6
       ''}"
 
-      DISPLAY=:0.1 ${pkgs.windowmaker}/bin/wmaker & 
+      DISPLAY=:0.1 ${pkgs.windowmaker}/bin/wmaker &
     '';
   };
 }

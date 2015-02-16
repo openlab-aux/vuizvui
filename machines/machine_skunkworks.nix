@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [ ./machine_common.nix ];
+
   boot.loader.grub = {
     enable = true;
     version = 2;
