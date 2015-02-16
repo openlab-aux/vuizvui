@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [ ./services_common.nix ];
+
   services.tftpd.enable = true;
   services.acpid.enable = true;
   services.gnome3.gnome-keyring.enable = true;

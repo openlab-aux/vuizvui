@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [ ./pkgs_common.nix ];
+
   nixpkgs.config.mpv = {
     vaapiSupport = true;
   };
