@@ -9,6 +9,7 @@
   environment.systemPackages = with pkgs; [
     abook
     beets
+    canto-curses
     hplip
     mkvtoolnix
     mutt-with-sidebar

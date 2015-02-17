@@ -9,7 +9,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    # canto // TODO: needs package
     #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
     abook
     accountsservice

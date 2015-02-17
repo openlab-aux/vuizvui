@@ -7,6 +7,7 @@
   services.timesyncd.enable = true;
   services.resolved.enable = true;
   services.haveged.enable = true;
+  services.canto-daemon.enable = true;
 
   services.redshift = {
     enable = true;
