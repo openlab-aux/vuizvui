@@ -106,7 +106,6 @@
     monodevelop
     mosh
     mp3gain
-    mpc
     mpc_cli
     mpv
     mtr
