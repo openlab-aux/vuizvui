@@ -93,6 +93,7 @@
     jwhois
     keepassx
     lftp
+    libarchive
     libreoffice
     lm_sensors
     lxappearance
@@ -126,6 +127,7 @@
     powertop
     profanity
     profile-sync-daemon
+    pv
     python
     python2
     python3
