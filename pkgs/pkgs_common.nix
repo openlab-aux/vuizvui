@@ -17,6 +17,7 @@
     aspell
     aspellDicts.de
     aspellDicts.en
+    attic
     audacity
     axel
     bc
@@ -117,6 +118,7 @@
     nix-prefetch-scripts
     nixops
     nmap
+    obnam
     openssl
     p7zip
     pandoc
