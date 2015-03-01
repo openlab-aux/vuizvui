@@ -56,6 +56,7 @@
     ghostscript
     gimp
     gitAndTools.darcsToGit
+    gitAndTools.gitAnnex
     gitAndTools.git-extras
     gitAndTools.git-remote-hg
     gitAndTools.git2cl
