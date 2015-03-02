@@ -12,7 +12,11 @@
     atom
     kismet
     minicom
+    msmtp
+    mutt
     networkmanagerapplet
+    notmuch
+    offlineimap
     reaverwps
     snort
   ];
