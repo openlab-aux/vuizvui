@@ -24,6 +24,7 @@
 
   networking.wireless.enable = false;
   networking.firewall.enable = false;
+  networking.useNetworkd = true;
 
   i18n.consoleKeyMap = "dvorak";
   programs.ssh.startAgent = false;
