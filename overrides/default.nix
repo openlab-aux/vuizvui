@@ -90,8 +90,8 @@ let
       version = "4.0.0-rc2";
       src = everything.fetchgit {
         url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;
-        rev = "a6c5170d1edea97c538c81e377e56c7b5c5b7e63";
-        sha256 = "0vj652lkxkrr6b3mmxr55xa1wsr3l9m77b6k0jp5in6jxcjr3fp5";
+        rev = "5f237425f352487a2e3fdef2f0557eedcd97d898";
+        sha256 = "1gr1c00mlvayvidw4bqfrgjlivmdlghs0hqfhqzvqr61sf5ak67j";
       };
     };
   };
