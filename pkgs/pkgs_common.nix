@@ -56,10 +56,10 @@
     ghostscript
     gimp
     gitAndTools.darcsToGit
-    gitAndTools.gitAnnex
     gitAndTools.git-extras
     gitAndTools.git-remote-hg
     gitAndTools.git2cl
+    gitAndTools.gitAnnex
     gitAndTools.gitFastExport
     gitAndTools.gitFull
     gitAndTools.gitRemoteGcrypt
@@ -162,6 +162,7 @@
     wireshark
     xlibs.xev
     xpdf
+    xpra
     xscreensaver
     youtube-dl
     zotero
