@@ -27,7 +27,11 @@
   networking.useNetworkd = true;
 
   i18n.consoleKeyMap = "dvorak";
+
   programs.ssh.startAgent = false;
+  programs.ssh.extraConfig = ''
+    ServerAliveInterval 60
+  '';
 
   services.nixosManual.showManual = false;
 
