@@ -8,6 +8,9 @@ useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
 Public License for more details.
 
+For files other than the Nix expression files the same terms apply,
+unless explicitly stated otherwise here or in the file header.
+
 You should have received a copy of the GNU General Public License
 along with this program (see LICENSE file).
 
