@@ -34,8 +34,7 @@ let
     name = "bfqsched-${version}.patch";
     inherit allPatches;
     buildCommand = ''
-      sed -e 's/IS_SUBSYS_ENABLED/IS_ENABLED/' \
-          -e '/SUBSYS/s/perf/&_event/' $allPatches > "$out"
+      cat $allPatches > "$out"
     '';
   };
 
