@@ -16,6 +16,7 @@ let
     pvolctrl = callPackage ./pvolctrl { };
     sidplayfp = callPackage ./sidplayfp { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
+    tomahawk = callPackage ./tomahawk { };
     twitchstream = callPackage ./twitchstream { };
     vim = callPackage ./vim { };
 
