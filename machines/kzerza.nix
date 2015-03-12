@@ -12,7 +12,6 @@ in {
 
   boot = {
     kernelParams = singleton "consoleblank=0";
-    kernelPackages = pkgs.linuxPackages_3_12;
     initrd.kernelModules = [ "fbcon" "usb_storage" ];
     loader.grub.device = "/dev/disk/by-id/${diskID}";
   };
