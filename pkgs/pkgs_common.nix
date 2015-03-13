@@ -147,6 +147,7 @@
     telnet
     texLiveFull
     tomahawk
+    transmission_remote_gtk
     tree
     tribler
     unrar
