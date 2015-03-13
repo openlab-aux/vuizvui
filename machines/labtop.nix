@@ -26,7 +26,7 @@ let
 in {
   i18n = {
     consoleFont = "lat9w-16";
-    consoleKeyMap = "de";
+    consoleKeyMap = "us";
     defaultLocale = "de_DE.UTF-8";
   };
 
@@ -37,7 +37,7 @@ in {
   ];
 
   services.xserver.enable = true;
-  services.xserver.layout = "de";
+  services.xserver.layout = "us";
   services.xserver.xkbOptions = "eurosign:e";
 
   services.xserver.displayManager.auto.enable = true;
