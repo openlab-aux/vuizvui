@@ -32,8 +32,19 @@ in {
 
   environment.systemPackages = [
     greybird
+    #repetierhost <- TODO
     pkgs.firefox
     pkgs.gimp
+    pkgs.freecad
+    pkgs.openscad
+    pkgs.pronterface
+    pkgs.blender
+    pkgs.slic3r
+    pkgs.libreoffice
+    pkgs.inkscape
+    pkgs.filezilla
+    pkgs.gmpc
+    pkgs.vlc
   ];
 
   services.xserver.enable = true;
