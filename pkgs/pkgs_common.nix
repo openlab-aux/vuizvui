@@ -17,7 +17,7 @@
     aspell
     aspellDicts.de
     aspellDicts.en
-    attic
+#    attic
     audacity
     axel
     bc
@@ -91,7 +91,7 @@
     impressive
     inkscape
     iotop
-    ipv6calc
+#    ipv6calc
     jwhois
     keepassx
     lftp
