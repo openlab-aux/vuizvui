@@ -42,7 +42,7 @@
   nix.maxJobs = 8;
 
   i18n = {
-    consoleFont = "lat9w16";
+    consoleFont = "lat9w-16";
     consoleKeyMap = "dvorak";
     defaultLocale = "en_US.UTF-8";
   };
