@@ -1,1 +1,3 @@
-with import <nixpkgs> {}; { inherit mp3gain; }
+{
+  skunkworks = (import <nixpkgs/nixos> { configuration = ./entry-skunkworks.nix; }).system;
+}
