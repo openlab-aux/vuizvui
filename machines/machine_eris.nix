@@ -3,14 +3,43 @@
 {
   imports = [ ./machine_common.nix ];
 
-  boot.loader.gummiboot.enable = true;
-  boot.loader.gummiboot.timeout = 2;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelModules = [ "tp_smapi" ];
-  boot.extraModulePackages = [ config.boot.kernelPackages.tp_smapi ];
-  boot.initrd.postDeviceCommands = ''
-    echo noop > /sys/block/sda/queue/scheduler
-  '';
+  boot = {
+    loader = {
+      gummiboot = {
+        enable = true;
+        timeout = 2;
+      };
+
+      efi.canTouchEfiVariables = true;
+    };
+
+    initrd = {
+      availableKernelModules = [ "ehci_pci" "ahci" "usb_storage" ];
+      kernelModules = [ "fuse" ];
+      postDeviceCommands = ''
+        echo noop > /sys/block/sda/queue/scheduler
+      '';
+    };
+
+    kernelModules = [ "tp_smapi" ];
+    extraModulePackages = [ config.boot.kernelPackages.tp_smapi ];
+  };
+
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/4788e218-db0f-4fd6-916e-e0c484906eb0";
+    fsType = "btrfs";
+    options = pkgs.lib.concatStringsSep "," [
+      "autodefrag"
+      "space_cache"
+      "compress=lzo"
+      "noatime"
+      "ssd"
+    ];
+  };
+
+  swapDevices = [ ];
+
+  nix.maxJobs = 4;
 
   i18n = {
     consoleFont = "lat9w-16";
