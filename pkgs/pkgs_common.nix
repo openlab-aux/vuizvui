@@ -17,7 +17,6 @@
     aspell
     aspellDicts.de
     aspellDicts.en
-#    attic
     audacity
     axel
     bc
@@ -91,7 +90,6 @@
     impressive
     inkscape
     iotop
-#    ipv6calc
     jwhois
     keepassx
     lftp
@@ -146,6 +144,7 @@
     taskwarrior
     telnet
     texLiveFull
+    texinfo
     tomahawk
     transmission_remote_gtk
     tree
@@ -167,5 +166,7 @@
     xscreensaver
     youtube-dl
     zotero
+#    attic
+#    ipv6calc
   ];
 }
