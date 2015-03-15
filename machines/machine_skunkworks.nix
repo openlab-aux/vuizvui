@@ -20,7 +20,7 @@
 
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
-    blacklistedKernelModules = [ "pcspkir" ];
+    blacklistedKernelModules = [ "pcspkr" ];
   };
 
   fileSystems."/" = {
