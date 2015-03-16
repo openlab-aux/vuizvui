@@ -91,7 +91,7 @@
     impressive
     inkscape
     iotop
-#    ipv6calc
+    ipv6calc
     jwhois
     keepassx
     lftp
