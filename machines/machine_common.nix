@@ -5,6 +5,7 @@
 
   nix.buildCores = 0;
   nix.useChroot = true;
+  nix.binaryCaches = [ "https://headcounter.org/hydra/" ];
 
   time.timeZone = "Europe/London";
 
