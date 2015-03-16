@@ -96,7 +96,7 @@
     keepassx
     lftp
     libarchive
-    lib.overrideDerivation libreoffice (lib.const { doCheck = false; })
+    libreoffice
     lm_sensors
     lxappearance
     lxc
