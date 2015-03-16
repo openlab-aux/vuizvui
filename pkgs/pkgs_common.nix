@@ -96,7 +96,7 @@
     keepassx
     lftp
     libarchive
-    libreoffice
+#    libreoffice
     lm_sensors
     lxappearance
     lxc
