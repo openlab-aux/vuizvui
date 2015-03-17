@@ -1,4 +1,4 @@
-import <nixpkgs/nixos/tests/make-test.nix> {
+import ./make-test.nix {
   name = "heinrich";
 
   nodes = let
