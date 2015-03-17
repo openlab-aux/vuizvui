@@ -43,7 +43,7 @@ let
   };
 
 in {
-  imports = mapAttrsToList mkRouteConfig routes;
+  imports = singleton ../common.nix ++ mapAttrsToList mkRouteConfig routes;
 
   options.heinrich = {
     internalInterface = mkOption {

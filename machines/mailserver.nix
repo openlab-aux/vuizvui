@@ -35,7 +35,11 @@
   ''}";
 
 in {
-  imports = [ ../modules/postfix/restrictions.nix ];
+  imports = [
+    ../common.nix
+    ../modules/postfix/restrictions.nix # XXX: Refactor and remove!
+  ];
+
   services.spamassassin.enable = true;
 
   services.postfix.enable = true;

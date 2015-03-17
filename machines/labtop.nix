@@ -24,6 +24,8 @@ let
   };
 
 in {
+  imports = [ ../common.nix ];
+
   i18n = {
     consoleFont = "lat9w-16";
     consoleKeyMap = "us";
