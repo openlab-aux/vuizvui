@@ -7,3 +7,4 @@ this.
 No coincidences, right?
 
 [Nix]: https://nixos.org/nix/
+Hydra builds: https://headcounter.org/hydra/jobset/openlab/labernix
