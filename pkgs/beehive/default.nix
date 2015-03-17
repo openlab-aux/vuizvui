@@ -6,8 +6,8 @@ goPackages.buildGoPackage {
   src = fetchFromGitHub {
     owner = "muesli";
     repo = "beehive";
-    rev = "6a90eb15c16aaf8e35a28d28e86513701a330f34";
-    sha256 = "18vz1s1fv1yf2i4yml6sxasiq1iyiq29yj52pjng7sxqx1ps9rcb";
+    rev = "74a7fc4927b8ef14b199254e04630c24f44429f7";
+    sha256 = "1clgc6245yb3yxqdc14xj0f8hc8v4b9hgkv22c89zp0n1by8xrqx";
   };
   buildInputs = lib.mapAttrsToList (name: val: val) (import ./godeps.nix {
     inherit (goPackages) buildGoPackage;
