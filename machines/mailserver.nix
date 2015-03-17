@@ -41,6 +41,10 @@ in {
   services.postfix.enable = true;
   services.postfix.hostname = "mailtest.lan";
 
+  # TODO: This is a dummy, replace it once we know about the real root fs.
+  fileSystems."/".label = "root";
+  boot.loader.grub.device = "nodev";
+
   openlab.postfix.restrictions = {
     sender = [
       "reject_authenticated_sender_login_mismatch"

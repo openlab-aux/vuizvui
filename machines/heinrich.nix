@@ -109,6 +109,10 @@ in {
       5. Reisst dir Hannes den Arsch auf, wenn Du die Punkte 0-2 ignorierst.
     '';
 
+    # TODO: This is a dummy, replace it once we know about the real root fs.
+    fileSystems."/".label = "root";
+    boot.loader.grub.device = "nodev";
+
     networking.useNetworkd = true;
     networking.firewall.enable = false;
     networking.nat.enable = true;

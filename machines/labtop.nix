@@ -30,6 +30,10 @@ in {
     defaultLocale = "de_DE.UTF-8";
   };
 
+  # TODO: This is a dummy, replace it once we know about the real root fs.
+  fileSystems."/".label = "root";
+  boot.loader.grub.device = "nodev";
+
   environment.systemPackages = [
     greybird
     #repetierhost <- TODO
