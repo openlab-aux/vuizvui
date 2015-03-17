@@ -13,4 +13,10 @@ in {
   tests = {
     heinrich = import ./tests/heinrich.nix { inherit system; };
   };
+
+  pkgs = import ./pkgs {
+    pkgs = import <nixpkgs> {
+      inherit system;
+    };
+  };
 }
