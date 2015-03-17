@@ -41,7 +41,7 @@ in {
     pkgs.gimp
     pkgs.freecad
     pkgs.openscad
-    pkgs.pronterface
+    #pkgs.pronterface <- TODO
     pkgs.blender
     pkgs.slic3r
     pkgs.libreoffice
@@ -50,6 +50,9 @@ in {
     pkgs.gmpc
     pkgs.vlc
   ];
+
+  # TODO: Needed for slic3r right now.
+  nixpkgs.config.allowBroken = true;
 
   services.xserver.enable = true;
   services.xserver.layout = "us";
