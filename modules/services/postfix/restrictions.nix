@@ -14,7 +14,7 @@ let
       '';
     };
     config = let
-      cfg = config.openlab.postfix.restrictions.${name};
+      cfg = config.labernix.postfix.restrictions.${name};
     in mkIf (cfg != null) ''
       smtpd_${name}_restrictions = ${concatStringsSep ", " cfg}
     '';
@@ -49,5 +49,5 @@ let
     '';
   };
 in {
-  options.openlab.postfix.restrictions = mapAttrs mkRestriction restrictions;
+  options.labernix.postfix.restrictions = mapAttrs mkRestriction restrictions;
 }

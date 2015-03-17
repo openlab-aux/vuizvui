@@ -35,10 +35,7 @@
   ''}";
 
 in {
-  imports = [
-    ../common.nix
-    ../modules/postfix/restrictions.nix # XXX: Refactor and remove!
-  ];
+  imports = [ ../common.nix ];
 
   services.spamassassin.enable = true;
 
@@ -49,7 +46,7 @@ in {
   fileSystems."/".label = "root";
   boot.loader.grub.device = "nodev";
 
-  openlab.postfix.restrictions = {
+  labernix.postfix.restrictions = {
     sender = [
       "reject_authenticated_sender_login_mismatch"
       "reject_unknown_sender_domain"
