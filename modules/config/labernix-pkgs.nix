@@ -1,5 +1,5 @@
 {
-  nixpkgs.config.overridePackages = pkgs: {
+  nixpkgs.config.packageOverrides = pkgs: {
     labernix = import ../../pkgs {
       inherit pkgs;
     };
