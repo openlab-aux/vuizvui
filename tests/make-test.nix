@@ -1,4 +1,6 @@
 f: { system ? builtins.currentSystem, ... } @ args: let
+  lib = import <nixpkgs/lib>;
+
   testLib = import <nixpkgs/nixos/lib/testing.nix> {
     inherit system;
   };
@@ -11,16 +13,16 @@ f: { system ? builtins.currentSystem, ... } @ args: let
     };
   }) else f;
 
-  nodes = if testArgs ? machine then {
+  nodes = testArgs.nodes or (if testArgs ? machine then {
     inherit (testArgs) machine;
-  } else testArgs.nodes;
+  } else {});
 
-  injectCommon = name: values: {
-    imports = [ ../common.nix values ];
+  injectCommon = name: conf: {
+    imports = [ ../common.nix conf ];
   };
 
   testArgsWithCommon = removeAttrs testArgs [ "machine" ] // {
-    nodes = testLib.mapAttrs injectCommon nodes;
+    nodes = lib.mapAttrs injectCommon nodes;
   };
 
-in testLib.makeTest testArgs
+in testLib.makeTest testArgsWithCommon
