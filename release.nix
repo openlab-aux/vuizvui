@@ -4,9 +4,9 @@ let
 
 in with pkgs.lib; with builtins; {
 
-  machines = mapAttrs (name: configuration: (import <nixpkgs/nixos> {
-    inherit configuration;
-  }).system) (import ./network.nix);
+  machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs:
+    attrs.build.config.system.build.toplevel
+  ) (import ./machines { inherit system; });
 
   tests = {
     i3 = import ./tests/i3.nix { inherit system; };

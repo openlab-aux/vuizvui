@@ -1,10 +1,10 @@
 { pkgs, ... }:
 
 with pkgs.lib;
-with import ../lib;
+with import ../../lib;
 
 {
-  imports = singleton ../common-workstation.nix;
+  imports = singleton ../../common-workstation.nix;
 
   nix.maxJobs = 8;
 
