@@ -22,6 +22,10 @@ For writing modules, make sure to categorize them accordingly:
     <td>Modules that implement systemd services</td>
   </tr>
   <tr>
+    <th>system</th>
+    <td>Everything system or hardware-related (like for example kernel)</td>
+  </tr>
+  <tr>
     <th>tasks</th>
     <td>Various one-shot services</td>
   </tr>
