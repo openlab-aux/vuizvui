@@ -11,7 +11,7 @@
     };
   in {
     heinrich = {
-      imports = [ common (import ../machines {}).labnet.heinrich.config ];
+      imports = [ common (import ../../machines {}).labnet.heinrich.config ];
       virtualisation.vlans = [ 1 8 14 ];
       heinrich.internalInterface = "eth1";
       heinrich.externalInterface = "eth2";
