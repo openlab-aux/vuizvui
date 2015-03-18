@@ -47,7 +47,26 @@ with import ../../lib;
   ];
 
   services.synergy.server.enable = true;
-  services.synergy.server.configFile = ../../cfgfiles/synergy.conf;
+  services.synergy.server.configFile = pkgs.writeText "synergy.conf" ''
+    section: screens
+      dnyarri:
+      mmrnmhrm:
+    end
+
+    section: links
+      mmrnmhrm:
+        left = dnyarri
+        right = dnyarri
+      dnyarri:
+        right = mmrnmhrm
+        left = mmrnmhrm
+    end
+
+    section: options
+      keystroke(AudioPlay) = switchToScreen(dnyarri)
+      keystroke(Menu) = switchToScreen(mmrnmhrm)
+    end
+  '';
 
   systemd.services."synergy-server".serviceConfig.CPUSchedulingPolicy = "rr";
   systemd.services."synergy-server".serviceConfig.CPUSchedulingPriority = 50;
