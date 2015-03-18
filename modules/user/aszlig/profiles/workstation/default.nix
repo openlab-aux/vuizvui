@@ -9,7 +9,7 @@ in {
     enable = lib.mkEnableOption "Workstation profile for aszlig";
   };
 
-  imports = [ ../../../../packages.nix ];
+  imports = [ ./packages.nix ];
 
   config = lib.mkIf cfg.enable {
     vuizvui.user.aszlig.profiles.base.enable = true;

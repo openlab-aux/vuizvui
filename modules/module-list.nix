@@ -1,6 +1,6 @@
 [
   ./user/aszlig/profiles/base.nix
-  ./user/aszlig/profiles/workstation.nix
+  ./user/aszlig/profiles/workstation
   ./user/aszlig/programs/git
   ./user/aszlig/programs/zsh
   ./user/aszlig/services/i3
