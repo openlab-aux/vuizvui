@@ -30,12 +30,6 @@ let
         CONFIG
       '';
     };
-
-    zsh = o: {
-      postConfigure = (o.postConfigure or "") + ''
-        sed -i -e '/^name=zsh\/newuser/d' config.modules
-      '';
-    };
   };
 
   # misc

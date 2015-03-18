@@ -16,6 +16,14 @@ in {
       export EMAIL="aszlig@redmoonstudios.org"
     '';
 
+    nixpkgs.config.packageOverrides = pkgs: {
+      zsh = overrideDerivation pkgs.zsh (o: {
+        postConfigure = (o.postConfigure or "") + ''
+          sed -i -e '/^name=zsh\/newuser/d' config.modules
+        '';
+      });
+    };
+
     programs.zsh.enable = true;
 
     programs.zsh.shellAliases.t = "task";
