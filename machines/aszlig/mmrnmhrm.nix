@@ -47,7 +47,7 @@ with import ../../lib;
   ];
 
   services.synergy.server.enable = true;
-  services.synergy.server.configFile = ../cfgfiles/synergy.conf;
+  services.synergy.server.configFile = ../../cfgfiles/synergy.conf;
 
   systemd.services."synergy-server".serviceConfig.CPUSchedulingPolicy = "rr";
   systemd.services."synergy-server".serviceConfig.CPUSchedulingPriority = 50;
