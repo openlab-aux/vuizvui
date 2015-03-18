@@ -35,8 +35,6 @@
   ''}";
 
 in {
-  imports = [ ../common.nix ];
-
   services.spamassassin.enable = true;
 
   services.postfix.enable = true;
@@ -46,7 +44,8 @@ in {
   fileSystems."/".label = "root";
   boot.loader.grub.device = "nodev";
 
-  labernix.postfix.restrictions = {
+  vuizvui.services.postfix.enable = true;
+  vuizvui.services.postfix.restrictions = {
     sender = [
       "reject_authenticated_sender_login_mismatch"
       "reject_unknown_sender_domain"
