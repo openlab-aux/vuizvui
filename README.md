@@ -9,6 +9,6 @@ while on the other side "nix" means nothing. Which fits quite well because this
 repository is for everything either too complex or not polished/generic enough
 to be pushed into [nixpkgs].
 
-Hydra builds: https://headcounter.org/hydra/jobset/aszlig/vuizvui
+Hydra builds: https://headcounter.org/hydra/jobset/openlab/vuizvui
 [nixpkgs]:    https://github.com/NixOS/nixpkgs
-[manual]:     https://headcounter.org/hydra/job/aszlig/vuizvui/manual/latest/download/1/manual.html
+[manual]:     https://headcounter.org/hydra/job/openlab/vuizvui/manual/latest/download/1/manual.html
