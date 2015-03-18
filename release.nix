@@ -12,6 +12,12 @@ in with pkgs.lib; with builtins; {
     inherit system;
   });
 
+  pkgs = import ./pkgs {
+    pkgs = import <nixpkgs> {
+      inherit system;
+    };
+  };
+
   manual = let
     modules = import <nixpkgs/nixos/lib/eval-config.nix> {
       modules = import ./modules/module-list.nix;
