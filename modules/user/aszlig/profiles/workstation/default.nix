@@ -9,8 +9,6 @@ in {
     enable = lib.mkEnableOption "Workstation profile for aszlig";
   };
 
-  imports = [ ./packages.nix ];
-
   config = lib.mkIf cfg.enable {
     vuizvui.user.aszlig.profiles.base.enable = true;
 
@@ -27,7 +25,7 @@ in {
     in singleton (pkgs.writeScriptBin "xreset" ''
       #!${pkgs.stdenv.shell}
       ${pkgs.xorg.xrandr}/bin/xrandr ${concatStringsSep " " randrConf}
-    '');
+    '') ++ import ./packages.nix pkgs;
 
     hardware = {
       pulseaudio.enable = true;
