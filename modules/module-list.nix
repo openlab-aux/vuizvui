@@ -1,5 +1,6 @@
 [
   ./profiles/common.nix
+  ./services/multipath-vpn.nix
   ./services/postfix
   ./user/aszlig/profiles/base.nix
   ./user/aszlig/profiles/workstation
