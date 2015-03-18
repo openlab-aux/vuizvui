@@ -8,10 +8,9 @@ in with pkgs.lib; with builtins; {
     attrs.build.config.system.build.toplevel
   ) (import ./machines { inherit system; });
 
-  tests = {
-    aszlig.i3 = import ./tests/aszlig/i3.nix { inherit system; };
-    labnet.heinrich = import ./tests/labnet/heinrich.nix { inherit system; };
-  };
+  tests = mapAttrsRecursiveCond (t: !(t ? test)) (const id) (import ./tests {
+    inherit system;
+  });
 
   manual = let
     modules = import <nixpkgs/nixos/lib/eval-config.nix> {

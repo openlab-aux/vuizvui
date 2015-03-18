@@ -1,4 +1,6 @@
-import ../make-test.nix ({ pkgs, ... }: {
+{ pkgs, ... }:
+
+{
   name = "i3";
 
   machine = { lib, ... }: {
@@ -26,4 +28,4 @@ import ../make-test.nix ({ pkgs, ... }: {
     $machine->sleep(20);
     $machine->screenshot("i3");
   '';
-})
+}
