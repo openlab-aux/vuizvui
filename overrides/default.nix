@@ -21,54 +21,8 @@ let
     miro.enableBonjour = true;
   };
 
-  gajimGtkTheme = everything.writeText "gajim.gtkrc" ''
-    style "default" {
-      fg[NORMAL] = "#d5faff"
-      fg[ACTIVE] = "#fffeff"
-      fg[SELECTED] = "#fffeff"
-      fg[INSENSITIVE] = "#85aaaf"
-      fg[PRELIGHT] = "#d7f2ff"
-
-      text[NORMAL] = "#fffefe"
-      text[ACTIVE] = "#fffeff"
-      text[SELECTED] = "#fffeff"
-      text[INSENSITIVE] = "#85aaaf"
-      text[PRELIGHT] = "#d7f2ff"
-
-      bg[NORMAL] = "#0f4866"
-      bg[ACTIVE] = "#0c232e"
-      bg[SELECTED] = "#005a56"
-      bg[INSENSITIVE] = "#103040"
-      bg[PRELIGHT] = "#1d5875"
-
-      base[NORMAL] = "#0c232e"
-      base[ACTIVE] = "#0f4864"
-      base[SELECTED] = "#005a56"
-      base[INSENSITIVE] = "#103040"
-      base[PRELIGHT] = "#1d5875"
-    }
-
-    class "GtkWidget" style "default"
-
-    gtk-enable-animations = 0
-  '';
-
-  gajimPatch = everything.substituteAll {
-    src = ../pkgs/gajim/config.patch;
-    nix_config = everything.writeText "gajim.config"
-      (import ../cfgfiles/gajim.nix);
-  };
-
   # derivation overrides
   drvOverrides = mapOverride overrideDerivation argOverrides {
-    gajim = o: {
-      patches = (o.patches or []) ++ singleton gajimPatch;
-      postPatch = (o.postPatch or "") + ''
-        sed -i -e '/^export/i export GTK2_RC_FILES="${gajimGtkTheme}"' \
-          scripts/gajim.in
-      '';
-    };
-
     mpv = o: {
       installPhase = o.installPhase + ''
         cat > "$out/etc/mpv/mpv.conf" <<CONFIG
