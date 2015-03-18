@@ -1,5 +1,4 @@
-{ pkgs ? import <nixpkgs> {}
-}:
+{ pkgs ? import <nixpkgs> {} }:
 
 let
   callPackage = pkgs.lib.callPackageWith (pkgs // self);
@@ -7,6 +6,7 @@ let
   self = {
     aacolorize = callPackage ./aacolorize { };
     axbo = callPackage ./axbo { };
+    beehive = callPackage ./beehive { };
     blop = callPackage ./blop { };
     grandpa = callPackage ./grandpa { };
     nixops = callPackage ./nixops { };
@@ -23,4 +23,4 @@ let
       bfqsched = callPackage ./kpatches/bfqsched.nix { };
     };
   };
-in { vuizvui = self; }
+in self

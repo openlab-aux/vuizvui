@@ -3,7 +3,7 @@ pkgs:
 with pkgs.lib;
 
 let
-  allPackages = (import ../pkgs { pkgs = everything; }).vuizvui // misc;
+  allPackages = (import ../pkgs { pkgs = everything; }) // misc;
   everything = pkgs // allPackages // drvOverrides // argOverrides;
 
   mapOverride = overrideFun: includePackages: let
