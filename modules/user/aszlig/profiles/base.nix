@@ -58,7 +58,36 @@ in {
       xz
     ];
 
-    nixpkgs.config = import ../../../../nixpkgs/config.nix;
+    nixpkgs.config = {
+      pulseaudio = true;
+      chromium.enablePepperFlash = true;
+      firefox.jre = true;
+
+      # Needed for CPU microcode
+      allowUnfree = true;
+
+      allowBroken = true;
+
+      packageOverrides = pkgs: {
+        miro = pkgs.miro.override {
+          enableBonjour = true;
+        };
+        netrw = pkgs.netrw.override {
+          checksumType = "mhash";
+        };
+        pulseaudio = pkgs.pulseaudio.override {
+          useSystemd = true;
+        };
+        uqm = pkgs.uqm.override {
+          use3DOVideos = true;
+          useRemixPacks = true;
+        };
+        w3m = pkgs.w3m.override {
+          graphicsSupport = true;
+        };
+      };
+    };
+
     system.fsPackages = with pkgs; [ sshfsFuse ];
     time.timeZone = "Europe/Berlin";
   };

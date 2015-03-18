@@ -50,7 +50,7 @@ in {
     preStart = "${pkgs.kbd}/bin/chvt 7";
     serviceConfig = {
       Type = "idle";
-      ExecStart = "${pkgs.grandpa}/bin/grandpa";
+      ExecStart = "${pkgs.vuizvui.grandpa}/bin/grandpa";
       StandardInput = "tty";
       StandardOutput = "tty";
       TTYPath = "/dev/tty7";

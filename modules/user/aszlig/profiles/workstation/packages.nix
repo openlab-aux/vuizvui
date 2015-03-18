@@ -1,11 +1,11 @@
 pkgs: with pkgs; [
-  aacolorize
+  vuizvui.aacolorize
   acpi
   apg
   ascii
   aspellDicts.de
   aspellDicts.en
-  axbo
+  vuizvui.axbo
   bc
   beets
   chromiumBeta
@@ -51,7 +51,7 @@ pkgs: with pkgs; [
   netrw
   nix-prefetch-scripts
   nix-repl
-  nixops
+  vuizvui.nixops
   nixpkgs-lint
   nmap
   openssh
@@ -61,7 +61,7 @@ pkgs: with pkgs; [
   picard
   posix_man_pages
   pulseaudio
-  pvolctrl
+  vuizvui.pvolctrl
   python
   python3
   pythonPackages.hetzner
@@ -79,7 +79,7 @@ pkgs: with pkgs; [
   surfraw
   taskwarrior
   telnet
-  tomahawk
+  vuizvui.tomahawk
   unzip
   uqm
   valgrind

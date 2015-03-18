@@ -45,7 +45,7 @@ in {
       linuxVuizvui = pkgs.buildLinux {
         inherit (mainlineKernel) version src;
 
-        kernelPatches = singleton pkgs.vuizvuiKernelPatches.bfqsched;
+        kernelPatches = singleton pkgs.vuizvui.kernelPatches.bfqsched;
         configfile = generateKConf cfg.config;
         allowImportFromDerivation = true;
       };

@@ -19,7 +19,7 @@ let
     tomahawk = callPackage ./tomahawk { };
     twitchstream = callPackage ./twitchstream { };
 
-    vuizvuiKernelPatches = {
+    kernelPatches = {
       bfqsched = callPackage ./kpatches/bfqsched.nix { };
     };
   };

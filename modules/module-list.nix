@@ -1,4 +1,5 @@
 [
+  ./profiles/common.nix
   ./user/aszlig/profiles/base.nix
   ./user/aszlig/profiles/workstation
   ./user/aszlig/programs/gajim
