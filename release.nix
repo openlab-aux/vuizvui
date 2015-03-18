@@ -1,4 +1,5 @@
 let
+  supportedSystems = [ "i686-linux" "x86_64-linux" ];
   system = "x86_64-linux";
   pkgs = import <nixpkgs> { inherit system; };
 
@@ -12,11 +13,14 @@ in with pkgs.lib; with builtins; {
     inherit system;
   });
 
-  pkgs = import ./pkgs {
-    pkgs = import <nixpkgs> {
-      inherit system;
+  pkgs = let
+    releaseLib = import <nixpkgs/pkgs/top-level/release-lib.nix> {
+      inherit supportedSystems;
+      packageSet = attrs: import ./pkgs {
+        pkgs = import <nixpkgs> attrs;
+      } // { inherit (pkgs) lib; };
     };
-  };
+  in with releaseLib; mapTestOn (packagesWithMetaPlatform releaseLib.pkgs);
 
   manual = let
     modules = import <nixpkgs/nixos/lib/eval-config.nix> {
