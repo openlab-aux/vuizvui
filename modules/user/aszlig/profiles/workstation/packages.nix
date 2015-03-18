@@ -44,7 +44,6 @@ pkgs: with pkgs; [
   mosh
   mp3info
   mpg321
-  mpv
   mtr
   mutt
   ncdu

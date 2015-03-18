@@ -53,6 +53,7 @@ in {
     vuizvui.user.aszlig.services.vlock.enable = true;
 
     vuizvui.user.aszlig.programs.gajim.enable = true;
+    vuizvui.user.aszlig.programs.mpv.enable = true;
 
     vuizvui.user.aszlig.programs.git.enable = true;
     vuizvui.user.aszlig.programs.git.config = {

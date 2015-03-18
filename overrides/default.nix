@@ -22,15 +22,7 @@ let
   };
 
   # derivation overrides
-  drvOverrides = mapOverride overrideDerivation argOverrides {
-    mpv = o: {
-      installPhase = o.installPhase + ''
-        cat > "$out/etc/mpv/mpv.conf" <<CONFIG
-        ao=pulse
-        CONFIG
-      '';
-    };
-  };
+  drvOverrides = mapOverride overrideDerivation argOverrides {};
 
   # misc
   misc = {
