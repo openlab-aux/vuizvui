@@ -8,7 +8,7 @@ let
   storeUUID = "ce1db87b-d717-450d-a212-3685a224f626";
   diskID = "ata-Hitachi_HTS543232A7A384_E2P31243FGB6PJ";
 in {
-  imports = singleton ../../common-workstation.nix;
+  vuizvui.user.aszlig.profiles.workstation.enable = true;
 
   boot = rec {
     kernelPackages = with pkgs; let

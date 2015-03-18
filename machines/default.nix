@@ -5,7 +5,7 @@ let
     config = import path;
     build = import <nixpkgs/nixos/lib/eval-config.nix> {
       inherit system;
-      modules = [ config ];
+      modules = [ config ] ++ import ../modules/module-list.nix;
     };
   };
 

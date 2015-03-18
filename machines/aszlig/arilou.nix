@@ -7,10 +7,8 @@ let
   swapUUID = "4d172959-5cfd-4164-a46e-fa7be0dfd03a";
   diskID = "usb-Lexar_USB_Flash_Drive_201303211246293590E4-0:0";
 in {
-  imports = [
-    ../../common-workstation.nix
-    <nixpkgs/nixos/modules/profiles/all-hardware.nix>
-  ];
+  vuizvui.user.aszlig.profiles.workstation.enable = true;
+  imports = [ <nixpkgs/nixos/modules/profiles/all-hardware.nix> ];
 
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;

@@ -4,7 +4,7 @@ with pkgs.lib;
 with import ../../lib;
 
 {
-  imports = singleton ../../common-workstation.nix;
+  vuizvui.user.aszlig.profiles.workstation.enable = true;
 
   nix.maxJobs = 8;
 

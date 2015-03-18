@@ -1,7 +1,9 @@
 [
+  ./user/aszlig/profiles/base.nix
+  ./user/aszlig/profiles/workstation.nix
   ./user/aszlig/programs/git
+  ./user/aszlig/programs/zsh
   ./user/aszlig/services/i3
   ./user/aszlig/services/slim
   ./user/aszlig/services/vlock
-  ./user/aszlig/programs/zsh
 ]

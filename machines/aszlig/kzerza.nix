@@ -6,7 +6,7 @@ let
   rootUUID = "ad41f848-d14a-4a89-9d04-3e48bd73dc5c";
   diskID = "usb-0000_Removable_Drive_23372707080836980013-0:0";
 in {
-  imports = singleton ../../common.nix;
+  vuizvui.user.aszlig.profiles.base.enable = true;
 
   services.xserver.enable = mkForce false;
 
