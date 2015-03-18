@@ -1,11 +1,12 @@
-import <nixpkgs/nixos/tests/make-test.nix> ({ pkgs, ... }: {
+import ./make-test.nix ({ pkgs, ... }: {
   name = "i3";
 
   machine = { lib, ... }: {
-    imports = [
-      ../common.nix
-      <nixpkgs/nixos/tests/common/x11.nix>
-    ];
+    imports = [ <nixpkgs/nixos/tests/common/x11.nix> ];
+
+    vuizvui.user.aszlig.profiles.base.enable = true;
+    vuizvui.user.aszlig.services.i3.enable = true;
+
     services.xserver.windowManager.default = lib.mkForce "i3";
     /* XXX */
     fonts = {
@@ -18,9 +19,6 @@ import <nixpkgs/nixos/tests/make-test.nix> ({ pkgs, ... }: {
       ];
     };
     /* !XXX */
-    vuizvui = {
-      i3.enable = true;
-    };
   };
 
   testScript = { nodes, ... }: ''

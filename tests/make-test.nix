@@ -9,7 +9,7 @@ f: { system ? builtins.currentSystem, ... } @ args: let
 
   testArgs = if builtins.isFunction f then f (args // {
     pkgs = pkgs // {
-      labernix = import ../pkgs { inherit pkgs; };
+      vuizvui = import ../pkgs { inherit pkgs; };
     };
   }) else f;
 
@@ -18,7 +18,7 @@ f: { system ? builtins.currentSystem, ... } @ args: let
   } else {});
 
   injectCommon = name: conf: {
-    imports = [ ../common.nix conf ];
+    imports = [ conf ] ++ import ../modules/module-list.nix;
   };
 
   testArgsWithCommon = removeAttrs testArgs [ "machine" ] // {
