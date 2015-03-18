@@ -137,8 +137,8 @@ with import ../../lib;
   services.xserver.videoDrivers = [ "ati" ];
   services.xserver.xrandrHeads = [ "HDMI-0" "DVI-0" ];
 
-  vuizvui.i3.reverseHeads = true;
-  vuizvui.i3.workspaces."6" = {
+  vuizvui.user.aszlig.services.i3.reverseHeads = true;
+  vuizvui.user.aszlig.services.i3.workspaces."6" = {
     label = "Chromium";
     assign = singleton { class = "^Chromium(?:-browser)?\$"; };
   };

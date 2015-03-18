@@ -3,6 +3,8 @@
 with lib;
 
 let
+  cfg = config.vuizvui.user.aszlig.programs.git;
+
   genConf = attrs: let
     escStr = s: "\"${escape [ "\"" "\\" ] s}\"";
     mkVal = v: if isBool v && v  then "true"
@@ -30,13 +32,13 @@ let
   gitPatched = overrideDerivation pkgs.gitFull (git: {
     makeFlags = let
       oldFlags = git.makeFlags or [];
-      newVal = "ETC_GITCONFIG=${config.vuizvui.git.config}";
+      newVal = "ETC_GITCONFIG=${cfg.config}";
     in if isList oldFlags
        then oldFlags ++ [ newVal ]
        else "${oldFlags} ${newVal}";
   });
 in {
-  options.vuizvui.git = {
+  options.vuizvui.user.aszlig.programs.git = {
     enable = mkEnableOption "Git";
 
     config = mkOption {
@@ -62,7 +64,7 @@ in {
     };
   };
 
-  config = mkIf config.vuizvui.git.enable {
+  config = mkIf cfg.enable {
     environment.systemPackages = [
       gitPatched
       pkgs.gitAndTools.git-remote-hg

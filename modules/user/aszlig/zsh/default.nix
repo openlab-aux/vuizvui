@@ -2,12 +2,15 @@
 
 with lib;
 
-{
-  options.vuizvui.zsh = {
+let
+  cfg = config.vuizvui.user.aszlig.programs.zsh;
+
+in {
+  options.vuizvui.user.aszlig.programs.zsh = {
     enable = mkEnableOption "zsh";
   };
 
-  config = mkIf config.vuizvui.zsh.enable {
+  config = mkIf cfg.enable {
     environment.shellInit = ''
       export EDITOR="vim"
       export EMAIL="aszlig@redmoonstudios.org"

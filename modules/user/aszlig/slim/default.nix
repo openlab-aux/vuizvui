@@ -3,10 +3,12 @@
 with lib;
 
 let
-  cfg = config.vuizvui.slim;
+  cfg = config.vuizvui.user.aszlig.services.slim;
   randrHeads = config.services.xserver.xrandrHeads;
 in {
-  options.vuizvui.slim.enable = mkEnableOption "Vuizvui SLiM";
+  options.vuizvui.user.aszlig.services.slim = {
+    enable = mkEnableOption "Vuizvui SLiM";
+  };
 
   config.services.xserver.displayManager.slim = mkIf cfg.enable {
     enable = true;

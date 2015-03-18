@@ -44,13 +44,13 @@ in {
     ];
   };
 
-  vuizvui.i3.enable = true;
-  vuizvui.slim.enable = true;
-  vuizvui.vlock.enable = true;
-  vuizvui.zsh.enable = true;
+  vuizvui.user.aszlig.services.i3.enable = true;
+  vuizvui.user.aszlig.services.slim.enable = true;
+  vuizvui.user.aszlig.services.vlock.enable = true;
+  vuizvui.user.aszlig.programs.zsh.enable = true;
 
-  vuizvui.git.enable = true;
-  vuizvui.git.config = {
+  vuizvui.user.aszlig.programs.git.enable = true;
+  vuizvui.user.aszlig.programs.git.config = {
     color.ui = "auto";
     merge.tool = "vimdiff3";
     user.email = "aszlig@redmoonstudios.org";

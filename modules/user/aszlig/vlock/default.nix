@@ -1,6 +1,8 @@
 { pkgs, config, lib, ... }:
 
 let
+  cfg = config.vuizvui.user.aszlig.services.vlock;
+
   messageFile = pkgs.runCommand "message.cat" {} ''
     echo -en '\e[H\e[2J\e[?25l' > "$out"
     "${pkgs.aacolorize}/bin/aacolorize" \
@@ -24,7 +26,9 @@ let
     '';
   });
 in {
-  options.vuizvui.vlock.enable = lib.mkEnableOption "console lock";
+  options.vuizvui.user.aszlig.services.vlock = {
+    enable = lib.mkEnableOption "console lock";
+  };
 
   config.systemd.sockets.vlock = {
     description = "Console Lock Socket";
@@ -33,7 +37,7 @@ in {
     socketConfig.Accept = true;
   };
 
-  config.systemd.services."vlock@" = lib.mkIf config.vuizvui.vlock.enable {
+  config.systemd.services."vlock@" = lib.mkIf cfg.enable {
     description = "Lock All Consoles";
     serviceConfig.Type = "oneshot";
 

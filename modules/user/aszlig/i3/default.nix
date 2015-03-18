@@ -3,6 +3,7 @@
 with lib;
 
 let
+  cfg = config.vuizvui.user.aszlig.services.i3;
   inherit (config.services.xserver) xrandrHeads;
 
   # The symbols if you press shift and a number key.
@@ -16,7 +17,7 @@ let
   headCount = length xrandrHeads;
   wsPerHead = wsCount / headCount;
   excessWs = wsCount - (headCount * wsPerHead);
-  headModifier = if config.vuizvui.i3.reverseHeads then reverseList else id;
+  headModifier = if cfg.reverseHeads then reverseList else id;
   getHeadAt = elemAt (headModifier xrandrHeads);
 
   mkDefaultWorkspace = number: numberSymbol: {
@@ -31,13 +32,13 @@ let
     };
   };
 
-  wsCfgList = mapAttrsToList (_: getAttr "config") config.vuizvui.i3.workspaces;
+  wsCfgList = mapAttrsToList (_: getAttr "config") cfg.workspaces;
   wsConfig = concatStrings wsCfgList;
   defaultWorkspaces = listToAttrs (imap mkDefaultWorkspace wsNumberSymbols);
 
   conky = import ./conky.nix {
     inherit pkgs;
-    timeout = config.vuizvui.i3.networkTimeout;
+    timeout = cfg.networkTimeout;
   };
 
   mkBar = output: statusCmd: singleton ''
@@ -65,7 +66,7 @@ let
 
 in
 {
-  options.vuizvui.i3 = {
+  options.vuizvui.user.aszlig.services.i3 = {
     enable = mkEnableOption "i3";
 
     workspaces = mkOption {
@@ -101,9 +102,9 @@ in
     };
   };
 
-  config.vuizvui.i3.workspaces = defaultWorkspaces;
+  config.vuizvui.user.aszlig.services.i3.workspaces = defaultWorkspaces;
 
-  config.services.xserver.windowManager = mkIf config.vuizvui.i3.enable {
+  config.services.xserver.windowManager = mkIf cfg.enable {
     default = "i3";
 
     i3.enable = true;
