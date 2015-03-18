@@ -40,6 +40,7 @@ in {
     '';
 
     vuizvui.user.aszlig.programs.vim.enable = true;
+    vuizvui.user.aszlig.programs.zsh.enable = true;
 
     services.nixosManual.showManual = false;
 
@@ -55,7 +56,6 @@ in {
       vlock
       wget
       xz
-      zsh
     ];
 
     nixpkgs.config = import ../../../../nixpkgs/config.nix;
