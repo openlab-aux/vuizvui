@@ -15,7 +15,7 @@ in {
       trimVer = ver: take 2 (splitString "." (replaceChars ["-"] ["."] ver));
       tooOld = trimVer linux_latest.version == trimVer linux_testing.version;
       origKernel = if tooOld then linux_latest else linux_testing;
-      bfqsched = vuizvuiKernelPatches.bfqsched // {
+      bfqsched = pkgs.vuizvui.kernelPatches.bfqsched // {
         extraConfig = ''
           IOSCHED_BFQ y
           CGROUP_BFQIO y
