@@ -17,4 +17,8 @@ in {
     kzerza    = callMachine ./aszlig/kzerza.nix;
     tishtushi = callMachine ./aszlig/tishtushi.nix;
   };
+  labnet = {
+    heinrich = callMachine ./labnet/heinrich.nix;
+    labtop   = callMachine ./labnet/labtop.nix;
+  };
 }
