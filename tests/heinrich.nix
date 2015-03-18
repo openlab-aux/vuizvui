@@ -11,7 +11,7 @@ import ./make-test.nix {
     };
   in {
     heinrich = {
-      imports = [ common ../machines/heinrich.nix ];
+      imports = [ common (import ../machines {}).labnet.heinrich.config ];
       virtualisation.vlans = [ 1 8 14 ];
       heinrich.internalInterface = "eth1";
       heinrich.externalInterface = "eth2";

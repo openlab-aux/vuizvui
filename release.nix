@@ -10,6 +10,7 @@ in with pkgs.lib; with builtins; {
 
   tests = {
     i3 = import ./tests/i3.nix { inherit system; };
+    heinrich = import ./tests/heinrich.nix { inherit system; };
   };
 
   manual = let
