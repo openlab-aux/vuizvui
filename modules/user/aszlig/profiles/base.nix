@@ -39,6 +39,8 @@ in {
       ServerAliveInterval 60
     '';
 
+    vuizvui.user.aszlig.programs.vim.enable = true;
+
     services.nixosManual.showManual = false;
 
     environment.systemPackages = with pkgs; [
@@ -50,7 +52,6 @@ in {
       psmisc
       unrar
       unzip
-      vim
       vlock
       wget
       xz

@@ -18,7 +18,6 @@ let
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
     tomahawk = callPackage ./tomahawk { };
     twitchstream = callPackage ./twitchstream { };
-    vim = callPackage ./vim { };
 
     vuizvuiKernelPatches = {
       bfqsched = callPackage ./kpatches/bfqsched.nix { };
