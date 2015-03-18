@@ -17,6 +17,15 @@ let
     mkConf = cfg: concatStringsSep "\n" (mapAttrsToList mkConfigLine cfg);
   in pkgs.writeText "generated.kconf" (mkConf exprs + "\n");
 
+  mainlineKernel = {
+    version = "4.0.0-rc3";
+    src = pkgs.fetchgit {
+      url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;
+      rev = "affb8172de395a6e1db52ed9790ca0456d8c29a9";
+      sha256 = "1zqnkds0mglldm1syv17gl8n4wl1vy7rrh2vf3iga5w2psqwkyj4";
+    };
+  };
+
 in {
   options.vuizvui.user.aszlig.system.kernel = {
     enable = mkEnableOption "aszlig's custom kernel";
@@ -34,7 +43,7 @@ in {
   config = mkIf cfg.enable {
     boot = let
       linuxVuizvui = pkgs.buildLinux {
-        inherit (pkgs.kernelSourceVuizvui) version src;
+        inherit (mainlineKernel) version src;
 
         kernelPatches = singleton pkgs.vuizvuiKernelPatches.bfqsched;
         configfile = generateKConf cfg.config;

@@ -25,14 +25,5 @@ let
   drvOverrides = mapOverride overrideDerivation argOverrides {};
 
   # misc
-  misc = {
-    kernelSourceVuizvui = {
-      version = "4.0.0-rc3";
-      src = everything.fetchgit {
-        url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;
-        rev = "affb8172de395a6e1db52ed9790ca0456d8c29a9";
-        sha256 = "1zqnkds0mglldm1syv17gl8n4wl1vy7rrh2vf3iga5w2psqwkyj4";
-      };
-    };
-  };
+  misc = {};
 in allPackages // drvOverrides // argOverrides
