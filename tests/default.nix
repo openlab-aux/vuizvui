@@ -12,4 +12,7 @@ in {
   labnet = {
     heinrich = callTest ./labnet/heinrich.nix;
   };
+  richi235 = {
+    multipath-vpn = callTest ./richi235/multipath-vpn.nix;
+  };
 }
