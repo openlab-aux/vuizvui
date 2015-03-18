@@ -9,8 +9,8 @@ in with pkgs.lib; with builtins; {
   ) (import ./machines { inherit system; });
 
   tests = {
-    i3 = import ./tests/i3.nix { inherit system; };
-    heinrich = import ./tests/heinrich.nix { inherit system; };
+    aszlig.i3 = import ./tests/aszlig/i3.nix { inherit system; };
+    labnet.heinrich = import ./tests/labnet/heinrich.nix { inherit system; };
   };
 
   manual = let
