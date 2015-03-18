@@ -1,18 +1,49 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
-with pkgs.lib;
-with import ../../lib;
+with lib;
 
 {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
   nix.maxJobs = 8;
 
-  boot = let
-    patch51Name = "patch51.fw";
-    kernelParams = [ "snd-hda-intel.patch=${patch51Name}" ];
+  boot = {
+    kernelParams = [ "snd-hda-intel.patch=patch51.fw" ];
 
-    patch51 = pkgs.writeText patch51Name ''
+    initrd = {
+      mdadmConf = ''
+        ARRAY /dev/md0 metadata=1.2 UUID=f5e9de04:89efc509:4e184fcc:166b0b67
+        ARRAY /dev/md1 metadata=0.90 UUID=b85aa8be:cea0faf2:7abcbee8:eeae037b
+      '';
+      luks.devices = [
+        { name = "system_crypt";
+          device = "/dev/md1";
+          preLVM = true;
+        }
+      ];
+    };
+
+    loader.grub.devices = [
+      "/dev/disk/by-id/ata-ST31500541AS_5XW0AMNH"
+      "/dev/disk/by-id/ata-ST31500541AS_6XW0M217"
+    ];
+  };
+
+  nixpkgs.config.virtualbox.enableExtensionPack = true;
+
+  vuizvui.user.aszlig.system.kernel.enable = true;
+  vuizvui.user.aszlig.system.kernel.config = let
+    radeonFw = [
+      "radeon/R600_rlc.bin"
+      "radeon/R700_rlc.bin"
+      "radeon/RV710_uvd.bin"
+      "radeon/RV710_smc.bin"
+      "radeon/RV730_smc.bin"
+    ];
+
+    extraFw = radeonFw ++ [ "patch51.fw" ];
+
+    patch51 = pkgs.writeText "patch51.fw" ''
       [codec]
       0x10ec0889 0x80860033 2
 
@@ -36,69 +67,21 @@ with import ../../lib;
       auto
     '';
 
-    radeonFW = [
-      "radeon/R600_rlc.bin"
-      "radeon/R700_rlc.bin"
-      "radeon/RV710_uvd.bin"
-      "radeon/RV710_smc.bin"
-      "radeon/RV730_smc.bin"
-    ];
+  in import ./dnyarri-kconf.nix // {
+    CONFIG_EXTRA_FIRMWARE = concatStringsSep " " extraFw;
+    CONFIG_EXTRA_FIRMWARE_DIR = pkgs.stdenv.mkDerivation {
+      name = "builtin-firmware";
+      buildCommand = let
+        firmwareBasePath = "${pkgs.firmwareLinuxNonfree}/lib/firmware";
+      in ''
+        mkdir -p "$out/radeon"
+        ${concatMapStrings (x: ''
+          cp -Lv -t "$out/radeon" "${firmwareBasePath}/${x}"
+        '') radeonFw}
 
-    linuxVuizvui = pkgs.buildLinux {
-      inherit (pkgs.kernelSourceVuizvui) version src;
-
-      kernelPatches = singleton pkgs.vuizvuiKernelPatches.bfqsched;
-      configfile = pkgs.substituteAll {
-        name = "vuizvui-with-firmware.kconf";
-        src = generateKConf (import ./dnyarri-kconf.nix);
-
-        extra_firmware = concatStringsSep " " (radeonFW ++ [
-          "patch51.fw"
-        ]);
-
-        builtin_firmware = pkgs.stdenv.mkDerivation {
-          name = "builtin-firmware";
-          buildCommand = let
-            firmwareBasePath = "${pkgs.firmwareLinuxNonfree}/lib/firmware";
-          in ''
-            mkdir -p "$out/radeon"
-            ${concatMapStrings (x: ''
-              cp -Lv -t "$out/radeon" "${firmwareBasePath}/${x}";
-            '') radeonFW}
-
-            cp "${patch51}" "$out/${patch51Name}"
-          '';
-        };
-      };
-      allowImportFromDerivation = true; # XXX
-    };
-  in rec {
-    kernelPackages = let
-      kpkgs = pkgs.recurseIntoAttrs
-        (pkgs.linuxPackagesFor linuxVuizvui kernelPackages);
-      virtualbox = kpkgs.virtualbox.override {
-        enableExtensionPack = true;
-      };
-    in pkgs.recurseIntoAttrs (kpkgs // { inherit virtualbox; });
-    inherit kernelParams;
-
-    initrd = {
-      mdadmConf = ''
-        ARRAY /dev/md0 metadata=1.2 UUID=f5e9de04:89efc509:4e184fcc:166b0b67
-        ARRAY /dev/md1 metadata=0.90 UUID=b85aa8be:cea0faf2:7abcbee8:eeae037b
+        cp "${patch51}" "$out/patch51.fw"
       '';
-      luks.devices = [
-        { name = "system_crypt";
-          device = "/dev/md1";
-          preLVM = true;
-        }
-      ];
     };
-
-    loader.grub.devices = [
-      "/dev/disk/by-id/ata-ST31500541AS_5XW0AMNH"
-      "/dev/disk/by-id/ata-ST31500541AS_6XW0M217"
-    ];
   };
 
   networking.hostName = "dnyarri";

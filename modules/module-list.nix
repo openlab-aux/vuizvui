@@ -7,4 +7,5 @@
   ./user/aszlig/services/i3
   ./user/aszlig/services/slim
   ./user/aszlig/services/vlock
+  ./user/aszlig/system/kernel.nix
 ]

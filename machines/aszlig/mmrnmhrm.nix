@@ -1,30 +1,21 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
-with pkgs.lib;
-with import ../../lib;
+with lib;
 
 {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
   nix.maxJobs = 2;
 
-  boot = let
-    linuxVuizvui = pkgs.buildLinux {
-      inherit (pkgs.kernelSourceVuizvui) version src;
-
-      kernelPatches = singleton pkgs.vuizvuiKernelPatches.bfqsched;
-      configfile = generateKConf (import ./mmrnmhrm-kconf.nix);
-      allowImportFromDerivation = true;
-    };
-  in rec {
-    kernelPackages = pkgs.recurseIntoAttrs
-      (pkgs.linuxPackagesFor linuxVuizvui kernelPackages);
-
+  boot = {
     loader.grub.devices = map (i: "/dev/disk/by-id/${i}") [
       "ata-WDC_WD10EZEX-00BN5A0_WD-WCC3F5756955"
       "ata-WDC_WD10EZEX-00BN5A0_WD-WCC3F5790537"
     ];
   };
+
+  vuizvui.user.aszlig.system.kernel.enable = true;
+  vuizvui.user.aszlig.system.kernel.config = import ./mmrnmhrm-kconf.nix;
 
   networking.hostName = "mmrnmhrm";
 
