@@ -17,7 +17,8 @@
     networkmanagerapplet
     notmuch
     offlineimap
-    pm-utils
+    pmtools
+    pmutils
     reaverwps
     snort
   ];
