@@ -14,6 +14,10 @@
       enableExtensionPack = false;
       pulseSupport = true;
     };
+
+    mpv = {
+      youtubeSupport = true;
+    };
   };
 
   environment.systemPackages = with pkgs; [
