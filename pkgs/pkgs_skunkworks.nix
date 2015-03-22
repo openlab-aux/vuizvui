@@ -3,7 +3,15 @@
 {
   imports = [ ./pkgs_common.nix ];
 
-  nixpkgs.config.chromium.enablePepperFlash = true;
+  nixpkgs.config = {
+    chromium = {
+      enablePepperFlash = true;
+    };
+
+    mpv = {
+      bs2bSupport = true;
+    };
+  };
 
   environment.systemPackages = with pkgs; [
     abook
