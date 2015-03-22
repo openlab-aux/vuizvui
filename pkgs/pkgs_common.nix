@@ -1,11 +1,19 @@
 { config, pkgs, lib, ... }:
 
 {
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.conky = {
-    weatherMetar = true;
-    mpdSupport = true;
-    wireless = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+
+    conky = {
+      weatherMetar = true;
+      mpdSupport = true;
+      wireless = true;
+    };
+
+    virtualbox = {
+      enableExtensionPack = false;
+      pulseSupport = true;
+    };
   };
 
   environment.systemPackages = with pkgs; [
