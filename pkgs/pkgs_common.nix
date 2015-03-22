@@ -2,6 +2,8 @@
 
 {
   nixpkgs.config = {
+    pulseaudio = true;
+
     allowUnfree = true;
 
     conky = {
@@ -12,7 +14,6 @@
 
     virtualbox = {
       enableExtensionPack = false;
-      pulseSupport = true;
     };
 
     mpv = {
