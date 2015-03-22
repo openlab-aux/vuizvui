@@ -41,6 +41,7 @@
     chromaprint
     chromium
     cmake
+    colordiff
     conky
     cryptsetup
     ctodo
