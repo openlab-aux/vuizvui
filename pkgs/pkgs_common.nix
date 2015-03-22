@@ -29,7 +29,6 @@
     aspell
     aspellDicts.de
     aspellDicts.en
-#    attic
     audacity
     axel
     bc
@@ -141,6 +140,7 @@
     posix_man_pages
     powertop
     profanity
+    profile-cleaner
     profile-sync-daemon
     pv
     python
@@ -179,5 +179,6 @@
     xscreensaver
     youtube-dl
     zotero
+#    attic
   ];
 }
