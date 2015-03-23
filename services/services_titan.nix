@@ -30,6 +30,7 @@
     };
 
     displayManager.sessionCommands = ''
+      ${pkgs.xbindkeys}/bin/xbindkeys &
       ${pkgs.nitrogen}/bin/nitrogen --restore &
       ${pkgs.networkmanagerapplet}/bin/nm-applet &
       ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &

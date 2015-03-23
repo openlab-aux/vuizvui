@@ -17,11 +17,12 @@
     networkmanagerapplet
     notmuch
     offlineimap
+    pamixer
     pmtools
     pmutils
     reaverwps
     snort
     xbindkeys
-    xbindkeys-config
+    xorg.xbacklight
   ];
 }
