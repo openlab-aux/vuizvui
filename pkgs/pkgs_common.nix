@@ -155,6 +155,7 @@
     sleuthkit
     smartmontools
     sox
+    stow
     strace
     surfraw
     taskwarrior
