@@ -45,6 +45,7 @@
     conky
     cryptsetup
     ctodo
+    cuetools
     dcfldd
     ddrescue
     dmenu
@@ -151,6 +152,7 @@
     ruby
     screen
     scrot
+    shntool
     silver-searcher
     sleuthkit
     smartmontools
