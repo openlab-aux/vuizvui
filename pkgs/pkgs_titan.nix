@@ -21,5 +21,7 @@
     pmutils
     reaverwps
     snort
+    xbindkeys
+    xbindkeys-config
   ];
 }
