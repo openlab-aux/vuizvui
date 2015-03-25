@@ -112,6 +112,7 @@
     libarchive
     libreoffice
     lm_sensors
+    lsof
     lxappearance
     lxc
     lynx
