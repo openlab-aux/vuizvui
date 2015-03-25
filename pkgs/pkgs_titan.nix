@@ -10,6 +10,7 @@
   environment.systemPackages = with pkgs; [
     aircrackng
     atom
+    connmanui
     kismet
     minicom
     msmtp

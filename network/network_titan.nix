@@ -4,8 +4,8 @@
   imports = [ ./network_common.nix ];
 
   networking.hostName = "titan";
-  networking.wireless.enable = false;
-  networking.connman.enable = false;
+  networking.wireless.enable = true;
+  networking.connman.enable = true;
   networking.wicd.enable = false;
-  networking.networkmanager.enable = true;
+  networking.networkmanager.enable = false;
 }
