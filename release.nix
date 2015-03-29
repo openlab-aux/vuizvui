@@ -20,7 +20,7 @@ in with pkgs.lib; with builtins; {
         pkgs = import <nixpkgs> attrs;
       } // { inherit (pkgs) lib; };
     };
-  in with releaseLib; mapTestOn (packagesWithMetaPlatform releaseLib.pkgs);
+  in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
 
   manual = let
     modules = import <nixpkgs/nixos/lib/eval-config.nix> {
