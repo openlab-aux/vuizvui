@@ -169,6 +169,7 @@
     transmission_remote_gtk
     tree
     tribler
+    units
     unrar
     unzip
     vim_configurable
