@@ -150,6 +150,7 @@
     python
     python2
     python3
+    recode
     ruby
     screen
     scrot
