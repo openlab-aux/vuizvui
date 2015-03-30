@@ -7,9 +7,9 @@
     allowUnfree = true;
 
     conky = {
-      weatherMetar = true;
+      weatherMetarSupport = true;
       mpdSupport = true;
-      wireless = true;
+      wirelessSupport = true;
     };
 
     virtualbox = {
