@@ -57,6 +57,8 @@ in stdenv.mkDerivation rec {
     "-DLUCENEPP_LIBRARY_DIR=${lucenepp}/lib"
     "-DQUAZIP_INCLUDE_DIR=${useQT5 quazip}/include"
     "-DQUAZIP_LIBRARIES=${useQT5 quazip}/lib"
+    "-DLIBLASTFM_INCLUDE_DIR=${useQT5 liblastfm}/include"
+    "-DECHONEST_INCLUDE_DIR=${libechonestQT5}/include"
   ];
 
   buildInputs = (map useQT5 [ qca2 liblastfm ]) ++ [
