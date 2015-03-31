@@ -30,6 +30,9 @@ let
     qjson = null;
   }) (drv: {
     cmakeFlags = (drv.cmakeFlags or []) ++ [ "-DBUILD_WITH_QT4=OFF" ];
+    postInstall = ''
+      ln -sv "$out/include/echonest" "$out/include/echonest5"
+    '';
   });
 
   qtkeychainQT5 = overrideDerivation (useQT5 qtkeychain) (drv: {
@@ -62,7 +65,6 @@ in stdenv.mkDerivation rec {
     "-DQUAZIP_INCLUDE_DIR=${useQT5 quazip}/include"
     "-DQUAZIP_LIBRARIES=${useQT5 quazip}/lib"
     "-DLIBLASTFM_INCLUDE_DIR=${useQT5 liblastfm}/include"
-    "-DECHONEST_INCLUDE_DIR=${libechonestQT5}/include"
   ];
 
   buildInputs = (map useQT5 [ liblastfm ]) ++ [
