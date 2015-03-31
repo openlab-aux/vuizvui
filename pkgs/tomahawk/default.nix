@@ -54,8 +54,9 @@ in stdenv.mkDerivation rec {
   ];
 
   buildInputs = (map useQT5 [ qca2 liblastfm quazip ]) ++ [
-    qtkeychainQT5 libechonestQT5 kf5_latest.attica cmake pkgconfig boost
-    gnutls lucenepp vlc qt54.base sparsehash taglib websocketpp makeWrapper
+    qtkeychainQT5 libechonestQT5 kf5_latest.attica cmake pkgconfig boost gnutls
+    lucenepp vlc qt54.base qt54.svg qt54.tools qt54.x11extras sparsehash taglib
+    websocketpp makeWrapper
   ] ++ stdenv.lib.optional enableXMPP      (useQT5 libjreen)
     ++ stdenv.lib.optional enableKDE       (useQT5 kdelibs)
     ++ stdenv.lib.optional enableTelepathy (useQT5 telepathy_qt);
