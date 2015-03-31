@@ -55,9 +55,11 @@ in stdenv.mkDerivation rec {
   cmakeFlags = [
     "-DLUCENEPP_INCLUDE_DIR=${lucenepp}/include"
     "-DLUCENEPP_LIBRARY_DIR=${lucenepp}/lib"
+    "-DQUAZIP_INCLUDE_DIR=${useQT5 quazip}/include"
+    "-DQUAZIP_LIBRARIES=${useQT5 quazip}/lib"
   ];
 
-  buildInputs = (map useQT5 [ qca2 liblastfm quazip ]) ++ [
+  buildInputs = (map useQT5 [ qca2 liblastfm ]) ++ [
     qtkeychainQT5 libechonestQT5 kf5_latest.attica cmake pkgconfig boost gnutls
     lucenepp vlc qt54.base qt54.svg qt54.tools qt54.x11extras sparsehash taglib
     websocketpp makeWrapper
