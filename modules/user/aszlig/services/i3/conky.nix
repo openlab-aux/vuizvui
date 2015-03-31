@@ -45,7 +45,7 @@ let
     time = cexpr "time" [ "%a %b %d %T %Z %Y" ];
     text = concatStringsSep " | " (args ++ singleton time);
     conky = pkgs.conky.override {
-      weatherMetar = true;
+      weatherMetarSupport = true;
     };
   in pkgs.writeScript "conky-run.sh" ''
     #!${pkgs.stdenv.shell}
