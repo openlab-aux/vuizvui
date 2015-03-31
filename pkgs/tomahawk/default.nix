@@ -1,5 +1,5 @@
 { stdenv, fetchFromGitHub, cmake, pkgconfig, attica, boost, gnutls, libechonest
-, liblastfm, lucenepp, vlc, qca2, qca2_ossl, qjson, qt4, qtkeychain, quazip
+, liblastfm, lucenepp, vlc, qca2, qjson, qt5, qtkeychain, quazip, kf5_latest
 , sparsehash, taglib, websocketpp, makeWrapper
 
 , enableXMPP      ? true,  libjreen     ? null
@@ -36,16 +36,6 @@ in stdenv.mkDerivation rec {
   ] ++ stdenv.lib.optional enableXMPP      libjreen
     ++ stdenv.lib.optional enableKDE       kdelibs
     ++ stdenv.lib.optional enableTelepathy telepathy_qt;
-
-  postInstall = let
-    pluginPath = stdenv.lib.concatStringsSep ":" [
-      "${qca2_ossl}/lib/qt4/plugins"
-    ];
-  in ''
-    for i in "$out"/bin/*; do
-      wrapProgram "$i" --prefix QT_PLUGIN_PATH : "${pluginPath}"
-    done
-  '';
 
   enableParallelBuilding = true;
 
