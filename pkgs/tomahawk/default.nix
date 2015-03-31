@@ -69,7 +69,7 @@ in stdenv.mkDerivation rec {
     "-DLUCENEPP_INCLUDE_DIR=${lucenepp}/include"
     "-DLUCENEPP_LIBRARY_DIR=${lucenepp}/lib"
     "-DQUAZIP_INCLUDE_DIR=${useQT5 quazip}/include"
-    "-DQUAZIP_LIBRARIES=${useQT5 quazip}/lib"
+    "-DQUAZIP_LIBRARIES=${useQT5 quazip}/lib/libquazip.so"
   ];
 
   buildInputs = [
