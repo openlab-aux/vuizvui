@@ -48,6 +48,10 @@ in stdenv.mkDerivation rec {
     sha256 = "07gpf885hxv5xmv3acixm0rhinqilygrw7542nj7s68iigd9sfqd";
   };
 
+  postPatch = ''
+    sed -i -e 's/Qca-qt5/Qca/' CMakeLists.txt
+  '';
+
   cmakeFlags = [
     "-DLUCENEPP_INCLUDE_DIR=${lucenepp}/include"
     "-DLUCENEPP_LIBRARY_DIR=${lucenepp}/lib"
