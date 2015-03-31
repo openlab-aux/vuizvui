@@ -1,6 +1,6 @@
 { stdenv, fetchFromGitHub, cmake, pkgconfig, attica, boost, gnutls, libechonest
-, liblastfm, lucenepp, vlc, qca2, qjson, qt5, qtkeychain, quazip, kf5_latest
-, sparsehash, taglib, websocketpp, makeWrapper
+, liblastfm, lucenepp, vlc_qt5, qca2, qjson, qt54, qtkeychain, quazip
+, kf5_latest, sparsehash, taglib, websocketpp, makeWrapper, ffmpeg_2, v4l_utils
 
 , enableXMPP      ? true,  libjreen     ? null
 , enableKDE       ? false, kdelibs      ? null
@@ -11,8 +11,31 @@ assert enableXMPP      -> libjreen     != null;
 assert enableKDE       -> kdelibs      != null;
 assert enableTelepathy -> telepathy_qt != null;
 
+with stdenv.lib;
+
 let
-  quazipQt4 = quazip.override { qt = qt4; };
+  useQT5 = pkg: pkg.override (attrs: {
+    ${if attrs ? qt4 then "qt4" else "qt"} = qt54.base;
+  });
+
+  libechonestQT5 = overrideDerivation ((useQT5 libechonest).override {
+    qjson = useQT5 qjson;
+  }) (drv: {
+    cmakeFlags = (drv.cmakeFlags or []) ++ [ "-DBUILD_WITH_QT4=OFF" ];
+  });
+
+  atticaQT5 = overrideDerivation (useQT5 attica) (drv: {
+    buildInputs = (drv.buildInputs or []) ++ [
+      kf5_latest.extra-cmake-modules
+    ];
+  });
+
+  vlc = vlc_qt5.override {
+    ffmpeg = ffmpeg_2.override {
+      v4l_utils = v4l_utils.override { withQt4 = false; };
+    };
+  };
+
 in stdenv.mkDerivation rec {
   name = "tomahawk-${version}";
   version = "0.9.0-git";
@@ -29,13 +52,12 @@ in stdenv.mkDerivation rec {
     "-DLUCENEPP_LIBRARY_DIR=${lucenepp}/lib"
   ];
 
-  buildInputs = [
-    cmake pkgconfig attica boost gnutls libechonest liblastfm lucenepp vlc
-    qca2 qjson qt4 qtkeychain quazipQt4 sparsehash taglib websocketpp
-    makeWrapper
-  ] ++ stdenv.lib.optional enableXMPP      libjreen
-    ++ stdenv.lib.optional enableKDE       kdelibs
-    ++ stdenv.lib.optional enableTelepathy telepathy_qt;
+  buildInputs = (map useQT5 [ qca2 liblastfm quazip qtkeychain qjson ]) ++ [
+    libechonestQT5 atticaQT5 cmake pkgconfig boost gnutls lucenepp vlc
+    qt54.base sparsehash taglib websocketpp makeWrapper
+  ] ++ stdenv.lib.optional enableXMPP      (useQT5 libjreen)
+    ++ stdenv.lib.optional enableKDE       (useQT5 kdelibs)
+    ++ stdenv.lib.optional enableTelepathy (useQT5 telepathy_qt);
 
   enableParallelBuilding = true;
 
