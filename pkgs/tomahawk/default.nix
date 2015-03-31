@@ -35,6 +35,12 @@ let
     '';
   });
 
+  liblastfmQT5 = overrideDerivation (useQT5 liblastfm) (drv: {
+    postInstall = ''
+      ln -sv "$out/include/lastfm" "$out/include/lastfm5"
+    '';
+  });
+
   qtkeychainQT5 = overrideDerivation (useQT5 qtkeychain) (drv: {
     cmakeFlags = (drv.cmakeFlags or []) ++ [
       "-DBUILD_WITH_QT4=OFF"
@@ -64,13 +70,12 @@ in stdenv.mkDerivation rec {
     "-DLUCENEPP_LIBRARY_DIR=${lucenepp}/lib"
     "-DQUAZIP_INCLUDE_DIR=${useQT5 quazip}/include"
     "-DQUAZIP_LIBRARIES=${useQT5 quazip}/lib"
-    "-DLIBLASTFM_INCLUDE_DIR=${useQT5 liblastfm}/include"
   ];
 
-  buildInputs = (map useQT5 [ liblastfm ]) ++ [
-    qcaQT5 qtkeychainQT5 libechonestQT5 kf5_latest.attica cmake pkgconfig boost
-    gnutls lucenepp vlc qt54.base qt54.svg qt54.tools qt54.x11extras sparsehash
-    taglib websocketpp makeWrapper
+  buildInputs = [
+    qcaQT5 qtkeychainQT5 libechonestQT5 liblastfmQT5 kf5_latest.attica cmake
+    pkgconfig boost gnutls lucenepp vlc qt54.base qt54.svg qt54.tools
+    qt54.x11extras sparsehash taglib websocketpp makeWrapper
   ] ++ stdenv.lib.optional enableXMPP      (useQT5 libjreen)
     ++ stdenv.lib.optional enableKDE       (useQT5 kdelibs)
     ++ stdenv.lib.optional enableTelepathy (useQT5 telepathy_qt);
