@@ -24,12 +24,6 @@ let
     cmakeFlags = (drv.cmakeFlags or []) ++ [ "-DBUILD_WITH_QT4=OFF" ];
   });
 
-  atticaQT5 = overrideDerivation (useQT5 attica) (drv: {
-    buildInputs = (drv.buildInputs or []) ++ [
-      kf5_latest.extra-cmake-modules
-    ];
-  });
-
   vlc = vlc_qt5.override {
     ffmpeg = ffmpeg_2.override {
       v4l_utils = v4l_utils.override { withQt4 = false; };
@@ -53,8 +47,8 @@ in stdenv.mkDerivation rec {
   ];
 
   buildInputs = (map useQT5 [ qca2 liblastfm quazip qtkeychain qjson ]) ++ [
-    libechonestQT5 atticaQT5 cmake pkgconfig boost gnutls lucenepp vlc
-    qt54.base sparsehash taglib websocketpp makeWrapper
+    libechonestQT5 kf5_latest.attica cmake pkgconfig boost gnutls lucenepp
+    vlc qt54.base sparsehash taglib websocketpp makeWrapper
   ] ++ stdenv.lib.optional enableXMPP      (useQT5 libjreen)
     ++ stdenv.lib.optional enableKDE       (useQT5 kdelibs)
     ++ stdenv.lib.optional enableTelepathy (useQT5 telepathy_qt);
