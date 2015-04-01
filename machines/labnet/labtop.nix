@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 let
   greybird = pkgs.stdenv.mkDerivation {
@@ -24,8 +24,13 @@ let
   };
 
 in {
-  imports = [
-    ./hardware-configuration.nix
+  imports = [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix> ];
+
+  boot.loader.grub.device = "/dev/sda"; # FIXME: Device ID
+
+  boot.kernelModules = [ "kvm-intel" ];
+  boot.initrd.availableKernelModules = [
+    "uhci_hcd" "ehci_pci" "ata_piix" "firewire_ohci" "usb_storage"
   ];
 
   i18n = {
@@ -34,8 +39,10 @@ in {
     defaultLocale = "de_DE.UTF-8";
   };
 
-  fileSystems."/".label = "root";
-  boot.loader.grub.device = "/dev/sda";
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/754fd3e3-2e04-4028-9363-0c6bb4c54367";
+    fsType = "ext4";
+  };
 
   environment.systemPackages = with pkgs; [
     greybird
@@ -57,6 +64,8 @@ in {
     wget
   ];
 
+  hardware.trackpoint.emulateWheel = true;
+
   # TODO: Needed for slic3r right now.
   nixpkgs.config.allowBroken = true;
 
@@ -71,6 +80,9 @@ in {
   services.openssh.enable = true;
 
   networking.networkmanager.enable = true;
+  networking.enableIntel3945ABGFirmware = true;
+
+  nix.maxJobs = 2;
 
   users.mutableUsers = false;
   users.extraUsers.openlab = {
@@ -78,9 +90,14 @@ in {
     isNormalUser = true;
     password = "openlab";
     extraGroups = [ "wheel" "networkmanager" ];
-    openssh.authorizedKeys.keys = [
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJhthfk38lzDvoI7lPqRneI0yBpZEhLDGRBpcXzpPSu+V0YlgrDix5fHhBl+EKfw4aeQNvQNuAky3pDtX+BDK1b7idbz9ZMCExy2a1kBKDVJz/onLSQxiiZMuHlAljVj9iU4uoTOxX3vB85Ok9aZtMP1rByRIWR9e81/km4HdfZTCjFVRLWfvo0s29H7l0fnbG9bb2E6kydlvjnXJnZFXX+KUM16X11lK53ilPdPJdm87VtxeSKZ7GOiBz6q7FHzEd2Zc3CnzgupQiXGSblXrlN22IY3IWfm5S/8RTeQbMLVoH0TncgCeenXH7FU/sXD79ypqQV/WaVVDYMOirsnh/ philip@nyx"
-    ];
+    openssh.authorizedKeys.keys = lib.singleton (lib.concatStrings [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJhthfk38lzDvoI7lPqRneI0yBpZEhLD"
+      "GRBpcXzpPSu+V0YlgrDix5fHhBl+EKfw4aeQNvQNuAky3pDtX+BDK1b7idbz9ZMCExy2a1"
+      "kBKDVJz/onLSQxiiZMuHlAljVj9iU4uoTOxX3vB85Ok9aZtMP1rByRIWR9e81/km4HdfZT"
+      "CjFVRLWfvo0s29H7l0fnbG9bb2E6kydlvjnXJnZFXX+KUM16X11lK53ilPdPJdm87VtxeS"
+      "KZ7GOiBz6q7FHzEd2Zc3CnzgupQiXGSblXrlN22IY3IWfm5S/8RTeQbMLVoH0TncgCeenX"
+      "H7FU/sXD79ypqQV/WaVVDYMOirsnh/ philip@nyx"
+    ]);
   };
 
   # fix for emacs
