@@ -24,31 +24,37 @@ let
   };
 
 in {
+  imports = [
+    ./hardware-configuration.nix
+  ];
+
   i18n = {
     consoleFont = "lat9w-16";
     consoleKeyMap = "us";
     defaultLocale = "de_DE.UTF-8";
   };
 
-  # TODO: This is a dummy, replace it once we know about the real root fs.
   fileSystems."/".label = "root";
-  boot.loader.grub.device = "nodev";
+  boot.loader.grub.device = "/dev/sda";
 
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs; [
     greybird
     #repetierhost <- TODO
-    pkgs.firefox
-    pkgs.gimp
-    pkgs.freecad
-    pkgs.openscad
-    #pkgs.pronterface <- TODO
-    pkgs.blender
-    pkgs.slic3r
-    pkgs.libreoffice
-    pkgs.inkscape
-    pkgs.filezilla
-    pkgs.gmpc
-    pkgs.vlc
+    firefox
+    gimp
+    git
+    freecad
+    openscad
+    #pronterface <- TODO
+    blender
+    #slic3r
+    libreoffice
+    inkscape
+    filezilla
+    gmpc
+    vlc
+    vim
+    wget
   ];
 
   # TODO: Needed for slic3r right now.
@@ -62,9 +68,21 @@ in {
   services.xserver.displayManager.auto.user = "openlab";
   services.xserver.desktopManager.xfce.enable = true;
 
+  services.openssh.enable = true;
+
+  networking.networkmanager.enable = true;
+
   users.mutableUsers = false;
   users.extraUsers.openlab = {
     uid = 1000;
     isNormalUser = true;
+    password = "openlab";
+    extraGroups = [ "wheel" "networkmanager" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJhthfk38lzDvoI7lPqRneI0yBpZEhLDGRBpcXzpPSu+V0YlgrDix5fHhBl+EKfw4aeQNvQNuAky3pDtX+BDK1b7idbz9ZMCExy2a1kBKDVJz/onLSQxiiZMuHlAljVj9iU4uoTOxX3vB85Ok9aZtMP1rByRIWR9e81/km4HdfZTCjFVRLWfvo0s29H7l0fnbG9bb2E6kydlvjnXJnZFXX+KUM16X11lK53ilPdPJdm87VtxeSKZ7GOiBz6q7FHzEd2Zc3CnzgupQiXGSblXrlN22IY3IWfm5S/8RTeQbMLVoH0TncgCeenXH7FU/sXD79ypqQV/WaVVDYMOirsnh/ philip@nyx"
+    ];
   };
+
+  # fix for emacs
+  programs.bash.promptInit = "PS=\"# \"";
 }
