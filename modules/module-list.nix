@@ -2,7 +2,6 @@
   ./profiles/common.nix
   ./services/multipath-vpn.nix
   ./services/postfix
-  ./system/ksm.nix
   ./user/aszlig/profiles/base.nix
   ./user/aszlig/profiles/workstation
   ./user/aszlig/programs/gajim

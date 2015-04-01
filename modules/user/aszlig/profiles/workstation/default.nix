@@ -28,6 +28,7 @@ in {
     '') ++ import ./packages.nix pkgs;
 
     hardware = {
+      enableKSM = true;
       pulseaudio.enable = true;
       pulseaudio.package = pkgs.pulseaudio.override {
         useSystemd = true;
@@ -37,8 +38,6 @@ in {
         s3tcSupport = true;
       };
     };
-
-    vuizvui.system.enableKSM = true;
 
     fonts = {
       enableCoreFonts = true;
