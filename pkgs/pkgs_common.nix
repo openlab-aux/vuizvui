@@ -10,8 +10,6 @@
       weatherMetarSupport = true;
       mpdSupport = true;
       wirelessSupport = true;
-      x11Support = true;
-      ncurses = true;
     };
 
     virtualbox = {
