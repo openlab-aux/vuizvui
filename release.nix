@@ -1,5 +1,8 @@
+{ vuizvui ? { outPath = ./.; revCount = 12345; shortRev = "abcdefg"; }
+, supportedSystems ? [ "i686-linux" "x86_64-linux" ]
+}:
+
 let
-  supportedSystems = [ "i686-linux" "x86_64-linux" ];
   system = "x86_64-linux";
   pkgs = import <nixpkgs> { inherit system; };
 
@@ -21,6 +24,12 @@ in with pkgs.lib; with builtins; {
       } // { inherit (pkgs) lib; };
     };
   in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
+
+  channel = pkgs.srcOnly rec {
+    name = "vuizvui-channel-${version}";
+    version = "${toString vuizvui.revCount}.${vuizvui.shortRev}";
+    src = vuizvui;
+  };
 
   manual = let
     modules = import <nixpkgs/nixos/lib/eval-config.nix> {
