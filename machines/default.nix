@@ -7,6 +7,9 @@ let
       inherit system;
       modules = [ config ] ++ import ../modules/module-list.nix;
     };
+    use = {
+      imports = [ config ] ++ import ../modules/module-list.nix;
+    };
   };
 
 in {
