@@ -38,6 +38,8 @@ in {
       };
     };
 
+    vuizvui.system.enableKSM = true;
+
     fonts = {
       enableCoreFonts = true;
       enableFontDir = true;
