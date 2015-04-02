@@ -52,7 +52,7 @@ in {
     git
     freecad
     openscad
-    #pronterface <- TODO
+    printrun
     blender
     #slic3r
     libreoffice
