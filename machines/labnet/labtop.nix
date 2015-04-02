@@ -54,7 +54,7 @@ in {
     openscad
     printrun
     blender
-    #slic3r
+    slic3r
     libreoffice
     inkscape
     filezilla
@@ -66,9 +66,6 @@ in {
 
   hardware.trackpoint.enable = true;
   hardware.trackpoint.emulateWheel = true;
-
-  # TODO: Needed for slic3r right now.
-  nixpkgs.config.allowBroken = true;
 
   services.xserver.enable = true;
   services.xserver.layout = "us";
