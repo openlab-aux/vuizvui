@@ -64,6 +64,7 @@ in {
     wget
   ];
 
+  hardware.trackpoint.enable = true;
   hardware.trackpoint.emulateWheel = true;
 
   # TODO: Needed for slic3r right now.
