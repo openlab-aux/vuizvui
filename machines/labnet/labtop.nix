@@ -48,6 +48,7 @@ in {
     greybird
     #repetierhost <- TODO
     firefox
+    fish
     gimp
     git
     freecad
@@ -55,6 +56,7 @@ in {
     printrun
     blender
     slic3r
+    tmux
     libreoffice
     inkscape
     filezilla
@@ -64,16 +66,28 @@ in {
     wget
   ];
 
-  hardware.trackpoint.enable = true;
-  hardware.trackpoint.emulateWheel = true;
+  services.xserver = {
+    enable = true;
+    layout = "us";
+    xkbOptions = "eurosign:e";
 
-  services.xserver.enable = true;
-  services.xserver.layout = "us";
-  services.xserver.xkbOptions = "eurosign:e";
+    displayManager.auto.enable = true;
+    displayManager.auto.user = "openlab";
+    desktopManager.xfce.enable = true;
+ 
+    synaptics.enable = true;
+    synaptics.minSpeed = "0.5";
+    synaptics.accelFactor = "0.01";
+  };
 
-  services.xserver.displayManager.auto.enable = true;
-  services.xserver.displayManager.auto.user = "openlab";
-  services.xserver.desktopManager.xfce.enable = true;
+
+  hardware.trackpoint = {
+    enable = true;
+    emulateWheel = true;
+    sensitivity = 100;
+    speed = 350;
+  };
+
 
   services.openssh.enable = true;
 
