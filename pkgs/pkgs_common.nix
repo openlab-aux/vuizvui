@@ -32,6 +32,7 @@
     aspell
     aspellDicts.de
     aspellDicts.en
+    attic
     audacity
     axel
     bc
@@ -123,7 +124,7 @@
     mediainfo
     mmv
     mono
-    monodevelop
+    #monodevelop
     mosh
     mp3gain
     mpc_cli
@@ -189,6 +190,5 @@
     xscreensaver
     youtube-dl
     zotero
-#    attic
   ];
 }
