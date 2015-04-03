@@ -17,7 +17,6 @@
 
   hardware = {
     enableAllFirmware = true;
-    enableKSM = true;
     cpu.intel.updateMicrocode = true;
     opengl.s3tcSupport = true;
     opengl.driSupport32Bit = true;
