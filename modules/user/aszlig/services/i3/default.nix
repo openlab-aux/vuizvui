@@ -37,7 +37,7 @@ let
   defaultWorkspaces = listToAttrs (imap mkDefaultWorkspace wsNumberSymbols);
 
   conky = import ./conky.nix {
-    inherit pkgs;
+    inherit pkgs lib;
     timeout = cfg.networkTimeout;
   };
 

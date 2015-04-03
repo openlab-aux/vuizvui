@@ -1,6 +1,6 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
-with pkgs.lib;
+with lib;
 
 let
   rootUUID = "e9c95c74-e4cf-41f6-bb45-baf8dd579217";

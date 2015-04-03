@@ -1,6 +1,6 @@
-{ pkgs ? import <nixpkgs> {}, timeout ? 300 }:
+{ pkgs ? import <nixpkgs> {}, lib ? import <nixpkgs/lib>, timeout ? 300 }:
 
-with pkgs.lib;
+with lib;
 
 let
   baseConfig = pkgs.writeText "conkyrc" ''
