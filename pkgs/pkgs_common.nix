@@ -124,7 +124,7 @@
     mediainfo
     mmv
     mono
-    #monodevelop
+    monodevelop
     mosh
     mp3gain
     mpc_cli
