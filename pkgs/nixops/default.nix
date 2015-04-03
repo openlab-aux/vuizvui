@@ -26,6 +26,10 @@ let
             + "NixOS:master...aszlig:${name}";
         sha256 = "0a1jcqrqfi7dfvlha5r0609bzvin7p7nj523xxcrvwpgp6ag0zsa";
       })
+      (fetchpatch {
+        url = "https://github.com/NixOS/nixops/pull/280.diff";
+        sha256 = "0h0q6a1ljwiqh1j0dzamx9h1x339wzc5pfghzd8rprkpi027ny4i";
+      })
     ];
 
     patchFlags = "--merge -p1";
