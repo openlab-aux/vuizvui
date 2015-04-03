@@ -26,7 +26,7 @@ let
 in {
   imports = [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix> ];
 
-  boot.loader.grub.device = "/dev/sda"; # FIXME: Device ID
+  boot.loader.grub.device = "/dev/disk/by-id/ata-HITACHI_HTS722010K9SA00_080711DP0270DPGLVMPC";
 
   boot.kernelModules = [ "kvm-intel" ];
   boot.initrd.availableKernelModules = [
