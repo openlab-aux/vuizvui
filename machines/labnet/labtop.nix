@@ -101,7 +101,7 @@ in {
     uid = 1000;
     isNormalUser = true;
     password = "openlab";
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" "networkmanager" "dialout"];
     openssh.authorizedKeys.keys = lib.singleton (lib.concatStrings [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJhthfk38lzDvoI7lPqRneI0yBpZEhLD"
       "GRBpcXzpPSu+V0YlgrDix5fHhBl+EKfw4aeQNvQNuAky3pDtX+BDK1b7idbz9ZMCExy2a1"
