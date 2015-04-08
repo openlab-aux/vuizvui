@@ -20,15 +20,17 @@ let
   headModifier = if cfg.reverseHeads then reverseList else id;
   getHeadAt = elemAt (headModifier xrandrHeads);
 
+  mkSwitchTo = number: "$mod+${if number == 10 then "0" else toString number}";
+
   mkDefaultWorkspace = number: numberSymbol: {
     name = toString number;
-    value = mkDefault {
-      label = null;
-      labelPrefix = "${toString number}: ";
-      keys.switchTo = "$mod+${if number == 10 then "0" else toString number}";
-      keys.moveTo = "$mod+Shift+${numberSymbol}";
-      head = if headCount == 0 then null
-             else getHeadAt ((number - (excessWs + 1)) / wsPerHead);
+    value = {
+      label = mkDefault null;
+      labelPrefix = mkDefault "${toString number}: ";
+      keys.switchTo = mkDefault (mkSwitchTo number);
+      keys.moveTo = mkDefault "$mod+Shift+${numberSymbol}";
+      head = if headCount == 0 then mkDefault null
+             else mkDefault (getHeadAt ((number - (excessWs + 1)) / wsPerHead));
     };
   };
 
@@ -71,7 +73,6 @@ in
 
     workspaces = mkOption {
       type = types.attrsOf (types.submodule (import ./workspace.nix));
-      default = listToAttrs (imap mkDefaultWorkspace wsNumberSymbols);
       description = ''
         Workspace to monitor assignment.
 
