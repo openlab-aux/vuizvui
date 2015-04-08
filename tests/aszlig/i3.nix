@@ -7,7 +7,15 @@
     imports = [ <nixpkgs/nixos/tests/common/x11.nix> ];
 
     vuizvui.user.aszlig.profiles.base.enable = true;
-    vuizvui.user.aszlig.services.i3.enable = true;
+
+    vuizvui.user.aszlig.services.i3 = {
+      enable = true;
+
+      workspaces."1" = {
+        label = "first";
+        assign = lib.singleton { class = "^test\$"; };
+      };
+    };
 
     services.xserver.windowManager.default = lib.mkForce "i3";
     /* XXX */
