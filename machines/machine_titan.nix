@@ -40,7 +40,12 @@
     { device = "/dev/disk/by-uuid/fecde631-8661-4a0e-88e6-5ce5b551847a"; }
   ];
 
-  nix.maxJobs = 4;
+  nix = {
+    maxJobs = 4;
+    extraOptions = ''
+      auto-optimise-store = true
+    '';
+  };
 
   i18n = {
     consoleFont = "lat9w-16";
