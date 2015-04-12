@@ -124,7 +124,7 @@
     mediainfo
     mmv
     mono
-    #monodevelop
+    monodevelop
     mosh
     mp3gain
     mpc_cli
@@ -153,6 +153,7 @@
     python
     python2
     python3
+    pythonPackages.rainbowstream
     recode
     ruby
     screen
