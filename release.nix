@@ -35,7 +35,7 @@ in with pkgs.lib; with builtins; {
       tar cJf "$out/tarballs/nixexprs.tar.xz" \
         --owner=0 --group=0 --mtime="1970-01-01 00:00:00 UTC" \
         --transform='s!^\.!${name}/!' .
-      echo "file channel $out/tarballs/nixexprs.tar.bz2" \
+      echo "file channel $out/tarballs/nixexprs.tar.xz" \
         > "$out/nix-support/hydra-build-products"
     '';
   };
