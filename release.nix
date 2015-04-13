@@ -34,7 +34,7 @@ in with pkgs.lib; with builtins; {
       mkdir -p "$out/tarballs" "$out/nix-support"
       tar cJf "$out/tarballs/nixexprs.tar.xz" \
         --owner=0 --group=0 --mtime="1970-01-01 00:00:00 UTC" \
-        --transform='s!^\.!${name}/!' .
+        --transform='s!^\.!${name}!' .
       echo "file channel $out/tarballs/nixexprs.tar.xz" \
         > "$out/nix-support/hydra-build-products"
     '';
