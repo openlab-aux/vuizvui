@@ -25,10 +25,19 @@ in with pkgs.lib; with builtins; {
     };
   in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
 
-  channel = pkgs.srcOnly rec {
+  channel = pkgs.stdenv.mkDerivation rec {
     name = "vuizvui-channel-${version}";
     version = "${toString vuizvui.revCount}.${vuizvui.shortRev}";
     src = vuizvui;
+    phases = [ "unpackPhase" "installPhase" ];
+    installPhase = ''
+      mkdir -p "$out/tarballs" "$out/nix-support"
+      tar cJf "$out/tarballs/nixexprs.tar.xz" \
+        --owner=0 --group=0 --mtime="1970-01-01 00:00:00 UTC" \
+        --transform='s!^\.!${name}/!' .
+      echo "file channel $out/tarballs/nixexprs.tar.bz2" \
+        > "$out/nix-support/hydra-build-products"
+    '';
   };
 
   manual = let
