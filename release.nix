@@ -19,9 +19,7 @@ in with pkgsUpstream.lib; with builtins; {
   pkgs = let
     releaseLib = import <nixpkgs/pkgs/top-level/release-lib.nix> {
       inherit supportedSystems;
-      packageSet = attrs: (import ./pkgs {
-        pkgs = import <nixpkgs> attrs;
-      }) // { inherit (pkgsUpstream) lib; };
+      packageSet = attrs: (import ./default.nix attrs).pkgs;
     };
   in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
 
