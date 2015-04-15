@@ -4,9 +4,9 @@
 
 let
   system = "x86_64-linux";
-  pkgs = import <nixpkgs> { inherit system; };
+  pkgsUpstream = import <nixpkgs> { inherit system; };
 
-in with pkgs.lib; with builtins; {
+in with pkgsUpstream.lib; with builtins; {
 
   machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs:
     attrs.build.config.system.build.toplevel
@@ -19,9 +19,9 @@ in with pkgs.lib; with builtins; {
   pkgs = let
     releaseLib = import <nixpkgs/pkgs/top-level/release-lib.nix> {
       inherit supportedSystems;
-      packageSet = attrs: import ./pkgs {
+      packageSet = attrs: (import ./pkgs {
         pkgs = import <nixpkgs> attrs;
-      } // { inherit (pkgs) lib; };
+      }) // { inherit (pkgsUpstream) lib; };
     };
   in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
 
