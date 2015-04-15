@@ -4,6 +4,8 @@ let
   callPackage = pkgs.lib.callPackageWith (pkgs // self);
 
   self = {
+    mkChannel = callPackage ./build-support/channel.nix { };
+
     aacolorize = callPackage ./aacolorize { };
     axbo = callPackage ./axbo { };
     beehive = callPackage ./beehive { };
