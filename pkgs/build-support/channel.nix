@@ -1,9 +1,9 @@
 { stdenv }:
 
-{ name, channelName ? null, src, constituents ? [], meta ? {}, ... }@args:
+{ name, src, constituents ? [], meta ? {}, ... }@args:
 
 stdenv.mkDerivation {
-  inherit name channelName src constituents meta;
+  inherit name src constituents meta;
   _hydraAggregate = true;
 
   phases = [ "unpackPhase" "installPhase" ];
@@ -13,11 +13,9 @@ stdenv.mkDerivation {
     tar cJf "$out/tarballs/nixexprs.tar.xz" \
       --owner=0 --group=0 --mtime="1970-01-01 00:00:00 UTC" \
       --transform='s!^\.!${name}!' .
-    if [ -z "$channelName" ]; then
-      echo "file channel $out/tarballs/nixexprs.tar.xz"
-    else
-      echo "file channel \"$channelName\" $out/tarballs/nixexprs.tar.xz"
-    fi > "$out/nix-support/hydra-build-products"
+
+    echo "file channel $out/tarballs/nixexprs.tar.xz" \
+      > "$out/nix-support/hydra-build-products"
 
     echo $constituents > "$out/nix-support/hydra-aggregate-constituents"
     for i in $constituents; do

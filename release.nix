@@ -26,7 +26,6 @@ in with pkgsUpstream.lib; with builtins; {
 
   channel = root.pkgs.mkChannel rec {
     name = "vuizvui-channel-${version}";
-    channelName = "generic";
     version = "${toString vuizvui.revCount}.${vuizvui.shortRev}";
     src = vuizvui;
   };
