@@ -24,10 +24,20 @@ in with pkgsUpstream.lib; with builtins; {
     };
   in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
 
-  channel = root.pkgs.mkChannel rec {
-    name = "vuizvui-channel-${version}";
-    version = "${toString vuizvui.revCount}.${vuizvui.shortRev}";
-    src = vuizvui;
+  channels = let
+    mkChannel = attrs: root.pkgs.mkChannel (rec {
+      name = "vuizvui-channel-${attrs.name or "generic"}-${version}";
+      version = "${toString vuizvui.revCount}.${vuizvui.shortRev}";
+      src = vuizvui;
+    } // removeAttrs attrs [ "name" ]);
+
+  in {
+    generic = mkChannel {};
+
+    machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs: mkChannel {
+      name = "machine-${last path}";
+      constituents = singleton attrs.build.config.system.build.toplevel;
+    }) (import ./machines { inherit system; });
   };
 
   manual = let
