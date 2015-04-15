@@ -42,10 +42,10 @@ in with pkgsUpstream.lib; with builtins; {
     filterDoc = filter (opt: isVuizvui opt && opt.visible && !opt.internal);
     optionsXML = toXML (filterDoc (optionAttrSetToDocList modules.options));
     optionsFile = toFile "options.xml" (unsafeDiscardStringContext optionsXML);
-  in pkgs.stdenv.mkDerivation {
+  in pkgsUpstream.stdenv.mkDerivation {
     name = "vuizvui-options";
 
-    buildInputs = singleton pkgs.libxslt;
+    buildInputs = singleton pkgsUpstream.libxslt;
 
     xsltFlags = ''
       --param section.autolabel 1
@@ -73,7 +73,7 @@ in with pkgsUpstream.lib; with builtins; {
       XML
 
       xsltproc -o "$out/manual.html" $xsltFlags -nonet -xinclude \
-        ${pkgs.docbook5_xsl}/xml/xsl/docbook/xhtml/docbook.xsl \
+        ${pkgsUpstream.docbook5_xsl}/xml/xsl/docbook/xhtml/docbook.xsl \
         manual.xml
 
       cp "${<nixpkgs/nixos/doc/manual/style.css>}" "$out/style.css"
