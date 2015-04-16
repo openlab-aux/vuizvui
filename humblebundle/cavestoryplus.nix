@@ -15,7 +15,7 @@ stdenv.mkDerivation rec {
 
   patchPhase = let
     rpath = stdenv.lib.makeLibraryPath [
-      SDL "$out" stdenv.cc.gcc mesa
+      SDL "$out" stdenv.cc.cc mesa
     ];
   in ''
     patchelf \

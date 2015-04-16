@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
 
   patchPhase = let
     rpath = stdenv.lib.makeLibraryPath [
-      SDL mesa zlib openal libvorbis fontconfig freetype stdenv.cc.gcc libogg
+      SDL mesa zlib openal libvorbis fontconfig freetype stdenv.cc.cc libogg
       xorg.libX11 xorg.libXft xorg.libXinerama xorg.libXext xorg.libXpm
     ];
   in ''

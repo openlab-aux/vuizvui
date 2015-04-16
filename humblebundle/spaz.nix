@@ -19,7 +19,7 @@ stdenv.mkDerivation rec {
 
   buildPhase = let
     libs = pkgsi686Linux.stdenv.lib.makeLibraryPath [
-      pkgsi686Linux.stdenv.cc.gcc pkgsi686Linux.SDL
+      pkgsi686Linux.stdenv.cc.cc pkgsi686Linux.SDL
     ];
   in ''
     patchelf --set-interpreter "${pkgsi686Linux.glibc}"/lib/ld-linux.so.* \
