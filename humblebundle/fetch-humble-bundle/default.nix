@@ -9,19 +9,14 @@
 
   humbleAPI = buildPythonPackage rec {
     name = "humblebundle-${version}";
-    version = "0.1.0";
+    version = "0.1.1";
 
     src = fetchFromGitHub {
       owner = "saik0";
       repo = "humblebundle-python";
       rev = version;
-      sha256 = "04kwghlwgdrhhr8dzc7avr5banpcwcaflh1v81r35jm0yf8inzsa";
+      sha256 = "1kcg42nh7sbjabim1pbqx14468pypznjy7fx2bv7dicy0sqd9b8j";
     };
-
-    patches = stdenv.lib.singleton (fetchpatch {
-      url = "https://github.com/saik0/humblebundle-python/pull/7.patch";
-      sha256 = "106306029drs6pi8jp520bm3903w06j7sh1hq57ncbd85h15fzzx";
-    });
 
     propagatedBuildInputs = with pythonPackages; [ requests2 ];
   };
