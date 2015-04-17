@@ -1,7 +1,7 @@
 { stdenv, curl, cacert, writeText, fetchFromGitHub, fetchpatch
 , python, buildPythonPackage, pythonPackages
 
-, email ? null, password ? null
+, email, password
 }:
 
 { machineName, downloadName ? "Download", suffix ? "humblebundle", md5 }: let
@@ -19,28 +19,6 @@
     };
 
     propagatedBuildInputs = with pythonPackages; [ requests2 ];
-  };
-
-  configFilePath = let
-    xdgConfig = builtins.getEnv "XDG_CONFIG_HOME";
-    fallback = "${builtins.getEnv "HOME"}/.config";
-    basedir = if xdgConfig == "" then fallback else xdgConfig;
-  in "${basedir}/nixgames.nix";
-
-  configFile = if !builtins.pathExists configFilePath then throw ''
-    The config file "${configFilePath}" doesn't exist! Be sure to create it and
-    put your HumbleBundle email address and password in it, like this:
-
-    {
-      humblebundle.email = "fancyuser@example.com";
-      humblebundle.password = "my_super_secret_password";
-    }
-  '' else configFilePath;
-
-  credentials = if email != null && password != null then {
-    inherit email password;
-  } else {
-    inherit ((import configFile).humblebundle) email password;
   };
 
   getDownloadURL = writeText "gethburl.py" ''
@@ -72,7 +50,7 @@
           raise SystemExit(1)
 
     hb = humblebundle.HumbleApi()
-    hb.login('${credentials.email}', '${credentials.password}')
+    hb.login('${email}', '${password}')
     products = dict(get_products(hb))
     dstruct = find_download(products)
 
