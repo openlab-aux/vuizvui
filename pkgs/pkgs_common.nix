@@ -25,6 +25,7 @@
 
   environment.systemPackages = with pkgs; [
     #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
+    #monodevelop
     abook
     accountsservice
     apg
@@ -123,8 +124,8 @@
     mcabber
     mediainfo
     mmv
+    monkeysAudio
     mono
-    #monodevelop
     mosh
     mp3gain
     mpc_cli
@@ -181,6 +182,7 @@
     vorbisTools
     vorbisgain
     w3m
+    wavpack
     weechat
     wget
     which
