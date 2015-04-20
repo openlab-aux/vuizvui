@@ -26,8 +26,6 @@
   environment.systemPackages = with pkgs; [
     #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
     #monodevelop
-    #pandoc
-    #youtube-dl
     abook
     accountsservice
     apg
@@ -143,6 +141,7 @@
     obnam
     openssl
     p7zip
+    pandoc
     pasystray
     pavucontrol
     picard
@@ -192,6 +191,7 @@
     xpdf
     xpra
     xscreensaver
+    youtube-dl
     zotero
   ];
 }
