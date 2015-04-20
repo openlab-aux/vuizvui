@@ -7,7 +7,7 @@
       ./network/network_eris.nix
       ./services/services_eris.nix
       ./pkgs/pkgs_eris.nix
-      ./overrides/override_gnupg.nix
+      ./overrides/overrides.nix
       ./users/users_dev.nix
     ];
 }

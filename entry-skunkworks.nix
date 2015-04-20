@@ -7,7 +7,7 @@
       ./network/network_skunkworks.nix
       ./services/services_skunkworks.nix
       ./pkgs/pkgs_skunkworks.nix
-      ./overrides/override_gnupg.nix
+      ./overrides/overrides.nix
       ./users/users_dev.nix
     ];
 }
