@@ -3,7 +3,7 @@
 { name, src, constituents ? [], meta ? {}, ... }@args:
 
 stdenv.mkDerivation {
-  inherit name src constituents meta;
+  inherit name src constituents;
   _hydraAggregate = true;
 
   phases = [ "unpackPhase" "installPhase" ];
@@ -24,4 +24,8 @@ stdenv.mkDerivation {
       fi
     done
   '';
+
+  meta = meta // {
+    isHydraChannel = true;
+  };
 } // removeAttrs args [ "name" "channelName" "src" "constituents" "meta" ]
