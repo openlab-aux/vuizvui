@@ -14,7 +14,7 @@ stdenv.mkDerivation {
       --owner=0 --group=0 --mtime="1970-01-01 00:00:00 UTC" \
       --transform='s!^\.!${name}!' .
 
-    echo "file channel $out/tarballs/nixexprs.tar.xz" \
+    echo "channel - $out/tarballs/nixexprs.tar.xz" \
       > "$out/nix-support/hydra-build-products"
 
     echo $constituents > "$out/nix-support/hydra-aggregate-constituents"
