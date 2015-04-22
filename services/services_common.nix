@@ -27,7 +27,7 @@
   services.psd = {
     enable = true;
     users = [ "dev" ];
-    browsers = [ "chromium" "firefox" ];
+    browsers = [ "chromium" ];
   };
 
   services.mpd = {
