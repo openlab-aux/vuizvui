@@ -5,5 +5,5 @@
 
   networking.hostName = "skunkworks";
   networking.wireless.enable = false;
-  networking.useNetworkd = true;
+  networking.useNetworkd = false;
 }

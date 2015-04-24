@@ -3,16 +3,17 @@
 {
   imports = [ ./services_common.nix ];
 
-  services.printing.enable = true;
-  services.timesyncd.enable = true;
-  services.resolved.enable = true;
-  services.haveged.enable = true;
-  services.canto-daemon.enable = true;
-
-  services.redshift = {
-    enable = true;
-    latitude = "51.2750";
-    longitude = "1.0870";
+  services = {
+    printing.enable = true;
+    timesyncd.enable = false;
+    resolved.enable = false;
+    haveged.enable = true;
+    canto-daemon.enable = true;
+    redshift = {
+      enable = true;
+      latitude = "51.2750";
+      longitude = "1.0870";
+    };
   };
 
   services.xserver = {
