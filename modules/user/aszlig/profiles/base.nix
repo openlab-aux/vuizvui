@@ -75,9 +75,6 @@ in {
         netrw = pkgs.netrw.override {
           checksumType = "mhash";
         };
-        pulseaudio = pkgs.pulseaudio.override {
-          useSystemd = true;
-        };
         uqm = pkgs.uqm.override {
           use3DOVideos = true;
           useRemixPacks = true;
