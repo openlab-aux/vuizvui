@@ -29,9 +29,6 @@ in {
 
     hardware = {
       pulseaudio.enable = true;
-      pulseaudio.package = pkgs.pulseaudio.override {
-        useSystemd = true;
-      };
       opengl = {
         driSupport32Bit = true;
         s3tcSupport = true;
