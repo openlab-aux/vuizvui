@@ -2,7 +2,7 @@
 
 { name, src, constituents ? [], meta ? {}, ... }@args:
 
-stdenv.mkDerivation {
+stdenv.mkDerivation ({
   inherit name src constituents;
   _hydraAggregate = true;
 
@@ -28,4 +28,4 @@ stdenv.mkDerivation {
   meta = meta // {
     isHydraChannel = true;
   };
-} // removeAttrs args [ "name" "channelName" "src" "constituents" "meta" ]
+} // removeAttrs args [ "name" "channelName" "src" "constituents" "meta" ])
