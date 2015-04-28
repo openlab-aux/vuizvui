@@ -6,7 +6,7 @@ stdenv.mkDerivation {
   inherit name src constituents;
   _hydraAggregate = true;
 
-  phases = [ "unpackPhase" "installPhase" ];
+  phases = [ "unpackPhase" "patchPhase" "installPhase" ];
   installPhase = ''
     mkdir -p "$out/tarballs" "$out/nix-support"
 
