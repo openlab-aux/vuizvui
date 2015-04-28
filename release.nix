@@ -16,6 +16,7 @@ let
   patchedNixpkgs = pkgsUpstream.stdenv.mkDerivation rec {
     name = "nixpkgs-${version}";
     version = "${toString nixpkgs.revCount}.${nixpkgs.shortRev}";
+    src = nixpkgs;
     phases = [ "unpackPhase" "patchPhase" "installPhase" ];
     installPhase = "cp -r . \"$out\"";
     patchPhase = patchNixpkgsReference "'\"$out\"'";
