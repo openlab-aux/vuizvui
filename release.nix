@@ -38,6 +38,7 @@ in with pkgsUpstream.lib; with builtins; {
              \) -exec sed -i -re 's!<nixpkgs([^>]*)>!<vuizvui/nixpkgs\1>!g' {} +
         echo -n "$pkgsVer" > nixpkgs/.version-suffix
         echo -n ${nixpkgs.rev or nixpkgs.shortRev} > nixpkgs/.git-revision
+        touch .update-on-nixos-rebuild
       '';
     } // removeAttrs attrs [ "name" ]);
 
