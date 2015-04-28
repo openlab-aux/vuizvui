@@ -8,23 +8,6 @@ let
   pkgsUpstream = import <nixpkgs> { inherit system; };
   root = import ./default.nix { inherit system; };
 
-  patchNixpkgsReference = path: ''
-    find -iname '*.nix' -type f -exec \
-      sed -i -re 's!<nixpkgs([^>]*)>!${path}\1!g' {} +
-  '';
-
-  patchedNixpkgs = pkgsUpstream.stdenv.mkDerivation rec {
-    name = "nixpkgs-${version}";
-    version = "${toString nixpkgs.revCount}.${nixpkgs.shortRev}";
-    src = nixpkgs;
-    phases = [ "unpackPhase" "patchPhase" "installPhase" ];
-    installPhase = "cp -r . \"$out\"";
-    patchPhase = (patchNixpkgsReference "'\"$out\"'") + ''
-      sed -i -re 's!<nixpkgs([^>]*)>!<vuizvui/nixpkgs\1>!g' \
-        nixos/modules/installer/tools/nixos-rebuild.sh
-    '';
-  };
-
 in with pkgsUpstream.lib; with builtins; {
 
   machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs:
@@ -46,9 +29,15 @@ in with pkgsUpstream.lib; with builtins; {
     mkChannel = attrs: root.pkgs.mkChannel (rec {
       name = "vuizvui-channel-${attrs.name or "generic"}-${version}";
       version = "${toString vuizvui.revCount}.${vuizvui.shortRev}";
+      pkgsVer = "pre${toString nixpkgs.revCount}.${nixpkgs.shortRev}-vuizvui";
       src = vuizvui;
-      patchPhase = (patchNixpkgsReference patchedNixpkgs) + ''
-        ln -s "${patchedNixpkgs}" nixpkgs
+      patchPhase = ''
+        cp -r --no-preserve=mode,ownership "${nixpkgs}/" nixpkgs
+        find \( -iname '*.nix' -type f \
+             -o -path ./nixpkgs/nixos/modules/installer/tools/nixos-rebuild.sh \
+             \) -exec sed -i -re 's!<nixpkgs([^>]*)>!<vuizvui/nixpkgs\1>!g' {} +
+        echo -n "$pkgsVer" > nixpkgs/.version-suffix
+        echo -n ${nixpkgs.rev or nixpkgs.shortRev} > nixpkgs/.git-revision
       '';
     } // removeAttrs attrs [ "name" ]);
 
