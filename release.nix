@@ -1,4 +1,5 @@
 { vuizvui ? { outPath = ./.; revCount = 12345; shortRev = "abcdefg"; }
+, nixpkgs ? { outPath = <nixpkgs>; revCount = 12345; shortRev = "abcdefg"; }
 , supportedSystems ? [ "i686-linux" "x86_64-linux" ]
 }:
 
@@ -6,6 +7,19 @@ let
   system = "x86_64-linux";
   pkgsUpstream = import <nixpkgs> { inherit system; };
   root = import ./default.nix { inherit system; };
+
+  patchNixpkgsReference = path: ''
+    find -iname '*.nix' -type f -exec \
+      sed -i -re 's!<nixpkgs([^>]*)>!${path}\1!g' {} +
+  '';
+
+  patchedNixpkgs = pkgsUpstream.stdenv.mkDerivation rec {
+    name = "nixpkgs-${version}";
+    version = "${toString nixpkgs.revCount}.${nixpkgs.shortRev}";
+    phases = [ "unpackPhase" "patchPhase" "installPhase" ];
+    installPhase = "cp -r . \"$out\"";
+    patchPhase = patchNixpkgsReference "'\"$out\"'";
+  };
 
 in with pkgsUpstream.lib; with builtins; {
 
@@ -29,6 +43,7 @@ in with pkgsUpstream.lib; with builtins; {
       name = "vuizvui-channel-${attrs.name or "generic"}-${version}";
       version = "${toString vuizvui.revCount}.${vuizvui.shortRev}";
       src = vuizvui;
+      patchPhase = patchNixpkgsReference patchedNixpkgs;
     } // removeAttrs attrs [ "name" ]);
 
   in {
