@@ -19,7 +19,10 @@ let
     src = nixpkgs;
     phases = [ "unpackPhase" "patchPhase" "installPhase" ];
     installPhase = "cp -r . \"$out\"";
-    patchPhase = patchNixpkgsReference "'\"$out\"'";
+    patchPhase = (patchNixpkgsReference "'\"$out\"'") + ''
+      sed -i -re 's!<nixpkgs([^>]*)>!<vuizvui/nixpkgs\1>!g' \
+        nixos/modules/installer/tools/nixos-rebuild.sh
+    '';
   };
 
 in with pkgsUpstream.lib; with builtins; {
@@ -44,7 +47,9 @@ in with pkgsUpstream.lib; with builtins; {
       name = "vuizvui-channel-${attrs.name or "generic"}-${version}";
       version = "${toString vuizvui.revCount}.${vuizvui.shortRev}";
       src = vuizvui;
-      patchPhase = patchNixpkgsReference patchedNixpkgs;
+      patchPhase = (patchNixpkgsReference patchedNixpkgs) + ''
+        ln -s "${patchedNixpkgs}" nixpkgs
+      '';
     } // removeAttrs attrs [ "name" ]);
 
   in {
