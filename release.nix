@@ -6,9 +6,11 @@
 let
   nixpkgsRevCount = nixpkgsSrc.revCount or 12345;
   nixpkgsShortRev = nixpkgsSrc.shortRev or "abcdefg";
+  nixpkgsVersion = "pre${toString nixpkgsRevCount}.${nixpkgsShortRev}-vuizvui";
 
   nixpkgs = let
     patchedNixpkgs = (import nixpkgsSrc {}).stdenv.mkDerivation {
+      name = "nixpkgs-${nixpkgsVersion}";
       src = nixpkgsSrc;
       phases = [ "unpackPhase" "installPhase" ];
       installPhase = ''
@@ -44,11 +46,11 @@ in with pkgsUpstream.lib; with builtins; {
     mkChannel = attrs: root.pkgs.mkChannel (rec {
       name = "vuizvui-channel-${attrs.name or "generic"}-${version}";
       version = "${toString vuizvui.revCount}.${vuizvui.shortRev}";
-      pkgsVer = "pre${toString nixpkgsRevCount}.${nixpkgsShortRev}-vuizvui";
+      inherit nixpkgsVersion;
       src = vuizvui;
       patchPhase = ''
         cp -r --no-preserve=mode,ownership "${nixpkgs}/" nixpkgs
-        echo -n "$pkgsVer" > nixpkgs/.version-suffix
+        echo -n "$nixpkgsVersion" > nixpkgs/.version-suffix
         echo -n ${nixpkgs.rev or nixpkgsShortRev} > nixpkgs/.git-revision
         echo './nixpkgs' > nixpkgs-path.nix
         touch .update-on-nixos-rebuild
