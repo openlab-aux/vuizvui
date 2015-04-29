@@ -1,11 +1,13 @@
 f: { system ? builtins.currentSystem, ... } @ args: let
-  lib = import <nixpkgs/lib>;
+  nixpkgsPath = import ../nixpkgs-path.nix;
 
-  testLib = import <nixpkgs/nixos/lib/testing.nix> {
+  lib = import "${nixpkgsPath}/lib";
+
+  testLib = import "${nixpkgsPath}/nixos/lib/testing.nix" {
     inherit system;
   };
 
-  pkgs = import <nixpkgs> { inherit system; };
+  pkgs = import nixpkgsPath { inherit system; };
 
   testArgs = if builtins.isFunction f then f (args // {
     pkgs = pkgs // {

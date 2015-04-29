@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, modulesPath, ... }:
 
 let
   greybird = pkgs.stdenv.mkDerivation {
@@ -24,7 +24,7 @@ let
   };
 
 in {
-  imports = [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix> ];
+  imports = [ "${modulesPath}/installer/scan/not-detected.nix" ];
 
   boot.loader.grub.device = "/dev/disk/by-id/ata-HITACHI_HTS722010K9SA00_080711DP0270DPGLVMPC";
 

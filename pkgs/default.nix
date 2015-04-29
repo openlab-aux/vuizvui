@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import (import ../nixpkgs-path.nix) {} }:
 
 let
   callPackage = pkgs.lib.callPackageWith (pkgs // self);

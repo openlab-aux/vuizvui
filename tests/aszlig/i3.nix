@@ -4,7 +4,9 @@
   name = "i3";
 
   machine = { lib, ... }: {
-    imports = [ <nixpkgs/nixos/tests/common/x11.nix> ];
+    imports = [
+      "${import ../../nixpkgs-path.nix}/nixos/tests/common/x11.nix"
+    ];
 
     vuizvui.user.aszlig.profiles.base.enable = true;
 

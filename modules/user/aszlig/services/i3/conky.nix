@@ -1,4 +1,7 @@
-{ pkgs ? import <nixpkgs> {}, lib ? import <nixpkgs/lib>, timeout ? 300 }:
+{ pkgs ? import (import ../../../../../nixpkgs-path.nix) {}
+, lib ? import "${import ../../../../../nixpkgs-path.nix}/lib"
+, timeout ? 300
+}:
 
 with lib;
 

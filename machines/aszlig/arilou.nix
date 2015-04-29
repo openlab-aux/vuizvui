@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, modulesPath, ... }:
 
 with lib;
 
@@ -8,7 +8,7 @@ let
   diskID = "usb-Lexar_USB_Flash_Drive_201303211246293590E4-0:0";
 in {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
-  imports = [ <nixpkgs/nixos/modules/profiles/all-hardware.nix> ];
+  imports = [ "${modulesPath}/profiles/all-hardware.nix" ];
 
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;

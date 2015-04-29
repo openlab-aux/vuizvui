@@ -1,11 +1,17 @@
-{ vuizvui ? { outPath = ./.; revCount = 12345; shortRev = "abcdefg"; }
-, nixpkgs ? { outPath = <nixpkgs>; revCount = 12345; shortRev = "abcdefg"; }
+{ vuizvui ? { outPath  = ./.;
+              revCount = 12345;
+              shortRev = "abcdefg";
+            }
+, nixpkgs ? { outPath  = import ./nixpkgs-path.nix;
+              revCount = 12345;
+              shortRev = "abcdefg";
+            }
 , supportedSystems ? [ "i686-linux" "x86_64-linux" ]
 }:
 
 let
   system = "x86_64-linux";
-  pkgsUpstream = import <nixpkgs> { inherit system; };
+  pkgsUpstream = import nixpkgs { inherit system; };
   root = import ./default.nix { inherit system; };
 
 in with pkgsUpstream.lib; with builtins; {
@@ -19,7 +25,7 @@ in with pkgsUpstream.lib; with builtins; {
   });
 
   pkgs = let
-    releaseLib = import <nixpkgs/pkgs/top-level/release-lib.nix> {
+    releaseLib = import "${nixpkgs}/pkgs/top-level/release-lib.nix" {
       inherit supportedSystems;
       packageSet = attrs: (import ./default.nix attrs).pkgs;
     };
@@ -52,7 +58,7 @@ in with pkgsUpstream.lib; with builtins; {
   };
 
   manual = let
-    modules = import <nixpkgs/nixos/lib/eval-config.nix> {
+    modules = import "${nixpkgs}/nixos/lib/eval-config.nix" {
       modules = import ./modules/module-list.nix;
       check = false;
       inherit system;
@@ -77,7 +83,7 @@ in with pkgsUpstream.lib; with builtins; {
 
     buildCommand = ''
       xsltproc -o options-db.xml \
-        ${<nixpkgs/nixos/doc/manual/options-to-docbook.xsl>} \
+        "${nixpkgs}/nixos/doc/manual/options-to-docbook.xsl" \
         ${optionsFile}
 
       cat > manual.xml <<XML
@@ -96,7 +102,7 @@ in with pkgsUpstream.lib; with builtins; {
         ${pkgsUpstream.docbook5_xsl}/xml/xsl/docbook/xhtml/docbook.xsl \
         manual.xml
 
-      cp "${<nixpkgs/nixos/doc/manual/style.css>}" "$out/style.css"
+      cp "${nixpkgs}/nixos/doc/manual/style.css" "$out/style.css"
 
       mkdir -p "$out/nix-support"
       echo "doc manual $out manual.html" \
