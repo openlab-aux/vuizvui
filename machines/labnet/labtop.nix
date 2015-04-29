@@ -1,4 +1,4 @@
-{ pkgs, lib, modulesPath, ... }:
+{ pkgs, lib, ... }:
 
 let
   greybird = pkgs.stdenv.mkDerivation {
@@ -22,6 +22,8 @@ let
         xfwm4_compact/*
     '';
   };
+
+  modulesPath = "${import ../../nixpkgs-path.nix}/nixos/modules";
 
 in {
   imports = [ "${modulesPath}/installer/scan/not-detected.nix" ];
