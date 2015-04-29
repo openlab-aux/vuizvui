@@ -1,4 +1,4 @@
-{ vuizvui ? { outPath  = ./.; revCount = 12345; shortRev = "abcdefg"; }
+{ vuizvuiSrc ? null
 , nixpkgsSrc ? null
 , supportedSystems ? [ "i686-linux" "x86_64-linux" ]
 }:
@@ -21,38 +21,51 @@ let
     };
   in if nixpkgsSrc == null then <nixpkgs> else patchedNixpkgs;
 
+  vuizvuiRevCount = vuizvuiSrc.revCount or 12345;
+  vuizvuiShortRev = vuizvuiSrc.shortRev or "abcdefg";
+  vuizvuiVersion = "pre${toString vuizvuiRevCount}.${vuizvuiShortRev}";
+
+  vuizvui = let
+    patchedVuizvui = (import nixpkgs {}).stdenv.mkDerivation {
+      name = "vuizvui-${vuizvuiVersion}";
+      inherit nixpkgsVersion;
+      src = vuizvuiSrc;
+      phases = [ "unpackPhase" "installPhase" ];
+      installPhase = ''
+        cp -r --no-preserve=mode,ownership "${nixpkgs}/" nixpkgs
+        echo -n "$nixpkgsVersion" > nixpkgs/.version-suffix
+        echo -n ${nixpkgs.rev or nixpkgsShortRev} > nixpkgs/.git-revision
+        echo './nixpkgs' > nixpkgs-path.nix
+        cp -r . "$out"
+      '';
+    };
+  in if vuizvuiSrc == null then ./. else patchedVuizvui;
+
   system = "x86_64-linux";
   pkgsUpstream = import nixpkgs { inherit system; };
-  root = import ./default.nix { inherit system; };
+  root = import vuizvui { inherit system; };
 
 in with pkgsUpstream.lib; with builtins; {
 
   machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs:
     attrs.build.config.system.build.toplevel
-  ) (import ./machines { inherit system; });
+  ) (import "${vuizvui}/machines" { inherit system; });
 
-  tests = mapAttrsRecursiveCond (t: !(t ? test)) (const id) (import ./tests {
-    inherit system;
-  });
+  tests = mapAttrsRecursiveCond (t: !(t ? test)) (const id)
+    (import "${vuizvui}/tests" { inherit system; });
 
   pkgs = let
     releaseLib = import "${nixpkgs}/pkgs/top-level/release-lib.nix" {
       inherit supportedSystems;
-      packageSet = attrs: (import ./default.nix attrs).pkgs;
+      packageSet = attrs: (import vuizvui attrs).pkgs;
     };
   in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
 
   channels = let
     mkChannel = attrs: root.pkgs.mkChannel (rec {
-      name = "vuizvui-channel-${attrs.name or "generic"}-${version}";
-      version = "${toString vuizvui.revCount}.${vuizvui.shortRev}";
-      inherit nixpkgsVersion;
+      name = "vuizvui-channel-${attrs.name or "generic"}-${vuizvuiVersion}";
       src = vuizvui;
       patchPhase = ''
-        cp -r --no-preserve=mode,ownership "${nixpkgs}/" nixpkgs
-        echo -n "$nixpkgsVersion" > nixpkgs/.version-suffix
-        echo -n ${nixpkgs.rev or nixpkgsShortRev} > nixpkgs/.git-revision
-        echo './nixpkgs' > nixpkgs-path.nix
         touch .update-on-nixos-rebuild
       '';
     } // removeAttrs attrs [ "name" ]);
@@ -63,12 +76,12 @@ in with pkgsUpstream.lib; with builtins; {
     machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs: mkChannel {
       name = "machine-${last path}";
       constituents = singleton attrs.build.config.system.build.toplevel;
-    }) (import ./machines { inherit system; });
+    }) (import "${vuizvui}/machines" { inherit system; });
   };
 
   manual = let
     modules = import "${nixpkgs}/nixos/lib/eval-config.nix" {
-      modules = import ./modules/module-list.nix;
+      modules = import "${vuizvui}/modules/module-list.nix";
       check = false;
       inherit system;
     };
