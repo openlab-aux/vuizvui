@@ -44,6 +44,7 @@
     ccrypt
     chromaprint
     chromium
+    cifs_utils
     cmake
     colordiff
     conky
