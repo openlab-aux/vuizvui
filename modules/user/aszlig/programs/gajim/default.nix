@@ -40,7 +40,7 @@ let
   gajimPatched = overrideDerivation pkgs.gajim (o: {
     patches = (o.patches or []) ++ singleton (pkgs.substituteAll {
       src = ./config.patch;
-      nix_config = pkgs.writeText "gajim.config" (import ./config.nix);
+      nix_config = pkgs.writeText "gajim.config" (import ./config.nix lib);
     });
     postPatch = (o.postPatch or "") + ''
       sed -i -e '/^export/i export GTK2_RC_FILES="${gtkTheme}"' \

@@ -1,4 +1,4 @@
-with (import <nixpkgs> {}).lib;
+lib: with lib;
 
 let
   mkConfig = let
