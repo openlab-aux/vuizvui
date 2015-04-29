@@ -36,7 +36,7 @@ let
 
     postPatch = ''
       sed -i -re 's!<nixpkgs([^>]*)>!${import ../../nixpkgs-path.nix}\1!g' \
-        release.nix doc/manual/default.nix
+        release.nix doc/manual/default.nix doc/manual/resource.nix
     '';
 
     installPhase = ''
