@@ -34,6 +34,11 @@ let
 
     patchFlags = "--merge -p1";
 
+    postPatch = ''
+      sed -i -re 's!<nixpkgs([^>]*)>!${import ../../nixpkgs-path.nix}\1!g' \
+        release.nix
+    '';
+
     installPhase = ''
       cp -a . "$out"
     '';
