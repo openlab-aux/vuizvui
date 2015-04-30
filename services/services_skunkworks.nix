@@ -5,8 +5,8 @@
 
   services = {
     printing.enable = true;
-    timesyncd.enable = false;
-    resolved.enable = false;
+    timesyncd.enable = true;
+    resolved.enable = true;
     haveged.enable = true;
     canto-daemon.enable = true;
     redshift = {
