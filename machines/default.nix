@@ -24,6 +24,9 @@ in {
     heinrich = callMachine ./labnet/heinrich.nix;
     labtop   = callMachine ./labnet/labtop.nix;
   };
+  profpatsch = {
+    katara = callMachine ./profpatsch/katara.nix;
+  };
   misc = {
     mailserver = callMachine ./misc/mailserver.nix;
   };
