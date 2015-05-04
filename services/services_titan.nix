@@ -6,16 +6,19 @@
   services.tftpd.enable = true;
   services.gnome3.gnome-keyring.enable = true;
   services.printing.enable = false;
-  services.acpid.enable = true;
-  services.acpid.lidEventCommands = ''
-    LID="/proc/acpi/button/lid/LID/state"
-    state=`cat $LID | ${pkgs.gawk}/bin/awk '{print $2}'`
-    case "$state" in
-      *open*) ;;
-      *close*) ${pkgs.pmutils}/sbin/pm-suspend ;;
-      *) logger -t lid-handler "Failed to detect lid state ($state)" ;;
-    esac
-  '';
+
+  services.acpid = {
+    enable = true;
+    lidEventCommands = ''
+      LID="/proc/acpi/button/lid/LID/state"
+      state=`cat $LID | ${pkgs.gawk}/bin/awk '{print $2}'`
+      case "$state" in
+        *open*) ;;
+        *close*) ${pkgs.pmutils}/sbin/pm-suspend ;;
+        *) logger -t lid-handler "Failed to detect lid state ($state)" ;;
+      esac
+    '';
+  };
 
   services.xserver = {
     enable = true;
