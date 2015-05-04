@@ -3,9 +3,11 @@
 {
   imports = [ ./services_common.nix ];
 
-  services.tftpd.enable = true;
-  services.gnome3.gnome-keyring.enable = true;
-  services.printing.enable = false;
+  services = {
+    tftpd.enable = true;
+    gnome3.gnome-keyring.enable = true;
+    printing.enable = false;
+  };
 
   services.acpid = {
     enable = true;
