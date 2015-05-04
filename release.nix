@@ -14,7 +14,9 @@ let
       src = nixpkgsSrc;
       phases = [ "unpackPhase" "installPhase" ];
       installPhase = ''
-        sed -i -re 's!<nixpkgs([^>]*)>!<vuizvui/nixpkgs\1>!g' \
+        sed -i -r \
+          -e 's!<nixpkgs([^>]*)>!<vuizvui/nixpkgs\1>!g' \
+          -e 's!(--find-file *['"'"'"]?)nixpkgs!\1vuizvui/nixpkgs!g' \
           nixos/modules/installer/tools/nixos-rebuild.sh
         cp -r . "$out"
       '';
