@@ -36,6 +36,8 @@ let
       installPhase = ''
         cp -r --no-preserve=mode,ownership "${nixpkgs}/" nixpkgs
         echo -n "$nixpkgsVersion" > nixpkgs/.version-suffix
+        echo "echo '$nixpkgsVersion'" \
+          > nixpkgs/nixos/modules/installer/tools/get-version-suffix
         echo -n ${nixpkgs.rev or nixpkgsShortRev} > nixpkgs/.git-revision
         echo './nixpkgs' > nixpkgs-path.nix
         cp -r . "$out"
