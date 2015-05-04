@@ -6,7 +6,7 @@
     udisks2.enable = true;
     virtualboxHost.enable = true;
     gpm.enable = true;
- };
+  };
 
   services.xserver = {
     displayManager.lightdm.enable = true;
