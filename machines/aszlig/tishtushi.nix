@@ -60,6 +60,11 @@ in {
   services.tlp.enable = true;
 
   services.xserver.videoDrivers = [ "intel" ];
+  services.xserver.synaptics.enable = true;
+  services.xserver.synaptics.tapButtons = false;
+  services.xserver.synaptics.twoFingerScroll = true;
+  services.xserver.synaptics.vertEdgeScroll = false;
+  services.xserver.synaptics.accelFactor = "0.1";
 
   nix.maxJobs = 4;
 }
