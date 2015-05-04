@@ -72,15 +72,16 @@
     fontconfig.enable = true;
     enableCoreFonts = true;
     fonts = with pkgs; [
-      ttf_bitstream_vera
       dejavu_fonts
       dosemu_fonts
+      font-awesome-ttf
+      powerline-fonts
       proggyfonts
-      vistafonts
       terminus_font
+      ttf_bitstream_vera
       ubuntu_font_family
       unifont
-      powerline-fonts
+      vistafonts
     ];
   };
 }
