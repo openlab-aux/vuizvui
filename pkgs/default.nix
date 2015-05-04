@@ -1,9 +1,9 @@
 { pkgs ? import (import ../nixpkgs-path.nix) {} }:
 
 let
-  callPackage = pkgs.lib.callPackageWith (pkgs // self);
+  callPackage = pkgs.lib.callPackageWith (pkgs // self.vuizvui);
 
-  self = {
+  self.vuizvui = {
     mkChannel = callPackage ./build-support/channel.nix { };
 
     aacolorize = callPackage ./aacolorize { };
@@ -25,4 +25,4 @@ let
       bfqsched = callPackage ./kpatches/bfqsched.nix { };
     };
   };
-in self
+in pkgs // self
