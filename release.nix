@@ -66,7 +66,7 @@ in with pkgsUpstream.lib; with builtins; {
   in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
 
   channels = let
-    mkChannel = attrs: root.pkgs.mkChannel (rec {
+    mkChannel = attrs: root.pkgs.vuizvui.mkChannel (rec {
       name = "vuizvui-channel-${attrs.name or "generic"}-${vuizvuiVersion}";
       src = vuizvui;
       patchPhase = ''
