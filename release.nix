@@ -34,7 +34,8 @@ let
       src = vuizvuiSrc;
       phases = [ "unpackPhase" "installPhase" ];
       installPhase = ''
-        cp -r --no-preserve=mode,ownership "${nixpkgs}/" nixpkgs
+        cp -r --no-preserve=ownership "${nixpkgs}/" nixpkgs
+        chmod -R u+w nixpkgs
         echo -n "$nixpkgsVersion" > nixpkgs/.version-suffix
         echo "echo '$nixpkgsVersion'" \
           > nixpkgs/nixos/modules/installer/tools/get-version-suffix
