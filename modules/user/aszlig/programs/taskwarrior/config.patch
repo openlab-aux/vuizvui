@@ -1,0 +1,48 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ee5b6c7..7f7bdef 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -46,6 +46,9 @@ SET (TASK_DOCDIR  share/doc/task CACHE STRING "Installation directory for doc fi
+ SET (TASK_RCDIR "${TASK_DOCDIR}/rc" CACHE STRING "Installation directory for configuration files")
+ SET (TASK_BINDIR  bin            CACHE STRING "Installation directory for the binary")
+ 
++SET (SYSTEM_TASKRC "${CMAKE_INSTALL_PREFIX}/etc/taskrc"
++     CACHE STRING "System-wide taskrc")
++
+ message ("-- Looking for SHA1 references")
+ if (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
+   set (HAVE_COMMIT true)
+diff --git a/cmake.h.in b/cmake.h.in
+index fbeb807..001a450 100644
+--- a/cmake.h.in
++++ b/cmake.h.in
+@@ -16,6 +16,7 @@
+ 
+ /* Installation details */
+ #define TASK_RCDIR "${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}"
++#define SYSTEM_TASKRC "${SYSTEM_TASKRC}"
+ 
+ /* Localization */
+ #define PACKAGE_LANGUAGE ${PACKAGE_LANGUAGE}
+diff --git a/src/Context.cpp b/src/Context.cpp
+index 6dedd5e..04ced17 100644
+--- a/src/Context.cpp
++++ b/src/Context.cpp
+@@ -148,7 +148,8 @@ int Context::initialize (int argc, const char** argv)
+     }
+ 
+     config.clear ();
+-    config.load (rc_file);
++    config.load (SYSTEM_TASKRC);
++    config.load (rc_file, 2);
+     CLI::applyOverrides (argc, argv);
+ 
+     ////////////////////////////////////////////////////////////////////////////
+@@ -173,7 +174,6 @@ int Context::initialize (int argc, const char** argv)
+     }
+ 
+     tdb2.set_location (data_dir);
+-    createDefaultConfig ();
+ 
+     ////////////////////////////////////////////////////////////////////////////
+     //
