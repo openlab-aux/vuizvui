@@ -77,7 +77,6 @@ pkgs: with pkgs; [
   sqlite
   strace
   surfraw
-  taskwarrior
   telnet
   vuizvui.tomahawk
   unzip

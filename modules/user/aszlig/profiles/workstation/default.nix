@@ -51,6 +51,7 @@ in {
 
     vuizvui.user.aszlig.programs.gajim.enable = true;
     vuizvui.user.aszlig.programs.mpv.enable = true;
+    vuizvui.user.aszlig.programs.taskwarrior.enable = true;
 
     vuizvui.user.aszlig.programs.git.enable = true;
     vuizvui.user.aszlig.programs.git.config = {
