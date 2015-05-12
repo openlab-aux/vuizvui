@@ -118,7 +118,7 @@ with lib;
   systemd.services."synergy-client".serviceConfig.CPUSchedulingPriority = 50;
 
   services.xserver.videoDrivers = [ "ati" ];
-  services.xserver.xrandrHeads = [ "HDMI-0" "DVI-0" ];
+  services.xserver.xrandrHeads = [ /* "HDMI-0" */ "DVI-0" ];
 
   vuizvui.user.aszlig.services.i3.reverseHeads = true;
   vuizvui.user.aszlig.services.i3.workspaces."6" = {
