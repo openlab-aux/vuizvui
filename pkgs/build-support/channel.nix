@@ -4,6 +4,7 @@
 
 stdenv.mkDerivation ({
   inherit name src constituents;
+  preferLocalBuild = true;
   _hydraAggregate = true;
 
   phases = [ "unpackPhase" "patchPhase" "installPhase" ];
