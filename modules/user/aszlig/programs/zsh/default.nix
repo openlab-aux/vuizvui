@@ -57,7 +57,7 @@ in {
         }
 
         function reset-title() {
-          echo -en "\e]2;''${(%):-%~}\a"
+          echo -en "\e]2;''${(%):-%~}\a\a"
         }
 
         autoload -Uz add-zsh-hook
