@@ -34,5 +34,5 @@ For writing modules, make sure to categorize them accordingly:
 If a module is highly specific for your own configuration, use the same
 categories but put them under `user/$category/$module`.
 
-Don't forget to add your module to the list module-list.nix, but make sure you
-have options in place to disable them by default.
+Don't forget to add your module to `module-list.nix`, but make sure you have
+options in place to disable them by default.
