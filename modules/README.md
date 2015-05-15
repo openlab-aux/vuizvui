@@ -36,3 +36,10 @@ categories but put them under `user/$category/$module`.
 
 Don't forget to add your module to `module-list.nix`, but make sure you have
 options in place to disable them by default.
+
+## Module option reference
+
+There also is a Hydra job for the currently available options specific to all of
+the modules that are listen in `module-list.nix`:
+
+https://headcounter.org/hydra/job/openlab/vuizvui/manual/latest/download/1/manual.html
