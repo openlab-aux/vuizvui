@@ -72,9 +72,12 @@
     fontconfig.enable = true;
     enableCoreFonts = true;
     fonts = with pkgs; [
+      clearlyU
+      cm_unicode
       dejavu_fonts
       dosemu_fonts
       font-awesome-ttf
+      freefont_ttf
       powerline-fonts
       proggyfonts
       terminus_font
