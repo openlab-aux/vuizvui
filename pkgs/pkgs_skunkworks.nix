@@ -21,5 +21,6 @@
     mkvtoolnix
     mutt-with-sidebar
     urlview
+    pmount
   ];
 }

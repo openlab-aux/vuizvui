@@ -37,7 +37,7 @@
   };
 
   security = {
-    setuidPrograms = [ ];
+    setuidPrograms = [ "pmount" ];
   };
 
   programs = {
