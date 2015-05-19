@@ -88,7 +88,7 @@
     gitAndTools.tig
     glxinfo
     gnome3.dconf
-    gnome3.gnome_icon_theme
+    gnome3.defaultIconTheme
     gnome3.gnome_themes_standard
     gnufdisk
     gnupg
