@@ -53,7 +53,6 @@
     dcfldd
     ddrescue
     dmenu
-    dmenu2
     dmidecode
     dos2unix
     easytag
