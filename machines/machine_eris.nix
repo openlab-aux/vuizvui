@@ -39,7 +39,12 @@
 
   swapDevices = [ ];
 
-  nix.maxJobs = 4;
+  nix = {
+    maxJobs = 4;
+    extraOptions = ''
+      auto-optimise-store = true
+    '';
+  };
 
   i18n = {
     consoleFont = "lat9w-16";
