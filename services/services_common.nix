@@ -9,7 +9,7 @@
   };
 
   services.xserver = {
-    displayManager.lightdm.enable = true;
+    displayManager.slim.enable = true;
     desktopManager.xterm.enable = false;
     desktopManager.default = "none";
     startGnuPGAgent = true;
