@@ -139,6 +139,19 @@
   services.xserver.windowManager.i3.enable = true;
   # services.xserver.desktopManager.gnome3.enable = true;
 
+  fonts.enableCoreFonts = true;
+  fonts.fontconfig.defaultFonts.monospace = [ "Consolas" "DejaVu Sans Mono" ];
+  # use overkill infinality settings from old Arch installation
+  fonts.fontconfig.ultimate.rendering = {
+    INFINALITY_FT_FILTER_PARAMS = "08 24 36 24 08";
+    INFINALITY_FT_FRINGE_FILTER_STRENGTH = "25";
+    INFINALITY_FT_USE_VARIOUS_TWEAKS = "true";
+    INFINALITY_FT_WINDOWS_STYLE_SHARPENING_STRENGTH = "25";
+    INFINALITY_FT_STEM_ALIGNMENT_STRENGTH = "15";
+    INFINALITY_FT_STEM_FITTING_STRENGTH = "15";
+  };
+  fonts.fontconfig.ultimate.substitutions = "combi";
+
   # redshift
   services.redshift = {
     enable = true;
