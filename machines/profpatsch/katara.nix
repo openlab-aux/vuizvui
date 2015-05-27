@@ -1,11 +1,9 @@
 { config, pkgs, lib, ... }:
-
-let 
-crypto = "http://hydra.cryp.to";
-
-in
 {
+
+  #########
   # Kernel
+  
   boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "firewire_ohci" ];
   boot.kernelModules = [ "kvm-intel" ];
   # Use the GRUB 2 boot loader.
@@ -15,6 +13,10 @@ in
   boot.loader.grub.device = "/dev/sda";
   boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "cryptroot"; } ];
 
+
+  ###########
+  # Hardware
+  
   # Use this if you want the T400 wifi to work …
   hardware.enableAllFirmware = true;
 
@@ -35,9 +37,11 @@ in
     fsType = "ext3";
   };
 
+
+  ######
+  # Nix
+  
   nix.maxJobs = 2;
-  #nix.trustedBinaryCaches = [ crypto "https://hydra.nixos.org" ];
-  #nix.binaryCaches = [ crypto ];
 
   networking.hostName = "katara";
   networking.networkmanager.enable = true;
@@ -49,7 +53,6 @@ in
     { from = 8080; to = 8085; }
   ];
 
-  # Select internationalisation properties.
   i18n = {
     consoleFont = "lat9w-16";
     consoleKeyMap = "us";
@@ -57,8 +60,9 @@ in
   };
 
 
-  # List packages installed in system profile. To search by name, run:
-  # -env -qaP | grep wget
+  ###########
+  # Packages
+
   environment.systemPackages = with pkgs;
   let
     # hopefully temporary, but to make ghc package binaries work:
@@ -92,7 +96,8 @@ in
   ] ++ haskellPkgs;
 
 
-  # List services that you want to enable:
+  ###########
+  # Services
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -100,6 +105,18 @@ in
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  time.timeZone = "Europe/Berlin";
+
+  # locate
+  services.locate = {
+    enable = true;
+    extraFlags = ["--add-prunepaths /nix/store"];
+  };
+
+  
+  ###################
+  # Graphical System
+  
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
@@ -129,13 +146,9 @@ in
     longitude = "10";
   };
 
-  time.timeZone = "Europe/Berlin";
 
-  # locate
-  services.locate = {
-    enable = true;
-    extraFlags = ["--add-prunepaths /nix/store"];
-  };
+  ########
+  # Users
 
   # Nobody wants mutable state. :)
   users.mutableUsers = false;
@@ -156,6 +169,10 @@ in
     };
   };
 
+
+  ########
+  # Fixes
+  
   # fix for emacs
   programs.bash.promptInit = "PS1=\"# \"";
 }
