@@ -1,5 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
+let 
+crypto = "http://hydra.cryp.to";
+
+in
 {
   # Kernel
   boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "firewire_ohci" ];
@@ -10,6 +14,9 @@
   # Define on which hard drive you want to install Grub.
   boot.loader.grub.device = "/dev/sda";
   boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "cryptroot"; } ];
+
+  # Use this if you want the T400 wifi to work …
+  hardware.enableAllFirmware = true;
 
   hardware.trackpoint = {
     enable = true;
@@ -29,6 +36,8 @@
   };
 
   nix.maxJobs = 2;
+  #nix.trustedBinaryCaches = [ crypto "https://hydra.nixos.org" ];
+  #nix.binaryCaches = [ crypto ];
 
   networking.hostName = "katara";
   networking.networkmanager.enable = true;
@@ -47,26 +56,38 @@
     defaultLocale = "en_US.UTF-8";
   };
 
+
   # List packages installed in system profile. To search by name, run:
   # -env -qaP | grep wget
-  environment.systemPackages =
+  environment.systemPackages = with pkgs;
   let
+    # hopefully temporary, but to make ghc package binaries work:
+    haskellngPackages = pkgs.haskell-ng.packages.ghc7101;
     haskellPkgs = with pkgs.haskellngPackages; [
-      ghc
-      cabal-install
-      cabal2nix
+#      ghc
+#      cabal-install
+#      cabal2nix
     ];
-  in with pkgs; [
+    mailPkgs = [
+      offlineimap
+      mutt-with-sidebar
+      msmtp
+    ];
+  in [
     ack
     curl
+    chromium
+    i3lock
     emacs
     nix-repl
     fish
+    lilyterm
     mkpasswd
     git
     tmux
     vim
     wget
+    xbindkeys
     zsh
   ] ++ haskellPkgs;
 
@@ -80,12 +101,26 @@
   services.printing.enable = true;
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  services.xserver.layout = "de";
-  services.xserver.xkbOptions = "eurosign:e";
+  services.xserver = {
+    enable = true;
+    layout = "de";
+    xkbVariant = "neo";
+    xkbOptions = "altwin:swap_alt_win";
+    serverFlagsSection = ''
+      Option "StandbyTime" "10"
+      Option "SuspendTime" "20"
+      Option "OffTime" "30"
+      Option "AutoRepeat" "35 250"
+    '';
+    synaptics.enable = true;
+    synaptics.minSpeed = "0.5";
+    synaptics.accelFactor = "0.01";
+    videoDrivers = [ "intel" "vesa" ];
+  };
 
   # services.xserver.windowManager.xmonad.enable = true;
-  services.xserver.desktopManager.gnome3.enable = true;
+  services.xserver.windowManager.i3.enable = true;
+  # services.xserver.desktopManager.gnome3.enable = true;
 
   # redshift
   services.redshift = {
