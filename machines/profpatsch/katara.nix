@@ -135,8 +135,8 @@
     videoDrivers = [ "intel" "vesa" ];
   };
 
-  # services.xserver.windowManager.xmonad.enable = true;
-  services.xserver.windowManager.i3.enable = true;
+  services.xserver.windowManager.xmonad.enable = true;
+  # services.xserver.windowManager.i3.enable = true;
   # services.xserver.desktopManager.gnome3.enable = true;
 
   fonts.enableCoreFonts = true;
