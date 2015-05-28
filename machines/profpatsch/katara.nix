@@ -110,7 +110,7 @@
   # locate
   services.locate = {
     enable = true;
-    extraFlags = ["--add-prunepaths /nix/store"];
+    extraFlags = ["--prunepaths='/nix/store'"];
   };
 
   
