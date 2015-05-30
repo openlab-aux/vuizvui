@@ -77,7 +77,7 @@
     gitAndTools.git-extras
     gitAndTools.git-remote-hg
     gitAndTools.git2cl
-    gitAndTools.gitAnnex
+    gitAndTools.git-annex
     gitAndTools.gitFastExport
     gitAndTools.gitFull
     gitAndTools.gitRemoteGcrypt
