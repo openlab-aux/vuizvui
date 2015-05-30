@@ -60,7 +60,7 @@ pkgs: with pkgs; [
   pavucontrol
   picard
   posix_man_pages
-  pulseaudio
+  pulseaudioLight
   vuizvui.pvolctrl
   python
   python3

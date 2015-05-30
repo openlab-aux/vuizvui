@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, pkgconfig, pulseaudio }:
+{ stdenv, fetchurl, pkgconfig, libpulseaudio }:
 
 stdenv.mkDerivation rec {
   name = "pvolctrl-0.23";
@@ -31,5 +31,5 @@ stdenv.mkDerivation rec {
     install -D -T pvolctrl "$out/bin/pvolctrl"
   '';
 
-  buildInputs = [ pkgconfig pulseaudio ];
+  buildInputs = [ pkgconfig libpulseaudio ];
 }

@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, pkgconfig, alsaLib, pulseaudio }:
+{ stdenv, fetchurl, pkgconfig, alsaLib, libpulseaudio }:
 
 let
   libsidplayfp = stdenv.mkDerivation rec {
@@ -24,6 +24,6 @@ in stdenv.mkDerivation rec {
     sed -i -e '/cerr.*\(Clear screen\|Move cursor\)/d' src/menu.cpp
   '';
 
-  buildInputs = [ pkgconfig libsidplayfp alsaLib pulseaudio ];
+  buildInputs = [ pkgconfig libsidplayfp alsaLib libpulseaudio ];
 }
 

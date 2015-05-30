@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, writeScriptBin, ffmpeg_2, pulseaudio }:
+{ stdenv, fetchurl, writeScriptBin, ffmpeg_2, libpulseaudio }:
 
 # FIXME: Clean up this whole file!
 
@@ -46,11 +46,11 @@ let
       "--enable-libvo-aacenc"
     ];
     preConfigure = ''
-      addPkgConfigPath "${pulseaudio}"
+      addPkgConfigPath "${libpulseaudio}"
       addPkgConfigPath "${aacenc}"
     '';
     NIX_CFLAGS_COMPILE = "-I${aacenc}/include -L${aacenc}/lib";
-    buildInputs = attrs.buildInputs ++ [ pulseaudio aacenc ];
+    buildInputs = attrs.buildInputs ++ [ libpulseaudio aacenc ];
   });
 
   script = let
