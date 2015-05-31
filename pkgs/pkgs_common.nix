@@ -74,10 +74,10 @@
     ghostscript
     gimp
     gitAndTools.darcsToGit
+    gitAndTools.git-annex
     gitAndTools.git-extras
     gitAndTools.git-remote-hg
     gitAndTools.git2cl
-    gitAndTools.git-annex
     gitAndTools.gitFastExport
     gitAndTools.gitFull
     gitAndTools.gitRemoteGcrypt
@@ -165,6 +165,7 @@
     sleuthkit
     smartmontools
     sox
+    spek
     stow
     strace
     surfraw
