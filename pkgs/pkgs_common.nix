@@ -195,5 +195,6 @@
     xscreensaver
     youtube-dl
     zotero
+    zsync
   ];
 }
