@@ -102,8 +102,7 @@
     htop
     i3lock
     i3status
-    icedtea7_jdk
-    icedtea7_web
+    icedtea_web
     iftop
     imagemagick
     impressive
