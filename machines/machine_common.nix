@@ -81,6 +81,7 @@
       powerline-fonts
       proggyfonts
       terminus_font
+      tewi-font
       ttf_bitstream_vera
       ubuntu_font_family
       unifont
