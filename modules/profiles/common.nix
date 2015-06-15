@@ -36,13 +36,13 @@ with lib;
     environment.sessionVariables = let
       rootChannelsPath = "/nix/var/nix/profiles/per-user/root/channels";
       channelPath = "${rootChannelsPath}/${config.vuizvui.channelName}";
-    in mkIf config.vuizvui.modifyNixPath (mkOverride 90 {
-      NIX_PATH = [
+    in mkIf config.vuizvui.modifyNixPath {
+      NIX_PATH = mkOverride 90 [
         "vuizvui=${channelPath}"
         "nixpkgs=${channelPath}/nixpkgs"
         "nixos-config=/etc/nixos/configuration.nix"
         rootChannelsPath
       ];
-    });
+    };
   };
 }
