@@ -48,6 +48,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     #repetierhost <- TODO
+    ack
     blender
     filezilla
     firefox
@@ -63,7 +64,6 @@ in {
     libreoffice
     netcat-openbsd
     openscad
-    perl-ack
     printrun
     python3
     screen
