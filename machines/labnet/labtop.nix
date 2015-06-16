@@ -47,30 +47,31 @@ in {
   };
 
   environment.systemPackages = with pkgs; [
-    greybird
     #repetierhost <- TODO
+    blender
+    filezilla
     firefox
     fish
+    freecad
+    gcc
     gimp
     git
-    freecad
-    openscad
-    printrun
-    blender
+    gmpc
+    greybird
+    inkscape
+    ino
+    libreoffice
     netcat-openbsd
+    openscad
+    perl-ack
+    printrun
+    python3
+    screen
     slic3r
     tmux
-    libreoffice
-    inkscape
-    filezilla
-    gmpc
-    vlc
     vim
+    vlc
     wget
-    screen
-    ino
-    python3
-    gcc
   ];
 
   services.xserver = {
