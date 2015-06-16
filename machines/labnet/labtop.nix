@@ -57,6 +57,7 @@ in {
     openscad
     printrun
     blender
+    netcat-openbsd
     slic3r
     tmux
     libreoffice
@@ -66,6 +67,10 @@ in {
     vlc
     vim
     wget
+    screen
+    ino
+    python3
+    gcc
   ];
 
   services.xserver = {
@@ -95,6 +100,9 @@ in {
 
   networking.networkmanager.enable = true;
   networking.enableIntel3945ABGFirmware = true;
+  networking.hostName = "labtop";
+  networking.firewall.allowedTCPPorts = [ 1337 2342 ];
+  networking.firewall.allowPing = true;
 
   nix.maxJobs = 2;
 
@@ -105,6 +113,7 @@ in {
     password = "openlab";
     extraGroups = [ "wheel" "networkmanager" "dialout"];
     openssh.authorizedKeys.keys = lib.singleton (lib.concatStrings [
+
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJhthfk38lzDvoI7lPqRneI0yBpZEhLD"
       "GRBpcXzpPSu+V0YlgrDix5fHhBl+EKfw4aeQNvQNuAky3pDtX+BDK1b7idbz9ZMCExy2a1"
       "kBKDVJz/onLSQxiiZMuHlAljVj9iU4uoTOxX3vB85Ok9aZtMP1rByRIWR9e81/km4HdfZT"
