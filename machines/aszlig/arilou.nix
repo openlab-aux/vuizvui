@@ -20,7 +20,7 @@ in {
   };
 
   networking.hostName = "arilou";
-  networking.wireless.enable = true;
+  networking.wireless.enable = mkForce true;
   networking.enableB43Firmware = true;
 
   fileSystems."/".device = "/dev/disk/by-uuid/${rootUUID}";

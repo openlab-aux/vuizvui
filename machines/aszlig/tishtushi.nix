@@ -35,7 +35,7 @@ in {
   };
 
   networking.hostName = "tishtushi";
-  networking.wireless.enable = true;
+  networking.wireless.enable = mkForce true;
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/${rootUUID}";
