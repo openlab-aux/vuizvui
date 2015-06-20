@@ -68,8 +68,13 @@
   };
 
   fonts = {
+    fontconfig = {
+      enable = true;
+      ultimate = {
+        enable = true;
+      };
+    };
     enableGhostscriptFonts = true;
-    fontconfig.enable = true;
     enableCoreFonts = true;
     fonts = with pkgs; [
       clearlyU
