@@ -111,6 +111,7 @@
     ipv6calc
     jwhois
     keepassx
+    kpcli
     lftp
     libarchive
     libreoffice
