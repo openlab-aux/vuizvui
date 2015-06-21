@@ -142,6 +142,7 @@
     openssl
     p7zip
     pandoc
+    pass
     pasystray
     pavucontrol
     picard
