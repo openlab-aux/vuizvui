@@ -169,6 +169,7 @@
     stow
     strace
     surfraw
+    tasknc
     taskwarrior
     telnet
     texLiveFull
