@@ -55,7 +55,7 @@ in {
     fish
     freecad
     gcc
-    gedit
+    gnome3.gedit
     gimp
     git
     gmpc
