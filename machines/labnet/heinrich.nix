@@ -21,8 +21,8 @@ let
     };
   };
 
-  internalIf = config.heinrich.internalInterface;
-  externalIf = config.heinrich.externalInterface;
+  internalIf = config.vuizvui.machines.heinrich.internalInterface;
+  externalIf = config.vuizvui.machines.heinrich.externalInterface;
 
   mkRouteConfig = name: cfg: {
     key = "routes-${name}";
@@ -45,7 +45,7 @@ let
 in {
   imports = mapAttrsToList mkRouteConfig routes;
 
-  options.heinrich = {
+  options.vuizvui.machines.heinrich = {
     internalInterface = mkOption {
       type = types.str;
       default = "enp7s0";
