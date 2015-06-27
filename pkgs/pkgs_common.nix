@@ -147,6 +147,7 @@
     pass
     pasystray
     pavucontrol
+    pciutils
     picard
     posix_man_pages
     powertop
