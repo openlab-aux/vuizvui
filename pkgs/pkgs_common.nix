@@ -93,6 +93,7 @@
     gnupg
     gnupg1compat
     gource
+    gparted
     gpgme
     gptfdisk
     graphviz
