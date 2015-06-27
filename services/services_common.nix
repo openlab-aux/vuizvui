@@ -20,6 +20,12 @@
     default = "i3";
   };
 
+  services.syncthing = {
+    enable = true;
+    dataDir = "/home/dev/syncthing";
+    user = "dev";
+  };
+
   services.journald.extraConfig = ''
     SystemMaxUse = 50M
   '';
