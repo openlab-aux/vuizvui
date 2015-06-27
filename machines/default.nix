@@ -1,11 +1,37 @@
 { system ? builtins.currentSystem, ... }:
 
 let
+  nixpkgs = import ../nixpkgs-path.nix;
+
   callMachine = path: rec {
     config = import path;
-    build = import "${import ../nixpkgs-path.nix}/nixos/lib/eval-config.nix" {
+    build = import "${nixpkgs}/nixos/lib/eval-config.nix" {
       inherit system;
       modules = [ config ] ++ import ../modules/module-list.nix;
+    };
+    iso = import "${nixpkgs}/nixos/lib/eval-config.nix" {
+      inherit system;
+      modules = [
+        { options = { inherit (build.options) vuizvui; };
+          config = (builtins.removeAttrs build.config [
+            "_module" "boot" "fileSystems"
+          ]) // {
+            boot = builtins.removeAttrs build.config.boot [ "loader" ];
+          };
+        }
+        "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
+        (
+          { lib, ... }: let
+            name = build.config.networking.hostName;
+            upperName = lib.toUpper name;
+          in rec {
+            isoImage.isoName = "${name}.iso";
+            isoImage.volumeID = builtins.substring 0 11 "${upperName}_LIVE";
+            isoImage.makeEfiBootable = true;
+            isoImage.makeUsbBootable = true;
+          }
+        )
+      ];
     };
     use = {
       imports = [ config ] ++ import ../modules/module-list.nix;
