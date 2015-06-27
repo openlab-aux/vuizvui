@@ -56,6 +56,21 @@ in with pkgsUpstream.lib; with builtins; {
     attrs.build.config.system.build.toplevel
   ) (import "${vuizvui}/machines" { inherit system; });
 
+  isoImages = let
+    machineBase = import "${vuizvui}/machines" { inherit system; };
+    buildIso = attrs: let
+      name = attrs.iso.config.networking.hostName;
+    in pkgsUpstream.runCommand "vuizvui-iso-${name}" {
+      meta.description = "Live CD/USB stick of ${name}";
+      iso = attrs.iso.config.system.build.isoImage;
+      passthru.config = attrs.iso.config;
+    } ''
+      mkdir -p "$out/nix-support"
+      echo "file iso" $iso/iso/*.iso* \
+        >> "$out/nix-support/hydra-build-products"
+    '';
+  in mapAttrsRecursiveCond (m: !(m ? iso)) (const buildIso) machineBase;
+
   tests = mapAttrsRecursiveCond (t: !(t ? test)) (const id)
     (import "${vuizvui}/tests" { inherit system; });
 
