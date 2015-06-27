@@ -13,8 +13,8 @@
     heinrich = {
       imports = [ common (import ../../machines {}).labnet.heinrich.config ];
       virtualisation.vlans = [ 1 8 14 ];
-      heinrich.internalInterface = "eth1";
-      heinrich.externalInterface = "eth2";
+      vuizvui.machines.heinrich.internalInterface = "eth1";
+      vuizvui.machines.heinrich.externalInterface = "eth2";
     };
     hotelturm = { lib, ... }: {
       imports = [ common ];
