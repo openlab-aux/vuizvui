@@ -29,6 +29,7 @@ let
             isoImage.volumeID = builtins.substring 0 11 "${upperName}_LIVE";
             isoImage.makeEfiBootable = true;
             isoImage.makeUsbBootable = true;
+            isoImage.appendToMenuLabel = " \"${name}\" Live System";
           }
         )
       ];
