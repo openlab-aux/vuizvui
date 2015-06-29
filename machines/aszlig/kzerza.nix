@@ -10,6 +10,9 @@ in {
 
   services.xserver.enable = mkForce false;
 
+  services.gpm.enable = true;
+  services.gpm.protocol = "exps2";
+
   boot = {
     kernelParams = singleton "consoleblank=0";
     initrd.kernelModules = [ "fbcon" "usb_storage" ];
