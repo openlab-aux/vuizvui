@@ -54,12 +54,14 @@ in {
     serviceConfig = {
       Type = "idle";
       ExecStart = "${pkgs.vuizvui.grandpa}/bin/grandpa";
+      ExecStopPost = "${pkgs.systemd}/bin/systemctl poweroff";
       StandardInput = "tty";
       StandardOutput = "tty";
       TTYPath = "/dev/tty7";
       TTYVTDisallocate = true;
       User = "grandpa";
       Group = "grandpa";
+      PermissionsStartOnly = true;
       PrivateTmp = true;
       PrivateNetwork = true;
     };
