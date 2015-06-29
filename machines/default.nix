@@ -9,17 +9,27 @@ let
       inherit system;
       modules = [ config ] ++ import ../modules/module-list.nix;
     };
-    iso = import "${nixpkgs}/nixos/lib/eval-config.nix" {
+    iso = let
+      isoModule = "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix";
+      wrapIso = { config, pkgs, lib, ... }@attrs: let
+        eval = (import isoModule attrs);
+        evalcfg = eval.config or {};
+        bootcfg = evalcfg.boot or {};
+        fscfg = evalcfg.fileSystems or {};
+      in {
+        options = eval.options or {};
+        imports = eval.imports or [];
+        config = evalcfg // {
+          boot = bootcfg // lib.optionalAttrs (bootcfg ? loader) {
+            loader = lib.mkForce bootcfg.loader;
+          };
+          fileSystems = lib.mapAttrs (lib.const lib.mkForce) fscfg;
+        };
+      };
+    in import "${nixpkgs}/nixos/lib/eval-config.nix" {
       inherit system;
       modules = [
-        { options = { inherit (build.options) vuizvui; };
-          config = (builtins.removeAttrs build.config [
-            "_module" "boot" "fileSystems"
-          ]) // {
-            boot = builtins.removeAttrs build.config.boot [ "loader" ];
-          };
-        }
-        "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
+        use wrapIso
         (
           { lib, ... }: let
             name = build.config.networking.hostName;
