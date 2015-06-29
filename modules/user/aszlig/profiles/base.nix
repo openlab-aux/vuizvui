@@ -33,6 +33,7 @@ in {
     networking.useNetworkd = true;
 
     i18n.consoleKeyMap = "dvorak";
+    i18n.consoleFont = "lat9w-16";
 
     programs.ssh.startAgent = false;
     programs.ssh.extraConfig = ''
