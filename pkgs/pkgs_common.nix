@@ -15,7 +15,7 @@
     };
 
     virtualbox = {
-      enableExtensionPack = false;
+      enableExtensionPack = true;
     };
 
     mpv = {
