@@ -55,6 +55,7 @@ in {
       Type = "idle";
       ExecStart = "${pkgs.vuizvui.grandpa}/bin/grandpa";
       ExecStopPost = "${pkgs.systemd}/bin/systemctl poweroff";
+      Restart = "on-failure";
       StandardInput = "tty";
       StandardOutput = "tty";
       TTYPath = "/dev/tty7";
