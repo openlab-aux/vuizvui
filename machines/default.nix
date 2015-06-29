@@ -23,7 +23,13 @@ let
           boot = bootcfg // lib.optionalAttrs (bootcfg ? loader) {
             loader = lib.mkForce bootcfg.loader;
           };
-          fileSystems = lib.mapAttrs (lib.const lib.mkForce) fscfg;
+          fileSystems = lib.mapAttrs (lib.const lib.mkForce) fscfg // {
+            "/boot" = lib.mkForce (fscfg."/boot" or {
+              device = "none";
+              fsType = "none";
+              options = "noauto";
+            });
+          };
         };
       };
     in import "${nixpkgs}/nixos/lib/eval-config.nix" {
