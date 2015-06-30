@@ -18,6 +18,7 @@
       kernelModules = [ "fuse" ];
     };
 
+    kernelParams = [ "pci=noaer" ];
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
     blacklistedKernelModules = [ "pcspkr" ];
