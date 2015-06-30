@@ -1,5 +1,5 @@
 { vuizvuiSrc ? null
-, nixpkgsSrc ? null
+, nixpkgsSrc ? <nixpkgs>
 , supportedSystems ? [ "i686-linux" "x86_64-linux" ]
 }:
 
@@ -8,20 +8,7 @@ let
   nixpkgsShortRev = nixpkgsSrc.shortRev or "abcdefg";
   nixpkgsVersion = "pre${toString nixpkgsRevCount}.${nixpkgsShortRev}-vuizvui";
 
-  nixpkgs = let
-    patchedNixpkgs = (import nixpkgsSrc {}).stdenv.mkDerivation {
-      name = "nixpkgs-${nixpkgsVersion}";
-      src = nixpkgsSrc;
-      phases = [ "unpackPhase" "installPhase" ];
-      installPhase = ''
-        sed -i -r \
-          -e 's!<nixpkgs([^>]*)>!<vuizvui/nixpkgs\1>!g' \
-          -e 's!(--find-file *['"'"'"]?)nixpkgs!\1vuizvui/nixpkgs!g' \
-          nixos/modules/installer/tools/nixos-rebuild.sh
-        cp -r . "$out"
-      '';
-    };
-  in if nixpkgsSrc == null then <nixpkgs> else patchedNixpkgs;
+  nixpkgs = nixpkgsSrc;
 
   vuizvuiRevCount = vuizvuiSrc.revCount or 12345;
   vuizvuiShortRev = vuizvuiSrc.shortRev or "abcdefg";
