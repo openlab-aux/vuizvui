@@ -182,6 +182,7 @@
     units
     unrar
     unzip
+    valgrind
     vim_configurable
     vlock
     vorbisTools
