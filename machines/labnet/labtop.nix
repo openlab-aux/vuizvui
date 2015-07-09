@@ -49,6 +49,7 @@ in {
   environment.systemPackages = with pkgs; [
     #repetierhost <- TODO
     ack
+    antimony
     blender
     filezilla
     firefox
