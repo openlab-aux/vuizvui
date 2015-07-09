@@ -63,7 +63,7 @@ in {
     greybird
     inkscape
     ino
-    libreoffice
+    (libreoffice.overrideDerivation (lib.const { doCheck = false; }))
     netcat-openbsd
     openscad
     printrun
