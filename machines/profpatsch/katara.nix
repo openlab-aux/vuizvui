@@ -37,21 +37,27 @@
     fsType = "ext3";
   };
 
+  hardware.pulseaudio.enable = true;
+
 
   ######
   # Nix
   
   nix.maxJobs = 2;
+  nix.binaryCaches = [ "https://hydra.nixos.org/" ];
 
   networking.hostName = "katara";
   networking.networkmanager.enable = true;
 
-  networking.firewall.enable = true;
-  # Programmer’s dilemma
-  networking.firewall.allowedTCPPortRanges = [
-    { from = 8000; to = 8005; }
-    { from = 8080; to = 8085; }
-  ];
+  networking.firewall = {
+    enable = true;
+    # Programmer’s dilemma
+    allowedTCPPortRanges = [
+      { from = 8000; to = 8005; }
+      { from = 8080; to = 8085; }
+    ];
+    allowedUDPPorts = [ 60001 ];
+  };
 
   i18n = {
     consoleFont = "lat9w-16";
@@ -65,35 +71,50 @@
 
   environment.systemPackages = with pkgs;
   let
-    # hopefully temporary, but to make ghc package binaries work:
-    haskellngPackages = pkgs.haskell-ng.packages.ghc7101;
-    haskellPkgs = with pkgs.haskellngPackages; [
-#      ghc
-#      cabal-install
-#      cabal2nix
+    systemPkgs = [
+      ack
+      curl
+      file
+      fish
+      git
+      mkpasswd
+      mosh
+      nix-repl
+      nmap
+      stow
+      tmux
+      vim
+      wget
+      zsh
+    ];
+    xPkgs = [
+      dmenu
+      i3lock
+      xbindkeys
+      haskellPackages.xmobar
+    ];
+    guiPkgs = [
+      gnome3.adwaita-icon-theme
+      gnome3.gnome_themes_standard
+      kde4.oxygen-icons
+    ];
+    userPrograms = [
+      chromium
+      emacs
+      gajim
+      keepassx
+      lilyterm
     ];
     mailPkgs = [
       offlineimap
-      mutt-with-sidebar
+      mutt-kz
       msmtp
+      notmuch
     ];
-  in [
-    ack
-    curl
-    chromium
-    i3lock
-    emacs
-    nix-repl
-    fish
-    lilyterm
-    mkpasswd
-    git
-    tmux
-    vim
-    wget
-    xbindkeys
-    zsh
-  ] ++ haskellPkgs;
+    haskellPkgs = with pkgs.haskellngPackages; [
+      cabal2nix
+    ];
+  in systemPkgs ++ xPkgs ++ userPrograms ++ mailPkgs ++ haskellPkgs;
 
 
   ###########
@@ -110,7 +131,6 @@
   # locate
   services.locate = {
     enable = true;
-    extraFlags = ["--prunepaths='/nix/store'"];
   };
 
   
@@ -127,31 +147,47 @@
       Option "StandbyTime" "10"
       Option "SuspendTime" "20"
       Option "OffTime" "30"
-      Option "AutoRepeat" "35 250"
     '';
     synaptics.enable = true;
     synaptics.minSpeed = "0.5";
     synaptics.accelFactor = "0.01";
     videoDrivers = [ "intel" "vesa" ];
-  };
 
-  services.xserver.windowManager.xmonad.enable = true;
-  # services.xserver.windowManager.i3.enable = true;
-  # services.xserver.desktopManager.gnome3.enable = true;
+    # otherwise xterm is enabled, creating an xterm that spawns the window manager.
+    desktopManager.xterm.enable = false;
+    windowManager.xmonad = {
+      enable = true;
+      enableContribAndExtras = true;
+    };
+    displayManager.sessionCommands =
+      ''
+      xset r rate 250 35
+      '';
+
+    startGnuPGAgent = true;
+    
+  };
 
   fonts.enableCoreFonts = true;
-  fonts.fontconfig.defaultFonts.monospace = [ "Consolas" "DejaVu Sans Mono" ];
-  # use overkill infinality settings from old Arch installation
-  fonts.fontconfig.ultimate.rendering = {
-    INFINALITY_FT_FILTER_PARAMS = "08 24 36 24 08";
-    INFINALITY_FT_FRINGE_FILTER_STRENGTH = "25";
-    INFINALITY_FT_USE_VARIOUS_TWEAKS = "true";
-    INFINALITY_FT_WINDOWS_STYLE_SHARPENING_STRENGTH = "25";
-    INFINALITY_FT_STEM_ALIGNMENT_STRENGTH = "15";
-    INFINALITY_FT_STEM_FITTING_STRENGTH = "15";
+  fonts.fontconfig = {
+    defaultFonts = {
+      monospace = [ "Source Code Pro" "DejaVu Sans Mono" ];
+      sansSerif = [ "Liberation Sans" ];
+    };
+    # use overkill infinality settings from old Arch installation
+    ultimate = {
+      rendering = {
+        INFINALITY_FT_FILTER_PARAMS = "08 24 36 24 08";
+        INFINALITY_FT_FRINGE_FILTER_STRENGTH = "25";
+        INFINALITY_FT_USE_VARIOUS_TWEAKS = "true";
+        INFINALITY_FT_WINDOWS_STYLE_SHARPENING_STRENGTH = "25";
+        INFINALITY_FT_STEM_ALIGNMENT_STRENGTH = "15";
+        INFINALITY_FT_STEM_FITTING_STRENGTH = "15";
+      };
+      # substitutions = "combi";
+    };
   };
-  fonts.fontconfig.ultimate.substitutions = "combi";
-
+  
   # redshift
   services.redshift = {
     enable = true;
@@ -182,6 +218,13 @@
     };
   };
 
+  ###########
+  # Programs
+
+  programs.ssh = {
+    startAgent = false; # see services.xserver.startGnuPGAgent
+    agentTimeout = "1h";
+  };
 
   ########
   # Fixes
