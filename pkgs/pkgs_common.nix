@@ -74,7 +74,6 @@
     gdb
     ghostscript
     gimp
-    gitAndTools.darcsToGit
     gitAndTools.git-annex
     gitAndTools.git-extras
     gitAndTools.git-remote-hg
