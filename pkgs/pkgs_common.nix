@@ -67,6 +67,7 @@
     file
     firefox
     flac
+    foremost
     freerdpUnstable
     gajim
     gcc
@@ -161,6 +162,7 @@
     pythonPackages.rainbowstream
     recode
     ruby
+    safecopy
     screen
     scrot
     shntool
@@ -174,6 +176,7 @@
     surfraw
     taskwarrior
     telnet
+    testdisk
     texLiveFull
     tomahawk
     transmission_remote_gtk
