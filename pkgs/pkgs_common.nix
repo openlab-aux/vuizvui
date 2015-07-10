@@ -110,6 +110,7 @@
     inkscape
     iotop
     ipv6calc
+    jfsutils
     jwhois
     keepassx
     kpcli
@@ -160,6 +161,7 @@
     python3
     pythonPackages.rainbowstream
     recode
+    reiserfsprogs
     ruby
     safecopy
     screen
@@ -195,6 +197,7 @@
     wget
     which
     wireshark
+    xfsprogs
     xlibs.xev
     xpdf
     xpra
