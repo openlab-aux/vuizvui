@@ -56,7 +56,11 @@
     dmidecode
     dos2unix
     easytag
-    emacs
+    (emacsWithPackages (with pkgs.emacsPackages; with pkgs.emacsPackagesNg; [
+      auctex company diminish evil evil-leader flycheck git-auto-commit-mode
+      git-timemachine haskell-mode helm magit markdown-mode monokai-theme
+      org-plus-contrib rainbow-delimiters undo-tree use-package
+    ]))
     enhanced-ctorrent
     ethtool
     evince
@@ -100,6 +104,7 @@
     gstreamer
     hdparm
     hexedit
+    hplipWithPlugin
     htop
     i3lock
     i3status
