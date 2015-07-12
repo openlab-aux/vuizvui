@@ -4,7 +4,10 @@
   services = {
     openssh.enable = true;
     udisks2.enable = true;
-    virtualboxHost.enable = true;
+    virtualboxHost = {
+      enable = true;
+      enableHardening = true;
+    };
     gpm.enable = true;
   };
 
