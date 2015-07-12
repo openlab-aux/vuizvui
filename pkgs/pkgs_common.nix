@@ -116,6 +116,7 @@
     iotop
     ipv6calc
     jfsutils
+    john
     jwhois
     keepassx
     kpcli
