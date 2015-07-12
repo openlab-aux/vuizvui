@@ -22,7 +22,7 @@
 
   services.syncthing = {
     enable = true;
-    dataDir = "/home/dev/syncthing";
+    dataDir = "/home/dev/syncstuff";
     user = "dev";
   };
 
