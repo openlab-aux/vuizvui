@@ -184,6 +184,7 @@
     telnet
     testdisk
     texLiveFull
+    tmux
     tomahawk
     transmission_remote_gtk
     tree
