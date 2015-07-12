@@ -70,8 +70,14 @@
   fonts = {
     fontconfig = {
       enable = true;
+      hinting = {
+        style = "slight";
+        autohint = false;
+      };
       ultimate = {
+        allowBitmaps = false;
         enable = true;
+        rendering = pkgs.fontconfig-ultimate.rendering.ultimate-darker;
       };
     };
     enableGhostscriptFonts = true;
@@ -83,14 +89,19 @@
       dosemu_fonts
       font-awesome-ttf
       freefont_ttf
+      lohit-fonts
       powerline-fonts
       proggyfonts
+      source-code-pro
+      source-sans-pro
+      source-serif-pro
       terminus_font
       tewi-font
       ttf_bitstream_vera
       ubuntu_font_family
       unifont
       vistafonts
+      wqy_microhei
     ];
   };
 }
