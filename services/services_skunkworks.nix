@@ -4,7 +4,10 @@
   imports = [ ./services_common.nix ];
 
   services = {
-    printing.enable = true;
+    printing = {
+      enable = true;
+      drivers = [ pkgs.hplipWithPlugin ];
+    };
     timesyncd.enable = true;
     resolved.enable = true;
     haveged.enable = true;
