@@ -4,8 +4,8 @@
 , email, password
 }:
 
-{ machineName, downloadName ? "Download", suffix ? "humblebundle", md5 }: let
-  cafile = "${cacert}/etc/ca-bundle.crt";
+{ name ? null, machineName, downloadName ? "Download", suffix ? "humblebundle", md5 }: let
+  cafile = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
   humbleAPI = buildPythonPackage rec {
     name = "humblebundle-${version}";
@@ -69,7 +69,7 @@
       print dstruct.url.web
   '';
 in stdenv.mkDerivation {
-  name = "${machineName}.${suffix}";
+  name = if name != null then name else "${machineName}.${suffix}";
   outputHashAlgo = "md5";
   outputHash = md5;
 
