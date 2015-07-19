@@ -73,7 +73,7 @@
     file
     firefox
     flac
-    foremost
+#foremost
     freerdpUnstable
     gajim
     gcc
