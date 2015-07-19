@@ -25,7 +25,6 @@
 
   services.syncthing = {
     enable = true;
-    dataDir = "/home/dev/syncstuff";
     user = "dev";
   };
 
