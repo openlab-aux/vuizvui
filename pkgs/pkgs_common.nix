@@ -132,6 +132,7 @@
     lynx
     manpages
     mcabber
+    mdp
     mediainfo
     mmv
     monkeysAudio
