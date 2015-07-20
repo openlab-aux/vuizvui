@@ -21,8 +21,6 @@
     mpv = {
       youtubeSupport = true;
     };
-
-    allowTexliveBuilds = true;
   };
 
   environment.systemPackages = with pkgs; [
