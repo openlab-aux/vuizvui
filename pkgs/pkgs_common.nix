@@ -148,6 +148,7 @@
     nix-prefetch-scripts
     nixops
     nmap
+    numix-icon-theme
     obnam
     openssl
     p7zip
