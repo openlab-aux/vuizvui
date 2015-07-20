@@ -1,3 +1,5 @@
+### THIS FILE IS FOR HYDRA BUILD ONLY! YOU CAN IGNORE THIS FILE IF YOU ARE NOT USING A HYDRA!
+
 let
   supportedSystems = [ "x86_64-linux" ];
   system = "x86_64-linux";
