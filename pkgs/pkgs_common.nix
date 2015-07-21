@@ -180,6 +180,7 @@
     smartmontools
     sox
     spek
+    ssdeep
     stow
     strace
     surfraw
