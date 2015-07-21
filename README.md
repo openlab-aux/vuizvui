@@ -26,3 +26,9 @@ channel update (this is assuming that you are using the _unstable_ channel).
 Therefore your best bet is to either disable the culprit in the configuration
 or just wait until the [unstable channel](https://hydra.nixos.org/job/nixos/trunk-combined/tested#tabs-constituents)
 has been updated. Or, of course, run directly from `nixpkgs` master branch.
+
+**NOTE 2:** Unless you have access to a Hydra build farm/machine you will most
+likely want to remove the `binaryCaches` option in the `machine_common.nix`
+file. This also means that you can ignore the `release.nix` file. Unless, of
+course, you have access to a Hydra, in which case you'll still want to adapt
+the `binaryCache` option.
