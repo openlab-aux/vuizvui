@@ -5,7 +5,7 @@
 }:
 
 { machineName, downloadName ? "Download", suffix ? "humblebundle", md5 }: let
-  cafile = "${cacert}/etc/ca-bundle.crt";
+  cafile = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
   humbleAPI = buildPythonPackage rec {
     name = "humblebundle-${version}";
