@@ -11,6 +11,7 @@
     aircrackng
     atom
     connmanui
+    horst
     kismet
     minicom
     msmtp

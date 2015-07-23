@@ -9,6 +9,7 @@
 
   environment.systemPackages = with pkgs; [
     aircrackng
+    horst
     kismet
     minicom
     networkmanagerapplet
