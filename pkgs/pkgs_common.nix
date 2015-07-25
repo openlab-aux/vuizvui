@@ -149,6 +149,7 @@
     openssl
     p7zip
     pandoc
+    paperkey
     pass
     pasystray
     pavucontrol
