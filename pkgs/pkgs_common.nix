@@ -186,6 +186,7 @@
     telnet
     testdisk
     texLiveFull
+    texmacs
     tmux
     tomahawk
     transmission_remote_gtk
