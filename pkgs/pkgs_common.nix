@@ -56,11 +56,7 @@
     dmidecode
     dos2unix
     easytag
-    (emacsWithPackages (with pkgs.emacsPackages; with pkgs.emacsPackagesNg; [
-      auctex company diminish evil evil-leader flycheck git-auto-commit-mode
-      git-timemachine haskell-mode helm magit markdown-mode monokai-theme
-      org-plus-contrib rainbow-delimiters undo-tree use-package
-    ]))
+    emacs
     enhanced-ctorrent
     ethtool
     evince
@@ -71,7 +67,7 @@
     file
     firefox
     flac
-#foremost
+    foremost
     freerdpUnstable
     gajim
     gcc
@@ -168,6 +164,7 @@
     python2
     python3
     pythonPackages.rainbowstream
+    qrencode
     recode
     reiserfsprogs
     ruby
