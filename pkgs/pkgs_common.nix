@@ -197,6 +197,7 @@
     unzip
     valgrind
     vim_configurable
+    vlc
     vlock
     vorbisTools
     vorbisgain
