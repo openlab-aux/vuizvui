@@ -10,6 +10,7 @@
     useChroot = true;
     binaryCaches = [ "https://headcounter.org/hydra/" ];
     requireSignedBinaryCaches = false;
+    binaryCachePublicKeys = [ "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg=" ];
   };
 
   time = {
