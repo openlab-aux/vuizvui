@@ -33,6 +33,10 @@ with lib;
       }) vuizvui;
     };
 
+    nix.binaryCachePublicKeys = [
+      "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
+    ];
+
     environment.sessionVariables = let
       rootChannelsPath = "/nix/var/nix/profiles/per-user/root/channels";
       channelPath = "${rootChannelsPath}/${config.vuizvui.channelName}";
