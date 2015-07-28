@@ -2,13 +2,14 @@
 
 {
   services = {
+    gpm.enable = true;
     openssh.enable = true;
+    thermald.enable = true;
     udisks2.enable = true;
     virtualboxHost = {
       enable = true;
       enableHardening = true;
     };
-    gpm.enable = true;
   };
 
   services.xserver = {
