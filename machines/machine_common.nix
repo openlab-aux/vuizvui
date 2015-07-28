@@ -9,6 +9,7 @@
     buildCores = 0;
     useChroot = true;
     binaryCaches = [ "https://headcounter.org/hydra/" ];
+    requireSignedBinaryCaches = false;
   };
 
   time = {
