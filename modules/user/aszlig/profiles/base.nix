@@ -83,13 +83,14 @@ in {
         w3m = pkgs.w3m.override {
           graphicsSupport = true;
         };
-      };
 
-      haskellPackageOverrides = lib.const (super: {
-        hinotify = super.hinotify.overrideDerivation (lib.const {
-          doCheck = false;
+        # XXX: Workaround for fixing hinotify build.
+        haskellPackages = pkgs.recurseIntoAttrs (pkgs.haskellPackages.override {
+          hinotify = lib.const (super: super.hinotify.overrideDerivation {
+            doCheck = false;
+          });
         });
-      });
+      };
     };
 
     system.fsPackages = with pkgs; [ sshfsFuse ];
