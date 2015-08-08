@@ -7,8 +7,8 @@ pythonPackages.buildPythonPackage {
   src = fetchFromGitHub {
     owner = "aszlig";
     repo = "GrandPA";
-    rev = "a9bb455a6789c4b9bacd27ab9d3cdb7b141c29d8";
-    sha256 = "15aqpinrwsg53g1aprkqqp1sr5ch4q8zpm982s228i38vdzp8i60";
+    rev = "a01900bc9921a102f85de011d1c655b2d831714c";
+    sha256 = "1ynvsn74djdjmyybbpfzdc7m2zkz5raph7nfyklx8alsbwr8n40s";
   };
 
   doCheck = false;
