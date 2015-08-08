@@ -84,6 +84,12 @@ in {
           graphicsSupport = true;
         };
       };
+
+      haskellPackageOverrides = lib.const (super: {
+        hinotify = super.hinotify.overrideDerivation (lib.const {
+          doCheck = false;
+        });
+      });
     };
 
     system.fsPackages = with pkgs; [ sshfsFuse ];
