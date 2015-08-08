@@ -83,13 +83,6 @@ in {
         w3m = pkgs.w3m.override {
           graphicsSupport = true;
         };
-
-        # XXX: Workaround for fixing hinotify build.
-        haskellPackages = pkgs.recurseIntoAttrs (pkgs.haskellPackages.override {
-          hinotify = lib.const (super: super.hinotify.overrideDerivation {
-            doCheck = false;
-          });
-        });
       };
     };
 
