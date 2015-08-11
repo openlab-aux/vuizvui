@@ -1,5 +1,6 @@
 pkgs: with pkgs; [
   vuizvui.aacolorize
+  abook
   acpi
   apg
   ascii
