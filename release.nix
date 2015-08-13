@@ -47,7 +47,8 @@ in with pkgsUpstream.lib; with builtins; {
     machineBase = import "${vuizvui}/machines" { inherit system; };
     buildIso = attrs: let
       name = attrs.iso.config.networking.hostName;
-    in pkgsUpstream.runCommand "vuizvui-iso-${name}" {
+      cond = attrs.iso.config.vuizvui.createISO;
+    in if !cond then {} else pkgsUpstream.runCommand "vuizvui-iso-${name}" {
       meta.description = "Live CD/USB stick of ${name}";
       iso = attrs.iso.config.system.build.isoImage;
       passthru.config = attrs.iso.config;
