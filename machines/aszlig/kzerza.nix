@@ -7,6 +7,7 @@ let
   diskID = "usb-0000_Removable_Drive_23372707080836980013-0:0";
 in {
   vuizvui.user.aszlig.profiles.base.enable = true;
+  vuizvui.createISO = true;
 
   services.xserver.enable = mkForce false;
 
