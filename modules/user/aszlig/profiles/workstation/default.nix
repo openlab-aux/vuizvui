@@ -99,8 +99,6 @@ in {
           ATTRS{idProduct}=="6001", OWNER="aszlig"
       '';
 
-      virtualboxHost.enable = true;
-
       xserver = {
         enable = true;
         layout = "dvorak";
@@ -136,6 +134,8 @@ in {
         desktopManager.xterm.enable = false;
       };
     };
+
+    virtualisation.virtualbox.host.enable = true;
 
     users.extraUsers.aszlig = {
       uid = 1000;
