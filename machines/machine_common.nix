@@ -11,7 +11,7 @@
     binaryCaches = [ "https://headcounter.org/hydra/" ];
     requireSignedBinaryCaches = true;
     binaryCachePublicKeys = [ "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg=" ];
-    nixPath = [ "nixpkgs=/home/dev/git/remote/other_github/nixpkgs" ];
+    nixPath = lib.mkOptionDefault [ "nixpkgs=/home/dev/git/remote/other_github/nixpkgs" ];
   };
 
   time = {
