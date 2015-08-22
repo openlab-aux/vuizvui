@@ -37,16 +37,14 @@ with lib;
       "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
     ];
 
-    environment.sessionVariables = let
+    nix.nixPath = let
       rootChannelsPath = "/nix/var/nix/profiles/per-user/root/channels";
       channelPath = "${rootChannelsPath}/${config.vuizvui.channelName}";
-    in mkIf config.vuizvui.modifyNixPath {
-      NIX_PATH = mkOverride 90 [
-        "vuizvui=${channelPath}"
-        "nixpkgs=${channelPath}/nixpkgs"
-        "nixos-config=/etc/nixos/configuration.nix"
-        rootChannelsPath
-      ];
-    };
+    in mkIf config.vuizvui.modifyNixPath (mkOverride 90 [
+      "vuizvui=${channelPath}"
+      "nixpkgs=${channelPath}/nixpkgs"
+      "nixos-config=/etc/nixos/configuration.nix"
+      rootChannelsPath
+    ]);
   };
 }
