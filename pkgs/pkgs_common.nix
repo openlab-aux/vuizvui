@@ -32,6 +32,7 @@
     aspell
     aspellDicts.de
     aspellDicts.en
+    atom
     attic
     audacity
     axel

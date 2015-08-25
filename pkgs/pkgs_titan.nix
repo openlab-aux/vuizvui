@@ -9,7 +9,6 @@
 
   environment.systemPackages = with pkgs; [
     aircrackng
-    atom
     connmanui
     horst
     kismet
