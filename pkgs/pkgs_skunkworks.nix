@@ -17,7 +17,7 @@
     abook
     beets
     canto-curses
-    goPackages.ipfs
+    go14Packages.ipfs
     hplip
     mkvtoolnix
     mutt-with-sidebar
