@@ -20,7 +20,7 @@
     go14Packages.ipfs
     hplip
     mkvtoolnix
-    mutt
+    mutt-with-sidebar
     urlview
   ];
 }
