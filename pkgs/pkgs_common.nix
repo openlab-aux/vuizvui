@@ -215,7 +215,7 @@
     xpra
     xscreensaver
     youtube-dl
-#zbar
+    zbar
     zotero
     zsync
   ];
