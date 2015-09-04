@@ -13,9 +13,9 @@
       x11Support = false;
     };
 
-    virtualbox = {
-      enableExtensionPack = true;
-    };
+#    virtualbox = {
+#      enableExtensionPack = true;
+#    };
 
     mpv = {
       youtubeSupport = true;
