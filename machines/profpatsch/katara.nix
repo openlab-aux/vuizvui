@@ -170,6 +170,17 @@ in {
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ haskellPkgs ++ nixPkgs;
 
+    system.extraDependencies = lib.singleton (
+       pkgs.haskellPackages.ghcWithHoogle (hpkgs: with hpkgs;
+         [
+           # frp
+           frpnow
+           gloss
+           gtk
+           frpnow-gtk
+           frpnow-gloss
+         ]));
+
 
     ###########
     # Services
