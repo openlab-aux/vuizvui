@@ -26,6 +26,14 @@ with lib;
 
   config = {
     nixpkgs.config.packageOverrides = pkgs: {
+      # XXX: REAAAALLLY UGLY hack to force the Headcounter Hydra to rebuild GHC
+      # and all its packages and not use binary substitution.
+      haskellPackages = pkgs.haskellPackages.override {
+        ghc = pkgs.haskellPackages.ghc.overrideDerivation (const {
+          forceRebuild = true;
+        });
+      };
+
       inherit (import ../../pkgs {
         # We need to make sure to incorporate other package overrides,
         # otherwise we are unable to override packages in vuizvui.*.
