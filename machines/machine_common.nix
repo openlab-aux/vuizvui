@@ -92,6 +92,7 @@
       dosemu_fonts
       font-awesome-ttf
       freefont_ttf
+      hack-font
       lohit-fonts
       powerline-fonts
       proggyfonts
