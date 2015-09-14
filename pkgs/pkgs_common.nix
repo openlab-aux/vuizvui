@@ -20,10 +20,6 @@
     mpv = {
       youtubeSupport = true;
     };
-
-    firefox = {
-      enableGTK3 = true;
-    };
   };
 
   environment.systemPackages = with pkgs; [
