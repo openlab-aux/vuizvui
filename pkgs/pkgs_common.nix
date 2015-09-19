@@ -55,12 +55,14 @@
     dmenu
     dmidecode
     dos2unix
+    duff
     easytag
     emacs
     enhanced-ctorrent
     ethtool
     evince
     fbida
+    fdupes
     feh
     ffmpeg
     figlet
