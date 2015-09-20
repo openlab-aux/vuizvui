@@ -18,6 +18,7 @@
     beets
     canto-curses
     go14Packages.ipfs
+    handbrake
     hplip
     mkvtoolnix
     mutt-with-sidebar
