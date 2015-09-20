@@ -202,6 +202,7 @@
     unzip
     valgrind
     vim_configurable
+    vit
     vlc
     vlock
     vorbisTools
