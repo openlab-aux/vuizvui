@@ -146,6 +146,8 @@
     nix-prefetch-scripts
     nixops
     nmap
+    ntfs3g
+    ntfsprogs
     numix-icon-theme
     obnam
     openssl
