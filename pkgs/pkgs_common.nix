@@ -67,7 +67,7 @@
     ffmpeg
     figlet
     file
-#firefox
+    firefox
     flac
     foremost
     freerdpUnstable
