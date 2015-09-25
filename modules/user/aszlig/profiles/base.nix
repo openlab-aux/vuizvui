@@ -90,7 +90,8 @@ in {
               name = "kernel-4.3.patch";
               url = "https://www.virtualbox.org/changeset/57839/vbox"
                   + "?format=diff";
-              sha256 = "0w28iamw9vnh8k447bx2rg3jwxzghkmpa44ni8fbdacjb3br9i9x";
+              sha256 = "01glpm9j3wp15alg5z5ylm7dm8y75kizvjc3cajl0xqd8b9jm61d";
+              stripLen = 1;
             });
           });
         in orig // { inherit virtualbox; };
