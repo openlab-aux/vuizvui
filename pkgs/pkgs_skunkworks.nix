@@ -22,6 +22,7 @@
     hplip
     mkvtoolnix
     mutt-with-sidebar
+    scummvm
     urlview
   ];
 }
