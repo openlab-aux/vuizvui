@@ -194,6 +194,7 @@
     texLiveFull
     texmacs
     tmux
+    toilet
     tomahawk
     transmission_remote_gtk
     tree
