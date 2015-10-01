@@ -112,6 +112,7 @@
     impressive
     inkscape
     iotop
+    iptraf
     ipv6calc
     jfsutils
     john
@@ -141,6 +142,7 @@
     mtr
     ncdu
     ncmpcpp
+    nethogs
     netrw
     nitrogen
     nix-prefetch-scripts
