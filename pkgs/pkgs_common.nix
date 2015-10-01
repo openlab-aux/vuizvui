@@ -144,6 +144,7 @@
     ncmpcpp
     nethogs
     netrw
+    netsniff-ng
     nitrogen
     nix-prefetch-scripts
     nixops
