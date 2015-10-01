@@ -207,6 +207,7 @@
     unzip
     valgrind
     vim_configurable
+    virtmanager
     vit
     vlc
     vlock
