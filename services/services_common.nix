@@ -2,6 +2,11 @@
 
 {
   virtualisation = {
+    libvirtd = {
+      enable = true;
+      enableKVM = true;
+      onShutdown = "shutdown";
+    };
     virtualbox = {
       host = {
         enable = true;
