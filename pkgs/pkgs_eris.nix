@@ -18,6 +18,7 @@
     pmutils
     reaverwps
     snort
+    wavemon
     xbindkeys
     xorg.xbacklight
   ];
