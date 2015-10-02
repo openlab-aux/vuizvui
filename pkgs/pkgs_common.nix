@@ -6,6 +6,10 @@
 
     allowUnfree = true;
 
+    systemd = {
+      enableKDbus = true;
+    };
+
     conky = {
       weatherMetarSupport = true;
       mpdSupport = true;
