@@ -218,6 +218,7 @@
     vit
     vlc
     vlock
+    vnstat
     vorbisTools
     vorbisgain
     w3m
