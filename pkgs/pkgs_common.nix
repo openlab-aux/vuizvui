@@ -54,6 +54,7 @@
     cryptsetup
     ctodo
     cuetools
+    darkstat
     dcfldd
     ddrescue
     dmenu
