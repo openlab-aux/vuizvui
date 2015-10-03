@@ -44,6 +44,7 @@
     bind
     bup
     cacert
+    cataclysm-dda
     ccrypt
     chromaprint
     chromium
@@ -147,6 +148,7 @@
     mtr
     ncdu
     ncmpcpp
+    nethack
     nethogs
     netrw
     netsniff-ng
