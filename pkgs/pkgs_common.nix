@@ -116,7 +116,7 @@
     impressive
     inkscape
     iotop
-    iptraf
+    iptraf-ng
     ipv6calc
     jfsutils
     john
