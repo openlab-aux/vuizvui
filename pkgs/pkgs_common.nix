@@ -156,7 +156,7 @@
     nmap
     ntfs3g
     ntfsprogs
-    ntop
+    ntopng
     numix-icon-theme
     obnam
     openssl
