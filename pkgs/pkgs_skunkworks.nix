@@ -23,6 +23,7 @@
     mkvtoolnix
     mutt-with-sidebar
     scummvm
+    slrn
     urlview
   ];
 }
