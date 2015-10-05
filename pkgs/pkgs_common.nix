@@ -155,6 +155,7 @@
     nitrogen
     nix-prefetch-scripts
     nixops
+    nload
     nmap
     ntfs3g
     ntfsprogs
