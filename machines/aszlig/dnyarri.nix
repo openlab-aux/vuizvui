@@ -114,6 +114,8 @@ with lib;
   services.synergy.client.enable = true;
   services.synergy.client.serverAddress = "mmrnmhrm";
 
+  services.kmscon.enable = true;
+
   systemd.services."synergy-client".serviceConfig.CPUSchedulingPolicy = "rr";
   systemd.services."synergy-client".serviceConfig.CPUSchedulingPriority = 50;
 

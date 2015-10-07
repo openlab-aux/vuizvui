@@ -59,6 +59,8 @@ with lib;
     end
   '';
 
+  services.kmscon.enable = true;
+
   systemd.services."synergy-server".serviceConfig.CPUSchedulingPolicy = "rr";
   systemd.services."synergy-server".serviceConfig.CPUSchedulingPriority = 50;
 
