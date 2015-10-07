@@ -18,11 +18,11 @@ let
   in pkgs.writeText "generated.kconf" (mkConf exprs + "\n");
 
   mainlineKernel = {
-    version = "4.2.0-rc5";
+    version = "4.3.0-rc4";
     src = pkgs.fetchgit {
       url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;
-      rev = "dd2384a75d1c046faf068a6352732a204814b86d";
-      sha256 = "0jbr1pnkwqyvaxgr209fi9n01zfl5d5p3hj4vqq35bfzzjjb3kdn";
+      rev = "79c7c7acd25689b1d7669bdb33fb3cb7c64541fe";
+      sha256 = "1ph378scgx3vbbgjblv6lg5p169y5grqc0gb2j1pmvj9pajqw1r1";
     };
   };
 
