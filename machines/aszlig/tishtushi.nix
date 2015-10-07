@@ -18,7 +18,6 @@ in {
       bfqsched = pkgs.vuizvui.kernelPatches.bfqsched // {
         extraConfig = ''
           IOSCHED_BFQ y
-          CGROUP_BFQIO y
           DEFAULT_BFQ y
           DEFAULT_CFQ n
           DEFAULT_IOSCHED "bfq"
