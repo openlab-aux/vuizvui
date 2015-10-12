@@ -83,18 +83,6 @@ in {
         w3m = pkgs.w3m.override {
           graphicsSupport = true;
         };
-        linuxPackagesFor = kernel: self: let
-          orig = pkgs.linuxPackagesFor kernel self;
-          virtualbox = orig.virtualbox.overrideDerivation (drv: {
-            patches = (drv.patches or []) ++ lib.singleton (pkgs.fetchpatch {
-              name = "kernel-4.3.patch";
-              url = "https://www.virtualbox.org/changeset/57839/vbox"
-                  + "?format=diff";
-              sha256 = "01glpm9j3wp15alg5z5ylm7dm8y75kizvjc3cajl0xqd8b9jm61d";
-              stripLen = 1;
-            });
-          });
-        in orig // { inherit virtualbox; };
       };
     };
 
