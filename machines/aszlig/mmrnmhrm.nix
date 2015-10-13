@@ -42,6 +42,7 @@ with lib;
     section: screens
       dnyarri:
       mmrnmhrm:
+      tishtushi:
     end
 
     section: links
@@ -56,6 +57,7 @@ with lib;
     section: options
       keystroke(Super+F1) = switchToScreen(dnyarri)
       keystroke(Super+F2) = switchToScreen(mmrnmhrm)
+      keystroke(Super+F3) = switchToScreen(tishtushi)
     end
   '';
 
