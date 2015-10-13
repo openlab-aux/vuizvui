@@ -54,8 +54,8 @@ with lib;
     end
 
     section: options
-      keystroke(AudioPlay) = switchToScreen(dnyarri)
-      keystroke(Menu) = switchToScreen(mmrnmhrm)
+      keystroke(Super+F1) = switchToScreen(dnyarri)
+      keystroke(Super+F2) = switchToScreen(mmrnmhrm)
     end
   '';
 
