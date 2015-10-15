@@ -10,6 +10,7 @@
   environment.systemPackages = with pkgs; [
     aircrackng
     connmanui
+    cura
     horst
     kismet
     minicom
