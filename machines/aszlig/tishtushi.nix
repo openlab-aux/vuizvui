@@ -24,7 +24,9 @@ in {
         '';
       };
       kernel = origKernel.override {
-        kernelPatches = origKernel.kernelPatches ++ singleton bfqsched;
+        kernelPatches = origKernel.kernelPatches ++ [
+          bfqsched pkgs.vuizvui.kernelPatches.dragonfly
+        ];
       };
     in linuxPackagesFor kernel kernelPackages;
 

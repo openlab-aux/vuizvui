@@ -23,6 +23,7 @@ let
 
     kernelPatches = {
       bfqsched = callPackage ./kpatches/bfqsched.nix { };
+      dragonfly = callPackage ./kpatches/dragonfly { };
     };
   };
 in pkgs // self

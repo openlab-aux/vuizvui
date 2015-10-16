@@ -1,0 +1,49 @@
+From b81246424561904823492aa551e7b22b16157a94 Mon Sep 17 00:00:00 2001
+From: aszlig <aszlig@redmoonstudios.org>
+Date: Fri, 16 Oct 2015 18:31:41 +0200
+Subject: [PATCH 3/3] ALSA: Revert add dB range mapping for Dragonfly.
+
+This partially reverts commit 2d1cb7f658fb9c3ba8f9dab8aca297d4dfdec835.
+
+We now have a better patch coming from:
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-August/096516.html
+
+Signed-off-by: aszlig <aszlig@redmoonstudios.org>
+---
+ sound/usb/mixer_maps.c | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+index 6a803ef..ddca654 100644
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -348,13 +348,6 @@ static struct usbmix_name_map bose_companion5_map[] = {
+ 	{ 0 }	/* terminator */
+ };
+ 
+-/* Dragonfly DAC 1.2, the dB conversion factor is 1 instead of 256 */
+-static struct usbmix_dB_map dragonfly_1_2_dB = {0, 5000};
+-static struct usbmix_name_map dragonfly_1_2_map[] = {
+-	{ 7, NULL, .dB = &dragonfly_1_2_dB },
+-	{ 0 }	/* terminator */
+-};
+-
+ /*
+  * Control map entries
+  */
+@@ -470,11 +463,6 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
+ 		.id = USB_ID(0x05a7, 0x1020),
+ 		.map = bose_companion5_map,
+ 	},
+-	{
+-		/* Dragonfly DAC 1.2 */
+-		.id = USB_ID(0x21b4, 0x0081),
+-		.map = dragonfly_1_2_map,
+-	},
+ 	{ 0 } /* terminator */
+ };
+ 
+-- 
+2.5.3
+
