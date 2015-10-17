@@ -237,6 +237,7 @@
     xscreensaver
     youtube-dl
     zbar
+    zip
     zotero
     zsync
   ];
