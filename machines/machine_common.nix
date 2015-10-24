@@ -93,7 +93,6 @@
       font-awesome-ttf
       freefont_ttf
       hack-font
-      lohit-fonts
       powerline-fonts
       proggyfonts
       source-code-pro
@@ -106,6 +105,6 @@
       unifont
       vistafonts
       wqy_microhei
-    ];
+    ] ++ lib.filter lib.isDerivation (lib.attrValues lohit-fonts);
   };
 }
