@@ -86,6 +86,23 @@
     enableGhostscriptFonts = true;
     enableCoreFonts = true;
     fonts = with pkgs; [
+      lohit-fonts.assamese
+      lohit-fonts.bengali
+      lohit-fonts.devanagari
+      lohit-fonts.gujarati
+      lohit-fonts.gurmukhi
+      lohit-fonts.kannada
+      lohit-fonts.malayalam
+      lohit-fonts.marathi
+      lohit-fonts.nepali
+      lohit-fonts.odia
+      lohit-fonts.tamil-classical
+      lohit-fonts.tamil
+      lohit-fonts.telugu
+      lohit-fonts.kashmiri
+      lohit-fonts.konkani
+      lohit-fonts.maithili
+      lohit-fonts.sindhi
       clearlyU
       cm_unicode
       dejavu_fonts
@@ -93,7 +110,6 @@
       font-awesome-ttf
       freefont_ttf
       hack-font
-      lohit-fonts
       powerline-fonts
       proggyfonts
       source-code-pro
