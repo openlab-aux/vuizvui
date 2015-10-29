@@ -1,14 +1,14 @@
 { stdenv, fetchFromGitHub, fetchpatch, git }:
 
 let
-  rev = "85439475872a2fc0336b5dcb02711293f611e004";
-  sha256 = "007jmf0x06bk1jfhgdlaamdnwpda57rpab12xisy7sxmfvafgp4j";
+  rev = "f2bf13726a2434626925fd105e60d4745eafe104";
+  sha256 = "1ww0dldfczwn2aa350yl095fqc36026a7z8dwjynkpssr4mvabsn";
 
   master = stdenv.mkDerivation rec {
     name = "nixops-upstream-patched";
 
     src = fetchFromGitHub {
-      owner = "aszlig";
+      owner = "NixOS";
       repo = "nixops";
       inherit rev sha256;
     };
