@@ -181,6 +181,7 @@
     python2
     python3
     python34Packages.hovercraft
+    pythonPackages.livestreamer
     pythonPackages.rainbowstream
     qrencode
     recode
