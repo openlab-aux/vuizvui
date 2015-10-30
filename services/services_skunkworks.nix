@@ -106,6 +106,7 @@
         XTerm*faceName:       xft:DejaVu Sans Mono for Powerline:pixelsize=12:antialias=true:hinting=true
         XTerm*faceNameDoublesize: xft:Unifont:pixelsize=12:antialias=true:hinting=true
         XTerm*cursorColor:    #545f65
+        XTerm*saveLines:      10000
         *background:          #121212
         *foreground:          #babdb6
       ''}"
