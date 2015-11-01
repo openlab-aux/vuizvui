@@ -60,6 +60,7 @@
     ddrescue
     dmenu
     dmidecode
+    docker
     dos2unix
     duff
     easytag
