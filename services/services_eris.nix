@@ -9,6 +9,12 @@
     printing.enable = false;
   };
 
+  services.udev = {
+    extraRules = ''
+      SUBSYSTEM=="firmware", ACTION=="add", ATTR{loading}="-1"
+    '';
+  };
+
   services.acpid = {
     enable = true;
     lidEventCommands = ''
