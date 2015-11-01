@@ -118,6 +118,7 @@
     impressive
     inkscape
     iotop
+    ipfs
     iptraf-ng
     ipv6calc
     jfsutils
