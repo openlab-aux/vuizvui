@@ -17,7 +17,7 @@
     abook
     beets
     canto-curses
-    go14Packages.ipfs
+    go15Packages.ipfs
     handbrake
     hplip
     mkvtoolnix
