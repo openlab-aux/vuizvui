@@ -65,7 +65,7 @@ in {
 
   services.xserver.videoDrivers = [ "intel" ];
   services.xserver.synaptics.enable = true;
-  services.xserver.synaptics.tapButtons = false;
+  services.xserver.synaptics.tapButtons = true;
   services.xserver.synaptics.twoFingerScroll = true;
   services.xserver.synaptics.vertEdgeScroll = false;
   services.xserver.synaptics.accelFactor = "0.1";
