@@ -26,5 +26,6 @@
     scummvm
     slrn
     urlview
+    twister
   ];
 }
