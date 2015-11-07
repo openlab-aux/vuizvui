@@ -71,7 +71,7 @@
     fbida
     fdupes
     feh
-    ffmpeg
+    ffmpeg-full
     figlet
     file
     firefox
