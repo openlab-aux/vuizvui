@@ -93,6 +93,7 @@
       font-awesome-ttf
       freefont_ttf
       hack-font
+      inconsolata
       powerline-fonts
       proggyfonts
       source-code-pro
