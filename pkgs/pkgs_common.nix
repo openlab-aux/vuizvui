@@ -206,7 +206,7 @@
     taskwarrior
     telnet
     testdisk
-    texLiveFull
+    texlive.combined.scheme-full
     texmacs
     tmux
     toilet
