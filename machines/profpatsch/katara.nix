@@ -99,20 +99,25 @@ in {
 
     environment.systemPackages = with pkgs;
     let
+      thinkpadPkgs = [
+        acpi
+      ];
       systemPkgs = [
-        ack
         atool
         curl
+        dos2unix
         file
         fish
         git
         gnupg
         htop
         imagemagick
+        manpages
         mkpasswd
         mosh
         nix-repl
         nmap
+        silver-searcher
         stow
         tmux
         vim
@@ -135,8 +140,10 @@ in {
         # kde4.oxygen-icons TODO
       ];
       userPrograms = [
+        abcde
         audacity
-        (chromium.override { enablePepperFlash = true; })
+        beets
+        chromium #(chromium.override { enablePepperFlash = true; })
         dropbox-cli
         emacs
         feh
@@ -150,12 +157,14 @@ in {
         # (lyx.overrideDerivation (old: { buildInputs = old.buildInputs ++ /*packages*/ lib.singleton mytexlive; }))
         lyx mytexlive #mylyx mytexlive
         mpv
+        newsbeuter
         audacity lame
         gmpc
         zathura
       ];
       mailPkgs = [
-        offlineimapKeyring
+        elinks
+        offlineimapGPG
         mutt-with-sidebar # TODO mutt-kz
         msmtp
         notmuch
@@ -166,10 +175,14 @@ in {
       nixPkgs = [
         nix-prefetch-scripts
       ];
-    in systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ haskellPkgs ++ nixPkgs;
+      tmpPkgs = [
+        hunspell
+        hunspellDicts.en-gb-ise
+      ];
+    in thinkpadPkgs ++ systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ haskellPkgs ++ nixPkgs ++ tmpPkgs;
 
     system.extraDependencies = lib.singleton (
-       pkgs.haskellPackages.ghcWithHoogle (hpkgs: with hpkgs;
+       pkgs.haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
          [
            # frp
            frpnow
