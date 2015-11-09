@@ -1,9 +1,9 @@
 { config, pkgs, lib, ... }:
 let
 
-  offlineimapKeyring = pkgs.offlineimap.overrideDerivation (old: {
+  offlineimapGPG = pkgs.offlineimap.overrideDerivation (old: {
     propagatedBuildInputs = old.propagatedBuildInputs
-                         ++ lib.singleton pkgs.pythonPackages.keyring;
+                         ++ lib.singleton pkgs.pythonPackages.pygpgme;
   });
 
   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra; };
@@ -24,6 +24,7 @@ let
 in {
 
   config = rec {
+
     #########
     # Kernel
 
