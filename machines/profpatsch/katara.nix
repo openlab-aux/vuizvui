@@ -66,7 +66,7 @@ in {
     # Nix
 
     nix.maxJobs = 2;
-    nix.binaryCaches = [ "https://hydra.nixos.org/" ];
+    # nix.binaryCaches = [ "https://hydra.nixos.org/" ];
 
     ##########
     # Network
