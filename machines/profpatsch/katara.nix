@@ -29,10 +29,8 @@ in {
 
     boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "firewire_ohci" ];
     boot.kernelModules = [ "kvm-intel" ];
-    # Use the GRUB 2 boot loader.
     boot.loader.grub.enable = true;
     boot.loader.grub.version = 2;
-    # Define on which hard drive you want to install rub.
     boot.loader.grub.device = "/dev/sda";
     boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "cryptroot"; } ];
 
@@ -131,6 +129,7 @@ in {
       ];
       guiPkgs = [
         gnome3.adwaita-icon-theme
+        # TODO: get themes to work. See notes.org.
         gnome3.gnome_themes_standard
         # kde4.oxygen-icons TODO
       ];
@@ -209,7 +208,7 @@ in {
     # Automount
     services.udisks2.enable = true;
 
-    # Music as a Service
+    # Music as a Service TODO
     services.mpd.enable = false;
     services.mpd.musicDirectory = pkgs.runCommand "mpd-link" {} ''
       ln -s ${users.extraUsers.philip.home}/Downloads/music $out
@@ -219,7 +218,6 @@ in {
     ###################
     # Graphical System
 
-    # Enable the X11 windowing system.
     services.xserver = {
       enable = true;
       layout = "de";
@@ -256,7 +254,7 @@ in {
 
     fonts.fontconfig = {
       defaultFonts = {
-        monospace = [ "Source Code Pro" "DejaVu Sans Mono" ];
+        monospace = [ "Source Code Pro" "DejaVu Sans Mono" ]; # TODO does not work
         sansSerif = [ "Liberation Sans" ];
       };
       # use overkill infinality settings from old Arch installation
@@ -269,7 +267,6 @@ in {
           INFINALITY_FT_STEM_ALIGNMENT_STRENGTH = "15";
           INFINALITY_FT_STEM_FITTING_STRENGTH = "15";
         };
-        # substitutions = "combi";
       };
     };
     fonts.enableFontDir = true;
@@ -318,6 +315,7 @@ in {
     #######
     # Misc
 
+    # TODO seems to work only sometimes in chromium
     security.pki.certificateFiles = [ "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
 
     ########
