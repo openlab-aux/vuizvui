@@ -6,9 +6,7 @@ let
                          ++ lib.singleton pkgs.pythonPackages.keyring;
   });
 
-  mytexlive = with pkgs; texLiveAggregationFun {
-    paths = [ texLive texLiveBeamer texLiveCMSuper ];
-  };
+  mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra; };
 
   mylyx = with pkgs; stdenv.mkDerivation rec {
     name = "mylyx";
@@ -150,7 +148,7 @@ in {
         libreoffice
         lilyterm
         # (lyx.overrideDerivation (old: { buildInputs = old.buildInputs ++ /*packages*/ lib.singleton mytexlive; }))
-        mylyx mytexlive
+        lyx mytexlive #mylyx mytexlive
         mpv
         audacity lame
         gmpc
