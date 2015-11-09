@@ -228,6 +228,9 @@ in {
       ln -s ${users.extraUsers.philip.home}/Downloads/music $out
     '';
 
+    services.journald.extraConfig = ''
+      SystemMaxUse=50M
+    '';
 
     ###################
     # Graphical System
