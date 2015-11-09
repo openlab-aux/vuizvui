@@ -256,17 +256,23 @@ in {
         enable = true;
         enableContribAndExtras = true;
       };
-      displayManager.sessionCommands =
-        ''
-        #TODO add as nixpkg
-        export PATH+=":$HOME/scripts" #add utility scripts
-        xset r rate 250 35
-        set-background &
-        xbindkeys
-        nice -n19 dropbox start &
-        '';
+      displayManager = {
+        desktopManagerHandlesLidAndPower = false;
+        sessionCommands =
+            ''
+            #TODO add as nixpkg
+            export PATH+=":$HOME/scripts" #add utility scripts
+            export EDITOR=emacsclient
+            xset r rate 250 35
+            set-background &
+            xbindkeys
+            nice -n19 dropbox start &
+            gajim &
+            '';
+      };
 
       startGnuPGAgent = true;
+
     };
 
     fonts.fontconfig = {
@@ -324,10 +330,7 @@ in {
     ###########
     # Programs
 
-    programs.ssh = {
-      startAgent = false; # see services.xserver.startGnuPGAgent
-      agentTimeout = "1h";
-    };
+    programs.ssh.startAgent = false;
 
     #######
     # Misc
