@@ -194,6 +194,13 @@ in {
 
     time.timeZone = "Europe/Berlin";
 
+    # redshift TODO as user
+    services.redshift = {
+      latitude = "48";
+      longitude = "10";
+      temperature.day = 6300;
+    };
+
     # locate
     services.locate = {
       enable = true;
@@ -276,12 +283,6 @@ in {
       ubuntu_font_family
     ];
 
-    # redshift
-    services.redshift = {
-      enable = true;
-      latitude = "48";
-      longitude = "10";
-    };
 
 
     ########
