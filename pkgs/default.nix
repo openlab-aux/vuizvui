@@ -18,7 +18,7 @@ let
     pvolctrl = callPackage ./pvolctrl { };
     sidplayfp = callPackage ./sidplayfp { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
-    tomahawk = callPackage ./tomahawk { };
+    tomahawk = callPackage ./tomahawk { qt5 = pkgs.qt55; };
     twitchstream = callPackage ./twitchstream { };
 
     kernelPatches = {
