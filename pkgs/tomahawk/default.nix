@@ -59,8 +59,8 @@ in stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "tomahawk-player";
     repo = "tomahawk";
-    rev = "1056621a87448b7ba1a8539f0735d655b29a09e8";
-    sha256 = "00ijbnnk0x6912ny4cwna0s68j44f5b8k9sgv0vlm5cqi5a6cpgj";
+    rev = "d4c3f24232f09e352868cf8592efcfb1f228b2db";
+    sha256 = "0hn7fa2a17i76ai657h6l9f4yp3sz75xpv3yparky9kir6zjbrrz";
   };
 
   cmakeFlags = [
@@ -70,8 +70,9 @@ in stdenv.mkDerivation rec {
 
   buildInputs = (map useQT5 [ liblastfm quazip ]) ++ [
     qca-qt5 qtkeychainQT5 libechonestQT5 kf5_latest.attica cmake pkgconfig
-    boost gnutls lucenepp vlc qt5.qtbase qt5.qtsvg qt5.qttools qt5.qtwebkit
-    qt5.qtx11extras sparsehash taglib websocketpp makeWrapper
+    kf5_latest.extra-cmake-modules boost gnutls lucenepp vlc qt5.qtbase
+    qt5.qtsvg qt5.qttools qt5.qtwebkit qt5.qtx11extras sparsehash taglib
+    websocketpp makeWrapper
   ] ++ stdenv.lib.optional enableXMPP      (useQT5 libjreen)
     ++ stdenv.lib.optional enableKDE       (useQT5 kdelibs)
     ++ stdenv.lib.optional enableTelepathy (useQT5 telepathy_qt);
