@@ -50,6 +50,7 @@
     chromium
     cifs_utils
     cmake
+    cmatrix
     colordiff
     conky
     cryptsetup
