@@ -121,7 +121,7 @@
     inkscape
     iotop
     ipfs
-#iptraf-ng
+    iptraf-ng
     ipv6calc
     jfsutils
     john
