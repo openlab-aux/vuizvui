@@ -137,6 +137,7 @@
     lxc
     lynx
     manpages
+    mc
     mcabber
     mdp
     mediainfo
