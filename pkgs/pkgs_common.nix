@@ -65,6 +65,7 @@
     dos2unix
     duff
     easytag
+    electrum
     emacs
     enhanced-ctorrent
     ethtool
