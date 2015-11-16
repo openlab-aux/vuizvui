@@ -64,6 +64,7 @@
     docker
     dos2unix
     duff
+    e2fsprogs
     easytag
     electrum
     emacs
