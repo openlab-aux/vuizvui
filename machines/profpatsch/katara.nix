@@ -169,7 +169,7 @@ in {
         msmtp
         notmuch
       ];
-      haskellPkgs = with pkgs.haskellngPackages; [
+      haskellPkgs = with pkgs.haskellPackages; [
         cabal2nix
       ];
       nixPkgs = [

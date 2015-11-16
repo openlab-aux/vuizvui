@@ -25,10 +25,10 @@ pkgs: with pkgs; [
   gnumake
   gnupg1compat
   graphviz
-  haskellngPackages.cabal2nix
-  haskellngPackages.cabal-install
-  haskellngPackages.hlint
-  haskellngPackages.yesod-bin
+  haskellPackages.cabal2nix
+  haskellPackages.cabal-install
+  haskellPackages.hlint
+  haskellPackages.yesod-bin
   haxe
   hexedit
   i3
