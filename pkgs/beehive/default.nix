@@ -13,4 +13,5 @@ goPackages.buildGoPackage {
     inherit (goPackages) buildGoPackage;
     inherit lib fetchFromGitHub fetchhg fetchgit;
   });
+  meta.broken = true;
 }
