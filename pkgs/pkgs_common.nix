@@ -218,7 +218,6 @@
     transmission_remote_gtk
     tree
     tribler
-    udevil
     units
     unrar
     unzip
