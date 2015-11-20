@@ -18,7 +18,7 @@
     beets
     canto-curses
     go15Packages.ipfs
-    handbrake
+#    handbrake
     hplip
     mkvtoolnix
     mutt-with-sidebar
