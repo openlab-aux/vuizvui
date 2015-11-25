@@ -49,6 +49,7 @@
     };
     zsh = {
       enable = true;
+      enableCompletion = true;
     };
     bash = {
       enableCompletion = true;
