@@ -31,6 +31,7 @@
     abook
     accountsservice
     apg
+    arandr
     ascii
     aspell
     aspellDicts.de
@@ -214,11 +215,9 @@
     texmacs
     tmux
     toilet
-#    tomahawk
     transmission_remote_gtk
     tree
     tribler
-#    udevil
     units
     unrar
     unzip
@@ -247,5 +246,7 @@
     zip
     zotero
     zsync
+#    tomahawk
+#    udevil
   ];
 }
