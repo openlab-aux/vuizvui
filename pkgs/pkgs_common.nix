@@ -53,6 +53,7 @@
     cmake
     cmatrix
     colordiff
+    compton
     conky
     cryptsetup
     ctodo
@@ -193,6 +194,7 @@
     qrencode
     recode
     reiserfsprogs
+    rofi
     ruby
     safecopy
     screen
