@@ -46,6 +46,7 @@
     bup
     cacert
     cataclysm-dda
+    cava
     ccrypt
     chromaprint
     chromium
@@ -220,6 +221,7 @@
     transmission_remote_gtk
     tree
     tribler
+    tty-clock
     units
     unrar
     unzip
@@ -244,6 +246,7 @@
     xpra
     xscreensaver
     youtube-dl
+    zathura
     zbar
     zip
     zotero
