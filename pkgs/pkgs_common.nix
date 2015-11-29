@@ -32,6 +32,7 @@
     accountsservice
     apg
     arandr
+    arc-gtk-theme
     ascii
     aspell
     aspellDicts.de
