@@ -218,7 +218,7 @@
     testdisk
     texLiveFull
     texmacs
-    tftp
+    netkittftp
     tftp-hpa
     tmux
     toilet
