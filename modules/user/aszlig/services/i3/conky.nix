@@ -7,20 +7,23 @@ with lib;
 
 let
   baseConfig = pkgs.writeText "conkyrc" ''
-    cpu_avg_samples 2
-    net_avg_samples 2
-    no_buffers yes
-    out_to_console yes
-    out_to_ncurses no
-    out_to_stderr no
-    out_to_x no
-    extra_newline no
-    update_interval 1.0
-    uppercase no
-    use_spacer none
-    pad_percents 3
-    use_spacer left
-    TEXT
+    conky.config = {
+      cpu_avg_samples = 2,
+      net_avg_samples = 2,
+      no_buffers = true,
+      out_to_console = true,
+      out_to_ncurses = false,
+      out_to_stderr = false,
+      out_to_x = false,
+      extra_newline = false,
+      update_interval = 1.0,
+      uppercase = false,
+      use_spacer = 'none',
+      pad_percents = 3,
+      use_spacer = 'left',
+    };
+
+    conky.text = ''';
   '';
 
   optexpr = name: expr: "\${${name}_disabled:-\\\${${name} ${expr}\\}}";
