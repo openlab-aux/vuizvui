@@ -1,0 +1,22 @@
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 71b51c1..1233eeb 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -3075,7 +3075,7 @@ retry:
+ 		if (new_bfqq != NULL) {
+ 			bfqq = new_bfqq;
+ 			new_bfqq = NULL;
+-		} else if (gfp_mask & __GFP_WAIT) {
++		} else if (gfpflags_allow_blocking(gfp_mask)) {
+ 			spin_unlock_irq(bfqd->queue->queue_lock);
+ 			new_bfqq = kmem_cache_alloc_node(bfq_pool,
+ 					gfp_mask | __GFP_ZERO,
+@@ -3574,7 +3574,7 @@ static int bfq_set_request(struct request_queue *q, struct request *rq,
+ 	unsigned long flags;
+ 	bool split = false;
+ 
+-	might_sleep_if(gfp_mask & __GFP_WAIT);
++	might_sleep_if(gfpflags_allow_blocking(gfp_mask));
+ 
+ 	bfq_check_ioprio_change(bic);
+ 

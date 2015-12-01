@@ -28,6 +28,7 @@ let
            + "${bfqVersion}-for-${kernelVersion}.0";
       sha256 = "178spkcwaz79rz8fb7h209grbgr2ca4lbgfmns4d43b7aiqhqhvp";
     })
+    ./kernel-4.4.patch
   ];
 
   patch = stdenv.mkDerivation {
