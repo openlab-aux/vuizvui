@@ -41,6 +41,7 @@ in {
 
     vuizvui.user.aszlig.programs.vim.enable = true;
     vuizvui.user.aszlig.programs.zsh.enable = true;
+    vuizvui.enableGlobalNixpkgsConfig = true;
 
     services.nixosManual.showManual = false;
 
