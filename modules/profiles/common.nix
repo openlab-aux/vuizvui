@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 with lib;
 
@@ -12,6 +12,17 @@ with lib;
         to the path within the Nix channel instead of the
         <literal>nixpkgs</literal> or <literal>nixos</literal> channel from the
         root user.
+      '';
+    };
+
+    enableGlobalNixpkgsConfig = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Enabling this links <literal>nixos-config</literal> to be used by
+        <literal>nixpkgs-config</literal>, which essentially means that
+        attributes defined in <option>nixpkgs.config</option> are also in effect
+        for user environments.
       '';
     };
 
@@ -46,13 +57,21 @@ with lib;
     ];
 
     nix.nixPath = let
+      nixpkgs = import ../../nixpkgs-path.nix;
       rootChannelsPath = "/nix/var/nix/profiles/per-user/root/channels";
       channelPath = "${rootChannelsPath}/${config.vuizvui.channelName}";
-    in mkIf config.vuizvui.modifyNixPath (mkOverride 90 [
-      "vuizvui=${channelPath}"
-      "nixpkgs=${channelPath}/nixpkgs"
-      "nixos-config=/etc/nixos/configuration.nix"
-      rootChannelsPath
-    ]);
+      nixosConfig = "/etc/nixos/configuration.nix";
+      nixpkgsConfig = "nixpkgs-config=${pkgs.writeText "nixpkgs-config.nix" ''
+        (import ${nixpkgs}/nixos/lib/eval-config.nix {
+          modules = [ ${nixosConfig} ];
+        }).config.nixpkgs.config
+      ''}";
+      nixPath = [
+        "vuizvui=${channelPath}"
+        "nixpkgs=${channelPath}/nixpkgs"
+        "nixos-config=${nixosConfig}"
+        rootChannelsPath
+      ] ++ optional config.vuizvui.enableGlobalNixpkgsConfig nixpkgsConfig;
+    in mkIf config.vuizvui.modifyNixPath (mkOverride 90 nixPath);
   };
 }
