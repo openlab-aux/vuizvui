@@ -37,6 +37,7 @@
     aspell
     aspellDicts.de
     aspellDicts.en
+    atftp
     atom
     attic
     audacity
@@ -217,6 +218,8 @@
     testdisk
     texLiveFull
     texmacs
+    tftp
+    tftp-hpa
     tmux
     toilet
     transmission_remote_gtk
