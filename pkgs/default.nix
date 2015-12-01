@@ -22,7 +22,7 @@ let
     twitchstream = callPackage ./twitchstream { };
 
     kernelPatches = {
-      bfqsched = callPackage ./kpatches/bfqsched.nix { };
+      bfqsched = callPackage ./kpatches/bfqsched { };
     };
   };
 in pkgs // self
