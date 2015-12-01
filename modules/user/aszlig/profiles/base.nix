@@ -45,6 +45,10 @@ in {
 
     services.nixosManual.showManual = false;
 
+    services.journald.extraConfig = ''
+      MaxRetentionSec=3month
+    '';
+
     environment.systemPackages = with pkgs; [
       binutils
       cacert
