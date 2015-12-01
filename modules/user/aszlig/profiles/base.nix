@@ -10,7 +10,6 @@ in {
 
   config = lib.mkIf cfg.enable {
     nix = {
-      package = pkgs.nixUnstable;
       useChroot = true;
       readOnlyStore = true;
       extraOptions = ''
@@ -73,7 +72,7 @@ in {
 
       allowBroken = true;
 
-      packageOverrides = pkgs: {
+      packageOverrides = pkgs: rec {
         nixUnstable = pkgs.lib.overrideDerivation pkgs.nixUnstable (drv: {
           patches = (drv.patches or []) ++ lib.singleton (pkgs.fetchpatch {
             url = "https://github.com/NixOS/nix/commit/"
@@ -87,6 +86,7 @@ in {
         netrw = pkgs.netrw.override {
           checksumType = "mhash";
         };
+        nix = nixUnstable;
         uqm = pkgs.uqm.override {
           use3DOVideos = true;
           useRemixPacks = true;
