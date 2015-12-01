@@ -129,7 +129,7 @@
     iotop
     ipfs
     iptraf-ng
-    ipv6calc
+#    ipv6calc
     jfsutils
     john
     jwhois
@@ -162,7 +162,7 @@
     nethack
     nethogs
     netrw
-    netsniff-ng
+#    netsniff-ng
     nitrogen
     nix-prefetch-scripts
     nixops
