@@ -83,6 +83,7 @@
     displayManager.sessionCommands = ''
       ${pkgs.xorg.xsetroot}/bin/xsetroot -solid black
       ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
+      ${pkgs.rofi}/bin/rofi &
       ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
         Xft.dpi:              96
         Xft.antialias:        true

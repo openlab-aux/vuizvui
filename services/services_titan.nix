@@ -41,6 +41,7 @@
       ${pkgs.connmanui}/bin/connman-ui-gtk &
       ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
       ${pkgs.pasystray}/bin/pasystray &
+      ${pkgs.rofi}/bin/rofi &
       ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
         Xft.dpi:              96
         Xft.antialias:        true
