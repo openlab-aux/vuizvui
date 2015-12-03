@@ -270,6 +270,7 @@ let
     let python_highlight_numbers = 1
     let python_highlight_builtins = 1
     let python_highlight_exceptions = 1
+    let g:flake8_cmd = '${pkgs.pythonPackages.flake8}/bin/flake8'
 
     " all plugins
     set runtimepath^=${plugins}
