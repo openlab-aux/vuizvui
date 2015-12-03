@@ -193,8 +193,8 @@ let
     nixAddon = pkgs.fetchFromGitHub {
       owner = "MarcWeber";
       repo = "vim-addon-nix";
-      rev = "7b0a376bb1797fef8da2dc14e768f318bcb671e8";
-      sha256 = "00dsba2a0az9bw1sni12km1vdga9x32dapxaj5gmq98hzqlhklyp";
+      rev = "2aed79ba5d8c5e6abd102de77e55e242f61b17f1";
+      sha256 = "0zx1q9994py6jmm0qbbx6fc1dy5la8zfskkbvqqxssxrl5dx7vvi";
     };
 
     urwebAddon = pkgs.fetchFromGitHub {
