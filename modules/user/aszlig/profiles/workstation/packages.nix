@@ -24,6 +24,7 @@ pkgs: with pkgs; [
   glxinfo
   gnumake
   gnupg1compat
+  gpodder
   graphviz
   haskellPackages.cabal2nix
   haskellPackages.cabal-install
@@ -40,7 +41,6 @@ pkgs: with pkgs; [
   lftp
   ltrace
   manpages
-  miro
   mmv
   mosh
   mp3info
