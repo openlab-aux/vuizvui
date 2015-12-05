@@ -56,6 +56,14 @@ with lib;
       "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
     ];
 
+    environment.variables.NIXPKGS_CONFIG = let
+      nixpkgsCfg = toString (pkgs.writeText "nixpkgs-try-config.nix" ''
+        if (builtins.tryEval <nixpkgs-config>).success
+        then import <nixpkgs-config>
+        else {}
+      '');
+    in mkIf config.vuizvui.enableGlobalNixpkgsConfig (mkForce nixpkgsCfg);
+
     nix.nixPath = let
       nixpkgs = import ../../nixpkgs-path.nix;
       rootChannelsPath = "/nix/var/nix/profiles/per-user/root/channels";
