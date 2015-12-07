@@ -259,6 +259,13 @@ let
       rev = "293613dbe731a2875ce93739e7b64ee504d8bbab";
       sha256 = "0xmqmbh66g44vhx9769mzs820k6ksbpfnsfvivmbhzlps2hjqpqg";
     };
+
+    vader = pkgs.fetchFromGitHub {
+      owner = "junegunn";
+      repo = "vader.vim";
+      rev = "ad2c752435baba9e7544d0046f0277c3573439bd";
+      sha256 = "0yvnah4lxk5w5qidc3y5nvl6lpi8rcv26907b3w7vjskqc935b8f";
+    };
   });
 
   generic = ''
