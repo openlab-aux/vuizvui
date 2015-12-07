@@ -310,6 +310,7 @@ let
     " all plugins
     set runtimepath^=${plugins}
     set runtimepath+=${plugins}/after
+    runtime! ftdetect/*.vim
   '';
 
   autocmd = ''
