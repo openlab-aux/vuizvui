@@ -190,11 +190,39 @@ let
       type = "indent";
     };
 
-    nixAddon = pkgs.fetchFromGitHub {
-      owner = "MarcWeber";
-      repo = "vim-addon-nix";
-      rev = "2aed79ba5d8c5e6abd102de77e55e242f61b17f1";
-      sha256 = "0zx1q9994py6jmm0qbbx6fc1dy5la8zfskkbvqqxssxrl5dx7vvi";
+    nixAddon = pkgs.stdenv.mkDerivation {
+      name = "vim-nix-support";
+
+      lnl7 = pkgs.fetchFromGitHub {
+        owner = "LnL7";
+        repo = "vim-nix";
+        rev = "75e965cf6e1b1428f2dce5130d9e7e492ecc92d8";
+        sha256 = "0mwy407q00py80zqfgl60004bi4xicz1qlqw0cfzdqs8mcp5s1fl";
+      };
+
+      src = pkgs.fetchFromGitHub {
+        owner = "MarcWeber";
+        repo = "vim-addon-nix";
+        rev = "2aed79ba5d8c5e6abd102de77e55e242f61b17f1";
+        sha256 = "0zx1q9994py6jmm0qbbx6fc1dy5la8zfskkbvqqxssxrl5dx7vvi";
+      };
+
+      phases = [ "unpackPhase" "patchPhase" "installPhase" ];
+      patchPhase = ''
+        for what in indent syntax; do
+          install -vD -m 0644 "$lnl7/$what/nix.vim" "$what/nix.vim"
+        done
+        sed -i -re '/^ *au(group)? /,/^ *au(group)? +end/ {
+          s/^ *au(tocmd)? +((BufRead|BufNewFile),?)+ +[^ ]+ +setl(ocal)?/${
+            "& sw=2 sts=2 et iskeyword+=-"
+          }/
+        }' plugin/vim-addon-nix.vim
+        grep '^setlocal' "$lnl7/ftplugin/nix.vim" >> ftplugin/nix.vim
+      '';
+
+      installPhase = ''
+        cp -Rd . "$out"
+      '';
     };
 
     urwebAddon = pkgs.fetchFromGitHub {
