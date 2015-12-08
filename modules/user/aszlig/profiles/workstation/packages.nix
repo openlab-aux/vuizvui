@@ -46,6 +46,7 @@ pkgs: with pkgs; [
   mp3info
   mpg321
   mtr
+  mumble
   mutt
   ncdu
   neko
