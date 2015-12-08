@@ -196,8 +196,8 @@ let
       lnl7 = pkgs.fetchFromGitHub {
         owner = "LnL7";
         repo = "vim-nix";
-        rev = "75e965cf6e1b1428f2dce5130d9e7e492ecc92d8";
-        sha256 = "0mwy407q00py80zqfgl60004bi4xicz1qlqw0cfzdqs8mcp5s1fl";
+        rev = "49f1bc1683c9e8b36a7bd491ce96e1d2016c201e";
+        sha256 = "0gc2785mk1l3gnslir4j4r089jicvq8fpncp9yxd56dj87g0f2w9";
       };
 
       src = pkgs.fetchFromGitHub {
