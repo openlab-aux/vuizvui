@@ -30,26 +30,28 @@ in {
     enable = lib.mkEnableOption "console lock";
   };
 
-  config.systemd.sockets.vlock = {
-    description = "Console Lock Socket";
-    wantedBy = [ "sockets.target" ];
-    socketConfig.ListenStream = "/run/console-lock.sock";
-    socketConfig.Accept = true;
-  };
+  config = lib.mkIf cfg.enable {
+    systemd.sockets.vlock = {
+      description = "Console Lock Socket";
+      wantedBy = [ "sockets.target" ];
+      socketConfig.ListenStream = "/run/console-lock.sock";
+      socketConfig.Accept = true;
+    };
 
-  config.systemd.services."vlock@" = lib.mkIf cfg.enable {
-    description = "Lock All Consoles";
-    serviceConfig.Type = "oneshot";
+    config.systemd.services."vlock@" = {
+      description = "Lock All Consoles";
+      serviceConfig.Type = "oneshot";
 
-    #environment.USER = "%i"; XXX
-    environment.USER = "aszlig";
+      #environment.USER = "%i"; XXX
+      environment.USER = "aszlig";
 
-    script = ''
-      retval=0
-      oldvt="$("${pkgs.kbd}/bin/fgconsole")"
-      "${vlock}/bin/vlock" -asn || retval=$?
-      if [ $retval -ne 0 ]; then "${pkgs.kbd}/bin/chvt" "$oldvt"; fi
-      exit $retval
-    '';
+      script = ''
+        retval=0
+        oldvt="$("${pkgs.kbd}/bin/fgconsole")"
+        "${vlock}/bin/vlock" -asn || retval=$?
+        if [ $retval -ne 0 ]; then "${pkgs.kbd}/bin/chvt" "$oldvt"; fi
+        exit $retval
+      '';
+    };
   };
 }
