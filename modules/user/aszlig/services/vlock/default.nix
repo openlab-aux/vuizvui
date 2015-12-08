@@ -38,7 +38,7 @@ in {
       socketConfig.Accept = true;
     };
 
-    config.systemd.services."vlock@" = {
+    systemd.services."vlock@" = {
       description = "Lock All Consoles";
       serviceConfig.Type = "oneshot";
 
