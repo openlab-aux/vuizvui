@@ -348,6 +348,9 @@ let
       endfor
     endfun
 
+    command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+      \ | wincmd p | diffthis
+
     " flake everything that has been *detected* as python (not just by suffix).
     autocmd BufWritePost * if &ft ==# 'python' | call Flake8() | endif
   '';
