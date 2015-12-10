@@ -67,6 +67,9 @@ in {
     arilou    = callMachine ./aszlig/arilou.nix;
     kzerza    = callMachine ./aszlig/kzerza.nix;
     tishtushi = callMachine ./aszlig/tishtushi.nix;
+    managed = {
+      notsure = callMachine ./aszlig/managed/notsure.nix;
+    };
   };
   labnet = {
     heinrich = callMachine ./labnet/heinrich.nix;
