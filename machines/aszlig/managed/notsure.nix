@@ -35,6 +35,7 @@ in {
   nixpkgs.config = {
     allowUnfree = true;
     chromium.enablePepperFlash = true;
+    pulseaudio = true;
   };
 
   environment.systemPackages = with pkgs; [
