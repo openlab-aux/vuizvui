@@ -58,6 +58,10 @@ let
     use = {
       imports = [ config ] ++ import ../modules/module-list.nix;
     };
+    vm = (import "${nixpkgs}/nixos" {
+      inherit system;
+      configuration = use;
+    }).vm;
   };
 
 in {
