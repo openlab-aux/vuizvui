@@ -1,0 +1,9 @@
+<book xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+    <title>Vuizvui-specific NixOS options</title>
+    <para>
+        The following NixOS options are specific to Vuizvui:
+    </para>
+    <xi:include href="options-db.xml" />
+</book>

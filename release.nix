@@ -112,25 +112,15 @@ in with pkgsUpstream.lib; with builtins; {
     '';
 
     buildCommand = ''
-      xsltproc -o options-db.xml \
+      cp -r "${./doc}" doc
+      chmod -R +w doc
+      xsltproc -o doc/options-db.xml \
         "${nixpkgs}/nixos/doc/manual/options-to-docbook.xsl" \
         ${optionsFile}
 
-      cat > manual.xml <<XML
-      <book xmlns="http://docbook.org/ns/docbook"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            xmlns:xi="http://www.w3.org/2001/XInclude">
-        <title>Vuizvui-specific NixOS options</title>
-        <para>
-          The following NixOS options are specific to Vuizvui:
-        </para>
-        <xi:include href="options-db.xml" />
-      </book>
-      XML
-
       xsltproc -o "$out/manual.html" $xsltFlags -nonet -xinclude \
         ${pkgsUpstream.docbook5_xsl}/xml/xsl/docbook/xhtml/docbook.xsl \
-        manual.xml
+        doc/index.xml
 
       cp "${nixpkgs}/nixos/doc/manual/style.css" "$out/style.css"
 
