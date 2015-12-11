@@ -1,9 +1,33 @@
 <book xmlns="http://docbook.org/ns/docbook"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    xmlns:xi="http://www.w3.org/2001/XInclude">
-    <title>Vuizvui-specific NixOS options</title>
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Vuizvui</title>
+  <preface>
+    <title>What is Vuizvui?</title>
     <para>
-        The following NixOS options are specific to Vuizvui:
+      Vuizvui is a set of NixOS modules and machine configurations that aim to
+      extend <ulink url="https://nixos.org/">NixOS</ulink> in a way that fits
+      the needs of the members of the
+      <ulink url="https://openlab-augsburg.de/">OpenLab Augsburg</ulink>
+      and also serves as a playground for experimental features that are yet to
+      be included in the official NixOS project once they're well tested and
+      matured enough.
     </para>
-    <xi:include href="options-db.xml" />
+
+    <para>
+      This means that module options in Vuizvui are subject to change without
+      retaining backwards-compatibility for configurations outside of the
+      defined machines.
+    </para>
+
+    <para>
+      The name <literal>Vuizvui</literal> is of Bavarian origins and means
+      something like <literal>too much</literal> while on the other side
+      <literal>nix</literal> means nothing. Which fits quite well because this
+      repository is for everything either too complex or not polished/generic
+      enough to be pushed into nixpkgs.
+    </para>
+  </preface>
+
+  <xi:include href="options.xml" />
 </book>
