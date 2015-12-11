@@ -163,7 +163,9 @@ let
       path  = ["nixos" "networking" whichNet "vlan"];
     }
     { check = with config.networking.proxy; any (val: val != null)
-            [ default ftpProxy httpProxy httpsProxy noProxy rsyncProxy ];
+            [ default allProxy ftpProxy httpProxy httpsProxy noProxy
+              rsyncProxy
+            ];
       path  = ["nixos" "networkingProxy"];
     }
     { check = elem "nfs" config.boot.supportedFilesystems;
