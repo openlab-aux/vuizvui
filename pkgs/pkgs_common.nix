@@ -227,7 +227,7 @@
     tree
     tribler
     tty-clock
-#    udevil
+    udevil
     units
     unrar
     unzip
