@@ -61,8 +61,22 @@ in with pkgsUpstream.lib; with builtins; {
     '';
   in mapAttrsRecursiveCond (m: !(m ? iso)) (const buildIso) allMachines;
 
-  tests = mapAttrsRecursiveCond (t: !(t ? test)) (const id)
-    (import "${vuizvui}/tests" { inherit system; });
+  tests = let
+    allTests = import ./lib/get-tests.nix {
+      inherit system nixpkgs;
+    };
+    machineList = collect (m: m ? build) allMachines;
+    activatedTests = concatMap (machine:
+      machine.build.config.vuizvui.requiresTests
+    ) [ (head machineList) ];
+    cmpTest = a: b:
+      if a ? driver
+      then a.driver.testScript == b.driver.testScript && a.name == b.name
+      else a.drvPath == b.drvPath;
+    hasTest = test: any (cmpTest test) activatedTests;
+    includeTest = test: optionalAttrs (hasTest test) test;
+    cond = t: !((t.type or null) == "derivation" || t ? test);
+  in mapAttrsRecursiveCond cond (const includeTest) allTests;
 
   pkgs = let
     releaseLib = import "${nixpkgs}/pkgs/top-level/release-lib.nix" {
