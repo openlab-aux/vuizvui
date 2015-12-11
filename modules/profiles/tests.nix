@@ -106,7 +106,8 @@ let
            || proxy.enable;
       path  = ["nixos" "kubernetes"];
     }
-    { check = config.boot.kernelPackages == pkgs.linuxPackages_latest;
+    { check = config.boot.kernelPackages.kernel.version
+           == pkgs.linuxPackages_latest.kernel.version;
       path  = ["nixos" "latestKernel" "login"];
     }
     { check = true;
