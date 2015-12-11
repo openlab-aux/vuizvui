@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, tests, lib, config, ... }:
 
 with lib;
 
@@ -103,30 +103,34 @@ in
     };
   };
 
-  config.vuizvui.user.aszlig.services.i3.workspaces = defaultWorkspaces;
+  config = mkIf cfg.enable {
+    vuizvui.user.aszlig.services.i3.workspaces = defaultWorkspaces;
 
-  config.services.xserver.windowManager = mkIf cfg.enable {
-    default = "i3";
+    vuizvui.requiresTests = [ tests.vuizvui.aszlig.i3 ];
 
-    i3.enable = true;
-    i3.configFile = pkgs.substituteAll {
-      name = "i3.conf";
-      src = ./i3.conf;
+    services.xserver.windowManager = {
+      default = "i3";
 
-      inherit (pkgs) dmenu xterm;
-      inherit (pkgs.vuizvui) pvolctrl;
-      inherit (pkgs.xorg) xsetroot;
-      inherit wsConfig barConfig;
+      i3.enable = true;
+      i3.configFile = pkgs.substituteAll {
+        name = "i3.conf";
+        src = ./i3.conf;
 
-      lockall = pkgs.writeScript "lockvt.sh" ''
-        #!${pkgs.stdenv.shell}
-        "${pkgs.socat}/bin/socat" - UNIX-CONNECT:/run/console-lock.sock \
-          < /dev/null
-      '';
+        inherit (pkgs) dmenu xterm;
+        inherit (pkgs.vuizvui) pvolctrl;
+        inherit (pkgs.xorg) xsetroot;
+        inherit wsConfig barConfig;
 
-      postInstall = ''
-        ${pkgs.i3}/bin/i3 -c "$target" -C
-      '';
+        lockall = pkgs.writeScript "lockvt.sh" ''
+          #!${pkgs.stdenv.shell}
+          "${pkgs.socat}/bin/socat" - UNIX-CONNECT:/run/console-lock.sock \
+            < /dev/null
+        '';
+
+        postInstall = ''
+          ${pkgs.i3}/bin/i3 -c "$target" -C
+        '';
+      };
     };
   };
 }
