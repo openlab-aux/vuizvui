@@ -324,6 +324,7 @@ let
     au BufNewFile,BufRead *.html set tabstop=4|set shiftwidth=4|set expandtab
     au FileType python set textwidth=79
     au FileType gitcommit set textwidth=72
+    au FileType docbk set tabstop=2 shiftwidth=2 expandtab
 
     " highlight unnecessary whitespace
     highlight ExtraWhitespace ctermbg=red guibg=red
