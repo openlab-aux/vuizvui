@@ -94,19 +94,8 @@ with lib;
       ] ++ optional config.vuizvui.enableGlobalNixpkgsConfig nixpkgsConfig;
     in mkIf config.vuizvui.modifyNixPath (mkOverride 90 nixPath);
 
-    _module.args.tests = {
-      nixos = let
-        upstreamTests = (import "${nixpkgs}/nixos/release.nix" {
-          inherit nixpkgs;
-        }).tests;
-        isTestOrSystems = attr: attr ? test || attr ? ${system};
-        cond = attr: !isTestOrSystems attr;
-        reduce = attr: if attr ? test then attr else attr.${system};
-      in mapAttrsRecursiveCond cond (path: reduce) upstreamTests;
-
-      vuizvui = import ../../tests {
-        inherit system;
-      };
+    _module.args.tests = import ../../lib/get-tests.nix {
+      inherit nixpkgs system;
     };
   };
 }
