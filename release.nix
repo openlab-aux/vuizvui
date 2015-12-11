@@ -73,7 +73,9 @@ in with pkgsUpstream.lib; with builtins; {
       machine.build.config.vuizvui.requiresTests
     ) machineList);
     mkTest = path: setAttrByPath path (getAttrFromPath path allTests);
-  in fold recursiveUpdate {} (map mkTest activatedTests);
+  in fold recursiveUpdate {} (map mkTest activatedTests) // {
+    inherit (allTests) vuizvui;
+  };
 
   pkgs = let
     releaseLib = import "${nixpkgs}/pkgs/top-level/release-lib.nix" {
