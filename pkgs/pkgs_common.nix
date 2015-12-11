@@ -161,6 +161,7 @@
     ncmpcpp
     nethack
     nethogs
+    netkittftp
     netrw
     netsniff-ng
     nitrogen
@@ -218,14 +219,15 @@
     testdisk
     texLiveFull
     texmacs
-    netkittftp
     tftp-hpa
     tmux
     toilet
+    tomahawk
     transmission_remote_gtk
     tree
     tribler
     tty-clock
+    udevil
     units
     unrar
     unzip
@@ -255,7 +257,5 @@
     zip
     zotero
     zsync
-#    tomahawk
-#    udevil
   ];
 }
