@@ -7,9 +7,10 @@ with import "${nixpkgs}/lib";
     upstreamTests = (import "${nixpkgs}/nixos/release.nix" {
       inherit nixpkgs;
     }).tests;
-    isTestOrSystems = attr: attr ? test || attr ? ${system};
+    isTestOrJob = attr: (attr.type or null) == "derivation" || attr ? test;
+    isTestOrSystems = attr: isTestOrJob attr || attr ? ${system};
     cond = attr: !isTestOrSystems attr;
-    reduce = attr: if attr ? test then attr else attr.${system};
+    reduce = attr: if isTestOrJob attr then attr else attr.${system};
   in mapAttrsRecursiveCond cond (path: reduce) upstreamTests;
 
   vuizvui = import ../tests {
