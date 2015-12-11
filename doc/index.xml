@@ -1,3 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE book [
+<!ENTITY % entities SYSTEM "entities.ent">
+%entities;
+]>
 <book xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns:xi="http://www.w3.org/2001/XInclude">
@@ -6,12 +11,10 @@
     <title>What is Vuizvui?</title>
     <para>
       Vuizvui is a set of NixOS modules and machine configurations that aim to
-      extend <ulink url="https://nixos.org/">NixOS</ulink> in a way that fits
-      the needs of the members of the
-      <ulink url="https://openlab-augsburg.de/">OpenLab Augsburg</ulink>
-      and also serves as a playground for experimental features that are yet to
-      be included in the official NixOS project once they're well tested and
-      matured enough.
+      extend &nixos; in a way that fits the needs of the members of the
+      &openlab; and also serves as a playground for experimental features that
+      are yet to be included in the official NixOS project once they're well
+      tested and matured enough.
     </para>
 
     <para>
@@ -25,7 +28,7 @@
       something like <literal>too much</literal> while on the other side
       <literal>nix</literal> means nothing. Which fits quite well because this
       repository is for everything either too complex or not polished/generic
-      enough to be pushed into nixpkgs.
+      enough to be pushed into &nixpkgs;.
     </para>
   </preface>
 
