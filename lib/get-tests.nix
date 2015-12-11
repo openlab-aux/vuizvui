@@ -1,4 +1,7 @@
-{ system ? builtins.currentSystem, nixpkgs ? import ../nixpkgs-path.nix }:
+{ system ? builtins.currentSystem
+, nixpkgs ? import ../nixpkgs-path.nix
+, vuizvuiTests ? ../tests
+}:
 
 with import "${nixpkgs}/lib";
 
@@ -13,7 +16,7 @@ with import "${nixpkgs}/lib";
     reduce = attr: if isTestOrJob attr then attr else attr.${system};
   in mapAttrsRecursiveCond cond (path: reduce) upstreamTests;
 
-  vuizvui = import ../tests {
+  vuizvui = import vuizvuiTests {
     inherit system;
   };
 }

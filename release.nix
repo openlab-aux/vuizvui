@@ -63,9 +63,11 @@ in with pkgsUpstream.lib; with builtins; {
 
   tests = let
     machineList = collect (m: m ? build) allMachines;
-    allTests = import ./lib/get-tests.nix {
+    allTests = import ./lib/get-tests.nix ({
       inherit system nixpkgs;
-    };
+    } // optionalAttrs (vuizvuiSrc != null) {
+      vuizvuiTests = "${vuizvui}/tests";
+    });
     activatedTests = unique (concatMap (machine:
       machine.build.config.vuizvui.requiresTests
     ) machineList);
