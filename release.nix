@@ -91,7 +91,7 @@ in with pkgsUpstream.lib; with builtins; {
       '';
     } // removeAttrs attrs [ "name" ]);
 
-    gatherTests = activate: map (path: getAttrFromPath path allTests) activate;
+    gatherTests = active: map (path: getAttrFromPath path allTests) active;
 
   in {
     generic = mkChannel {};
