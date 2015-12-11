@@ -7,6 +7,8 @@ let
 
   mkTest = attrs: if attrs.check then attrs.paths or [ attrs.path ] else [];
 
+  anyAttrs = pred: cfg: any id (mapAttrsToList (const pred) cfg);
+
   upstreamTests = concatMap mkTest [
     { check = config.services.avahi.enable;
       path  = ["nixos" "avahi"];
@@ -141,7 +143,7 @@ let
     { check = config.networking.bridges != {};
       path  = ["nixos" "networking" whichNet "bridge"];
     }
-    { check = any (iface: iface.useDHCP) config.networking.interfaces;
+    { check = anyAttrs (i: i.useDHCP == true) config.networking.interfaces;
       path  = ["nixos" "networking" whichNet "dhcpOneIf"];
     }
     { check = config.networking.useDHCP;
@@ -153,7 +155,7 @@ let
     { check = config.networking.sits != {};
       path  = ["nixos" "networking" whichNet "sit"];
     }
-    { check = any (iface: iface.ip4 != []) config.networking.interfaces;
+    { check = anyAttrs (i: i.ip4 != []) config.networking.interfaces;
       path  = ["nixos" "networking" whichNet "static"];
     }
     { check = config.networking.vlans != {};
@@ -195,7 +197,7 @@ let
       path  = ["nixos" "pumpio"];
     }
     { check = config.hardware.opengl.driSupport
-           && services.xserver.enable;
+           && config.services.xserver.enable;
       path  = ["nixos" "quake3"];
     }
     { check = true;
