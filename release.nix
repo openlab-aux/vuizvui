@@ -37,14 +37,16 @@ let
   pkgsUpstream = import nixpkgs { inherit system; };
   root = import vuizvui { inherit system; };
 
+  mpath = if vuizvuiSrc == null then ./machines else "${vuizvui}/machines";
+  allMachines = import mpath { inherit system; };
+
 in with pkgsUpstream.lib; with builtins; {
 
   machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs:
     attrs.build.config.system.build.toplevel
-  ) (import "${vuizvui}/machines" { inherit system; });
+  ) allMachines;
 
   isoImages = let
-    machineBase = import "${vuizvui}/machines" { inherit system; };
     buildIso = attrs: let
       name = attrs.iso.config.networking.hostName;
       cond = attrs.iso.config.vuizvui.createISO;
@@ -57,7 +59,7 @@ in with pkgsUpstream.lib; with builtins; {
       echo "file iso" $iso/iso/*.iso* \
         >> "$out/nix-support/hydra-build-products"
     '';
-  in mapAttrsRecursiveCond (m: !(m ? iso)) (const buildIso) machineBase;
+  in mapAttrsRecursiveCond (m: !(m ? iso)) (const buildIso) allMachines;
 
   tests = mapAttrsRecursiveCond (t: !(t ? test)) (const id)
     (import "${vuizvui}/tests" { inherit system; });
@@ -85,7 +87,7 @@ in with pkgsUpstream.lib; with builtins; {
       name = "machine-${last path}";
       constituents = singleton attrs.build.config.system.build.toplevel
                   ++ attrs.build.config.vuizvui.requiresTests;
-    }) (import "${vuizvui}/machines" { inherit system; });
+    }) allMachines;
   };
 
   manual = let
