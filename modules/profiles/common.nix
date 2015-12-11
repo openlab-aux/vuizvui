@@ -33,19 +33,6 @@ with lib;
         The channel name which is used to refer to <literal>vuizvui</literal>.
       '';
     };
-
-    requiresTests = mkOption {
-      type = types.listOf (types.listOf types.str);
-      default = [];
-      example = [ ["nixos" "nat" "firewall"] ["vuizvui" "foo"] ];
-      description = ''
-        A list of attribute paths to the tests which need to succeed in order to
-        trigger a channel update for the current configuration/machine.
-
-        Every attribute path itself is a list of attribute names, which are
-        queried using <function>lib.getAttrFromPath</function>.
-      '';
-    };
   };
 
   config = let
