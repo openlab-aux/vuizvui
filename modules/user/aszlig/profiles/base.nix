@@ -73,21 +73,14 @@ in {
 
       allowBroken = true;
 
-      packageOverrides = pkgs: rec {
-        nixUnstable = pkgs.lib.overrideDerivation pkgs.nixUnstable (drv: {
-          patches = (drv.patches or []) ++ lib.singleton (pkgs.fetchpatch {
-            url = "https://github.com/NixOS/nix/commit/"
-                + "8a76bc9fb0918548b9bffaa39105ac63135d1c5d.patch";
-            sha256 = "0ijiwcln7zh2321gdsad8cm44b66qdcg5l2gmz2qm4qw9y902cpc";
-          });
-        });
+      packageOverrides = pkgs: {
         miro = pkgs.miro.override {
           enableBonjour = true;
         };
         netrw = pkgs.netrw.override {
           checksumType = "mhash";
         };
-        nix = nixUnstable;
+        nix = pkgs.nixUnstable;
         uqm = pkgs.uqm.override {
           use3DOVideos = true;
           useRemixPacks = true;
