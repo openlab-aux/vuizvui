@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE book [
+<!ENTITY % entities SYSTEM "entities.ent">
+%entities;
+]>
+<part xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Installing a machine in Vuizvui</title>
+
+  <para>
+    The easiest way to get started is if the machine is already in Vuizvui so
+    there is a channel available.
+  </para>
+
+  <para>
+    You can have a look at
+    <link xlink:href="&hydra.base;/jobset/openlab/vuizvui#tabs-channels">the
+      list of channels</link>
+    to check whether a channel exists for the machine you want to install.
+  </para>
+
+  <para>
+    So let's say you want to install the machine <literal>labtop</literal> which
+    has the channel attribute <literal>channels.machines.labnet.labtop</literal>
+  </para>
+
+  <para>
+    First you need to add the channel for the
+    <systemitem class="username">root</systemitem> user of your current system
+    using the following commands:
+
+    <command>
+<screen>
+nix-channel --add <link
+  xlink:href="&hydra.channelbase;/channels.machines.labnet.labtop"/> vuizvui
+nix-channel --update
+</screen>
+    </command>
+
+    Notice the <literal>vuizvui</literal> argument at the end of the first
+    command. This makes the channel available as
+    <literal>&lt;vuizvui&gt;</literal> in the search path of the current system.
+  </para>
+
+  <para>
+    For the first installation the <envar>NIX_PATH</envar> isn't correctly set
+    and will be set to include the <literal>vuizvui</literal> channel after
+    you've switched to the configuration for the first time.
+  </para>
+
+  <para>
+    Next put the following in your
+    <filename>/etc/nixos/configuration.nix</filename>:
+  </para>
+
+  <screen><code language="nix">(import &lt;vuizvui/machines&gt; {}).labnet.labtop.use</code></screen>
+
+  <para>
+    Of course you need to replace <literal>labnet.labtop</literal> with the
+    attribute of your machine.
+  </para>
+
+  <para>
+    Now in order to do the first build and activation of the configuration, you
+    need to issue the following command as root:
+  </para>
+
+  <!-- FIXME: This WON'T work because of wrong NIX_PATH and missicg binary
+              cache public key! -->
+  <screen><command>nixos-rebuild switch</command></screen>
+</part>

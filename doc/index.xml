@@ -32,5 +32,6 @@
     </para>
   </preface>
 
+  <xi:include href="install.xml" />
   <xi:include href="options.xml" />
 </book>
