@@ -94,6 +94,22 @@ in with pkgsUpstream.lib; with builtins; {
       inherit system;
     };
 
+    patchedDocbookXSL = overrideDerivation pkgsUpstream.docbook5_xsl (drv: {
+      # Don't chunk off <preface/>
+      postPatch = (drv.postPatch or "") + ''
+        sed -i -e '
+          /<xsl:when.*preface/d
+          /<xsl:for-each/s!|//d:preface \+!!g
+          /<xsl:variable/s!|[a-z]\+::d:preface\[1\] \+!!g
+        ' xhtml/chunk-common.xsl
+
+        sed -i -e '
+          /<xsl:when.*preface/,/<\/xsl:when>/d
+          /<xsl:template/s!|d:preface!!g
+        ' xhtml/chunk-code.xsl
+      '';
+    });
+
     isVuizvui = opt: head (splitString "." opt.name) == "vuizvui";
     filterDoc = filter (opt: isVuizvui opt && opt.visible && !opt.internal);
     optionsXML = toXML (filterDoc (optionAttrSetToDocList modules.options));
@@ -118,15 +134,17 @@ in with pkgsUpstream.lib; with builtins; {
         "${nixpkgs}/nixos/doc/manual/options-to-docbook.xsl" \
         ${optionsFile}
 
-      xsltproc -o "$out/manual.html" $xsltFlags -nonet -xinclude \
-        ${pkgsUpstream.docbook5_xsl}/xml/xsl/docbook/xhtml/docbook.xsl \
+      dest="$out/share/doc/vuizvui"
+      mkdir -p "$dest"
+
+      xsltproc -o "$dest/" $xsltFlags -nonet -xinclude \
+        ${patchedDocbookXSL}/xml/xsl/docbook/xhtml/chunk.xsl \
         doc/index.xml
 
-      cp "${nixpkgs}/nixos/doc/manual/style.css" "$out/style.css"
+      cp "${nixpkgs}/nixos/doc/manual/style.css" "$dest/style.css"
 
       mkdir -p "$out/nix-support"
-      echo "doc manual $out manual.html" \
-        > "$out/nix-support/hydra-build-products"
+      echo "doc manual $dest" > "$out/nix-support/hydra-build-products"
     '';
   };
 }
