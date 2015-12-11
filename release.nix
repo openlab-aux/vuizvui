@@ -83,7 +83,8 @@ in with pkgsUpstream.lib; with builtins; {
 
     machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs: mkChannel {
       name = "machine-${last path}";
-      constituents = singleton attrs.build.config.system.build.toplevel;
+      constituents = singleton attrs.build.config.system.build.toplevel
+                  ++ attrs.build.config.vuizvui.requiresTests;
     }) (import "${vuizvui}/machines" { inherit system; });
   };
 

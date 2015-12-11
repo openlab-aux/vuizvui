@@ -33,6 +33,15 @@ with lib;
         The channel name which is used to refer to <literal>vuizvui</literal>.
       '';
     };
+
+    requiresTests = mkOption {
+      type = types.listOf types.package;
+      default = [];
+      description = ''
+        A list of derivations which have to succeed in order to trigger a
+        channel update for the current configuration/machine.
+      '';
+    };
   };
 
   config = {
