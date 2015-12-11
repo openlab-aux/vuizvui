@@ -35,11 +35,15 @@ with lib;
     };
 
     requiresTests = mkOption {
-      type = types.listOf types.package;
+      type = types.listOf (types.listOf types.str);
       default = [];
+      example = [ ["nixos" "nat" "firewall"] ["vuizvui" "foo"] ];
       description = ''
-        A list of derivations which have to succeed in order to trigger a
-        channel update for the current configuration/machine.
+        A list of attribute paths to the tests which need to succeed in order to
+        trigger a channel update for the current configuration/machine.
+
+        Every attribute path itself is a list of attribute names, which are
+        queried using <function>lib.getAttrFromPath</function>.
       '';
     };
   };
@@ -93,9 +97,5 @@ with lib;
         rootChannelsPath
       ] ++ optional config.vuizvui.enableGlobalNixpkgsConfig nixpkgsConfig;
     in mkIf config.vuizvui.modifyNixPath (mkOverride 90 nixPath);
-
-    _module.args.tests = import ../../lib/get-tests.nix {
-      inherit nixpkgs system;
-    };
   };
 }

@@ -1,4 +1,4 @@
-{ pkgs, tests, lib, config, ... }:
+{ pkgs, lib, config, ... }:
 
 with lib;
 
@@ -106,7 +106,7 @@ in
   config = mkIf cfg.enable {
     vuizvui.user.aszlig.services.i3.workspaces = defaultWorkspaces;
 
-    vuizvui.requiresTests = [ tests.vuizvui.aszlig.i3 ];
+    vuizvui.requiresTests = [ ["vuizvui" "aszlig" "i3"] ];
 
     services.xserver.windowManager = {
       default = "i3";
