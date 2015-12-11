@@ -40,6 +40,12 @@ let
   mpath = if vuizvuiSrc == null then ./machines else "${vuizvui}/machines";
   allMachines = import mpath { inherit system; };
 
+  allTests = import ./lib/get-tests.nix ({
+    inherit system nixpkgs;
+  } // pkgsUpstream.lib.optionalAttrs (vuizvuiSrc != null) {
+    vuizvuiTests = "${vuizvui}/tests";
+  });
+
 in with pkgsUpstream.lib; with builtins; {
 
   machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs:
@@ -63,11 +69,6 @@ in with pkgsUpstream.lib; with builtins; {
 
   tests = let
     machineList = collect (m: m ? build) allMachines;
-    allTests = import ./lib/get-tests.nix ({
-      inherit system nixpkgs;
-    } // optionalAttrs (vuizvuiSrc != null) {
-      vuizvuiTests = "${vuizvui}/tests";
-    });
     activatedTests = unique (concatMap (machine:
       machine.build.config.vuizvui.requiresTests
     ) machineList);
@@ -90,13 +91,15 @@ in with pkgsUpstream.lib; with builtins; {
       '';
     } // removeAttrs attrs [ "name" ]);
 
+    gatherTests = activate: map (path: getAttrFromPath path allTests) activate;
+
   in {
     generic = mkChannel {};
 
     machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs: mkChannel {
       name = "machine-${last path}";
       constituents = singleton attrs.build.config.system.build.toplevel
-                  ++ attrs.build.config.vuizvui.requiresTests;
+                  ++ gatherTests attrs.build.config.vuizvui.requiresTests;
     }) allMachines;
   };
 
