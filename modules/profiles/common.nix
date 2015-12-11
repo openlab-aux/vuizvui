@@ -44,7 +44,11 @@ with lib;
     };
   };
 
-  config = {
+  config = let
+    nixpkgs = import ../../nixpkgs-path.nix;
+    system = config.nixpkgs.system;
+
+  in {
     nixpkgs.config.packageOverrides = pkgs: {
       # XXX: REAAAALLLY UGLY hack to force the Headcounter Hydra to rebuild GHC
       # and all its packages and not use binary substitution.
@@ -74,7 +78,6 @@ with lib;
     in mkIf config.vuizvui.enableGlobalNixpkgsConfig (mkForce nixpkgsCfg);
 
     nix.nixPath = let
-      nixpkgs = import ../../nixpkgs-path.nix;
       rootChannelsPath = "/nix/var/nix/profiles/per-user/root/channels";
       channelPath = "${rootChannelsPath}/${config.vuizvui.channelName}";
       nixosConfig = "/etc/nixos/configuration.nix";
@@ -90,5 +93,20 @@ with lib;
         rootChannelsPath
       ] ++ optional config.vuizvui.enableGlobalNixpkgsConfig nixpkgsConfig;
     in mkIf config.vuizvui.modifyNixPath (mkOverride 90 nixPath);
+
+    _module.args.tests = {
+      nixos = let
+        upstreamTests = (import "${nixpkgs}/nixos/release.nix" {
+          inherit nixpkgs;
+        }).tests;
+        isTestOrSystems = attr: attr ? test || attr ? ${system};
+        cond = attr: !isTestOrSystems attr;
+        reduce = attr: if attr ? test then attr else attr.${system};
+      in mapAttrsRecursiveCond cond (path: reduce) upstreamTests;
+
+      vuizvui = import ../../tests {
+        inherit system;
+      };
+    };
   };
 }
