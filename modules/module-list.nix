@@ -1,5 +1,6 @@
 [
   ./profiles/common.nix
+  ./profiles/tests.nix
   ./services/multipath-vpn.nix
   ./services/postfix
   ./system/iso.nix
