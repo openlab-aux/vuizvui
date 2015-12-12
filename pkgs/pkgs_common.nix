@@ -112,6 +112,7 @@
     gource
     gparted
     gpgme
+    gpicview
     gptfdisk
     graphviz
     gstreamer
@@ -161,6 +162,7 @@
     ncmpcpp
     nethack
     nethogs
+    netkittftp
     netrw
     netsniff-ng
     nitrogen
@@ -218,7 +220,6 @@
     testdisk
     texLiveFull
     texmacs
-    netkittftp
     tftp-hpa
     tmux
     toilet
