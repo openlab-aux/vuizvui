@@ -18,6 +18,7 @@
   services = {
     gpm.enable = true;
     openssh.enable = true;
+    haveged.enable = true;
     thermald.enable = true;
     udisks2.enable = true;
   };

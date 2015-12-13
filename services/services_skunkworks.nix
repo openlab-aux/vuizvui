@@ -10,7 +10,6 @@
     };
     timesyncd.enable = true;
     resolved.enable = true;
-    haveged.enable = true;
     canto-daemon.enable = true;
     redshift = {
       enable = true;
