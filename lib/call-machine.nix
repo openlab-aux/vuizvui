@@ -17,7 +17,7 @@ let
     '';
     wrapIso = { config, pkgs, lib, ... }@attrs: let
       patchedEval = (import patchedModule attrs);
-      patchedEvalcfg = eval.config or {};
+      patchedEvalcfg = patchedEval.config or {};
       bootcfg = patchedEvalcfg.boot or {};
       fscfg = patchedEvalcfg.fileSystems or {};
     in {
