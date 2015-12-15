@@ -1,14 +1,13 @@
-system: path:
+path: { system ? builtins.currentSystem }:
 
 let
   nixpkgs = import ../nixpkgs-path.nix;
 
-in rec {
-  config = import path;
-  build = import "${nixpkgs}/nixos/lib/eval-config.nix" {
+  eval = import "${nixpkgs}/nixos/lib/eval-config.nix" {
     inherit system;
-    modules = [ config ] ++ import ../modules/module-list.nix;
+    modules = [ path ] ++ import ../modules/module-list.nix;
   };
+
   iso = let
     isoModule = "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix";
     patchedModule = (import nixpkgs {}).runCommand "iso-image.nix" {} ''
@@ -17,14 +16,14 @@ in rec {
           "${isoModule}" > "$out"
     '';
     wrapIso = { config, pkgs, lib, ... }@attrs: let
-      eval = (import patchedModule attrs);
-      evalcfg = eval.config or {};
-      bootcfg = evalcfg.boot or {};
-      fscfg = evalcfg.fileSystems or {};
+      patchedEval = (import patchedModule attrs);
+      patchedEvalcfg = eval.config or {};
+      bootcfg = patchedEvalcfg.boot or {};
+      fscfg = patchedEvalcfg.fileSystems or {};
     in {
-      options = eval.options or {};
-      imports = eval.imports or [];
-      config = evalcfg // {
+      options = patchedEval.options or {};
+      imports = patchedEval.imports or [];
+      config = patchedEvalcfg // {
         boot = bootcfg // lib.optionalAttrs (bootcfg ? loader) {
           loader = lib.mkForce bootcfg.loader;
         };
@@ -40,10 +39,10 @@ in rec {
   in import "${nixpkgs}/nixos/lib/eval-config.nix" {
     inherit system;
     modules = [
-      use wrapIso
+      config wrapIso
       (
         { lib, ... }: let
-          name = build.config.networking.hostName;
+          name = eval.config.networking.hostName;
           upperName = lib.toUpper name;
         in rec {
           isoImage.isoName = "${name}.iso";
@@ -55,11 +54,16 @@ in rec {
       )
     ];
   };
-  use = {
-    imports = [ config ] ++ import ../modules/module-list.nix;
+
+  config = {
+    imports = [ path ] ++ import ../modules/module-list.nix;
   };
+
   vm = (import "${nixpkgs}/nixos" {
     inherit system;
-    configuration = use;
+    configuration = config;
   }).vm;
+
+in {
+  inherit config eval iso vm;
 }

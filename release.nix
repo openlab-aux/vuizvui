@@ -48,8 +48,8 @@ let
 
 in with pkgsUpstream.lib; with builtins; {
 
-  machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs:
-    attrs.build.config.system.build.toplevel
+  machines = mapAttrsRecursiveCond (m: !(m ? eval)) (path: attrs:
+    attrs.eval.config.system.build.toplevel
   ) allMachines;
 
   isoImages = let
@@ -68,9 +68,9 @@ in with pkgsUpstream.lib; with builtins; {
   in mapAttrsRecursiveCond (m: !(m ? iso)) (const buildIso) allMachines;
 
   tests = let
-    machineList = collect (m: m ? build) allMachines;
+    machineList = collect (m: m ? eval) allMachines;
     activatedTests = unique (concatMap (machine:
-      machine.build.config.vuizvui.requiresTests
+      machine.eval.config.vuizvui.requiresTests
     ) machineList);
     mkTest = path: setAttrByPath path (getAttrFromPath path allTests);
   in fold recursiveUpdate {} (map mkTest activatedTests) // {
@@ -98,10 +98,10 @@ in with pkgsUpstream.lib; with builtins; {
   in {
     generic = mkChannel {};
 
-    machines = mapAttrsRecursiveCond (m: !(m ? build)) (path: attrs: mkChannel {
+    machines = mapAttrsRecursiveCond (m: !(m ? eval)) (path: attrs: mkChannel {
       name = "machine-${last path}";
-      constituents = singleton attrs.build.config.system.build.toplevel
-                  ++ gatherTests attrs.build.config.vuizvui.requiresTests;
+      constituents = singleton attrs.eval.config.system.build.toplevel
+                  ++ gatherTests attrs.eval.config.vuizvui.requiresTests;
     }) allMachines;
   };
 
