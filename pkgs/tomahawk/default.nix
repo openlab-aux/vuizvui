@@ -1,6 +1,6 @@
 { stdenv, fetchFromGitHub, fetchurl, cmake, pkgconfig, attica, boost, gnutls
 , libechonest, liblastfm, lucenepp, vlc_qt5, qca-qt5, qt5, qtkeychain, quazip
-, kf5_latest, sparsehash, taglib, websocketpp, makeWrapper, ffmpeg_2, v4l_utils
+, kde5_latest, sparsehash, taglib, websocketpp, makeWrapper, ffmpeg_2, v4l_utils
 
 , enableXMPP      ? true,  libjreen     ? null
 , enableKDE       ? false, kdelibs      ? null
@@ -69,8 +69,8 @@ in stdenv.mkDerivation rec {
   ];
 
   buildInputs = (map useQT5 [ liblastfm quazip ]) ++ [
-    qca-qt5 qtkeychainQT5 libechonestQT5 kf5_latest.attica cmake pkgconfig
-    kf5_latest.extra-cmake-modules boost gnutls lucenepp vlc qt5.qtbase
+    qca-qt5 qtkeychainQT5 libechonestQT5 kde5_latest.attica cmake pkgconfig
+    kde5_latest.extra-cmake-modules boost gnutls lucenepp vlc qt5.qtbase
     qt5.qtsvg qt5.qttools qt5.qtwebkit qt5.qtx11extras sparsehash taglib
     websocketpp makeWrapper
   ] ++ stdenv.lib.optional enableXMPP      (useQT5 libjreen)
