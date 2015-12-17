@@ -45,7 +45,6 @@ in {
     gimp
     git
     htop
-    kde5_stable.kwallet
     libreoffice
     miro
     mpv
