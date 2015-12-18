@@ -84,41 +84,39 @@ in {
     environment.systemPackages = with pkgs;
     let
       thinkpadPkgs = [
-        acpi
+        acpi # shows acpi information (battery &c.)
       ];
       systemPkgs = [
-        atool
-        curl
-        dos2unix
-        file
-        fish
-        git
-        gnupg
-        htop
-        imagemagick
-        jmtpfs
-        gnumake
-        manpages
-        mkpasswd
-        mosh
-        nix-repl
-        nmap
-        silver-searcher
-        stow
-        tmux
-        traceroute
-        vim
-        wget
-        zsh
+        atool # archive tools
+        curl # transfer data to/from a URL
+        dos2unix # text file conversion
+        file # file information
+        fish # friendly user shell
+        git # version control system
+        gnupg # PGP encryption
+        htop # top replacement
+        imagemagick # image conversion
+        jmtpfs # MTP fuse
+        gnumake # make
+        manpages # system manpages (not included by default)
+        mkpasswd # UNIX password creator
+        mosh # ssh with stable connections
+        nmap # stats about clients in the network
+        silver-searcher # file content searcher, > ack > grep
+        stow # dotfile management
+        tmux # detachable terminal multiplexer
+        traceroute # trace ip routes
+        vim # slight improvement over vi
+        wget # the other URL file fetcher
       ];
       xPkgs = [
-        dmenu
-        dunst
-        i3lock
-        libnotify
-        lxappearance
-        xbindkeys
-        taffybar #haskellPackages.xmobar
+        dmenu # simple UI menu builder
+        dunst # notification daemon (implements libnotify)
+        i3lock # lock screen
+        libnotify # notification library
+        lxappearance # GTK theme chooser
+        xbindkeys # keybinding manager
+        taffybar # status bar
       ];
       guiPkgs = [
         gnome3.adwaita-icon-theme
@@ -127,45 +125,45 @@ in {
         # kde4.oxygen-icons TODO
       ];
       userPrograms = [
-        abcde
-        audacity
-        beets
-        chromium #(chromium.override { enablePepperFlash = true; })
-        dropbox-cli
-        emacs
-        feh
-        filezilla
-        gajim
-        gmpc
-        keepassx
-        libreoffice
-        lilyterm
-        # lyx mytexlive
-        mpv
-        newsbeuter
-        networkmanagerapplet
-        audacity lame
-        gmpc
-        zathura
+        abcde # high-level cd-ripper with tag support
+        audacity lame # audio editor and mp3 codec
+        beets # audio file metadata tagger
+        chromium #(chromium.override { enablePepperFlash = true; }) # browser
+        dropbox-cli # dropbox.com client
+        emacs # pretty neat operating system i guess
+        feh # brother of meh, displays images in a meh way, but fast
+        filezilla # FTP GUI business-ready interface framework
+        gajim # XMPP client that still sucks, but not as hard as pidgin
+        gmpc # mpd client and best music player interface in the world
+        keepassx # password manager
+        libreoffice # a giant ball of C++, that sometimes helps with proprietary shitformats
+        lilyterm # terminal emulator, best one around
+        # lyx mytexlive # you didn’t see a thing
+        mpv # you are my sun and my stars. and you play my stuff.
+        newsbeuter # RSS/Atom feed reader
+        networkmanagerapplet # NetworkManager status bar widget
+        zathura # pdf viewer
       ];
       mailPkgs = [
-        elinks
-        myPkgs.offlineimap
-        mutt-with-sidebar # TODO mutt-kz
-        msmtp
-        notmuch
+        elinks # command line browser
+        myPkgs.offlineimap # IMAP client
+        mutt-with-sidebar # TODO mutt-kz # has been sucking less since 1970
+        msmtp # SMTP client
+        notmuch # mail indexer
       ];
       nixPkgs = [
-        nix-prefetch-scripts
-        haskellPackages.cabal2nix
+        nix-repl # nix REPL
+        nix-prefetch-scripts # prefetch store paths from various destinations
+        haskellPackages.cabal2nix # convert cabal files to nix
       ];
       tmpPkgs = [
         # needs user service
-        redshift
+        redshift # increases screen warmth at night (so i don’t have to feel cold)
       ];
     in thinkpadPkgs ++ systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
 
     system.extraDependencies = lib.singleton (
+       # Haskell packages I want to keep around
        pkgs.haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
          [
            # frp
