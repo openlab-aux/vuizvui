@@ -49,17 +49,13 @@ in {
     # Nix
 
     nix.maxJobs = 2;
-    # nix.binaryCaches = [ "https://hydra.nixos.org/" ];
+
 
     ##########
     # Network
 
     networking.hostName = "katara";
     networking.networkmanager.enable = true;
-
-    networking.extraHosts = ''
-      192.168.1.10 nyx.pnetz
-    '';
 
     networking.firewall = {
       enable = true;
@@ -86,36 +82,36 @@ in {
         acpi # shows acpi information (battery &c.)
       ];
       systemPkgs = [
-        atool # archive tools
-        curl # transfer data to/from a URL
-        dos2unix # text file conversion
-        file # file information
-        fish # friendly user shell
-        git # version control system
-        gnupg # PGP encryption
-        htop # top replacement
-        imagemagick # image conversion
-        jmtpfs # MTP fuse
-        gnumake # make
-        manpages # system manpages (not included by default)
-        mkpasswd # UNIX password creator
-        mosh # ssh with stable connections
-        nmap # stats about clients in the network
-        silver-searcher # file content searcher, > ack > grep
-        stow # dotfile management
-        tmux # detachable terminal multiplexer
-        traceroute # trace ip routes
-        vim # slight improvement over vi
-        wget # the other URL file fetcher
+        atool             # archive tools
+        curl              # transfer data to/from a URL
+        dos2unix          # text file conversion
+        file              # file information
+        fish              # friendly user shell
+        git               # version control system
+        gnupg             # PGP encryption
+        htop              # top replacement
+        imagemagick       # image conversion
+        jmtpfs            # MTP fuse
+        gnumake           # make
+        manpages          # system manpages (not included by default)
+        mkpasswd          # UNIX password creator
+        mosh              # ssh with stable connections
+        nmap              # stats about clients in the network
+        silver-searcher   # file content searcher, > ack > grep
+        stow              # dotfile management
+        tmux              # detachable terminal multiplexer
+        traceroute        # trace ip routes
+        vim               # slight improvement over vi
+        wget              # the other URL file fetcher
       ];
       xPkgs = [
-        dmenu # simple UI menu builder
-        dunst # notification daemon (implements libnotify)
-        i3lock # lock screen
-        libnotify # notification library
-        lxappearance # GTK theme chooser
-        xbindkeys # keybinding manager
-        taffybar # status bar
+        dmenu             # simple UI menu builder
+        dunst             # notification daemon (implements libnotify)
+        i3lock            # lock screen
+        libnotify         # notification library
+        lxappearance      # GTK theme chooser
+        xbindkeys         # keybinding manager
+        taffybar          # status bar
       ];
       guiPkgs = [
         gnome3.adwaita-icon-theme
@@ -124,40 +120,42 @@ in {
         # kde4.oxygen-icons TODO
       ];
       userPrograms = [
-        abcde # high-level cd-ripper with tag support
-        audacity lame # audio editor and mp3 codec
-        beets # audio file metadata tagger
-        chromium #(chromium.override { enablePepperFlash = true; }) # browser
-        dropbox-cli # dropbox.com client
-        emacs # pretty neat operating system i guess
-        feh # brother of meh, displays images in a meh way, but fast
-        filezilla # FTP GUI business-ready interface framework
-        gajim # XMPP client that still sucks, but not as hard as pidgin
-        gmpc # mpd client and best music player interface in the world
-        keepassx # password manager
-        libreoffice # a giant ball of C++, that sometimes helps with proprietary shitformats
-        lilyterm # terminal emulator, best one around
-        # lyx mytexlive # you didn’t see a thing
-        mpv # you are my sun and my stars. and you play my stuff.
-        newsbeuter # RSS/Atom feed reader
+        abcde                # high-level cd-ripper with tag support
+        audacity lame        # audio editor and mp3 codec
+        beets                # audio file metadata tagger
+        chromium             # browser
+        #(chromium.override { enablePepperFlash = true; })
+        dropbox-cli          # dropbox.com client
+        emacs                # pretty neat operating system i guess
+        feh                  # brother of meh, displays images in a meh way, but fast
+        filezilla            # FTP GUI business-ready interface framework
+        gajim                # XMPP client that still sucks, but not as hard as pidgin
+        gmpc                 # mpd client and best music player interface in the world
+        keepassx             # password manager
+        libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
+        lilyterm             # terminal emulator, best one around
+        # lyx mytexlive      # you didn’t see a thing
+        mpv                  # you are my sun and my stars. and you play my stuff.
+        newsbeuter           # RSS/Atom feed reader
         networkmanagerapplet # NetworkManager status bar widget
-        zathura # pdf viewer
+        zathura              # pdf viewer
       ];
       mailPkgs = [
-        elinks # command line browser
+        elinks             # command line browser
         myPkgs.offlineimap # IMAP client
-        mutt-with-sidebar # TODO mutt-kz # has been sucking less since 1970
-        msmtp # SMTP client
-        notmuch # mail indexer
+        # TODO mutt-kz
+        mutt-with-sidebar  # has been sucking less since 1970
+        msmtp              # SMTP client
+        notmuch            # mail indexer
       ];
       nixPkgs = [
-        nix-repl # nix REPL
-        nix-prefetch-scripts # prefetch store paths from various destinations
+        nix-repl                  # nix REPL
+        nix-prefetch-scripts      # prefetch store paths from various destinations
         haskellPackages.cabal2nix # convert cabal files to nix
       ];
       tmpPkgs = [
         # needs user service
-        redshift # increases screen warmth at night (so i don’t have to feel cold)
+        redshift   # increases screen warmth at night (so i don’t have to feel cold)
       ];
     in thinkpadPkgs ++ systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
 
@@ -204,15 +202,7 @@ in {
     # Automount
     services.udisks2.enable = true;
 
-    # Music as a Service TODO
-    services.mpd.enable = false;
-    services.mpd.musicDirectory = pkgs.runCommand "mpd-link" {} ''
-      ln -s ${users.extraUsers.philip.home}/Downloads/music $out
-    '';
-
-    services.journald.extraConfig = ''
-      SystemMaxUse=50M
-    '';
+    services.journald.extraConfig = "SystemMaxUse=50M";
 
     # TODO: taffybar battery depends on this
     services.upower.enable = true;
@@ -252,6 +242,7 @@ in {
             export EDITOR=emacsclient
             xset r rate 250 35
             set-background &
+            # TODO xbindkeys user service file
             xbindkeys
             nice -n19 dropbox start &
             nm-applet &
@@ -280,7 +271,6 @@ in {
         };
       };
     };
-    fonts.enableFontDir = true;
     fonts.fonts = with pkgs; [
       corefonts
       source-han-sans-japanese
@@ -317,6 +307,7 @@ in {
     ###########
     # Programs
 
+    # see gpgAgent
     programs.ssh.startAgent = false;
 
     #######
@@ -328,7 +319,7 @@ in {
     ########
     # Fixes
 
-    # fix for emacs
+    # fix for emacs ssh
     programs.bash.promptInit = "PS1=\"# \"";
 
   };
