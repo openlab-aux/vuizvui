@@ -12,8 +12,7 @@ in {
     #########
     # Kernel
 
-    boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "firewire_ohci" ];
-    boot.kernelModules = [ "kvm-intel" ];
+    boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" ];
     boot.loader.grub.enable = true;
     boot.loader.grub.version = 2;
     boot.loader.grub.device = "/dev/sda";
