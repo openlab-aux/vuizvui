@@ -256,7 +256,7 @@
     zip
     zotero
     zsync
-#    tomahawk
+    tomahawk
 #    udevil
   ];
 }
