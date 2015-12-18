@@ -155,17 +155,15 @@ in {
         msmtp
         notmuch
       ];
-      haskellPkgs = with pkgs.haskellPackages; [
-        cabal2nix
-      ];
       nixPkgs = [
         nix-prefetch-scripts
+        haskellPackages.cabal2nix
       ];
       tmpPkgs = [
-        hunspell
-        hunspellDicts.en-gb-ise
+        # needs user service
+        redshift
       ];
-    in thinkpadPkgs ++ systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ haskellPkgs ++ nixPkgs ++ tmpPkgs;
+    in thinkpadPkgs ++ systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
 
     system.extraDependencies = lib.singleton (
        pkgs.haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
@@ -295,7 +293,6 @@ in {
       dejavu_fonts
       ubuntu_font_family
     ];
-
 
 
     ########
