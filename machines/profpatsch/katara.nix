@@ -8,19 +8,6 @@ let
 
   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra; };
 
-  mylyx = with pkgs; stdenv.mkDerivation rec {
-    name = "mylyx";
-    src = pkgs.lyx;
-    buildInputs = [ makeWrapper ];
-    installPhase = ''
-      mkdir -p $out/bin
-      cd $out/bin
-      ln -s ${src}/bin/lyx
-      wrapProgram $out/bin/lyx \
-        --set TEXMFDIST ${mytexlive}/texmf-dist
-    '';
-  };
-
 in {
 
   config = rec {
@@ -154,8 +141,7 @@ in {
         keepassx
         libreoffice
         lilyterm
-        # (lyx.overrideDerivation (old: { buildInputs = old.buildInputs ++ /*packages*/ lib.singleton mytexlive; }))
-        lyx mytexlive #mylyx mytexlive
+        # lyx mytexlive
         mpv
         newsbeuter
         audacity lame
