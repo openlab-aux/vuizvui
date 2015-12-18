@@ -96,6 +96,7 @@ in {
         gnupg
         htop
         imagemagick
+        jmtpfs
         manpages
         mkpasswd
         mosh
@@ -115,7 +116,7 @@ in {
         libnotify
         lxappearance
         xbindkeys
-        haskellPackages.xmobar
+        taffybar #haskellPackages.xmobar
       ];
       guiPkgs = [
         gnome3.adwaita-icon-theme
@@ -215,6 +216,9 @@ in {
       SystemMaxUse=50M
     '';
 
+    # TODO: taffybar battery depends on this
+    services.upower.enable = true;
+
     ###################
     # Graphical System
 
@@ -235,6 +239,8 @@ in {
 
       # otherwise xterm is enabled, creating an xterm that spawns the window manager.
       desktopManager.xterm.enable = false;
+
+      # TODO: include taffybar
       windowManager.xmonad = {
         enable = true;
         enableContribAndExtras = true;
