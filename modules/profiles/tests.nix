@@ -150,6 +150,9 @@ let
     { check = config.networking.useDHCP;
       path  = ["nixos" "networking" whichNet "dhcpSimple"];
     }
+    { check = true;
+      path  = ["nixos" "networking" whichNet "loopback"];
+    }
     { check = config.networking.macvlans != {};
       path  = ["nixos" "networking" whichNet "macvlan"];
     }
