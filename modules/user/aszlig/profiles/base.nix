@@ -74,6 +74,9 @@ in {
       allowBroken = true;
 
       packageOverrides = pkgs: {
+        beets = pkgs.beets.override {
+          enableAlternatives = true;
+        };
         miro = pkgs.miro.override {
           enableBonjour = true;
         };
