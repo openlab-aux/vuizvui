@@ -1,10 +1,7 @@
 { config, pkgs, lib, ... }:
 let
 
-  offlineimapGPG = pkgs.offlineimap.overrideDerivation (old: {
-    propagatedBuildInputs = old.propagatedBuildInputs
-                         ++ lib.singleton pkgs.pythonPackages.pygpgme;
-  });
+  myPkgs = import ./pkgs.nix { inherit pkgs; };
 
   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra; };
 
@@ -150,7 +147,7 @@ in {
       ];
       mailPkgs = [
         elinks
-        offlineimapGPG
+        myPkgs.offlineimap
         mutt-with-sidebar # TODO mutt-kz
         msmtp
         notmuch
