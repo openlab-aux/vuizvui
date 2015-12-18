@@ -97,6 +97,7 @@ in {
         htop
         imagemagick
         jmtpfs
+        gnumake
         manpages
         mkpasswd
         mosh
@@ -105,6 +106,7 @@ in {
         silver-searcher
         stow
         tmux
+        traceroute
         vim
         wget
         zsh
@@ -135,13 +137,13 @@ in {
         filezilla
         gajim
         gmpc
-        kde4.kdiff3
         keepassx
         libreoffice
         lilyterm
         # lyx mytexlive
         mpv
         newsbeuter
+        networkmanagerapplet
         audacity lame
         gmpc
         zathura
@@ -193,6 +195,7 @@ in {
 
     # redshift TODO as user
     services.redshift = {
+      # enable = true;
       latitude = "48";
       longitude = "10";
       temperature.day = 6300;
@@ -256,6 +259,7 @@ in {
             set-background &
             xbindkeys
             nice -n19 dropbox start &
+            nm-applet &
             gajim &
             '';
       };
