@@ -25,5 +25,5 @@ in {
   };
   sternenseemann = {
     fliewatuet = callMachine ./sternenseemann/fliewatuet.nix {};
-  }
+  };
 }
