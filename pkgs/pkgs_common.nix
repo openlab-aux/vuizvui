@@ -24,6 +24,11 @@
     mpv = {
       youtubeSupport = true;
     };
+
+    ncmpcpp = {
+      visualizerSupport = true;
+      clockSupport = true;
+    };
   };
 
   environment.systemPackages = with pkgs; [
