@@ -24,6 +24,6 @@ in {
     mailserver = callMachine ./misc/mailserver.nix {};
   };
   sternenseemann = {
-    fliewatuet = callMachine ./sternenseemann/fliewatuet.nix;
+    fliewatuet = callMachine ./sternenseemann/fliewatuet.nix {};
   }
 }
