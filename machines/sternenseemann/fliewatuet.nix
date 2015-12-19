@@ -38,6 +38,13 @@ in {
   hardware.bumblebee.enable = true;
   hardware.bumblebee.driver = "nvidia";
 
+  hardware.trackpoint = {
+    enable = true;
+    emulateWheel = true;
+    speed = 250;
+    sensitivity = 140;
+  };
+
   networking.hostName = "fliewatuet"; # Define your hostname.
   networking.networkmanager.enable = true;
 
@@ -135,6 +142,7 @@ in {
     pavucontrol
     cbatticon
     filezilla
+    twister
 
     ## audio / video
     mpv
@@ -200,6 +208,8 @@ in {
     drivers = [ pkgs.gutenprint ];
   };
 
+  services.tlp.enable = true;
+
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
@@ -217,7 +227,7 @@ in {
       sessionCommands =
         ''
         export BROWSER=firefox
-        redshift -c .redshift
+        redshift -c .redshift &
         xbindkeys
         '';
     };
