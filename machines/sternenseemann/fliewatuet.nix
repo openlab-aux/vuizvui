@@ -30,13 +30,21 @@ in {
   boot.loader.gummiboot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # sound
+  # enable only HDA Intel PCH
+  boot.extraModprobeConfig = ''
+    options snd_hda_intel enable=0,1
+  '';
+
   hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.support32Bit = true;
 
   hardware.enableAllFirmware = true;
 
   # graphics
   hardware.bumblebee.enable = true;
   hardware.bumblebee.driver = "nvidia";
+  hardware.opengl.driSupport32Bit = true;
 
   hardware.trackpoint = {
     enable = true;
@@ -82,6 +90,7 @@ in {
     unzip
     atool
     manpages
+    xdotool
 
     ## dev
     zsh
@@ -98,15 +107,18 @@ in {
     cabal-install
     haskellPackages.cabal2nix
     haskellPackages.stylish-haskell
+    stack
     # ocaml
     opam
     ocaml
-    ocamlPackages.findlib
     # lisp
     clisp
     sbcl
     # go
     go
+    # python
+    python3
+    python
 
     ## applications
     tmux
@@ -116,6 +128,7 @@ in {
     torbrowser
     mupdf
     zathura
+    w3m
     pythonPackages.alot
     msmtp
     offlineimap
@@ -132,7 +145,7 @@ in {
     dunst
     libnotify
     redshift
-    #gnome_themes_standard
+    xorg.xbacklight
     hicolor_icon_theme
     # applications
     lxappearance
@@ -142,7 +155,7 @@ in {
     pavucontrol
     cbatticon
     filezilla
-    twister
+    screen-message
 
     ## audio / video
     mpv
@@ -162,6 +175,7 @@ in {
     ## games
     steam
     glxinfo
+    primus
   ];
 
   # Proudly stolen from Profpatsch
@@ -249,7 +263,7 @@ in {
     shell = "/run/current-system/sw/bin/zsh";
     group = "users";
     passwordFile = "/home/lukas/.config/passwd";
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "audio" "wheel" "networkmanager" ];
   };
 
   system.stateVersion = "unstable";
