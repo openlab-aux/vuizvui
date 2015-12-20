@@ -8,6 +8,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    heimdall
     aircrackng
     horst
     kismet
