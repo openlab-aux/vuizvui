@@ -117,6 +117,7 @@
     graphviz
     gstreamer
     hdparm
+    heimdall
     hexedit
     hplipWithPlugin
     htop
