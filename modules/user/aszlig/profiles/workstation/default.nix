@@ -12,7 +12,7 @@ in {
   config = lib.mkIf cfg.enable {
     vuizvui.user.aszlig.profiles.base.enable = true;
 
-    boot.kernelParams = [ "zswap.enabled=1" ];
+    boot.kernelParams = [ "zswap.enabled=1" "panic=1800" ];
     boot.cleanTmpDir = true;
 
     environment.systemPackages = with lib; let
