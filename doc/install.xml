@@ -68,5 +68,13 @@ nix-channel --update
 
   <!-- FIXME: This WON'T work because of wrong NIX_PATH and missicg binary
               cache public key! -->
-  <screen><command>nixos-rebuild switch</command></screen>
+  <!-- TODO: create a bootsrap script that does this automatically -->
+  <screen><command>nixos-rebuild \
+  -I nixpkgs=/nix/var/nix/profiles/per-user/root/channels/vuizvui/nixpkgs \
+  --option binary-cache-public-keys "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg=" \
+      switch</command></screen>
+
+  <para>
+    We redefine <literal>nixpkgs</literal> here, because vuizvui brings its own nixpkgs that gets build on the hydra, using it we get to download from the binary cache. Additionally, we need to manually specify the public key for the <literal>headcounter.org</literal> hydra.
+  </para>
 </part>
