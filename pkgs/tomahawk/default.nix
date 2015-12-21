@@ -1,5 +1,5 @@
 { stdenv, fetchFromGitHub, fetchurl, cmake, pkgconfig, attica, boost, gnutls
-, libechonest, liblastfm, lucenepp, vlc_qt5, qca-qt5, qt5, qtkeychain, quazip
+, libechonest, liblastfm, lucenepp, vlc_qt5, qca-qt5, qt5, qtkeychain
 , kde5_latest, sparsehash, taglib, websocketpp, makeWrapper, ffmpeg_2, v4l_utils
 
 , enableXMPP      ? true,  libjreen     ? null
@@ -68,7 +68,7 @@ in stdenv.mkDerivation rec {
     "-DLUCENEPP_LIBRARY_DIR=${lucenepp}/lib"
   ];
 
-  buildInputs = (map useQT5 [ liblastfm quazip ]) ++ [
+  buildInputs = (map useQT5 [ liblastfm qt5.quazip ]) ++ [
     qca-qt5 qtkeychainQT5 libechonestQT5 kde5_latest.attica cmake pkgconfig
     kde5_latest.extra-cmake-modules boost gnutls lucenepp vlc qt5.qtbase
     qt5.qtsvg qt5.qttools qt5.qtwebkit qt5.qtx11extras sparsehash taglib
