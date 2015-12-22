@@ -22,15 +22,6 @@ in {
     ###########
     # Hardware
 
-    # Use this if you want the T400 wifi to work …
-    hardware.enableAllFirmware = true;
-
-    hardware.trackpoint = {
-      enable = true;
-      emulateWheel = true;
-      speed = 250;
-      sensitivity = 140;
-    };
 
     fileSystems."/" = {
       device = "/dev/dm-0";
@@ -43,6 +34,7 @@ in {
     };
 
     hardware.pulseaudio.enable = true;
+    vuizvui.hardware.thinkpad.enable = true;
 
 
     ######
@@ -78,9 +70,6 @@ in {
 
     environment.systemPackages = with pkgs;
     let
-      thinkpadPkgs = [
-        acpi # shows acpi information (battery &c.)
-      ];
       systemPkgs = [
         atool             # archive tools
         curl              # transfer data to/from a URL
@@ -157,7 +146,7 @@ in {
         # needs user service
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
       ];
-    in thinkpadPkgs ++ systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
+    in systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
 
     system.extraDependencies = lib.singleton (
        # Haskell packages I want to keep around
