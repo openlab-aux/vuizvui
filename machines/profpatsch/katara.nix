@@ -110,6 +110,7 @@ in {
       ];
       userPrograms = [
         abcde                # high-level cd-ripper with tag support
+        anki                 # spaced repetition system
         audacity lame        # audio editor and mp3 codec
         beets                # audio file metadata tagger
         chromium             # browser
