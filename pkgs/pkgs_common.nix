@@ -69,6 +69,7 @@
     docker
     dos2unix
     duff
+    dynamic-colors
     e2fsprogs
     easytag
     electrum
