@@ -235,6 +235,7 @@
     unrar
     unzip
     valgrind
+    vanilla-dmz
     vim_configurable
     virtmanager
     vit
