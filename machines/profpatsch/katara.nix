@@ -149,9 +149,9 @@ in {
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
 
-    system.extraDependencies = lib.singleton (
+    system.extraDependencies = with pkgs; lib.singleton (
        # Haskell packages I want to keep around
-       pkgs.haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
+       haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
          [
            # frp
            frpnow
@@ -159,7 +159,12 @@ in {
            gtk
            frpnow-gtk
            frpnow-gloss
-         ]));
+         ]))
+       ++
+       # other packages that I use sometimes in a shell
+       [
+         wkhtmltopdf
+       ];
 
 
     ###########
