@@ -9,9 +9,15 @@
   nix = {
     buildCores = 0;
     useChroot = true;
-    binaryCaches = [ "https://headcounter.org/hydra/" ];
+    binaryCaches = [
+      "https://headcounter.org/hydra/"
+      "https://cache.nixos.org/"
+    ];
     requireSignedBinaryCaches = true;
-    binaryCachePublicKeys = [ "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg=" ];
+    binaryCachePublicKeys = [
+      "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    ];
     nixPath = lib.mkOptionDefault [ "nixpkgs=/home/dev/git/remote/other_github/nixpkgs" ];
   };
 
