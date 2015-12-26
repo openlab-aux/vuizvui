@@ -198,7 +198,6 @@
     python34Packages.hovercraft
     pythonPackages.livestreamer
     pythonPackages.rainbowstream
-    qiv
     qrencode
     recode
     reiserfsprogs
