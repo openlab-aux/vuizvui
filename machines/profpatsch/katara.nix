@@ -147,8 +147,7 @@ in {
         # needs user service
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
       ];
-    in systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
-
+    in systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ nixPkgs ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
     system.extraDependencies = with pkgs; lib.singleton (
        # Haskell packages I want to keep around
        haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
@@ -159,13 +158,13 @@ in {
            gtk
            frpnow-gtk
            frpnow-gloss
+           taffybar.env
          ]))
        ++
        # other packages that I use sometimes in a shell
        [
-         wkhtmltopdf
+         #wkhtmltopdf
        ];
-
 
     ###########
     # Services
@@ -309,7 +308,7 @@ in {
     # Misc
 
     # TODO seems to work only sometimes in chromium
-    security.pki.certificateFiles = [ "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
+    # security.pki.certificateFiles = [ "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
 
     ########
     # Fixes

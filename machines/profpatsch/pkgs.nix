@@ -1,8 +1,14 @@
 { pkgs }:
+
+let
+  addRuntimeDeps = drv: ds: drv.overrideDerivation (old: {
+    propagatedNativeBuildInputs = old.propagatedNativeBuildInputs ++ ds;
+  });
+
+in
+with pkgs;
 {
 
-  offlineimap =  with pkgs; offlineimap.overrideDerivation (old: {
-    propagatedNativeBuildInputs = old.propagatedNativeBuildInputs ++ [ pythonPackages.pygpgme ];
-  });
+  offlineimap = addRuntimeDeps offlineimap [ pythonPackages.pygpgme ];
 
 }
