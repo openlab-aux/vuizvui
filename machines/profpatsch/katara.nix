@@ -100,7 +100,7 @@ in {
         libnotify         # notification library
         lxappearance      # GTK theme chooser
         xbindkeys         # keybinding manager
-        taffybar          # status bar
+        myPkgs.taffybar          # status bar
       ];
       guiPkgs = [
         gnome3.adwaita-icon-theme
@@ -159,7 +159,7 @@ in {
            gtk
            frpnow-gtk
            frpnow-gloss
-           taffybar.env
+
          ]))
        ++
        # other packages that I use sometimes in a shell
