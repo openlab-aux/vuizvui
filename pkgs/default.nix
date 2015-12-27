@@ -11,6 +11,7 @@ let
     beehive = callPackage ./beehive { };
     blop = callPackage ./blop { };
     grandpa = callPackage ./grandpa { };
+    greybird-xfce-theme = callPackage ./greybird-xfce-theme { };
     nixops = callPackage ./nixops { };
     libCMT = callPackage ./libcmt { };
     librxtx_java = callPackage ./librxtx-java { };
