@@ -30,12 +30,12 @@
 
   hardware.firmware = lib.singleton (pkgs.runCommand "ipw2x00-firmware" {} ''
     mkdir -p "$out/lib/firmware"
-    cp "${pkgs.fetchsvn rec {
-      name = "ipw2x00-${toString rev}";
-      url = "svn://svn.debian.org/kernel/dists/trunk/firmware-nonfree/ipw2x00/";
-      rev = 22942;
-      sha256 = "16jrzqnb1r4aavygp11mh76iqml3xq9xm8j8b18c14dpv08drb55";
-    }}"/*.fw "$out/lib/firmware/"
+    cp "${pkgs.fetchgit rec {
+      name = "ipw2x00-20151227";
+      url = "git://anonscm.debian.org/kernel/firmware-nonfree.git";
+      rev = "e4147b94a856dfe7d4dac11b5da7d9e96b3c2e95";
+      sha256 = "18kymqzhlppj520n6vkq5666qgryz3prym1pxn3sqv34yvav7agi";
+    }}"/debian/config/ipw2x00/*.fw "$out/lib/firmware/"
   '');
 
   i18n.consoleKeyMap = "de";
