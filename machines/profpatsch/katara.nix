@@ -41,7 +41,7 @@ in {
     # Nix
 
     nix.maxJobs = 2;
-
+    vuizvui.enableGlobalNixpkgsConfig = true;
 
     ##########
     # Network
