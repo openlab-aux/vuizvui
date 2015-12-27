@@ -164,6 +164,7 @@ in {
        # other packages that I use sometimes in a shell
        [
          #wkhtmltopdf
+         rustc
        ];
 
     ###########
