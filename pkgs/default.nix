@@ -17,6 +17,7 @@ let
     librxtx_java = callPackage ./librxtx-java { };
     lockdev = callPackage ./lockdev { };
     pvolctrl = callPackage ./pvolctrl { };
+    show-qr-code = callPackage ./show-qr-code { };
     sidplayfp = callPackage ./sidplayfp { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
     tomahawk = callPackage ./tomahawk { qt5 = pkgs.qt55; };

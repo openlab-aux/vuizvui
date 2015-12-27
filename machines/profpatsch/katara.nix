@@ -128,6 +128,7 @@ in {
         mpv                  # you are my sun and my stars. and you play my stuff.
         newsbeuter           # RSS/Atom feed reader
         networkmanagerapplet # NetworkManager status bar widget
+        pkgs.vuizvui.show-qr-code # display a QR code
         zathura              # pdf viewer
       ];
       mailPkgs = [
