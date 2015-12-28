@@ -160,6 +160,9 @@ in {
            frpnow-gtk
            frpnow-gloss
 
+           lens
+           wreq
+           aeson-lens
          ]))
        ++
        # other packages that I use sometimes in a shell
