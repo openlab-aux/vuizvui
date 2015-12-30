@@ -69,6 +69,7 @@
     docker
     dos2unix
     duff
+    duff
     dynamic-colors
     e2fsprogs
     easytag
@@ -78,6 +79,7 @@
     ethtool
     evince
     fbida
+    fdupes
     fdupes
     feh
     ffmpeg-full
