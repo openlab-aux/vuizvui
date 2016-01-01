@@ -13,8 +13,8 @@
 
   environment.systemPackages = with pkgs; [
     cdparanoia chromium figlet gajim gimp htop inkscape kde5.oxygen-icons5
-    libreoffice mosh mpv pciutils skype vim_configurable vlc
-    vuizvui.greybird-xfce-theme vuizvui.tomahawk wget youtubeDL
+    libreoffice mosh mpv pciutils skype vlc vuizvui.greybird-xfce-theme
+    vuizvui.tomahawk wget youtubeDL
   ];
 
   fileSystems."/" = {
@@ -90,4 +90,6 @@
     uid = 1000;
     extraGroups = [ "video" "wheel" ];
   };
+
+  vuizvui.user.aszlig.programs.vim.enable = true;
 }
