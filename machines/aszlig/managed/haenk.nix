@@ -12,9 +12,9 @@
   };
 
   environment.systemPackages = with pkgs; [
-    chromium figlet gajim gimp htop inkscape kde5.oxygen-icons5 libreoffice mosh
-    mpv pciutils skype vim_configurable vlc vuizvui.greybird-xfce-theme
-    vuizvui.tomahawk wget youtubeDL
+    cdparanoia chromium figlet gajim gimp htop inkscape kde5.oxygen-icons5
+    libreoffice mosh mpv pciutils skype vim_configurable vlc
+    vuizvui.greybird-xfce-theme vuizvui.tomahawk wget youtubeDL
   ];
 
   fileSystems."/" = {
