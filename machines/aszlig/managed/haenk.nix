@@ -12,8 +12,8 @@
   };
 
   environment.systemPackages = with pkgs; [
-    chromium figlet gajim gimp htop inkscape kde5.oxygen-icons5 libreoffice mosh
-    mpv pciutils skype vim_configurable vlc vuizvui.greybird-xfce-theme
+    cdparanoia chromium figlet gajim gimp htop inkscape kde5.oxygen-icons5
+    libreoffice mosh mpv pciutils skype vlc vuizvui.greybird-xfce-theme
     vuizvui.tomahawk wget youtubeDL
   ];
 
@@ -26,17 +26,21 @@
     device = "/dev/disk/by-uuid/b5ea0ae8-20c6-43dd-ad97-6d8c783dac02";
   };
 
-  hardware.cpu.amd.updateMicrocode = true;
+  hardware = {
+    cpu.amd.updateMicrocode = true;
 
-  hardware.firmware = lib.singleton (pkgs.runCommand "ipw2x00-firmware" {} ''
-    mkdir -p "$out/lib/firmware"
-    cp "${pkgs.fetchgit rec {
-      name = "ipw2x00-20151227";
-      url = "git://anonscm.debian.org/kernel/firmware-nonfree.git";
-      rev = "e4147b94a856dfe7d4dac11b5da7d9e96b3c2e95";
-      sha256 = "18kymqzhlppj520n6vkq5666qgryz3prym1pxn3sqv34yvav7agi";
-    }}"/debian/config/ipw2x00/*.fw "$out/lib/firmware/"
-  '');
+    firmware = lib.singleton (pkgs.runCommand "ipw2x00-firmware" {} ''
+      mkdir -p "$out/lib/firmware"
+      cp "${pkgs.fetchgit rec {
+        name = "ipw2x00-20151227";
+        url = "git://anonscm.debian.org/kernel/firmware-nonfree.git";
+        rev = "e4147b94a856dfe7d4dac11b5da7d9e96b3c2e95";
+        sha256 = "18kymqzhlppj520n6vkq5666qgryz3prym1pxn3sqv34yvav7agi";
+      }}"/debian/config/ipw2x00/*.fw "$out/lib/firmware/"
+    '');
+
+    pulseaudio.enable = true;
+  };
 
   i18n.consoleKeyMap = "de";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -53,7 +57,18 @@
     auto-optimise-store = true
   '';
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    pulseaudio = true;
+    chromium.enablePepperFlash = true;
+
+    packageOverrides = opkgs: {
+      # This is because the driver for the NV44M GPU doesn't like LLVM 3.7
+      mesa_noglu = opkgs.mesa_noglu.override {
+        llvmPackages = opkgs.llvmPackages_36;
+      };
+    };
+  };
 
   services.openssh.enable = true;
   services.tlp.enable = true;
@@ -75,4 +90,6 @@
     uid = 1000;
     extraGroups = [ "video" "wheel" ];
   };
+
+  vuizvui.user.aszlig.programs.vim.enable = true;
 }
