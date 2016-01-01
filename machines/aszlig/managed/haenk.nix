@@ -53,7 +53,15 @@
     auto-optimise-store = true
   '';
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    packageOverrides = opkgs: {
+      # This is because the driver for the NV44M GPU doesn't like LLVM 3.7
+      mesa_noglu = pkgs.mesa_noglu.override {
+        llvmPackages = pkgs.llvmPackages_36;
+      };
+    };
+    allowUnfree = true;
+  };
 
   services.openssh.enable = true;
   services.tlp.enable = true;
