@@ -26,17 +26,21 @@
     device = "/dev/disk/by-uuid/b5ea0ae8-20c6-43dd-ad97-6d8c783dac02";
   };
 
-  hardware.cpu.amd.updateMicrocode = true;
+  hardware = {
+    cpu.amd.updateMicrocode = true;
 
-  hardware.firmware = lib.singleton (pkgs.runCommand "ipw2x00-firmware" {} ''
-    mkdir -p "$out/lib/firmware"
-    cp "${pkgs.fetchgit rec {
-      name = "ipw2x00-20151227";
-      url = "git://anonscm.debian.org/kernel/firmware-nonfree.git";
-      rev = "e4147b94a856dfe7d4dac11b5da7d9e96b3c2e95";
-      sha256 = "18kymqzhlppj520n6vkq5666qgryz3prym1pxn3sqv34yvav7agi";
-    }}"/debian/config/ipw2x00/*.fw "$out/lib/firmware/"
-  '');
+    firmware = lib.singleton (pkgs.runCommand "ipw2x00-firmware" {} ''
+      mkdir -p "$out/lib/firmware"
+      cp "${pkgs.fetchgit rec {
+        name = "ipw2x00-20151227";
+        url = "git://anonscm.debian.org/kernel/firmware-nonfree.git";
+        rev = "e4147b94a856dfe7d4dac11b5da7d9e96b3c2e95";
+        sha256 = "18kymqzhlppj520n6vkq5666qgryz3prym1pxn3sqv34yvav7agi";
+      }}"/debian/config/ipw2x00/*.fw "$out/lib/firmware/"
+    '');
+
+    pulseaudio = true;
+  };
 
   i18n.consoleKeyMap = "de";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -54,6 +58,7 @@
   '';
 
   nixpkgs.config = {
+    pulseaudio = true;
     packageOverrides = opkgs: {
       # This is because the driver for the NV44M GPU doesn't like LLVM 3.7
       mesa_noglu = pkgs.mesa_noglu.override {
