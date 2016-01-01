@@ -119,11 +119,8 @@ in {
         emacs                # pretty neat operating system i guess
         feh                  # brother of meh, displays images in a meh way, but fast
         filezilla            # FTP GUI business-ready interface framework
-        # gajim                # XMPP client that still sucks, but not as hard as pidgin
-        poezio               # XMPP client
-        gimp                 # image editor
+        gajim                # XMPP client that still sucks, but not as hard as pidgin
         gmpc                 # mpd client and best music player interface in the world
-        inkscape             # vector graphics editor
         keepassx             # password manager
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm             # terminal emulator, best one around
@@ -131,7 +128,6 @@ in {
         mpv                  # you are my sun and my stars. and you play my stuff.
         newsbeuter           # RSS/Atom feed reader
         networkmanagerapplet # NetworkManager status bar widget
-        ranger               # command line file browser
         pkgs.vuizvui.show-qr-code # display a QR code
         zathura              # pdf viewer
       ];
