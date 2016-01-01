@@ -39,7 +39,7 @@
       }}"/debian/config/ipw2x00/*.fw "$out/lib/firmware/"
     '');
 
-    pulseaudio = true;
+    pulseaudio.enable = true;
   };
 
   i18n.consoleKeyMap = "de";
