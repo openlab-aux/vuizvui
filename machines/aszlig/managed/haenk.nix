@@ -59,6 +59,7 @@
 
   nixpkgs.config = {
     pulseaudio = true;
+    chromium.enablePepperFlash = true;
     packageOverrides = opkgs: {
       # This is because the driver for the NV44M GPU doesn't like LLVM 3.7
       mesa_noglu = pkgs.mesa_noglu.override {
