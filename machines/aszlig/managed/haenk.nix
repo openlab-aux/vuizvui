@@ -58,15 +58,16 @@
   '';
 
   nixpkgs.config = {
+    allowUnfree = true;
     pulseaudio = true;
     chromium.enablePepperFlash = true;
+
     packageOverrides = opkgs: {
       # This is because the driver for the NV44M GPU doesn't like LLVM 3.7
-      mesa_noglu = pkgs.mesa_noglu.override {
-        llvmPackages = pkgs.llvmPackages_36;
+      mesa_noglu = opkgs.mesa_noglu.override {
+        llvmPackages = opkgs.llvmPackages_36;
       };
     };
-    allowUnfree = true;
   };
 
   services.openssh.enable = true;
