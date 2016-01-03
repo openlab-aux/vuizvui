@@ -64,6 +64,7 @@
     darkstat
     dcfldd
     ddrescue
+    dhcping
     dmenu
     dmidecode
     docker
