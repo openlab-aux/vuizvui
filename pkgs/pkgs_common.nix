@@ -226,6 +226,7 @@
     texLiveFull
     texmacs
     tftp-hpa
+    tldr
     tmux
     toilet
     tomahawk
