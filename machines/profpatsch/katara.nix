@@ -75,7 +75,6 @@ in {
         curl              # transfer data to/from a URL
         dos2unix          # text file conversion
         file              # file information
-        fish              # friendly user shell
         git               # version control system
         gnupg             # PGP encryption
         htop              # top replacement
@@ -297,7 +296,7 @@ in {
   	home = "/home/philip";
           passwordFile = "${home}/.config/passwd";
           # password = "test"; # in case of emergency, break glass
-  	shell = "/run/current-system/sw/bin/bash";
+    shell = "/run/current-system/sw/bin/fish";
           openssh.authorizedKeys.keys = authKeys;
       };
     };
@@ -307,6 +306,9 @@ in {
 
     # see gpgAgent
     programs.ssh.startAgent = false;
+
+    # friendly user shell
+    programs.fish.enable = true;
 
     #######
     # Misc
