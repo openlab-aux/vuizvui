@@ -12,6 +12,7 @@ in {
     managed = {
       haenk   = callMachine ./aszlig/managed/haenk.nix {};
       notsure = callMachine ./aszlig/managed/notsure.nix {};
+      tyree   = callMachine ./aszlig/managed/tyree.nix {};
     };
   };
   labnet = {
