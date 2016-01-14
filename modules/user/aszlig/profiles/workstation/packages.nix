@@ -88,6 +88,5 @@ pkgs: with pkgs; [
   vorbisTools
   w3m
   wireshark
-  xpdf
   youtubeDL
 ]
