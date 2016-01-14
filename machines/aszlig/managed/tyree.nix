@@ -21,6 +21,13 @@
 
   fileSystems."/".label = "tyree-root";
   fileSystems."/".fsType = "btrfs";
+  fileSystems."/".options = lib.concatStringsSep "," [
+    "compress=lzo"
+    "discard"
+    "noatime"
+    "space_cache"
+    "ssd"
+  ];
 
   swapDevices = lib.singleton {
     label = "tyree-swap";
