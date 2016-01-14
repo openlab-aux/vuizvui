@@ -8,6 +8,10 @@ When writing modules, make sure to categorize them accordingly:
 
 <table>
   <tr>
+    <th>hardware</th>
+    <td>Hardware-related options</td>
+  </tr>
+  <tr>
     <th>profiles</th>
     <td>Options for a specific domain (like for example
         `desktop`, `router`, `music`, ...)
@@ -23,7 +27,7 @@ When writing modules, make sure to categorize them accordingly:
   </tr>
   <tr>
     <th>system</th>
-    <td>Everything system or hardware-related (like for example kernel)</td>
+    <td>Everything system-related (like for example kernel)</td>
   </tr>
   <tr>
     <th>tasks</th>
