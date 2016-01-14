@@ -12,8 +12,8 @@ in {
     nix = {
       useChroot = true;
       readOnlyStore = true;
+      buildCores = 0;
       extraOptions = ''
-        build-cores = 0
         auto-optimise-store = true
       '';
     };
