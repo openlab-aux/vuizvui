@@ -44,8 +44,10 @@
   networking.wireless.enable = true;
   networking.useNetworkd = true;
 
-  nix.maxJobs = 1;
+  nix.maxJobs = 4;
   nix.useChroot = true;
+  nix.readOnlyStore = true;
+  nix.buildCores = 0;
   nix.extraOptions = ''
     auto-optimise-store = true
   '';
