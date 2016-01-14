@@ -1,4 +1,5 @@
 [
+  ./hardware/t100ha
   ./profiles/common.nix
   ./profiles/tests.nix
   ./services/multipath-vpn.nix

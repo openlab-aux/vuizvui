@@ -1,12 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
-  boot.initrd.availableKernelModules = [
-    "xhci_pci" "usbhid" "sdhci_acpi" "mmc_block"
-  ];
+  boot.initrd.availableKernelModules = [ "usbhid" ];
   boot.kernelModules = [ "kvm-intel" ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [ "fbcon=rotate:3" ];
 
   boot.loader.gummiboot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -78,5 +74,6 @@
     extraGroups = [ "video" "wheel" ];
   };
 
+  vuizvui.hardware.t100ha.enable = true;
   vuizvui.user.aszlig.programs.vim.enable = true;
 }
