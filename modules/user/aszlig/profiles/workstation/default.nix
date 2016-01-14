@@ -89,6 +89,7 @@ in {
       };
 
       printing.enable = true;
+      printing.drivers = [ pkgs.gutenprint pkgs.hplip ];
 
       udev.extraRules = ''
         # aXbo S.P.A.C.
