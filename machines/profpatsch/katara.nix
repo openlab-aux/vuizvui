@@ -76,6 +76,7 @@ in {
         atool             # archive tools
         curl              # transfer data to/from a URL
         dos2unix          # text file conversion
+        fdupes            # file duplicate finder
         file              # file information
         git               # version control system
         gnupg             # PGP encryption
@@ -114,12 +115,14 @@ in {
         anki                 # spaced repetition system
         audacity lame        # audio editor and mp3 codec
         beets                # audio file metadata tagger
-        chromium             # browser
-        #(chromium.override { enablePepperFlash = true; })
+        # chromium             # browser
+        (chromium.override { enablePepperFlash = true; })
         dropbox-cli          # dropbox.com client
         emacs                # pretty neat operating system i guess
         feh                  # brother of meh, displays images in a meh way, but fast
         filezilla            # FTP GUI business-ready interface framework
+        ghc                  # Glasgow Haskell Compiler, mostly for ghci
+        gimp                 # graphics
         gmpc                 # mpd client and best music player interface in the world
         keepassx             # password manager
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
@@ -129,6 +132,9 @@ in {
         newsbeuter           # RSS/Atom feed reader
         networkmanagerapplet # NetworkManager status bar widget
         poezio               # CLI XMPP client
+        poppler_utils        # pdfto*
+        ranger               # CLI file browser
+        rtorrent             # monster of a bittorrent client
         pkgs.vuizvui.show-qr-code # display a QR code
         zathura              # pdf viewer
       ];
@@ -170,6 +176,7 @@ in {
        [
          #wkhtmltopdf
          rustc
+         haskellPackages.purescript
        ];
 
     ###########
@@ -286,7 +293,7 @@ in {
 
     # Nobody wants mutable state. :)
     users.mutableUsers = false;
-    users.extraUsers = 
+    users.extraUsers =
       let authKeys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJhthfk38lzDvoI7lPqRneI0yBpZEhLDGRBpcXzpPSu+V0YlgrDix5fHhBl+EKfw4aeQNvQNuAky3pDtX+BDK1b7idbz9ZMCExy2a1kBKDVJz/onLSQxiiZMuHlAljVj9iU4uoTOxX3vB85Ok9aZtMP1rByRIWR9e81/km4HdfZTCjFVRLWfvo0s29H7l0fnbG9bb2E6kydlvjnXJnZFXX+KUM16X11lK53ilPdPJdm87VtxeSKZ7GOiBz6q7FHzEd2Zc3CnzgupQiXGSblXrlN22IY3IWfm5S/8RTeQbMLVoH0TncgCeenXH7FU/sXD79ypqQV/WaVVDYMOirsnh/ philip@nyx"];
       in {
         philip = rec {
