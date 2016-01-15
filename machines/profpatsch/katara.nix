@@ -68,6 +68,8 @@ in {
     ###########
     # Packages
 
+    environment.profileRelativeEnvVars = { EDITOR = [ "${pkgs.vim}/bin/vim" ]; };
+
     environment.systemPackages = with pkgs;
     let
       systemPkgs = [
