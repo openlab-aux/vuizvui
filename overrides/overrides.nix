@@ -6,11 +6,6 @@ with lib;
   nixpkgs.config.packageOverrides = pkgs: {
     gnupg = pkgs.gnupg21;
 
-    firefox = pkgs.firefox.override {
-      enableGTK3 = true;
-      enableOfficialBranding = true;
-    };
-
     ncmpcpp = pkgs.ncmpcpp.override {
       visualizerSupport = true;
       clockSupport = true;
