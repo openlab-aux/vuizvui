@@ -202,12 +202,10 @@ let
     { check = config.services.pumpio.enable;
       path  = ["nixos" "pumpio"];
     }
-    /* XXX: Temporarily disabled due to evaluation error.
     { check = config.hardware.opengl.driSupport
            && config.services.xserver.enable;
       path  = ["nixos" "quake3"];
     }
-    */
     { check = true;
       path  = ["nixos" "runInMachine"];
     }
