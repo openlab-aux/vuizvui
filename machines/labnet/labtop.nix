@@ -107,7 +107,7 @@ in {
   networking.hostName = "labtop";
   networking.firewall = {
     allowedTCPPorts = [ 1337 2342 ];
-    allowedTCPPortRanges = [ { from = 8000; to = 8005 } ];
+    allowedTCPPortRanges = [ { from = 8000; to = 8005; } ];
     allowPing = true;
   };
 
