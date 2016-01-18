@@ -9,6 +9,7 @@
 
   environment.systemPackages = with pkgs; [
     aircrackng
+    pythonPackages.alot
     connmanui
     cura
     horst
