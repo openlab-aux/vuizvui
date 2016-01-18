@@ -261,6 +261,7 @@
     wireshark
     xfsprogs
     xlibs.xev
+    xmpp-client
     xpdf
     xpra
     xscreensaver
