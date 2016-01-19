@@ -15,6 +15,7 @@ in {
       buildCores = 0;
       extraOptions = ''
         auto-optimise-store = true
+        log-servers = https://headcounter.org/hydra/log
       '';
     };
 
