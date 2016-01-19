@@ -24,9 +24,9 @@ with lib;
       chomp $to_realize;
 
       my ($from, $to);
-      my $cmd = "nixops ssh -d headcounter taalo -- -C "
-              . "nix-store --serve --write";
-      my $pid = open2($from, $to, "exec ssh -x -a -C mmrnmhrm '$cmd'");
+      my $dest = 'nix-remote-build@taalo.headcounter.org';
+      my $cmd = "exec ssh $dest -C -- nix-store --serve --write";
+      my $pid = open2($from, $to, $cmd);
 
       # Do the handshake.
       my $magic;
