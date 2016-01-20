@@ -50,6 +50,7 @@
     bc
     biber
     bind
+    brotli
     bup
     cacert
     cataclysm-dda
