@@ -10,6 +10,8 @@
       devices = [
         "/dev/disk/by-id/ata-ST31500541AS_6XW0NK21"
         "/dev/disk/by-id/ata-ST31500541AS_6XW0P0CW"
+        "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S21PNSAG848626F"
+        "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S21PNSAG848674K"
       ];
     };
 
@@ -35,9 +37,22 @@
     ];
   };
 
+  fileSystems."/home" = {
+    label = "home";
+    fsType = "btrfs";
+    options = pkgs.lib.concatStringsSep "," [
+      "autodefrag"
+      "space_cache"
+      "compress=lzo"
+      "noatime"
+    ];
+  };
+
   swapDevices = [
     { device = "/dev/disk/by-uuid/16bd9abd-6af5-4a24-8ea5-58adc51e9641"; }
     { device = "/dev/disk/by-uuid/279708cb-f9c3-4a37-a064-80ff85a66f88"; }
+    { device = "/dev/disk/by-uuid/becfde18-3535-4245-8608-cf303497fdff"; }
+    { device = "/dev/disk/by-uuid/0c2409c3-e824-4759-a9ad-9bfcea1e73bb"; }
   ];
 
   nix.maxJobs = 8;
