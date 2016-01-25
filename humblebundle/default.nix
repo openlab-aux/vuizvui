@@ -5,6 +5,7 @@ let
 
   self = rec {
     callPackage = pkgs.lib.callPackageWith (pkgs // self);
+    callPackage_i686 = pkgs.lib.callPackageWith (pkgs.pkgsi686Linux // self);
 
     fetchHumbleBundle = callPackage ./fetch-humble-bundle {
       inherit (config.humblebundle) email password;
@@ -14,6 +15,7 @@ let
     cavestoryplus = callPackage ./cavestoryplus.nix {};
     fez = callPackage ./fez.nix {};
     ftl = callPackage ./ftl.nix {};
+    guacamelee = callPackage_i686 ./guacamelee.nix {};
     hammerwatch = callPackage ./hammerwatch.nix {};
     jamestown = callPackage ./jamestown.nix {};
     megabytepunch = callPackage ./megabytepunch.nix {};
