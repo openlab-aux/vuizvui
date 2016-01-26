@@ -1,4 +1,5 @@
 [
+  ./hardware/gamecontroller.nix
   ./hardware/t100ha
   ./profiles/common.nix
   ./profiles/tests.nix
