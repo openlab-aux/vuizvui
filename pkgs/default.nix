@@ -15,6 +15,7 @@ let
     nixops = callPackage ./nixops { };
     libCMT = callPackage ./libcmt { };
     librxtx_java = callPackage ./librxtx-java { };
+    list-gamecontrollers = callPackage ./list-gamecontrollers { };
     lockdev = callPackage ./lockdev { };
     pvolctrl = callPackage ./pvolctrl { };
     show-qr-code = callPackage ./show-qr-code { };
