@@ -76,6 +76,32 @@ in {
        + " git merge -m \"${message}\" --log FETCH_HEAD";
     };
 
+    vuizvui.hardware.gameController."03000000ff1100004133000010010000" = {
+      name = "PS2 Controller";
+      mapping = {
+        a = "b2";
+        b = "b1";
+        x = "b3";
+        y = "b0";
+        back = "b8";
+        start = "b9";
+        leftshoulder = "b6";
+        rightshoulder = "b7";
+        leftstick = "b10";
+        rightstick = "b11";
+        leftx = "a0";
+        lefty = "a1";
+        rightx = "a3";
+        righty = "a2";
+        lefttrigger = "b4";
+        righttrigger = "b5";
+        dpup = "h0.1";
+        dpleft = "h0.8";
+        dpdown = "h0.4";
+        dpright = "h0.2";
+      };
+    };
+
     services = {
       openssh = {
         enable = true;
