@@ -26,6 +26,7 @@ in {
     fileSystems."/" = {
       device = "/dev/dm-0";
       fsType = "btrfs";
+      options = "ssd";
     };
 
     fileSystems."/boot" = {
@@ -75,6 +76,7 @@ in {
       systemPkgs = [
         atool             # archive tools
         curl              # transfer data to/from a URL
+        diffoscopes       # diff whole filetrees (and archives)
         dos2unix          # text file conversion
         fdupes            # file duplicate finder
         file              # file information
@@ -101,8 +103,10 @@ in {
         i3lock            # lock screen
         libnotify         # notification library
         lxappearance      # GTK theme chooser
+        myPkgs.taffybar   # status bar
         xbindkeys         # keybinding manager
-        myPkgs.taffybar          # status bar
+        xclip             # clipboard thingy
+        xorg.xkill        # X11 application kill
       ];
       guiPkgs = [
         gnome3.adwaita-icon-theme
@@ -154,6 +158,7 @@ in {
       tmpPkgs = [
         # needs user service
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
+        snapper
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ nixPkgs ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
     system.extraDependencies = with pkgs; lib.singleton (
