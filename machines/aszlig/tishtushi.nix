@@ -24,9 +24,9 @@ in {
           DEFAULT_IOSCHED "bfq"
         '';
       };
-      kernel = origKernel.override {
-        kernelPatches = origKernel.kernelPatches ++ singleton bfqsched;
-      };
+      kernel = origKernel.override (origArgs: {
+        kernelPatches = origArgs.kernelPatches ++ singleton bfqsched;
+      });
     in linuxPackagesFor kernel kernelPackages;
 
     initrd.kernelModules = [ "fbcon" "usb_storage" ];
