@@ -19,11 +19,11 @@ stdenv.mkDerivation rec {
   configureFlags = [ "--enable-liblock" ];
 
   makeFlags = [
-    "JHOME=$(out)/lib/java"
+    "JHOME=$(out)/share/java"
     "RXTX_PATH=$(out)/lib"
   ];
 
   preInstall = ''
-    mkdir -p "$out/lib/java"
+    mkdir -p "$out/lib" "$out/share/java"
   '';
 }
