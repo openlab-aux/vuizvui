@@ -76,7 +76,7 @@ in {
       systemPkgs = [
         atool             # archive tools
         curl              # transfer data to/from a URL
-        diffoscopes       # diff whole filetrees (and archives)
+        diffoscope        # diff whole filetrees (and archives)
         dos2unix          # text file conversion
         fdupes            # file duplicate finder
         file              # file information
