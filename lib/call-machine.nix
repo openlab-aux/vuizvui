@@ -10,20 +10,15 @@ let
 
   iso = let
     isoModule = "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix";
-    patchedModule = (import nixpkgs {}).runCommand "iso-image.nix" {} ''
-      sed -e 's|../../../lib/|${nixpkgs}/nixos/lib/|g' \
-          -e 's/"nomodeset"//g' \
-          "${isoModule}" > "$out"
-    '';
     wrapIso = { config, pkgs, lib, ... }@attrs: let
-      patchedEval = (import patchedModule attrs);
-      patchedEvalcfg = patchedEval.config or {};
-      bootcfg = patchedEvalcfg.boot or {};
-      fscfg = patchedEvalcfg.fileSystems or {};
+      isoEval = (import isoModule attrs);
+      isoEvalcfg = isoEval.config or {};
+      bootcfg = isoEvalcfg.boot or {};
+      fscfg = isoEvalcfg.fileSystems or {};
     in {
-      options = patchedEval.options or {};
-      imports = patchedEval.imports or [];
-      config = patchedEvalcfg // {
+      options = isoEval.options or {};
+      imports = isoEval.imports or [];
+      config = isoEvalcfg // {
         boot = bootcfg // lib.optionalAttrs (bootcfg ? loader) {
           loader = lib.mkForce bootcfg.loader;
         };
