@@ -11,11 +11,6 @@
     timesyncd.enable = true;
     resolved.enable = true;
     canto-daemon.enable = true;
-    redshift = {
-      enable = true;
-      latitude = "51.2750";
-      longitude = "1.0870";
-    };
   };
 
   services.xserver = {
