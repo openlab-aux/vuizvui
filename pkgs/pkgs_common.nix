@@ -59,6 +59,7 @@
     chromaprint
     chromium
     cifs_utils
+    cipherscan
     cmake
     cmatrix
     colordiff
