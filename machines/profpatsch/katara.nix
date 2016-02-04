@@ -324,6 +324,8 @@ in {
     # friendly user shell
     programs.fish.enable = true;
 
+    vuizvui.user.profpatsch.programs.scanning.enable = true;
+
     #######
     # Misc
 
