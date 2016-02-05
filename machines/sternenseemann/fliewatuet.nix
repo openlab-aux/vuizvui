@@ -1,10 +1,7 @@
 # Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
-let 
+let
    mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra; };
 in {
   nixpkgs.config.allowUnfree = true;
@@ -25,26 +22,24 @@ in {
   };
 
   swapDevices = [ ];
+
   nix.maxJobs = 8;
 
   boot.loader.gummiboot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # sound
-  # enable only HDA Intel PCH
+  # fix sound
   boot.extraModprobeConfig = ''
-    options snd_hda_intel enable=0,1
+  options snd-hda-intel index=1,0 enable_msi=1
   '';
 
   hardware.pulseaudio.enable = true;
   hardware.pulseaudio.support32Bit = true;
 
-  hardware.enableAllFirmware = true;
-
-  # graphics
-  hardware.bumblebee.enable = true;
-  hardware.bumblebee.driver = "nvidia";
   hardware.opengl.driSupport32Bit = true;
+
+  hardware.enableAllFirmware = true;
 
   hardware.trackpoint = {
     enable = true;
@@ -80,7 +75,8 @@ in {
     gpgme
     sudo
     silver-searcher
-    imagemagick
+    graphicsmagick
+    dcraw
     mkpasswd
     nmap
     traceroute
@@ -90,35 +86,30 @@ in {
     unzip
     atool
     manpages
-    xdotool
+    man_db
+    sshuttle
+    speedtest-cli
+    youtube-dl
+    yafc
+    psmisc
+    telnet
 
     ## dev
-    zsh
     git
     vim
-    # c
-    gnumake 
+    neovim
+    gnumake
     clang
     gcc
     gnum4
     automake
-    # haskell
+    valgrind
     ghc
     cabal-install
     haskellPackages.cabal2nix
     haskellPackages.stylish-haskell
-    stack
-    # ocaml
-    opam
-    ocaml
-    # lisp
     clisp
-    sbcl
-    # go
     go
-    # python
-    python3
-    python
 
     ## applications
     tmux
@@ -133,8 +124,7 @@ in {
     msmtp
     offlineimap
     notmuch
-    # office
-    libreoffice
+    irssi
     mytexlive
 
     ## GUI
@@ -146,16 +136,24 @@ in {
     libnotify
     redshift
     xorg.xbacklight
+    xorg.xmodmap
     hicolor_icon_theme
+    networkmanagerapplet
+    xclip
+    xsel
     # applications
     lxappearance
     firefox
+    qutebrowser
+    gstreamer
     termite
     feh
     pavucontrol
     cbatticon
     filezilla
     screen-message
+    mumble
+    libreoffice
 
     ## audio / video
     mpv
@@ -166,16 +164,11 @@ in {
     ffmpeg
 
     ## services
-    gutenprint  
+    gutenprint
     acpi
 
-    ## libraries
-    gmp
-
     ## games
-    steam
-    glxinfo
-    primus
+    jdk
   ];
 
   # Proudly stolen from Profpatsch
@@ -216,10 +209,12 @@ in {
   # for taffybar
   services.upower.enable = true;
 
+  services.tor.enable = true;
+
   # Enable CUPS to print documents.
   services.printing = {
     enable = true;
-    drivers = [ pkgs.gutenprint ];
+    drivers = [ pkgs.gutenprint pkgs.hplip ];
   };
 
   services.tlp.enable = true;
@@ -228,7 +223,7 @@ in {
   services.xserver = {
     enable = true;
     layout = "de";
-    xkbVariant = "nodeadkeys";
+    xkbVariant = "neo";
 
     desktopManager.xterm.enable = false;
 
@@ -242,25 +237,30 @@ in {
         ''
         export BROWSER=firefox
         redshift -c .redshift &
+        xmodmap -e "pointer = 1 25 3 4 5 6 7 8 9"
         xbindkeys
+        cbatticon &
+        set-bg
         '';
     };
 
     synaptics.enable = true;
     synaptics.tapButtons = false;
-    synaptics.twoFingerScroll = false;
+    synaptics.twoFingerScroll = true;
 
     videoDrivers = [ "intel" ];
 
     startGnuPGAgent = true;
   };
 
+  programs.fish.enable = true;
+
   users.mutableUsers = false;
   users.extraUsers.lukas = {
     isNormalUser = true;
     uid = 1000;
     home = "/home/lukas";
-    shell = "/run/current-system/sw/bin/zsh";
+    shell = "/run/current-system/sw/bin/fish";
     group = "users";
     passwordFile = "/home/lukas/.config/passwd";
     extraGroups = [ "audio" "wheel" "networkmanager" ];
