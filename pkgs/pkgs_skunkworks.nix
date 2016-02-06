@@ -17,6 +17,7 @@
     abook
     beets
     canto-curses
+    cli-visualizer
     go15Packages.ipfs
     handbrake
     hplip
@@ -25,7 +26,7 @@
     nzbget
     scummvm
     slrn
-    urlview
     twister
+    urlview
   ];
 }
