@@ -28,7 +28,7 @@
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/4788e218-db0f-4fd6-916e-e0c484906eb0";
     fsType = "btrfs";
-    options = pkgs.lib.concatStringsSep "," [
+    options = [
       "autodefrag"
       "space_cache"
       "compress=lzo"

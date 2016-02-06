@@ -29,18 +29,19 @@
   fileSystems."/" = {
     label = "nixos";
     fsType = "btrfs";
-    options = pkgs.lib.concatStringsSep "," [
+    options = [
       "autodefrag"
       "space_cache"
       "compress=lzo"
       "noatime"
+      "ssd"
     ];
   };
 
   fileSystems."/home" = {
     label = "home";
     fsType = "btrfs";
-    options = pkgs.lib.concatStringsSep "," [
+    options = [
       "autodefrag"
       "space_cache"
       "compress=lzo"
