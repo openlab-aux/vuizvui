@@ -128,6 +128,7 @@ in {
         ghc                  # Glasgow Haskell Compiler, mostly for ghci
         gimp                 # graphics
         gmpc                 # mpd client and best music player interface in the world
+        httpie
         keepassx             # password manager
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm             # terminal emulator, best one around
@@ -139,13 +140,13 @@ in {
         poppler_utils        # pdfto*
         ranger               # CLI file browser
         rtorrent             # monster of a bittorrent client
+        stack                # haskell package manager
         pkgs.vuizvui.show-qr-code # display a QR code
         zathura              # pdf viewer
       ];
       mailPkgs = [
         elinks             # command line browser
         myPkgs.offlineimap # IMAP client
-        # TODO mutt-kz
         mutt-with-sidebar  # has been sucking less since 1970
         msmtp              # SMTP client
         notmuch            # mail indexer
