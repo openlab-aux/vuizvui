@@ -3,10 +3,9 @@
 with (import (import ./nixpkgs-path.nix) { inherit system; }).lib;
 
 {
-  machines = let
-    getBuild = const (getAttr "build");
-    allMachines = import ./machines { inherit system; };
-  in mapAttrsRecursiveCond (m: !(m ? eval)) getBuild allMachines;
+  machines = import ./machines {
+    inherit system;
+  };
 
   pkgs = import ./pkgs {
     pkgs = import (import ./nixpkgs-path.nix) args;
