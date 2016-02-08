@@ -9,6 +9,9 @@ let
     fetchSteam = callPackage ./fetchsteam {
       inherit (config.steam) username password;
     };
+
+    starbound = callPackage ./starbound.nix { flavor = "stable"; };
+    starbound-unstable = callPackage ./starbound.nix { flavor = "unstable"; };
   };
 in with lib; {
   options.steam = {
