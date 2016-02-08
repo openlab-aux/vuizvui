@@ -26,7 +26,7 @@ in {
     fileSystems."/" = {
       device = "/dev/dm-0";
       fsType = "btrfs";
-      options = "ssd";
+      options = [ "ssd" ];
     };
 
     fileSystems."/boot" = {

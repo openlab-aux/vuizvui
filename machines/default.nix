@@ -21,6 +21,7 @@ in {
   };
   profpatsch = {
     katara = callMachine ./profpatsch/katara.nix {};
+    experiments = callMachine ./profpatsch/experiments.nix {};
   };
   misc = {
     mailserver = callMachine ./misc/mailserver.nix {};
