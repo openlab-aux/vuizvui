@@ -1,0 +1,34 @@
+diff --git a/DepotDownloader/ContentDownloader.cs b/DepotDownloader/ContentDownloader.cs
+index 21c317e..81f2a93 100644
+--- a/DepotDownloader/ContentDownloader.cs
++++ b/DepotDownloader/ContentDownloader.cs
+@@ -34,7 +34,7 @@ namespace DepotDownloader
+             public string installDir { get; private set; }
+             public string contentName { get; private set; }
+ 
+-            public ulong manifestId { get; private set; }
++            public ulong manifestId { get; set; }
+             public byte[] depotKey;
+ 
+             public DepotDownloadInfo(uint depotid, ulong manifestId, string installDir, string contentName)
+@@ -198,9 +198,6 @@ namespace DepotDownloader
+ 
+         static ulong GetSteam3DepotManifest(uint depotId, uint appId, string branch)
+         {
+-            if (Config.ManifestId != INVALID_MANIFEST_ID)
+-                return Config.ManifestId;
+-
+             KeyValue depots = GetSteam3AppSection(appId, EAppInfoSection.Depots);
+             KeyValue depotChild = depots[depotId.ToString()];
+ 
+@@ -583,6 +580,10 @@ namespace DepotDownloader
+                 ConfigStore.TheConfig.LastManifests[depot.id] = INVALID_MANIFEST_ID;
+                 ConfigStore.Save();
+ 
++                Console.WriteLine("Latest manifest ID is {0}.", depot.manifestId);
++                if (Config.ManifestId != INVALID_MANIFEST_ID)
++                    depot.manifestId = Config.ManifestId;
++
+                 if (lastManifestId != INVALID_MANIFEST_ID)
+                 {
+                     var oldManifestFileName = Path.Combine(configDir, string.Format("{0}.bin", lastManifestId));
