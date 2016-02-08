@@ -18,6 +18,7 @@ let
     guacamelee = callPackage_i686 ./guacamelee.nix {};
     hammerwatch = callPackage ./hammerwatch.nix {};
     jamestown = callPackage ./jamestown.nix {};
+    liads = callPackage ./liads.nix {};
     megabytepunch = callPackage ./megabytepunch.nix {};
     rocketbirds = callPackage ./rocketbirds.nix {};
     spaz = callPackage ./spaz.nix {};
