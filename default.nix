@@ -20,6 +20,6 @@ let
 in ((import <nixpkgs/lib>).evalModules {
   modules = [
     (if configuration == null then configFilePath else configuration)
-    ./base-module.nix ./humblebundle
+    ./base-module.nix ./humblebundle ./steam
   ];
 }).config.packages
