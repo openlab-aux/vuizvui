@@ -60,5 +60,6 @@ let
   }).vm;
 
 in {
+  build = eval.config.system.build.toplevel;
   inherit config eval iso vm;
 }

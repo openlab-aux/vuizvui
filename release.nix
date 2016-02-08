@@ -48,9 +48,9 @@ let
 
 in with pkgsUpstream.lib; with builtins; {
 
-  machines = mapAttrsRecursiveCond (m: !(m ? eval)) (path: attrs:
-    attrs.eval.config.system.build.toplevel
-  ) allMachines;
+  machines = let
+    getBuild = const (getAttr "build");
+  in mapAttrsRecursiveCond (m: !(m ? eval)) getBuild allMachines;
 
   isoImages = let
     buildIso = attrs: let
