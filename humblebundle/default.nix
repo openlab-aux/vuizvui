@@ -23,6 +23,7 @@ let
     rocketbirds = callPackage ./rocketbirds.nix {};
     spaz = callPackage ./spaz.nix {};
     swordsandsoldiers = callPackage ./swordsandsoldiers.nix {};
+    unepic = callPackage ./unepic.nix {};
   };
 in with lib; {
   options.humblebundle = {
