@@ -84,7 +84,7 @@ in {
 
     displayManager.auto.enable = true;
     displayManager.auto.user = "openlab";
-    desktopManager.gnome.enable = true;
+    desktopManager.gnome3.enable = true;
     # synaptics.enable = true;
     # synaptics.minSpeed = "0.5";
     # synaptics.accelFactor = "0.01";
