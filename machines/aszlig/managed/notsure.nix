@@ -86,4 +86,5 @@ in {
   time.timeZone = "Europe/Berlin";
 
   vuizvui.user.aszlig.programs.vim.enable = true;
+  vuizvui.enableGlobalNixpkgsConfig = true;
 }
