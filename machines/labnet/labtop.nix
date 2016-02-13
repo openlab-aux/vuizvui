@@ -62,7 +62,6 @@ in {
     gimp
     git
     gmpc
-    vuizvui.greybird-xfce-theme
     inkscape
     ino
     (libreoffice.overrideDerivation (lib.const { doCheck = false; }))
@@ -85,7 +84,7 @@ in {
 
     displayManager.auto.enable = true;
     displayManager.auto.user = "openlab";
-    desktopManager.xfce.enable = true;
+    desktopManager.gnomeenable = true;
     # synaptics.enable = true;
     # synaptics.minSpeed = "0.5";
     # synaptics.accelFactor = "0.01";
