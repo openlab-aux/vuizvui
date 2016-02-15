@@ -104,7 +104,7 @@
 
   programs.fish.enable = true;
 
-  users.extraUsers.lukas = {
+  users.users.lukas = {
     isNormalUser = true;
     uid = 1000;
     shell = "/run/current-system/sw/bin/fish";

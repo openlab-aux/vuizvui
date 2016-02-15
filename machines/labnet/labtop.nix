@@ -113,7 +113,7 @@ in {
   nix.maxJobs = 2;
 
   users.mutableUsers = false;
-  users.extraUsers.openlab = {
+  users.users.openlab = {
     uid = 1000;
     isNormalUser = true;
     password = "openlab";

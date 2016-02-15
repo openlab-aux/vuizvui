@@ -68,7 +68,7 @@
 
   time.timeZone = "Europe/Berlin";
 
-  users.extraUsers.bla = {
+  users.users.bla = {
     isNormalUser = true;
     uid = 1000;
     extraGroups = [ "video" "wheel" ];

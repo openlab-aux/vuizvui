@@ -165,14 +165,11 @@ in {
 
     virtualisation.virtualbox.host.enable = true;
 
-    users.extraUsers.aszlig = {
+    users.users.aszlig = {
       uid = 1000;
+      isNormalUser = true;
       description = "aszlig";
-      group = "users";
       extraGroups = [ "wheel" "video" ];
-      home = "/home/aszlig";
-      useDefaultShell = true;
-      createHome = true;
     };
   };
 }
