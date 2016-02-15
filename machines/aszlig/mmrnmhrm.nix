@@ -23,12 +23,7 @@ with lib;
     "/" = {
       label = "root";
       fsType = "btrfs";
-      options = concatStringsSep "," [
-        "autodefrag"
-        "space_cache"
-        "compress=lzo"
-        "noatime"
-      ];
+      options = [ "autodefrag" "space_cache" "compress=lzo" "noatime" ];
     };
   };
 

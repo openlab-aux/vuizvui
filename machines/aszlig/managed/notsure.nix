@@ -15,7 +15,7 @@ in {
   fileSystems."/" = {
     label = "root";
     fsType = "btrfs";
-    options = "rw,space_cache,relatime";
+    options = [ "space_cache" "relatime" ];
   };
 
   hardware = {

@@ -17,7 +17,7 @@
 
   fileSystems."/".label = "tyree-root";
   fileSystems."/".fsType = "btrfs";
-  fileSystems."/".options = lib.concatStringsSep "," [
+  fileSystems."/".options = [
     "compress=lzo"
     "discard"
     "noatime"

@@ -40,17 +40,13 @@ in {
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/${rootUUID}";
     fsType = "btrfs";
-    options = concatStringsSep "," [
-      "space_cache" "compress=zlib" "noatime"
-    ];
+    options = [ "space_cache" "compress=zlib" "noatime" ];
   };
 
   fileSystems."/nix/store" = {
     device = "/dev/disk/by-uuid/${storeUUID}";
     fsType = "btrfs";
-    options = concatStringsSep "," [
-      "ssd" "compress-force=zlib" "noatime"
-    ];
+    options = [ "ssd" "compress-force=zlib" "noatime" ];
   };
 
   swapDevices = singleton {
