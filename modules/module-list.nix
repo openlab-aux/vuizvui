@@ -1,12 +1,12 @@
 [
   ./hardware/gamecontroller.nix
   ./hardware/t100ha
+  ./hardware/thinkpad.nix
   ./profiles/common.nix
   ./profiles/tests.nix
   ./services/multipath-vpn.nix
   ./services/postfix
   ./system/iso.nix
-  ./system/thinkpad.nix
   ./user/aszlig/profiles/base.nix
   ./user/aszlig/profiles/workstation
   ./user/aszlig/programs/gajim
