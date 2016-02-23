@@ -25,5 +25,12 @@ in {
       Option "Rotate" "left"
     '';
     services.xserver.videoDriver = "intel";
+
+    # The touch screen needs to be rotated as well:
+    services.xserver.inputClassSections = lib.singleton ''
+      Identifier "touchscreen"
+      MatchProduct "SIS0457"
+      Option "TransformationMatrix" "0 -1 1 1 0 0 0 0 1"
+    '';
   };
 }
