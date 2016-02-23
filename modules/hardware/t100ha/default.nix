@@ -8,13 +8,45 @@ in {
   options.vuizvui.hardware.t100ha.enable = lib.mkEnableOption desc;
 
   config = lib.mkIf cfg.enable {
-    # Needed for booting from MMC:
-    boot.initrd.availableKernelModules = [
-      "xhci_pci" "sdhci_acpi" "mmc_block"
-    ];
+    # It's a CherryTrail SoC, so we want to have the latest and greatest with a
+    # few additional patches:
+    boot.kernelPackages = let
+      nixpkgs = import ../../../nixpkgs-path.nix;
+      mkKernel = import "${nixpkgs}/pkgs/os-specific/linux/kernel/generic.nix";
+      t100haKernel = mkKernel rec {
+        version = "4.5-rc5";
+        modDirVersion = "4.5.0-rc5";
+        extraMeta.branch = "4.5";
 
-    # It's a CherryTrail SoC, so we want to have the latest and greatest:
-    boot.kernelPackages = pkgs.linuxPackages_latest;
+        src = pkgs.fetchurl {
+          url = "mirror://kernel/linux/kernel/v4.x/testing/"
+              + "linux-${version}.tar.xz";
+          sha256 = "06qlypnrlkckxhf3clq6l2d3kps7rwfw811sxapjbnhzjd75fcx8";
+        };
+
+        kernelPatches = lib.singleton {
+          name = "drm-fixes.patch";
+          patch = ./drm-fixes.patch;
+        };
+
+        extraConfig = ''
+          MMC y
+          MMC_BLOCK y
+          MMC_SDHCI y
+          MMC_SDHCI_ACPI y
+          PINCTRL_CHERRYVIEW y
+        '';
+
+        features.iwlwifi = true;
+        features.efiBootStub = true;
+        features.needsCifsUtils = true;
+        features.canDisableNetfilterConntrackHelpers = true;
+        features.netfilterRPFilter = true;
+
+        inherit (pkgs) stdenv perl buildLinux;
+      };
+      self = pkgs.linuxPackagesFor t100haKernel self;
+    in self;
 
     # By default the console is rotated by 90 degrees to the right.
     boot.kernelParams = [ "fbcon=rotate:3" ];
