@@ -38,6 +38,7 @@
   networking.hostName = "tyree";
   networking.firewall.enable = false;
   networking.wireless.enable = false;
+  networking.enableRTL8192cFirmware = true;
   networking.networkmanager.enable = true;
   networking.useNetworkd = true;
 
