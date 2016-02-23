@@ -64,7 +64,6 @@
   services.xserver.displayManager.auto.enable = true;
   services.xserver.displayManager.auto.user = "bla";
   services.xserver.desktopManager.kde5.enable = true;
-  services.xserver.synaptics.enable = true;
   services.xserver.wacom.enable = true;
 
   time.timeZone = "Europe/Berlin";
