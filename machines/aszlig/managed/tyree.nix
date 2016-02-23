@@ -37,7 +37,8 @@
 
   networking.hostName = "tyree";
   networking.firewall.enable = false;
-  networking.wireless.enable = true;
+  networking.wireless.enable = false;
+  networking.networkmanager.enable = true;
   networking.useNetworkd = true;
 
   nix.maxJobs = 4;
