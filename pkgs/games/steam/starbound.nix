@@ -33,30 +33,34 @@ let
             else if stdenv.system == "x86_64-cygwin" then "win64"
             else throw "Unsupported system ${stdenv.system} for Starbound";
 
-  upstream = let
-    attrs = if flavor == "stable" then {
-      name = "starbound";
-      appId = 211820;
-      depotId = 211821;
-      manifestId = 1842730272313189605;
-      sha256 = "0qppfn56c778wsg38hi6sxgi3rl9nv72h9rmmxybi1vzpf3p49py";
-    } else if flavor == "unstable" then {
-      name = "starbound-unstable";
-      appId = 367540;
-      depotId = 367541;
-      manifestId = 6970641909803280413;
-      sha256 = "0qppfn56c778wsg38hi6sxgi3rl9nv72h9rmmxybi1vzpf3p49py";
-    } else throw "Unsupported flavor, use either `stable' or `unstable'.";
-  in fetchSteam (attrs // {
+  upstreamInfo = if flavor == "stable" then {
+    name = "starbound";
+    version = "20151216";
+    appId = 211820;
+    depotId = 211821;
+    manifestId = 1842730272313189605;
+    sha256 = "0qppfn56c778wsg38hi6sxgi3rl9nv72h9rmmxybi1vzpf3p49py";
+  } else if flavor == "unstable" then {
+    name = "starbound-unstable";
+    version = "20160223";
+    appId = 367540;
+    depotId = 367541;
+    manifestId = 6970641909803280413;
+    sha256 = "0qppfn56c778wsg38hi6sxgi3rl9nv72h9rmmxybi1vzpf3p49py";
+  } else throw "Unsupported flavor, use either `stable' or `unstable'.";
+
+  upstream = fetchSteam {
+    inherit (upstreamInfo) name appId depotId manifestId sha256;
     fileList = [
       "^(?:assets|tiled)/"
       ( "^${binpath}(?:/Starbound\\.app/Contents/MacOS)?"
       + "/(?:[a-zA-Z0-9_-]+(?:\\.exe)?|sbboot\\.config)$")
     ];
-  });
+  };
 
 in stdenv.mkDerivation {
-  name = "${upstream.name}-20160208";
+  name = "${upstreamInfo.name}-${upstreamInfo.version}";
+  inherit (upstreamInfo) version;
 
   unpackPhase = ":";
 
