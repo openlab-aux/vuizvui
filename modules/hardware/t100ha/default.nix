@@ -24,5 +24,6 @@ in {
     services.xserver.monitorSection = ''
       Option "Rotate" "left"
     '';
+    services.xserver.videoDriver = "intel";
   };
 }
