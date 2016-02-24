@@ -16,9 +16,9 @@ in
     environment.systemPackages = [ pkgs.acpi ];
 
     # for wifi
-    hardware.enableAllFirmware = true;
+    hardware.enableAllFirmware = mkDefault true;
 
-    hardware.trackpoint = {
+    hardware.trackpoint = mkDefault {
       enable = true;
       emulateWheel = true;
       speed = 250;
@@ -26,6 +26,6 @@ in
     };
 
     # TLP Linux Advanced Power Management
-    services.tlp.enable = true;
+    services.tlp.enable = mkDefault true;
   };
 }
