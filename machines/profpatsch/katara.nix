@@ -129,13 +129,13 @@ in {
         gimp                 # graphics
         gmpc                 # mpd client and best music player interface in the world
         httpie
-        keepassx             # password manager
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm             # terminal emulator, best one around
         # lyx mytexlive      # you didn’t see a thing
         mpv                  # you are my sun and my stars. and you play my stuff.
         newsbeuter           # RSS/Atom feed reader
         networkmanagerapplet # NetworkManager status bar widget
+        pass                 # standard unix password manager
         poezio               # CLI XMPP client
         poppler_utils        # pdfto*
         ranger               # CLI file browser
