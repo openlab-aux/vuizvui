@@ -1,28 +1,6 @@
 { pkgs, lib, ... }:
 
 let
-  greybird = pkgs.stdenv.mkDerivation {
-    name = "greybird-xfce-theme";
-
-    src = pkgs.fetchFromGitHub {
-      repo = "Greybird";
-      owner = "shimmerproject";
-      rev = "61ec18d22780aa87998381599c941e0cf4f7bfb5";
-      sha256 = "03h8hba4lfp337a4drylcplrbggry9gz8dq1f3gjy25fhqkgvq05";
-    };
-
-    phases = [ "unpackPhase" "installPhase" ];
-
-    installPhase = ''
-      mkdir -p "$out/share/themes/Greybird" \
-               "$out/share/themes/Greybird-compact/xfwm4"
-      cp -vrt "$out/share/themes/Greybird" \
-        gtk-* metacity-1 unity xfce-notify-4.0 xfwm4
-      cp -vrt "$out/share/themes/Greybird-compact/xfwm4" \
-        xfwm4_compact/*
-    '';
-  };
-
   modulesPath = "${import ../../nixpkgs-path.nix}/nixos/modules";
 
 in {
@@ -47,6 +25,8 @@ in {
   };
 
   vuizvui.hardware.thinkpad.enable = true;
+
+  hardware.trackpoint.enable = false;
 
   environment.systemPackages = with pkgs; [
     #repetierhost <- TODO
@@ -85,19 +65,10 @@ in {
     displayManager.auto.enable = true;
     displayManager.auto.user = "openlab";
     desktopManager.gnome3.enable = true;
-    # synaptics.enable = true;
-    # synaptics.minSpeed = "0.5";
-    # synaptics.accelFactor = "0.01";
+    synaptics.enable = true;
+    synaptics.minSpeed = "0.5";
+    synaptics.accelFactor = "0.01";
   };
-
-
-  # hardware.trackpoint = {
-  #   enable = true;
-  #   emulateWheel = true;
-  #   sensitivity = 130;
-  #   speed = 350;
-  # };
-
 
   services.openssh.enable = true;
 
