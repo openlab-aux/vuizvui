@@ -73,7 +73,7 @@ in {
         dos2unix          # text file conversion
         fdupes            # file duplicate finder
         file              # file information
-        gnupg             # PGP encryption
+        gnupg gnupg1compat # PGP encryption
         htop              # top replacement
         imagemagick       # image conversion
         jmtpfs            # MTP fuse
@@ -84,6 +84,8 @@ in {
         stow              # dotfile management
         tmux              # detachable terminal multiplexer
         traceroute        # trace ip routes
+        # TODO move into atool deps
+        unzip             # extract zip archives
         vim               # slight improvement over vi
         wget              # the other URL file fetcher
       ];
@@ -103,6 +105,7 @@ in {
         # TODO: get themes to work. See notes.org.
         gnome3.gnome_themes_standard
         # kde4.oxygen-icons TODO
+        pavucontrol
       ];
       programmingTools = [
         git               # version control system
@@ -146,6 +149,7 @@ in {
         mutt-with-sidebar  # has been sucking less since 1970
         msmtp              # SMTP client
         notmuch            # mail indexer
+        pythonPackages.alot # the next cool thing!
       ];
       nixPkgs = [
         nix-repl                  # nix REPL
