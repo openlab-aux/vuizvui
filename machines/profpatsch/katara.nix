@@ -5,6 +5,25 @@ let
 
   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra; };
 
+  tmpLibreOffice = with pkgs;
+    callPackage ./libreoffice {
+      inherit (perlPackages) ArchiveZip CompressZlib;
+      inherit (gnome) GConf ORBit2 gnome_vfs;
+      zip = zip.override { enableNLS = false; };
+      #glm = glm_0954;
+      bluez5 = bluez5_28;
+      fontsConf = makeFontsConf {
+        fontDirectories = [
+          freefont_ttf xorg.fontmiscmisc xorg.fontbhttf
+        ];
+      };
+      clucene_core = clucene_core_2;
+      lcms = lcms2;
+      harfbuzz = harfbuzz.override {
+        withIcu = true; withGraphite2 = true;
+      };
+    };
+
 in {
 
   config = rec {
@@ -128,7 +147,9 @@ in {
         gimp                 # graphics
         gmpc                 # mpd client and best music player interface in the world
         httpie
-        libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
+        # TMP
+        tmpLibreOffice
+        # libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm             # terminal emulator, best one around
         # lyx mytexlive      # you didn’t see a thing
         mpv                  # you are my sun and my stars. and you play my stuff.
