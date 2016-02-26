@@ -50,14 +50,7 @@ in {
     networking.hostName = "katara";
     networking.networkmanager.enable = true;
 
-    networking.firewall = {
-      enable = true;
-      # Programmer’s dilemma
-      allowedTCPPortRanges = [
-        { from = 8000; to = 8005; }
-        { from = 8080; to = 8085; }
-      ];
-    };
+    networking.firewall.enable = false;
 
     i18n = {
       consoleFont = "lat9w-16";
