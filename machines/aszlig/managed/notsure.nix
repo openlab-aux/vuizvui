@@ -15,7 +15,7 @@ in {
   fileSystems."/" = {
     label = "root";
     fsType = "btrfs";
-    options = "rw,space_cache,relatime";
+    options = [ "space_cache" "relatime" ];
   };
 
   hardware = {
@@ -86,4 +86,5 @@ in {
   time.timeZone = "Europe/Berlin";
 
   vuizvui.user.aszlig.programs.vim.enable = true;
+  vuizvui.enableGlobalNixpkgsConfig = true;
 }

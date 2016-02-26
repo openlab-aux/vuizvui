@@ -25,7 +25,7 @@ in {
 
   fileSystems."/".device = "/dev/disk/by-uuid/${rootUUID}";
   fileSystems."/".fsType = "btrfs";
-  fileSystems."/".options = concatStringsSep "," [
+  fileSystems."/".options = [
     "ssd"
     "space_cache"
     "compress-force=zlib"
@@ -34,7 +34,7 @@ in {
 
   fileSystems."/tmp".device = "none";
   fileSystems."/tmp".fsType = "tmpfs";
-  fileSystems."/tmp".options = "nosuid,nodev,relatime";
+  fileSystems."/tmp".options = [ "nosuid" "nodev" "relatime" ];
 
   swapDevices = singleton {
     device = "/dev/disk/by-uuid/${swapUUID}";

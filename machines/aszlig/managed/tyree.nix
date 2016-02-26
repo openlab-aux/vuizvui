@@ -17,7 +17,7 @@
 
   fileSystems."/".label = "tyree-root";
   fileSystems."/".fsType = "btrfs";
-  fileSystems."/".options = lib.concatStringsSep "," [
+  fileSystems."/".options = [
     "compress=lzo"
     "discard"
     "noatime"
@@ -37,7 +37,9 @@
 
   networking.hostName = "tyree";
   networking.firewall.enable = false;
-  networking.wireless.enable = true;
+  networking.wireless.enable = false;
+  networking.enableRTL8192cFirmware = true;
+  networking.networkmanager.enable = true;
   networking.useNetworkd = true;
 
   nix.maxJobs = 4;
@@ -63,12 +65,11 @@
   services.xserver.displayManager.auto.enable = true;
   services.xserver.displayManager.auto.user = "bla";
   services.xserver.desktopManager.kde5.enable = true;
-  services.xserver.synaptics.enable = true;
   services.xserver.wacom.enable = true;
 
   time.timeZone = "Europe/Berlin";
 
-  users.extraUsers.bla = {
+  users.users.bla = {
     isNormalUser = true;
     uid = 1000;
     extraGroups = [ "video" "wheel" ];

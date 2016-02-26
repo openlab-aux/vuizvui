@@ -16,8 +16,16 @@
     ];
 
   nix.maxJobs = 1;
-  networking.enableIntel2200BGFirmware = true;
-  hardware.enableAllFirmware = true;
+  hardware.firmware = let myfirmware = pkgs.firmwareLinuxNonfree.overrideDerivation
+    (old: {
+      name = "myfirmware";
+      src = pkgs.fetchFromGitHub {
+        owner = "wkennington";
+        repo = "linux-firmware";
+        rev = "2016-01-26";
+        sha256="07hv4kgbsxndhm1va6k6scy083886aap3naq1l4jdz7dnph4ir02";
+      };
+    }); in [ myfirmware ];
 
   hardware.trackpoint = {
     enable = true;
@@ -96,7 +104,7 @@
 
   programs.fish.enable = true;
 
-  users.extraUsers.lukas = {
+  users.users.lukas = {
     isNormalUser = true;
     uid = 1000;
     shell = "/run/current-system/sw/bin/fish";

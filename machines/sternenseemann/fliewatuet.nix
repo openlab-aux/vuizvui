@@ -256,7 +256,7 @@ in {
   programs.fish.enable = true;
 
   users.mutableUsers = false;
-  users.extraUsers.lukas = {
+  users.users.lukas = {
     isNormalUser = true;
     uid = 1000;
     home = "/home/lukas";

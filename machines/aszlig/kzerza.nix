@@ -24,7 +24,7 @@ in {
 
   fileSystems."/".device = "/dev/disk/by-uuid/${rootUUID}";
   fileSystems."/".fsType = "btrfs";
-  fileSystems."/".options = concatStringsSep "," [
+  fileSystems."/".options = [
     "ssd"
     "space_cache"
     "compress-force=zlib"
@@ -38,10 +38,10 @@ in {
 
   fileSystems."/tmp".device = "none";
   fileSystems."/tmp".fsType = "tmpfs";
-  fileSystems."/tmp".options = "nosuid,nodev,relatime";
+  fileSystems."/tmp".options = [ "nosuid" "nodev" "relatime" ];
 
-  users.extraGroups.grandpa.gid = 666;
-  users.extraUsers.grandpa = {
+  users.groups.grandpa.gid = 666;
+  users.users.grandpa = {
     uid = 666;
     description = "GrandPA User";
     group = "grandpa";
