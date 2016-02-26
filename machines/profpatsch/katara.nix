@@ -6,23 +6,13 @@ let
   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra; };
 
   tmpLibreOffice = with pkgs;
-    callPackage ./libreoffice {
-      inherit (perlPackages) ArchiveZip CompressZlib;
-      inherit (gnome) GConf ORBit2 gnome_vfs;
-      zip = zip.override { enableNLS = false; };
-      #glm = glm_0954;
-      bluez5 = bluez5_28;
-      fontsConf = makeFontsConf {
-        fontDirectories = [
-          freefont_ttf xorg.fontmiscmisc xorg.fontbhttf
-        ];
-      };
-      clucene_core = clucene_core_2;
-      lcms = lcms2;
-      harfbuzz = harfbuzz.override {
-        withIcu = true; withGraphite2 = true;
-      };
-    };
+    (import (pkgs.fetchFromGitHub {
+        owner = "NixOS";
+        repo = "nixpkgs";
+        rev = "eea1e003dd6c472c560999f249bd7aa65675a890";
+        sha256 = "000wjkgib5rri63dyz6y9wih7g306a87y37l62ni4zigfkyfyl56";
+      }) { inherit (config.nixpkgs) config;
+    }).libreoffice;
 
 in {
 
