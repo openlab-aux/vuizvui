@@ -89,8 +89,8 @@ in {
         manpages          # system manpages (not included by default)
         mkpasswd          # UNIX password creator
         mosh              # ssh with stable connections
-        nmap              # stats about clients in the network
         silver-searcher   # file content searcher, > ack > grep
+        (nmap.override { graphicalSupport = true; }) # stats about clients in the network
         stow              # dotfile management
         tmux              # detachable terminal multiplexer
         traceroute        # trace ip routes
