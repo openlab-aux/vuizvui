@@ -73,16 +73,13 @@ in {
         dos2unix          # text file conversion
         fdupes            # file duplicate finder
         file              # file information
-        git               # version control system
         gnupg             # PGP encryption
         htop              # top replacement
         imagemagick       # image conversion
         jmtpfs            # MTP fuse
-        gnumake           # make
         manpages          # system manpages (not included by default)
         mkpasswd          # UNIX password creator
         mosh              # ssh with stable connections
-        silver-searcher   # file content searcher, > ack > grep
         (nmap.override { graphicalSupport = true; }) # stats about clients in the network
         stow              # dotfile management
         tmux              # detachable terminal multiplexer
@@ -106,6 +103,12 @@ in {
         # TODO: get themes to work. See notes.org.
         gnome3.gnome_themes_standard
         # kde4.oxygen-icons TODO
+      ];
+      programmingTools = [
+        git               # version control system
+        gnumake           # make
+        silver-searcher   # file content searcher, > ack > grep
+        telnet            # tcp debugging
       ];
       userPrograms = [
         abcde                # high-level cd-ripper with tag support
@@ -154,7 +157,7 @@ in {
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
         snapper
       ];
-    in systemPkgs ++ xPkgs ++ guiPkgs ++ userPrograms ++ nixPkgs ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
+    in systemPkgs ++ xPkgs ++ guiPkgs ++ programmingTools ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
     system.extraDependencies = with pkgs; lib.singleton (
        # Haskell packages I want to keep around
        haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
