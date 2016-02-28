@@ -51,8 +51,14 @@ let
     { check = config.services.xserver.displayManager.gdm.enable;
       path  = ["nixos" "gnome3-gdm"];
     }
+    { check = config.boot.kernelPackages.kernel.features.grsecurity or false;
+      path  = ["nixos" "grsecurity"];
+    }
     { check = config.services.xserver.windowManager.i3.enable;
       path  = ["nixos" "i3wm"];
+    }
+    { check = config.boot.initrd.network.enable;
+      path  = ["nixos" "initrdNetwork"];
     }
     { check = elem "btrfs" config.boot.supportedFilesystems;
       paths = [
@@ -112,6 +118,9 @@ let
     }
     { check = true;
       path  = ["nixos" "login"];
+    }
+    { check = config.services.mathics.enable;
+      path  = ["nixos" "mathics"];
     }
     { check = true;
       path  = ["nixos" "misc"];
@@ -177,9 +186,6 @@ let
         ["nixos" "nfs4"]
       ];
     }
-    { check = true;
-      path  = ["nixos" "nixosPinVersion"];
-    }
     { check = config.services.nsd.enable;
       path  = ["nixos" "nsd"];
     }
@@ -191,6 +197,9 @@ let
     }
     { check = config.services.peerflix.enable;
       path  = ["nixos" "peerflix"];
+    }
+    { check = config.services.postgresql.enable;
+      path  = ["nixos" "postgresql"];
     }
     { check = config.services.printing.enable;
       path  = ["nixos" "printing"];
