@@ -43,5 +43,6 @@ in {
     # we actually want to use. The ones we blacklist here are the modules from
     # the mainline kernel, which unfortunately do not seem to work very well.
     boot.blacklistedKernelModules = [ "rtl8192cu" "rtl8192c_common" "rtlwifi" ];
+    networking.enableRTL8192cFirmware = true;
   };
 }
