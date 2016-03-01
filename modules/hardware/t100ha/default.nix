@@ -35,6 +35,7 @@ in {
           MMC_SDHCI y
           MMC_SDHCI_ACPI y
           PINCTRL_CHERRYVIEW y
+          INTEL_SOC_PMIC y
         '';
 
         features.iwlwifi = true;
