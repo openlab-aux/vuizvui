@@ -3,7 +3,7 @@
 with lib;
 {
   options.vuizvui.user.profpatsch.programs.scanning = {
-    enable = mkEnableOption "scanning & simple-scan";
+    enable = mkEnableOption "scanning &amp; simple-scan";
   };
 
   config = mkIf config.vuizvui.user.profpatsch.programs.scanning.enable {
