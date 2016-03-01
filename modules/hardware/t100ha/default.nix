@@ -79,5 +79,16 @@ in {
       MatchProduct "SIS0457"
       Option "TransformationMatrix" "0 -1 1 1 0 0 0 0 1"
     '';
+
+    # XXX: Workaround for a vblank issue that causes the display to stay blank
+    # until the next subsequent vblank (usually on no activity for a while until
+    # the monitor gets powered down).
+    #
+    # I know this is very ugly, but another mitigation would be to disable power
+    # management entirely, which I think is even uglier.
+    services.xserver.displayManager.sessionCommands = ''
+      ${pkgs.xorg.xset}/bin/xset dpms force standby
+      ${pkgs.xorg.xset}/bin/xset dpms force on
+    '';
   };
 }
