@@ -15,10 +15,10 @@ let
     }
     { check = config.vuizvui.createISO;
       paths = [
-        ["nixos" "bootBiosCdrom"]
-        ["nixos" "bootBiosUsb"]
-        ["nixos" "bootUefiCdrom"]
-        ["nixos" "bootUefiUsb"]
+        ["nixos" "boot" "biosCdrom"]
+        ["nixos" "boot" "biosUsb"]
+        ["nixos" "boot" "uefiCdrom"]
+        ["nixos" "boot" "uefiUsb"]
       ];
     }
     { check = config.services.cadvisor.enable;
@@ -231,7 +231,13 @@ let
       path  = ["nixos" "udisks2"];
     }
     { check = config.virtualisation.virtualbox.host.enable;
-      path  = ["nixos" "virtualbox"];
+      paths = [
+        ["nixos" "virtualbox" "host-usb-permissions"]
+        ["nixos" "virtualbox" "net-hostonlyif"]
+        ["nixos" "virtualbox" "simple-cli"]
+        ["nixos" "virtualbox" "simple-gui"]
+        ["nixos" "virtualbox" "systemd-detect-virt"]
+      ];
     }
     { check = config.services.xserver.desktopManager.xfce.enable;
       path  = ["nixos" "xfce"];
