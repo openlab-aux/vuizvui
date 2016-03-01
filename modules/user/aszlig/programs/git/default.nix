@@ -44,14 +44,9 @@ in {
     config = mkOption {
       description = "System-wide default config for Git";
 
-      type = let
-        superType = types.attrsOf types.unspecified;
-      in mkOptionType {
-        name = "attribute set of either plain values or "
-             + "attribute sets of values (if it is a subsection)";
-        inherit (superType) check merge;
-        inherit (superType) getSubOptions getSubModules substSubModules;
-      };
+      type = with types; let
+        value = either (either bool int) str;
+      in attrsOf (either (attrsOf value) value);
 
       default = {};
       example = {
