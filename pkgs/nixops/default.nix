@@ -1,8 +1,8 @@
 { stdenv, fetchFromGitHub, fetchpatch, git }:
 
 let
-  rev = "b66db0aa1c2bea64fe821ff67d51555c85943572";
-  sha256 = "15wwhah9ghwn7w3nq0jj0vqyz2al76w3vwfnl4aklbffmj2jbzwy";
+  rev = "7c4659663722c05959f74db45e85073759a0b5ee";
+  sha256 = "026jsp34fw199saqcfrixhcv53wkpc5y0vn57qx9wdyygjasibf8";
 
   master = stdenv.mkDerivation rec {
     name = "nixops-upstream-patched";
@@ -14,6 +14,11 @@ let
     };
 
     phases = [ "unpackPhase" "patchPhase" "installPhase" ];
+
+    patches = stdenv.lib.singleton (fetchpatch {
+      url = "https://github.com/NixOS/nixops/pull/407.patch";
+      sha256 = "1md58nivjcvcw76ci1gnjn1yhbkxrqwacs9ia709x8xf67kn19kk";
+    });
 
     postPatch = ''
       sed -i -re 's!<nixpkgs([^>]*)>!${import ../../nixpkgs-path.nix}\1!g' \
