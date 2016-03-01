@@ -12,22 +12,28 @@ in {
     # few additional patches:
     boot.kernelPackages = let
       nixpkgs = import ../../../nixpkgs-path.nix;
+      linuxNextVersion = "20160226";
       mkKernel = import "${nixpkgs}/pkgs/os-specific/linux/kernel/generic.nix";
       t100haKernel = mkKernel rec {
         version = "4.5-rc5";
-        modDirVersion = "4.5.0-rc5";
+        modDirVersion = "4.5.0-rc5-next-${linuxNextVersion}";
         extraMeta.branch = "4.5";
 
-        src = pkgs.fetchurl {
-          url = "mirror://kernel/linux/kernel/v4.x/testing/"
-              + "linux-${version}.tar.xz";
-          sha256 = "06qlypnrlkckxhf3clq6l2d3kps7rwfw811sxapjbnhzjd75fcx8";
+        src = pkgs.fetchgit {
+          url = "git://git.kernel.org/pub/scm/linux/kernel/git/next/"
+              + "linux-next.git";
+          rev = "refs/tags/next-${linuxNextVersion}";
+          sha256 = "0q39mnjyi8jany03b4ral34hicdrgjpab53hg712jzhbcngj5kh3";
         };
 
-        kernelPatches = lib.singleton {
-          name = "drm-fixes.patch";
-          patch = ./drm-fixes.patch;
-        };
+        kernelPatches = [
+          { name = "backlight";
+            patch = ./backlight.patch;
+          }
+          { name = "meta-keys";
+            patch = ./meta-keys.patch;
+          }
+        ];
 
         extraConfig = ''
           MMC y
@@ -36,6 +42,14 @@ in {
           MMC_SDHCI_ACPI y
           PINCTRL_CHERRYVIEW y
           INTEL_SOC_PMIC y
+
+          AGP n
+          DRM y
+          DRM_I915 y
+
+          # These do not compile as of 4.5.0-rc5-next-20160226:
+          VIDEO_EM28XX n
+          RAPIDIO n
         '';
 
         features.iwlwifi = true;
