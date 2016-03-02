@@ -8,6 +8,9 @@
   };
 
   environment.systemPackages = with pkgs; [
+    ipmitool
+    ipmiutil
+    ipmiview
     aircrackng
     pythonPackages.alot
     connmanui
