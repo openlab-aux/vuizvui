@@ -130,7 +130,7 @@ in with pkgsUpstream.lib; with builtins; {
 
     isVuizvui = opt: head (splitString "." opt.name) == "vuizvui";
     filterDoc = filter (opt: isVuizvui opt && opt.visible && !opt.internal);
-    optionsXML = toXML (filterDoc (optionAttrSetToDocList {} modules.options));
+    optionsXML = toXML (filterDoc (optionAttrSetToDocList modules.options));
     optionsFile = toFile "options.xml" (unsafeDiscardStringContext optionsXML);
   in pkgsUpstream.stdenv.mkDerivation {
     name = "vuizvui-options";
