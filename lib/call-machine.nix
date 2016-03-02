@@ -26,7 +26,7 @@ let
           "/boot" = lib.mkForce (fscfg."/boot" or {
             device = "none";
             fsType = "none";
-            options = "noauto";
+            options = [ "noauto" ];
           });
         };
       };
