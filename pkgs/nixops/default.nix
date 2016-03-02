@@ -15,11 +15,6 @@ let
 
     phases = [ "unpackPhase" "patchPhase" "installPhase" ];
 
-    patches = stdenv.lib.singleton (fetchpatch {
-      url = "https://github.com/NixOS/nixops/pull/407.patch";
-      sha256 = "1md58nivjcvcw76ci1gnjn1yhbkxrqwacs9ia709x8xf67kn19kk";
-    });
-
     postPatch = ''
       sed -i -re 's!<nixpkgs([^>]*)>!${import ../../nixpkgs-path.nix}\1!g' \
         release.nix doc/manual/default.nix doc/manual/resource.nix
