@@ -260,7 +260,6 @@ in {
         enableContribAndExtras = true;
       };
       displayManager = {
-        desktopManagerHandlesLidAndPower = false;
         sessionCommands =
             ''
             #TODO add as nixpkg
