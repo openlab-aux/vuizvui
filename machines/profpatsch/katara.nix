@@ -116,7 +116,9 @@ in {
         # kde4.oxygen-icons TODO
         pavucontrol
       ];
+      hp = haskellPackages;
       programmingTools = [
+        hp.cabal-install  # haskell packaging tool
         git               # version control system
         gnumake           # make
         silver-searcher   # file content searcher, > ack > grep
