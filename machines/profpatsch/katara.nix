@@ -138,7 +138,8 @@ in {
         ghc                  # Glasgow Haskell Compiler, mostly for ghci
         gimp                 # graphics
         gmpc                 # mpd client and best music player interface in the world
-        httpie
+        httpie               # nice http CLI
+        keybase              # the saviour of GPG™
         # TMP
         tmpLibreOffice
         # libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
@@ -323,7 +324,7 @@ in {
   	home = "/home/philip";
           passwordFile = "${home}/.config/passwd";
           # password = "test"; # in case of emergency, break glass
-    shell = "/run/current-system/sw/bin/fish";
+    shell = "${pkgs.fish}/bin/fish";
           openssh.authorizedKeys.keys = authKeys;
       };
     };
@@ -342,8 +343,7 @@ in {
     #######
     # Misc
 
-    # TODO seems to work only sometimes in chromium
-    # security.pki.certificateFiles = [ "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
+    security.pki.certificateFiles = [ "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
 
     ########
     # Fixes
