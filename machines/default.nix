@@ -15,8 +15,7 @@ in {
     };
   };
   labnet = {
-    heinrich = callMachine ./labnet/heinrich.nix {};
-    labtop   = callMachine ./labnet/labtop.nix {};
+    labtop = callMachine ./labnet/labtop.nix {};
   };
   profpatsch = {
     katara = callMachine ./profpatsch/katara.nix {};
