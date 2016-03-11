@@ -2,7 +2,7 @@
 , username, password
 }:
 
-{ name, appId, depotId, manifestId, sha256, fileList ? [] }:
+{ name, appId, depotId, manifestId, branch ? null, sha256, fileList ? [] }:
 
 let
   protobuf-net = buildDotnetPackage rec {
@@ -85,6 +85,7 @@ in with stdenv.lib; runCommand "${name}-src" {
 } ''
   depotdownloader -app "$appId" -depot "$depotId" -manifest "$manifestId" \
     ${optionalString (fileList != []) "-filelist \"${fileListFile}\""} \
+    ${optionalString (branch != null) "-branch \"${branch}\""} \
     -username "$username" -password "$password" -dir "$out"
   rm -r "$out/.DepotDownloader"
   rm "$out/_steam_depot_manifest_$depotId.csv"
