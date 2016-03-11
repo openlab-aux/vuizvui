@@ -47,7 +47,7 @@
   };
 
   security = {
-    setuidPrograms = [ ];
+    setuidPrograms = [ kismet_server ];
   };
 
   programs = {
