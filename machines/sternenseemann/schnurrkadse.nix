@@ -1,8 +1,12 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra ifplatform xstring doublestroke; };
 
-  boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ata_piix" "usb_storage" "floppy" ];
+in {
+  nixpkgs.config.allowUnfree = true;
+  
+  boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ata_piix" "usb_storage" "floppy" "usblp" "pcspkr" ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
@@ -16,16 +20,9 @@
     ];
 
   nix.maxJobs = 1;
-  hardware.firmware = let myfirmware = pkgs.firmwareLinuxNonfree.overrideDerivation
-    (old: {
-      name = "myfirmware";
-      src = pkgs.fetchFromGitHub {
-        owner = "wkennington";
-        repo = "linux-firmware";
-        rev = "2016-01-26";
-        sha256="07hv4kgbsxndhm1va6k6scy083886aap3naq1l4jdz7dnph4ir02";
-      };
-    }); in [ myfirmware ];
+  networking.enableIntel2200BGFirmware = true;
+
+  hardware.pulseaudio.enable = true;
 
   hardware.trackpoint = {
     enable = true;
@@ -43,13 +40,16 @@
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "de-latin1";
+    consoleKeyMap = "de neo";
     defaultLocale = "en_US.UTF-8";
   };
 
   time.timeZone = "Europe/Berlin";
 
   environment.systemPackages = with pkgs; [
+    unzip
+    zip
+    bzip2
     wget
     vim
     git
@@ -61,17 +61,87 @@
     sudo
     mosh
     dmenu
+    taffybar
+    alock
+    graphicsmagick
+    silver-searcher
+    pavucontrol
+    hostapd
 
+    # texlive, minted deps
+    mytexlive
+    which
+    pythonPackages.pygments
+    python
+
+    w3m
     chromium
     mpv
     htop
+    feh
+    mupdf
+    screen-message
+    zathura
+    youtube-dl
+    pass
+
+    ghc
+    cabal-install
+    haskellPackages.stylish-haskell
+    haskellPackages.cabal2nix
+
+    mutt
+    notmuch
+    offlineimap
+    msmtp
+    gnupg
+    gpgme
+  ];
+
+  # Proudly stolen from Profpatsch
+  fonts.fontconfig = {
+    defaultFonts = {
+      monospace = [ "Inconsolata" "Source Code Pro" "DejaVu Sans Mono" ];
+      sansSerif = [ "Liberation Sans" ];
+    };
+    ultimate = {
+      rendering = {
+        INFINALITY_FT_FILTER_PARAMS = "08 24 36 24 08";
+        INFINALITY_FT_FRINGE_FILTER_STRENGTH = "25";
+        INFINALITY_FT_USE_VARIOUS_TWEAKS = "true";
+        INFINALITY_FT_WINDOWS_STYLE_SHARPENING_STRENGTH = "25";
+        INFINALITY_FT_STEM_ALIGNMENT_STRENGTH = "15";
+        INFINALITY_FT_STEM_FITTING_STRENGTH = "15";
+      };
+    };
+  };
+  fonts.fonts = with pkgs; [
+    corefonts
+    source-han-sans-japanese
+    source-han-sans-korean
+    source-han-sans-simplified-chinese
+    source-code-pro
+    dejavu_fonts
+    ubuntu_font_family
+    inconsolata
+    tewi-font
+    libertine
   ];
 
   services.openssh.enable = true;
+
   services.printing = {
     enable = true;
     drivers = [ pkgs.gutenprint pkgs.hplip ];
   };
+
+  # for taffybar
+  services.upower.enable = true;
+
+  services.tlp.enable = true;
+
+  services.syncthing.enable = true;
+  services.syncthing.user = "lukas";
 
   services.xserver = {
     enable = true;
@@ -86,16 +156,16 @@
     };
 
     displayManager = {
-      desktopManagerHandlesLidAndPower = false;
       sessionCommands =
         ''
         redshift -c .redshift &
+        xsetroot -solid '#0fffb0'
         '';
     };
 
     synaptics.enable = true;
     synaptics.tapButtons = false;
-    synaptics.twoFingerScroll = true;
+    synaptics.twoFingerScroll = false;
 
     videoDrivers = [ "intel" ];
 
