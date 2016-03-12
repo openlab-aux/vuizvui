@@ -1,4 +1,6 @@
-{ stdenv, fetchSteam, writeText, SDL, mesa, jq, flavor ? "stable" }:
+{ stdenv, fetchSteam, fetchurl, writeText, SDL, mesa, jq, makeDesktopItem
+, flavor ? "stable"
+}:
 
 let
   renameAttrs = f: let
@@ -104,6 +106,20 @@ let
     chmod +x "$out/bin/${attrs.name or basename}"
   '';
 
+  desktopItem = makeDesktopItem {
+    name = "starbound";
+    exec = "starbound";
+    icon = fetchurl {
+      url = "http://i1305.photobucket.com/albums/s544/ClockworkBarber/"
+          + "logo_zps64c4860d.png";
+      sha256 = "11fiiy0vcxzix1j81732cjh16wi48k4vag040vmbhad50ps3mg0q";
+    };
+    comment = "An extraterrestrial sandbox adventure game";
+    desktopName = "Starbound";
+    genericName = "starbound";
+    categories = "Game;";
+  };
+
 in stdenv.mkDerivation {
   name = "${upstreamInfo.name}-${upstreamInfo.version}";
   inherit (upstreamInfo) version;
@@ -144,6 +160,8 @@ in stdenv.mkDerivation {
   installPhase = ''
     mkdir -p "$out/bin"
     ${stdenv.lib.concatStrings (stdenv.lib.mapAttrsToList mkProg binaryDeps)}
+    install -m 0644 -vD "${desktopItem}/share/applications/starbound.desktop" \
+      "$out/share/applications/starbound.desktop"
   '';
 
   dontStrip = true;
