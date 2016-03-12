@@ -1,4 +1,4 @@
-{ stdenv, fetchSteam, makeWrapper, SDL, mesa, flavor ? "stable" }:
+{ stdenv, fetchSteam, writeText, SDL, mesa, jq, flavor ? "stable" }:
 
 let
   renameAttrs = f: let
@@ -58,27 +58,61 @@ let
     ];
   };
 
+  bootOverrides = {
+    storageDirectory = "$XDG_DATA_HOME/starbound";
+    modSource = "$XDG_DATA_HOME/starbound/mods";
+    assetSources = [
+      "${upstream}/assets/packed.pak"
+      "${upstream}/assets/user"
+    ];
+  };
+
+  mkProg = bin: attrs: let
+    basename = builtins.baseNameOf bin;
+
+    hasBootconfigArg = attrs.hasBootconfigArg or false;
+
+    bootconfigArgs = with stdenv.lib; let
+      bootconfig = "$XDG_DATA_HOME/starbound/sbboot.config";
+      logfile = "$XDG_DATA_HOME/starbound/starbound.log";
+      args = " -bootconfig \"${bootconfig}\" -logfile \"${logfile}\"";
+    in optionalString hasBootconfigArg args;
+
+    wrapper = writeText "starbound-wrapper.sh" ''
+      #!${stdenv.shell} -e
+      [ -n "$XDG_DATA_HOME" ] || XDG_DATA_HOME="$HOME/.local/share"
+
+      mkdir -p "${bootOverrides.storageDirectory}" \
+               "${bootOverrides.modSource}"
+
+      "${jq}/bin/jq" -s '.[0] * .[1]' \
+        <(sed -e 's,//.*,,' "${upstream}/${binpath}/sbboot.config") \
+        - > "$XDG_DATA_HOME/starbound/sbboot.config" \
+      <<BOOTCONFIG_OVERRIDES
+      ${builtins.toJSON bootOverrides}
+      BOOTCONFIG_OVERRIDES
+
+      ${stdenv.lib.optionalString hasBootconfigArg ''
+        cd "$XDG_DATA_HOME/starbound"
+      ''}
+      exec "@out@/libexec/starbound/${basename}"${bootconfigArgs} "$@"
+    '';
+
+  in ''
+    install -vD "patched/${basename}" "$out/libexec/starbound/${basename}"
+    substituteAll "${wrapper}" "$out/bin/${attrs.name or basename}"
+    chmod +x "$out/bin/${attrs.name or basename}"
+  '';
+
 in stdenv.mkDerivation {
   name = "${upstreamInfo.name}-${upstreamInfo.version}";
   inherit (upstreamInfo) version;
 
   unpackPhase = ":";
 
-  configurePhase = ''
-    libexec="$out/libexec/starbound"
-    data="$out/share/starbound"
-  '';
-
   inherit binpath upstream;
 
-  buildInputs = [ makeWrapper ];
-
-  buildPhase = with stdenv.lib; ''
-    mkdir -p patched
-    sed -e 's,\.\./assets,'"$data/assets"',g' \
-        -e 's,\.\./giraffe_storage,.,g' \
-        "$upstream/$binpath/sbboot.config" > "patched/sbboot.config"
-  '' + concatStrings (mapAttrsToList (bin: attrs: ''
+  buildPhase = with stdenv.lib; concatStrings (mapAttrsToList (bin: attrs: ''
     mkdir -p "patched/$(dirname "${bin}")"
     cp -t "patched/$(dirname "${bin}")" "$upstream/$binpath/${bin}"
     chmod +x "patched/$(basename "${bin}")"
@@ -97,6 +131,7 @@ in stdenv.mkDerivation {
     checkFailed=
     for i in "$upstream/$binpath"/*; do
       [ -f "$i" ] || continue
+      [ "$(basename "$i")" != sbboot.config ] || continue
       [ "$(basename "$i")" != launcher ] || continue
       [ ! -e "patched/$(basename "$i")" ] || continue
 
@@ -108,28 +143,7 @@ in stdenv.mkDerivation {
 
   installPhase = ''
     mkdir -p "$out/bin"
-    ${stdenv.lib.concatStrings (stdenv.lib.mapAttrsToList (bin: attrs: ''
-      prog="$(basename "${bin}")"
-      install -vD "patched/$prog" "$libexec/$prog"
-      cat > "$out/bin/${attrs.name or "$prog"}" <<EOF
-      #!${stdenv.shell} -e
-      [ -n "\$XDG_DATA_HOME" ] || XDG_DATA_HOME="\$HOME/.local/share"
-      mkdir -p "\$XDG_DATA_HOME/starbound/mods"
-      ln -sf "$out/etc/sbboot.config" "\$XDG_DATA_HOME/starbound/sbboot.config"
-      cd "\$XDG_DATA_HOME/starbound"
-      exec "$libexec/$prog" "\$@"
-      EOF
-      chmod +x "$out/bin/${attrs.name or "$prog"}"
-    '') binaryDeps)}
-
-    install -vD -m 644 patched/sbboot.config "$out/etc/sbboot.config"
-
-    mkdir -p "$data"
-    for i in assets tiled; do
-      echo -n "Installing $i..."
-      cp -rt "$data" "$upstream/$i"
-      echo " done."
-    done
+    ${stdenv.lib.concatStrings (stdenv.lib.mapAttrsToList mkProg binaryDeps)}
   '';
 
   dontStrip = true;
