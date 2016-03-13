@@ -5,18 +5,29 @@ let
 
 in {
   nixpkgs.config.allowUnfree = true;
-  
+
   boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ata_piix" "usb_storage" "floppy" "usblp" "pcspkr" ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
+  boot.initrd.luks.devices =
+    [ { name = "schnurrkadse";
+        device = "/dev/disk/by-uuid/544529b8-81cb-4e8e-9b6b-44f828ea2a7b";
+        preLVM = true;
+    } ];
+
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/98d6b322-25d9-4eff-a64a-684b3aad3734";
+    { device = "/dev/mapper/schnurrkadse-root";
+      fsType = "btrfs";
+    };
+
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/e42bd75d-627d-4469-90cb-282dca7fdd4f";
       fsType = "ext4";
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/e5e7e8ad-af02-4b51-8a5b-f79f143c63da"; }
+    [ { device = "/dev/mapper/schnurrkadse-swap"; }
     ];
 
   nix.maxJobs = 1;
@@ -40,7 +51,7 @@ in {
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "de neo";
+    consoleKeyMap = "de-latin1";
     defaultLocale = "en_US.UTF-8";
   };
 
@@ -67,6 +78,7 @@ in {
     silver-searcher
     pavucontrol
     hostapd
+    pandoc
 
     # texlive, minted deps
     mytexlive
