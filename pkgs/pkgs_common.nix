@@ -154,6 +154,7 @@
     lxappearance
     lxc
     lynx
+    macchanger
     manpages
     mc
     mcabber
