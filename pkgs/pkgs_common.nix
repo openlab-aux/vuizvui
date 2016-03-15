@@ -270,6 +270,5 @@
     zbar
     zip
     zsync
-    zotero
   ];
 }
