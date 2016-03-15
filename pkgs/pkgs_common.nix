@@ -17,6 +17,11 @@
       x11Support = false;
     };
 
+    firefox = {
+      enableGTK3 = true;
+      enableOfficalBranding = true;
+    };
+
     virtualbox = {
       enableExtensionPack = true;
     };
