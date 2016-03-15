@@ -263,7 +263,6 @@
     zathura
     zbar
     zip
-    zotero
     zsync
   ];
 }
