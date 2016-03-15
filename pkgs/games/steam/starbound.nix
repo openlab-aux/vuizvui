@@ -20,7 +20,9 @@ let
 
   binaryDeps = mkOsBinaryDeps {
     starbound.deps = [ SDL mesa ];
+    starbound.hasBootconfigArg = true;
     starbound_server.name = "starbound-server";
+    starbound_server.hasBootconfigArg = true;
     asset_packer.name = "starbound-asset-packer";
     asset_unpacker.name = "starbound-asset-unpacker";
     dump_versioned_json.name = "starbound-dump-versioned-json";
@@ -34,6 +36,9 @@ let
             else if stdenv.system == "i686-cygwin" then "win32"
             else if stdenv.system == "x86_64-cygwin" then "win64"
             else throw "Unsupported system ${stdenv.system} for Starbound";
+
+  throwUnsupported = throw "Unsupported flavor `${flavor}', use either "
+                         + "`stable' or `unstable'.";
 
   upstreamInfo = if flavor == "stable" then {
     name = "starbound";
@@ -49,7 +54,7 @@ let
     depotId = 367541;
     manifestId = 6970641909803280413;
     sha256 = "0qppfn56c778wsg38hi6sxgi3rl9nv72h9rmmxybi1vzpf3p49py";
-  } else throw "Unsupported flavor, use either `stable' or `unstable'.";
+  } else throwUnsupported;
 
   upstream = fetchSteam {
     inherit (upstreamInfo) name appId depotId manifestId sha256;
@@ -60,14 +65,22 @@ let
     ];
   };
 
-  bootOverrides = {
-    storageDirectory = "$XDG_DATA_HOME/starbound";
-    modSource = "$XDG_DATA_HOME/starbound/mods";
+  staticBootOverrides = writeText "bootconfig.overrides" (builtins.toJSON {
     assetSources = [
       "${upstream}/assets/packed.pak"
       "${upstream}/assets/user"
     ];
+  });
+
+  bootOverrides = {
+    storageDirectory = "$XDG_DATA_HOME/${settingsDir}/";
+    modSource = "$XDG_DATA_HOME/${settingsDir}/mods/";
   };
+
+  settingsDir =
+    if flavor == "stable" then "starbound"
+    else if flavor == "unstable" then "starbound-unstable"
+    else throwUnsupported;
 
   mkProg = bin: attrs: let
     basename = builtins.baseNameOf bin;
@@ -75,10 +88,10 @@ let
     hasBootconfigArg = attrs.hasBootconfigArg or false;
 
     bootconfigArgs = with stdenv.lib; let
-      bootconfig = "$XDG_DATA_HOME/starbound/sbboot.config";
-      logfile = "$XDG_DATA_HOME/starbound/starbound.log";
-      args = " -bootconfig \"${bootconfig}\" -logfile \"${logfile}\"";
-    in optionalString hasBootconfigArg args;
+      mkArg = opt: val: "-${opt} \"${val}\"";
+    in " " + (concatStringsSep " " (mapAttrsToList mkArg {
+      bootconfig = "$XDG_DATA_HOME/${settingsDir}/sbboot.config";
+    }));
 
     wrapper = writeText "starbound-wrapper.sh" ''
       #!${stdenv.shell} -e
@@ -87,17 +100,37 @@ let
       mkdir -p "${bootOverrides.storageDirectory}" \
                "${bootOverrides.modSource}"
 
-      "${jq}/bin/jq" -s '.[0] * .[1]' \
-        <(sed -e 's,//.*,,' "${upstream}/${binpath}/sbboot.config") \
-        - > "$XDG_DATA_HOME/starbound/sbboot.config" \
+      "${jq}/bin/jq" -s '.[0] * .[1]' "@out@/etc/sbboot.config" - \
+        > "$XDG_DATA_HOME/${settingsDir}/sbboot.config" \
       <<BOOTCONFIG_OVERRIDES
       ${builtins.toJSON bootOverrides}
       BOOTCONFIG_OVERRIDES
 
-      ${stdenv.lib.optionalString hasBootconfigArg ''
-        cd "$XDG_DATA_HOME/starbound"
+      ${if hasBootconfigArg then ''
+        # This is needed because Starbound aborts if
+        # a command line argument is specified twice.
+        hasBootconfigArg() {
+          while [ $# -gt 0 ]; do
+            if [ "x''${1#-}" != "x$1" ]; then
+              case "''${1#-}" in
+                bootconfig) return 0;;
+                # Arguments that expect a parameter
+                loglevel|logfile|configfile|setconfig) shift;;
+              esac
+            fi
+            shift
+          done
+          return 1
+        }
+
+        if hasBootconfigArg "$@"; then
+          exec "@out@/libexec/starbound/${basename}" "$@"
+        else
+          exec "@out@/libexec/starbound/${basename}"${bootconfigArgs} "$@"
+        fi
+      '' else ''
+        exec "@out@/libexec/starbound/${basename}" "$@"
       ''}
-      exec "@out@/libexec/starbound/${basename}"${bootconfigArgs} "$@"
     '';
 
   in ''
@@ -120,15 +153,7 @@ let
     categories = "Game;";
   };
 
-in stdenv.mkDerivation {
-  name = "${upstreamInfo.name}-${upstreamInfo.version}";
-  inherit (upstreamInfo) version;
-
-  unpackPhase = ":";
-
-  inherit binpath upstream;
-
-  buildPhase = with stdenv.lib; concatStrings (mapAttrsToList (bin: attrs: ''
+  patchBinary = bin: attrs: ''
     mkdir -p "patched/$(dirname "${bin}")"
     cp -t "patched/$(dirname "${bin}")" "$upstream/$binpath/${bin}"
     chmod +x "patched/$(basename "${bin}")"
@@ -139,7 +164,18 @@ in stdenv.mkDerivation {
     if ldd "patched/$(basename "${bin}")" | grep -F 'not found'; then
       exit 1;
     fi
-  '') binaryDeps);
+  '';
+
+in stdenv.mkDerivation {
+  name = "${upstreamInfo.name}-${upstreamInfo.version}";
+  inherit (upstreamInfo) version;
+
+  unpackPhase = ":";
+
+  inherit binpath upstream;
+
+  buildPhase = with stdenv.lib;
+    concatStrings (mapAttrsToList patchBinary binaryDeps);
 
   doCheck = true;
 
@@ -158,7 +194,10 @@ in stdenv.mkDerivation {
   '';
 
   installPhase = ''
-    mkdir -p "$out/bin"
+    mkdir -p "$out/bin" "$out/etc"
+    sed -e 's,//.*,,' "${upstream}/${binpath}/sbboot.config" \
+      | "${jq}/bin/jq" -s '.[0] * .[1]' - "${staticBootOverrides}" \
+      > "$out/etc/sbboot.config"
     ${stdenv.lib.concatStrings (stdenv.lib.mapAttrsToList mkProg binaryDeps)}
     install -m 0644 -vD "${desktopItem}/share/applications/starbound.desktop" \
       "$out/share/applications/starbound.desktop"
