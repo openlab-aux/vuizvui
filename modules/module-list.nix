@@ -7,6 +7,7 @@
   ./profiles/tests.nix
   ./services/multipath-vpn.nix
   ./services/postfix
+  ./services/starbound.nix
   ./system/iso.nix
   ./user/aszlig/profiles/base.nix
   ./user/aszlig/profiles/workstation

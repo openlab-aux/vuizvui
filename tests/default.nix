@@ -9,6 +9,9 @@ in {
   aszlig = {
     i3 = callTest ./aszlig/i3.nix;
   };
+  games = {
+    starbound = callTest ./games/starbound.nix;
+  };
   richi235 = {
     # Currently broken
     #multipath-vpn = callTest ./richi235/multipath-vpn.nix;
