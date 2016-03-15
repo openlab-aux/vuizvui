@@ -30,7 +30,9 @@ let
     allowAnonymousConnections = cfg.anonymousConnections.allow;
     anonymousConnectionsAreAdmin = cfg.anonymousConnections.adminPrivileges;
 
-    serverUsers = cfg.users;
+    serverUsers = mapAttrs (user: attrs: {
+      inherit (attrs) admin password;
+    }) cfg.users;
 
     inherit (cfg) checkAssetsDigest clearPlayerFiles clearUniverseFiles;
     inherit (cfg) maxPlayers safeScripts serverName;
