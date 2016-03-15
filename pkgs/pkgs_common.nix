@@ -19,7 +19,6 @@
 
     firefox = {
       enableGTK3 = true;
-      enableOfficialBranding = true;
     };
 
     virtualbox = {
