@@ -101,8 +101,9 @@ in {
         description = ''
           Whether to allow anonymous connections to the server.
 
-          Set this to <value>false</value> and use <option>serverUsers</option>
-          to only allow specific accounts to connect.
+          Set this to <literal>false</literal> and use
+          <option>serverUsers</option> to only allow specific accounts to
+          connect.
         '';
       };
 
