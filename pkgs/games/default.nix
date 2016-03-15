@@ -1,4 +1,4 @@
-{ configuration ? null }:
+{ config ? null, pkgs ? import <nixpkgs> {} }:
 
 let
   configFilePath = let
@@ -17,9 +17,10 @@ let
     }
   '' else configFilePath;
 
-in ((import <nixpkgs/lib>).evalModules {
+in (pkgs.lib.evalModules {
   modules = [
-    (if configuration == null then configFilePath else configuration)
+    (if config == null then configFilePath else config)
     ./base-module.nix ./humblebundle ./steam
+    { config._module.args.pkgs = pkgs; }
   ];
 }).config.packages

@@ -24,6 +24,11 @@ let
     tomahawk = callPackage ./tomahawk { qt5 = pkgs.qt55; };
     twitchstream = callPackage ./twitchstream { };
 
+    games = import ./games {
+      inherit pkgs;
+      config = pkgs.config.vuizvui.games or null;
+    };
+
     kernelPatches = {
       bfqsched = callPackage ./kpatches/bfqsched { };
     };

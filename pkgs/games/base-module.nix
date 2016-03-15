@@ -10,6 +10,4 @@ with lib;
       description = "Available NixGames packages.";
     };
   };
-
-  config._module.args.pkgs = import <nixpkgs> {};
 }
