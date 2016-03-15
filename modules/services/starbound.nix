@@ -132,6 +132,10 @@ in {
           '';
         };
       });
+      default = {};
+      description = ''
+        User accounts to allow connection to the Starbound server.
+      '';
     };
 
     checkAssetsDigest = mkOption {
