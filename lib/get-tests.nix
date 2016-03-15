@@ -1,6 +1,7 @@
 { system ? builtins.currentSystem
 , nixpkgs ? import ../nixpkgs-path.nix
 , vuizvuiTests ? ../tests
+, excludeVuizvuiGames ? false
 }:
 
 with import "${nixpkgs}/lib";
@@ -16,7 +17,7 @@ with import "${nixpkgs}/lib";
     reduce = attr: if isTestOrJob attr then attr else attr.${system};
   in mapAttrsRecursiveCond cond (path: reduce) upstreamTests;
 
-  vuizvui = import vuizvuiTests {
+  vuizvui = removeAttrs (import vuizvuiTests {
     inherit system;
-  };
+  }) (optional excludeVuizvuiGames "games");
 }

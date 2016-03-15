@@ -42,6 +42,7 @@ let
 
   allTests = import ./lib/get-tests.nix ({
     inherit system nixpkgs;
+    excludeVuizvuiGames = true;
   } // pkgsUpstream.lib.optionalAttrs (vuizvuiSrc != null) {
     vuizvuiTests = "${vuizvui}/tests";
   });
