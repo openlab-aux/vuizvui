@@ -78,9 +78,10 @@ in with pkgsUpstream.lib; with builtins; {
   };
 
   pkgs = let
+    noGames = flip removeAttrs [ "games" ];
     releaseLib = import "${nixpkgs}/pkgs/top-level/release-lib.nix" {
       inherit supportedSystems;
-      packageSet = attrs: (import vuizvui attrs).pkgs.vuizvui;
+      packageSet = attrs: noGames (import vuizvui attrs).pkgs.vuizvui;
     };
   in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
 
