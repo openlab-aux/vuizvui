@@ -3,16 +3,7 @@ let
 
   myPkgs = import ./pkgs.nix { inherit pkgs; };
 
-  mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra; };
-
-  tmpLibreOffice = with pkgs;
-    (import (pkgs.fetchFromGitHub {
-        owner = "NixOS";
-        repo = "nixpkgs";
-        rev = "eea1e003dd6c472c560999f249bd7aa65675a890";
-        sha256 = "000wjkgib5rri63dyz6y9wih7g306a87y37l62ni4zigfkyfyl56";
-      }) { inherit (config.nixpkgs) config;
-    }).libreoffice;
+  # mytexlive = with pkgs.texlive; combine { inherit minted; }; # inherit scheme-medium minted units collection-bibtexextra; };
 
 in {
 
@@ -140,9 +131,7 @@ in {
         gmpc                 # mpd client and best music player interface in the world
         httpie               # nice http CLI
         keybase              # the saviour of GPG™
-        # TMP
-        tmpLibreOffice
-        # libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
+        libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm             # terminal emulator, best one around
         # lyx mytexlive      # you didn’t see a thing
         mpv                  # you are my sun and my stars. and you play my stuff.
