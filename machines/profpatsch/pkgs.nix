@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, lib }:
 
 let
   addRuntimeDeps = drv: ds: drv.overrideDerivation (old: {

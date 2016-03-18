@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
 
-  myPkgs = import ./pkgs.nix { inherit pkgs; };
+  myPkgs = import ./pkgs.nix { inherit pkgs lib; };
 
   # mytexlive = with pkgs.texlive; combine { inherit minted; }; # inherit scheme-medium minted units collection-bibtexextra; };
 
@@ -80,6 +80,7 @@ in {
         manpages          # system manpages (not included by default)
         mkpasswd          # UNIX password creator
         mosh              # ssh with stable connections
+        nfs-utils         # the filesystem of the future for 20 years
         (nmap.override { graphicalSupport = true; }) # stats about clients in the network
         stow              # dotfile management
         tmux              # detachable terminal multiplexer
@@ -157,7 +158,7 @@ in {
       nixPkgs = [
         nix-repl                  # nix REPL
         nix-prefetch-scripts      # prefetch store paths from various destinations
-        haskellPackages.cabal2nix # convert cabal files to nix
+        # haskellPackages.cabal2nix # convert cabal files to nix
       ];
       tmpPkgs = [
         # needs user service
