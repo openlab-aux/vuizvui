@@ -1,15 +1,16 @@
 { pkgs, lib }:
 
 let
-  addRuntimeDeps = drv: ds: drv.overrideDerivation (old: {
-    propagatedNativeBuildInputs = old.propagatedNativeBuildInputs ++ ds;
+
+  addPythonRuntimeDeps = drv: deps: drv.overrideDerivation (old: {
+    propagatedNativeBuildInputs = old.propagatedNativeBuildInputs ++ deps;
   });
 
 in
 with pkgs;
 {
 
-  offlineimap = addRuntimeDeps offlineimap [ pythonPackages.pygpgme ];
+  offlineimap = addPythonRuntimeDeps offlineimap [ pythonPackages.pygpgme ];
 
   taffybar = taffybar.override {
     ghcWithPackages = (haskellPackages.override {
@@ -17,6 +18,9 @@ with pkgs;
         taffybar = super.taffybar.overrideDerivation (old: {
           name = old.name + "foo";
           patches = (old.patches or []) ++ [ ./taffybar.patch ];
+          postPatch = old.postPathPhase or "" + ''
+            patch -R ${./taffybar-color.patch}
+          '';
         });
       };
     }).ghcWithPackages;

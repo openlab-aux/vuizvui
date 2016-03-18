@@ -1,0 +1,40 @@
+From 45ff40992c8fe5593d5f3e03ef0765168c6325fb Mon Sep 17 00:00:00 2001
+From: Peder Stray <peder@inne.proxdynamics.com>
+Date: Thu, 29 Oct 2015 17:37:56 +0100
+Subject: [PATCH] Load taffybar gtk configs after initGUI
+
+Since gtkrc files from themes seem to load anyway, load the default and
+user gtkrc for taffybar after initGUI.  please note that setting
+gtk_color_scheme from any of these causes a lot of already loaded gtkrc
+files to be reloaded.
+---
+ src/System/Taffybar.hs | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/src/System/Taffybar.hs b/src/System/Taffybar.hs
+index f119852..f7afe5e 100644
+--- a/src/System/Taffybar.hs
++++ b/src/System/Taffybar.hs
+@@ -261,16 +261,15 @@ setTaffybarSize cfg window = do
+ 
+ taffybarMain :: TaffybarConfig -> IO ()
+ taffybarMain cfg = do
+-  -- Override the default GTK theme path settings.  This causes the
+-  -- bar (by design) to ignore the real GTK theme and just use the
+-  -- provided minimal theme to set the background and text colors.
+-  -- Users can override this default.
+-  defaultGtkConfig <- getDefaultConfigFile "taffybar.rc"
+-  userGtkConfig <- getUserConfigFile "taffybar" "taffybar.rc"
+-  rcSetDefaultFiles [ defaultGtkConfig, userGtkConfig ]
+ 
+   _ <- initGUI
+ 
++  -- Load default and user gtk resources
++  defaultGtkConfig <- getDefaultConfigFile "taffybar.rc"
++  userGtkConfig <- getUserConfigFile "taffybar" "taffybar.rc"
++  rcParse defaultGtkConfig
++  rcParse userGtkConfig
++
+   Just disp <- displayGetDefault
+   nscreens <- displayGetNScreens disp
+   screen <- case screenNumber cfg < nscreens of
