@@ -9,7 +9,7 @@
 
   environment.systemPackages = with pkgs; [
     cdparanoia chromium figlet gajim gimp htop inkscape libreoffice mosh mpv
-    pciutils skype vlc vuizvui.tomahawk wget youtubeDL
+    pciutils skype vlc vuizvui.tomahawk wget wine youtubeDL
   ];
 
   fileSystems."/boot".device = "/dev/disk/by-uuid/A0D5-269D";
