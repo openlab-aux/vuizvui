@@ -27,7 +27,6 @@
     displayManager.lightdm.enable = true;
     desktopManager.xterm.enable = false;
     desktopManager.default = "none";
-    startGnuPGAgent = true;
   };
 
   services.xserver.windowManager = {
