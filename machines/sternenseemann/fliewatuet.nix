@@ -38,6 +38,8 @@ in {
   hardware.pulseaudio.support32Bit = true;
 
   hardware.opengl.driSupport32Bit = true;
+  hardware.bumblebee.enable = true;
+  hardware.bumblebee.driver = "nvidia";
 
   hardware.enableAllFirmware = true;
 
@@ -93,6 +95,7 @@ in {
     yafc
     psmisc
     telnet
+    unison
 
     ## dev
     git
@@ -126,6 +129,7 @@ in {
     notmuch
     irssi
     mytexlive
+    gimp
 
     ## GUI
     # wm etc.
