@@ -85,6 +85,14 @@ in {
           checksumType = "mhash";
         };
         nix = pkgs.nixUnstable;
+        # XXX: As of edolstra/nix-repl@8a2f5f0, this won't build with
+        #      nixUnstable (version 1.12pre4509_69f28eb).
+        nix-repl = pkgs.nix-repl.overrideDerivation (drv: {
+          src = lib.overrideDerivation drv.src (lib.const {
+            rev = "e37bca136eb58cc156f88cc8aa8e7bf47ed31d42";
+            sha256 = "1myqffvhklqvab3plcy5xmg51fdfncj2wibchxw80pb13wq21r71";
+          });
+        });
         uqm = pkgs.uqm.override {
           use3DOVideos = true;
           useRemixPacks = true;
