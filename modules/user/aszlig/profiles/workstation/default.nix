@@ -163,8 +163,6 @@ in {
       };
     };
 
-    virtualisation.virtualbox.host.enable = true;
-
     users.users.aszlig = {
       uid = 1000;
       isNormalUser = true;

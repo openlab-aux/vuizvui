@@ -29,6 +29,7 @@ with lib;
     ];
   };
 
+  virtualisation.virtualbox.host.enable = true;
   nixpkgs.config.virtualbox.enableExtensionPack = true;
 
   vuizvui.user.aszlig.system.kernel.enable = true;
