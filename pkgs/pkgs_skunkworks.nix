@@ -18,6 +18,7 @@
     beets
     canto-curses
     cli-visualizer
+    cmus
     go15Packages.ipfs
     handbrake
     hplip
