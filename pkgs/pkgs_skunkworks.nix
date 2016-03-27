@@ -19,6 +19,7 @@
     canto-curses
     cli-visualizer
     cmus
+    dosbox
     go15Packages.ipfs
     handbrake
     hplip
