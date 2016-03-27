@@ -21,6 +21,7 @@
     cmus
     dosbox
     go15Packages.ipfs
+    gzdoom
     handbrake
     hplip
     #mkvtoolnix
