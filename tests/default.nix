@@ -12,6 +12,9 @@ in {
   games = {
     starbound = callTest ./games/starbound.nix;
   };
+  programs = {
+    gpg-agent = callTest ./programs/gpg-agent;
+  };
   richi235 = {
     # Currently broken
     #multipath-vpn = callTest ./richi235/multipath-vpn.nix;
