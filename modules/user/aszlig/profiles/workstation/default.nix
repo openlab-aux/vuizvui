@@ -102,6 +102,9 @@ in {
       };
     };
 
+    vuizvui.programs.gpg-agent.enable = true;
+    vuizvui.programs.gpg-agent.sshSupport = true;
+
     services = {
       openssh = {
         enable = true;
@@ -130,8 +133,6 @@ in {
       xserver = {
         enable = true;
         layout = "dvorak";
-
-        startGnuPGAgent = true;
 
         displayManager.sessionCommands = ''
           ${pkgs.redshift}/bin/redshift -l 48.428404:10.866007 &
