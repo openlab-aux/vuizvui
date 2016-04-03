@@ -11,14 +11,14 @@
 #include <sys/un.h>
 #include <systemd/sd-daemon.h>
 
-int main_fd = 0;
-int ssh_fd = 0;
-int scdaemon_fd = 0;
+static int main_fd = 0;
+static int ssh_fd = 0;
+static int scdaemon_fd = 0;
 
 /* Get the systemd file descriptor for a particular socket file.
  * Returns -1 if there is an error or -2 if it is an unnamed socket.
  */
-int get_sd_fd_for(const struct sockaddr_un *addr)
+static int get_sd_fd_for(const struct sockaddr_un *addr)
 {
     if (main_fd == 0 && ssh_fd == 0 && scdaemon_fd == 0) {
         int num_fds;
@@ -75,7 +75,7 @@ int get_sd_fd_for(const struct sockaddr_un *addr)
 /* Replace the systemd-provided socket FD with the one that is used by the
  * agent, so that we can later look it up in our accept() wrapper.
  */
-void record_sockfd(int sysd_fd, int redir_fd)
+static void record_sockfd(int sysd_fd, int redir_fd)
 {
     if (sysd_fd == main_fd)
         main_fd = redir_fd;
@@ -122,10 +122,10 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 /* Avoid forking for the first time so we can properly track the agent using a
  * systemd service (without the need to set Type="forking").
  */
-int first_fork = 1;
-
 pid_t fork(void)
 {
+    static int first_fork = 1;
+
     static pid_t (*_fork)(void) = NULL;
     if (_fork == NULL)
         _fork = dlsym(RTLD_NEXT, "fork");
@@ -143,7 +143,7 @@ pid_t fork(void)
 }
 
 /* Get the PID of the client connected to the given socket FD. */
-pid_t get_socket_pid(int sockfd)
+static pid_t get_socket_pid(int sockfd)
 {
     struct ucred pcred;
     socklen_t pcred_len = sizeof(pcred);
@@ -154,7 +154,7 @@ pid_t get_socket_pid(int sockfd)
     return pcred.pid;
 }
 
-pid_t last_pid = 0;
+static pid_t last_pid = 0;
 
 /* For the pinentry to work correctly with SSH, we need to record the process ID
  * of the process communicating with the agent. That way we can get more
