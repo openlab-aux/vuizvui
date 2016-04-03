@@ -93,7 +93,7 @@ in {
       xPkgs = [
         dmenu             # simple UI menu builder
         dunst             # notification daemon (implements libnotify)
-        i3lock            # lock screen
+        alock             # lock screen
         libnotify         # notification library
         lxappearance      # GTK theme chooser
         myPkgs.taffybar   # status bar
@@ -256,6 +256,9 @@ in {
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
             export EDITOR=emacsclient
+
+            eval $(gpg-agent --daemon --enable-ssh-support)
+
             xset r rate 250 35
             set-background &
             # TODO xbindkeys user service file
@@ -264,8 +267,6 @@ in {
             nm-applet &
             '';
       };
-
-      startGnuPGAgent = true;
 
     };
 
@@ -322,11 +323,18 @@ in {
     ###########
     # Programs
 
-    # see gpgAgent
+    # use gpg-agent
     programs.ssh.startAgent = false;
 
     # friendly user shell
-    programs.fish.enable = true;
+    programs.fish = {
+      enable = true;
+      # gpg-agent; TODO: move to module
+      shellInit = ''
+        set -x GPG_TTY (tty)
+      '';
+    };
+
 
     vuizvui.user.profpatsch.programs.scanning.enable = true;
 
