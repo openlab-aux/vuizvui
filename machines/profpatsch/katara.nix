@@ -32,6 +32,7 @@ in {
     boot.loader.grub.version = 2;
     boot.loader.grub.device = "/dev/sda";
     boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "cryptroot"; } ];
+    boot.kernelPackages = myPkgs.linuxPackages;
 
 
     ###########

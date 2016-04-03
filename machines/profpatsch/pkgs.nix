@@ -28,4 +28,10 @@ with pkgs;
 
   # sent = pkgs:q.sent.override { patches = [ ./sent-bg.patch ]; };
   inherit sent;
+
+  linuxPackages = linuxPackages // {
+    kernel = linuxPackages.kernel.override {
+      kernelPatches = [ { name = "usb-fix"; patch = ./kernel-usb.patch; } ];
+    };
+  };
 }
