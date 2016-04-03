@@ -26,4 +26,6 @@ with pkgs;
     }).ghcWithPackages;
   };
 
+  # sent = pkgs:q.sent.override { patches = [ ./sent-bg.patch ]; };
+  inherit sent;
 }

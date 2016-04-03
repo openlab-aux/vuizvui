@@ -57,7 +57,8 @@ in {
     # Nix
 
     nix.maxJobs = 2;
-    vuizvui.enableGlobalNixpkgsConfig = true;
+    # what was this activated for?!
+    # vuizvui.enableGlobalNixpkgsConfig = true;
 
     ##########
     # Network
@@ -81,7 +82,8 @@ in {
 
     environment.systemPackages = with pkgs;
     let
-      systemPkgs = [
+      systemPkgs =
+      [
         atool             # archive tools
         curl              # transfer data to/from a URL
         diffoscope        # diff whole filetrees (and archives)
@@ -97,6 +99,7 @@ in {
         mosh              # ssh with stable connections
         nfs-utils         # the filesystem of the future for 20 years
         (nmap.override { graphicalSupport = true; }) # stats about clients in the network
+        smartmontools     # check disk state
         stow              # dotfile management
         tmux              # detachable terminal multiplexer
         traceroute        # trace ip routes
@@ -149,8 +152,8 @@ in {
         keybase              # the saviour of GPG™
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm             # terminal emulator, best one around
-        # lyx mytexlive      # you didn’t see a thing
         mpv                  # you are my sun and my stars. and you play my stuff.
+        # mytexlive            # you didn’t see a thing
         newsbeuter           # RSS/Atom feed reader
         networkmanagerapplet # NetworkManager status bar widget
         pass                 # standard unix password manager
@@ -158,6 +161,7 @@ in {
         poppler_utils        # pdfto*
         ranger               # CLI file browser
         rtorrent             # monster of a bittorrent client
+        myPkgs.sent                 # suckless presentation tool
         stack                # haskell package manager
         pkgs.vuizvui.show-qr-code # display a QR code
         zathura              # pdf viewer
@@ -199,9 +203,6 @@ in {
        ++
        # other packages that I use sometimes in a shell
        [
-         #wkhtmltopdf
-         rustc
-         haskellPackages.purescript
        ];
 
     ###########
@@ -213,7 +214,7 @@ in {
     # Enable CUPS to print documents.
     services.printing = {
       enable = true;
-      drivers = [ pkgs.gutenprint ];
+      gutenprint = true;
     };
 
     time.timeZone = "Europe/Berlin";
@@ -275,6 +276,7 @@ in {
             eval $(gpg-agent --daemon --enable-ssh-support)
 
             xset r rate 250 35
+
             set-background &
             # TODO xbindkeys user service file
             xbindkeys
