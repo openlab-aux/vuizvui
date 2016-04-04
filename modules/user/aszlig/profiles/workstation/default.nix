@@ -102,8 +102,9 @@ in {
       };
     };
 
-    vuizvui.programs.gpg-agent.enable = true;
-    vuizvui.programs.gpg-agent.sshSupport = true;
+    vuizvui.programs.gnupg.enable = true;
+    vuizvui.programs.gnupg.agent.enable = true;
+    vuizvui.programs.gnupg.agent.sshSupport = true;
 
     services = {
       openssh = {

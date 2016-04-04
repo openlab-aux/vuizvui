@@ -5,7 +5,7 @@
   ./hardware/thinkpad.nix
   ./profiles/common.nix
   ./profiles/tests.nix
-  ./programs/gpg-agent
+  ./programs/gnupg
   ./services/multipath-vpn.nix
   ./services/postfix
   ./services/starbound.nix

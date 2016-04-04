@@ -21,7 +21,7 @@ let
   cliTest = mkExpect "";
 
 in {
-  name = "gpg-agent";
+  name = "gnupg";
 
   enableOCR = true;
 
@@ -33,8 +33,10 @@ in {
     services.openssh.enable = true;
     services.xserver.displayManager.auto.user = "alice";
 
-    vuizvui.programs.gpg-agent.enable = true;
-    vuizvui.programs.gpg-agent.sshSupport = true;
+    vuizvui.programs.gnupg.enable = true;
+    vuizvui.programs.gnupg.agent.enable = true;
+    vuizvui.programs.gnupg.agent.sshSupport = true;
+
     programs.ssh.startAgent = false;
   };
 

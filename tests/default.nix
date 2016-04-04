@@ -13,7 +13,7 @@ in {
     starbound = callTest ./games/starbound.nix;
   };
   programs = {
-    gpg-agent = callTest ./programs/gpg-agent;
+    gnupg = callTest ./programs/gnupg;
   };
   richi235 = {
     # Currently broken
