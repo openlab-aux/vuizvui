@@ -217,7 +217,7 @@
     scrot
     shntool
     silver-searcher
-    sleuthkit
+    #sleuthkit
     smartmontools
     sox
     spek
