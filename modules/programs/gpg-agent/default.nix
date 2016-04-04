@@ -23,8 +23,9 @@ let
     inherit pinentryWrapper;
   } ''
     cc -Wall -shared -std=c11 \
-      $(pkg-config --cflags --libs libsystemd) -ldl \
+      -DLIBSYSTEMD=\"${pkgs.systemd}/lib/libsystemd.so\" \
       -DPINENTRY_WRAPPER=\"$pinentryWrapper\" \
+      $(pkg-config --cflags libsystemd) -ldl \
       "${./agent-wrapper.c}" -o "$out" -fPIC
   '';
 

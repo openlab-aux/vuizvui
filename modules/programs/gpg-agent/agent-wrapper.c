@@ -23,7 +23,23 @@ static int get_sd_fd_for(const struct sockaddr_un *addr)
     if (main_fd == 0 && ssh_fd == 0 && scdaemon_fd == 0) {
         int num_fds;
         char **fdmap = NULL;
-        num_fds = sd_listen_fds_with_names(0, &fdmap);
+        void *libsystemd = NULL;
+        int (*_sd_listen_fds_with_names)(int, char ***);
+
+        if ((libsystemd = dlopen(LIBSYSTEMD, RTLD_LAZY)) == NULL) {
+            fprintf(stderr, "dlopen %s\n", dlerror());
+            return -1;
+        }
+
+        _sd_listen_fds_with_names =
+            dlsym(libsystemd, "sd_listen_fds_with_names");
+
+        if (_sd_listen_fds_with_names == NULL) {
+            fprintf(stderr, "dlsym %s\n", dlerror());
+            return -1;
+        }
+
+        num_fds = _sd_listen_fds_with_names(0, &fdmap);
 
         if (num_fds <= 0) {
             fputs("No suitable file descriptors in LISTEN_FDS.\n", stderr);
@@ -44,6 +60,9 @@ static int get_sd_fd_for(const struct sockaddr_un *addr)
             }
             free(fdmap);
         }
+
+        if (dlclose(libsystemd) != 0)
+            return -1;
     }
 
     if (addr->sun_path == NULL || *(addr->sun_path) == 0)
