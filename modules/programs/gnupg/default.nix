@@ -93,6 +93,8 @@ in {
     (mkIf cfg.enable {
       vuizvui.requiresTests = singleton ["vuizvui" "programs" "gnupg"];
       environment.systemPackages = [ cfg.package ];
+    })
+    (mkIf (cfg.enable && cfg.homeDir != ".gnupg") {
       environment.variables.GNUPGHOME = "~/${cfg.homeDir}";
     })
     (mkIf (cfg.enable && cfg.agent.enable) {
