@@ -142,7 +142,7 @@
     iptraf-ng
     ipv6calc
     jfsutils
-    john
+    #john
     jwhois
     keepassx
     kpcli
