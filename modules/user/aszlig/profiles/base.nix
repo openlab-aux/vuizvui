@@ -66,7 +66,6 @@ in {
 
     nixpkgs.config = {
       pulseaudio = true;
-      chromium.enablePepperFlash = true;
       firefox.jre = true;
 
       # Needed for CPU microcode
