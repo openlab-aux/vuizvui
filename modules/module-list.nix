@@ -1,6 +1,6 @@
 [
   ./hardware/gamecontroller.nix
-  ./hardware/rtl8192cu.nix
+  ./hardware/rtl8192cu
   ./hardware/t100ha
   ./hardware/thinkpad.nix
   ./profiles/common.nix
