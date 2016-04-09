@@ -15,6 +15,9 @@ let
       sha256 = "0v0rrxfmvi9flrg3xns826a6n1mlgd3vs5z2x59aqvwfj5b4rv7b";
     };
 
+    patches = lib.optional (lib.versionAtLeast kernel.version "4.0")
+      ./kernel-4.x.patch;
+
     postPatch = ''
       substituteInPlace Makefile --replace /sbin/depmod :
     '';
