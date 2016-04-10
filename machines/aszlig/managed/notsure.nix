@@ -45,6 +45,7 @@ in {
     gimp
     git
     htop
+    kde5.gwenview
     libreoffice
     miro
     mpv
