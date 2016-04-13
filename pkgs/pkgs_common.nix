@@ -229,7 +229,7 @@
     taskwarrior
     telnet
     testdisk
-    texLiveFull
+    texlive.combined.scheme-full
     texmacs
     tftp-hpa
     tldr
