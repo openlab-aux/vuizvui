@@ -7,6 +7,7 @@ let
 
   patchedMpv = overrideDerivation pkgs.mpv (o: {
     installPhase = o.installPhase + ''
+      mkdir -p "$out/etc/mpv"
       cat > "$out/etc/mpv/mpv.conf" <<CONFIG
       ao=pulse
       CONFIG
