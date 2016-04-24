@@ -84,8 +84,11 @@ in
 
     services.openssh.enable = true;
 
-    networking.networkmanager.enable = true;
     networking.firewall.enable = false;
+    networking.wireless = {
+      enable = true;
+      networks."Labor 2.0".psk = "nerdhoehle2";
+    };
 
     # TODO: an argument that tells about hardware capability
     nix.maxJobs = 2;
