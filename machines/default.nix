@@ -2,6 +2,7 @@
 
 let
   callMachine = import ../lib/call-machine.nix;
+  nixpkgs = import (import ../nixpkgs-path.nix) {};
 in {
   aszlig = {
     dnyarri   = callMachine ./aszlig/dnyarri.nix {};
@@ -15,7 +16,7 @@ in {
     };
   };
   labnet = {
-    labtop = callMachine ./labnet/labtop.nix {};
+    labtops = import ./labnet/labtop.nix { inherit (nixpkgs) lib; };
   };
   profpatsch = {
     katara = callMachine ./profpatsch/katara.nix {};

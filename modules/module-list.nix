@@ -25,5 +25,6 @@
   ./user/aszlig/services/slim
   ./user/aszlig/services/vlock
   ./user/aszlig/system/kernel.nix
+  ./user/openlab/labtops.nix
   ./user/profpatsch/programs/scanning.nix
 ]
