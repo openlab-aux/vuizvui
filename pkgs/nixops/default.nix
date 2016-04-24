@@ -18,6 +18,9 @@ let
     postPatch = ''
       sed -i -re 's!<nixpkgs([^>]*)>!${import ../../nixpkgs-path.nix}\1!g' \
         release.nix doc/manual/default.nix doc/manual/resource.nix
+      # XXX: Hack to get it to build for now.
+      sed -i -e 's/pkgs\.libxslt/pkgs.libxslt.bin/g' \
+        doc/manual/default.nix doc/manual/resource.nix
     '';
 
     installPhase = ''
