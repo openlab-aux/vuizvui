@@ -54,7 +54,8 @@ in
         # TODO doesn’t build on i686
         # TODO add a “packageset” mechanism
         # blender
-        antimony
+        # TODO build fail
+        # antimony
       ];
       three-d-printing = [
         freecad
