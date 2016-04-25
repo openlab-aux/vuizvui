@@ -2,13 +2,14 @@
 let
   callMachine = import ../../lib/call-machine.nix;
   mkLabtop = hostname: config: {
+    imports = [ config ];
     vuizvui.user.openlab.labtops.enable = true;
     networking.hostName = hostname;
-  } // config;
+  };
   mkLabtops = lib.mapAttrs (name: cfg: callMachine (mkLabtop name cfg) {});
 
   labtop = {
-    boot.loader.grub.device = "/dev/disk/by-id/ata-HITACHI_HTS722010K9SA00_080711DP0270DPGLVMPC";
+    boot.loader.grub.device = "/dev/sda";
 
     boot.kernelModules = [ "kvm-intel" ];
     boot.initrd.availableKernelModules = [
@@ -16,7 +17,7 @@ let
     ];
 
     fileSystems."/" = {
-      device = "/dev/disk/by-uuid/754fd3e3-2e04-4028-9363-0c6bb4c54367";
+      device = "/dev/sda1";
       fsType = "ext4";
     };
 
@@ -26,6 +27,13 @@ let
 
     networking.enableIntel3945ABGFirmware = true;
 
+
+    users.users.kevin = {
+      isNormalUser = true;
+      password = "kevin";
+    };
+    users.users.root.password = "root";
+
   };
 
 
@@ -34,10 +42,9 @@ let
     boot.loader.grub.device = "/dev/sda";
 
     fileSystems."/" = {
-      device = "/dev/sda";
+      device = "/dev/sda1";
       fsType = "ext4";
     };
-
   };
 
 in
