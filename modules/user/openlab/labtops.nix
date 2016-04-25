@@ -16,6 +16,11 @@ in
 
 
   config = mkIf cfg.enable {
+    boot.loader.grub.device = mkDefault "/dev/sda";
+    fileSystems."/" = mkDefault {
+      device = "/dev/disk/by-label/labtop";
+      fsType = "ext4";
+    };
 
     i18n = {
       consoleFont = "lat9w-16";

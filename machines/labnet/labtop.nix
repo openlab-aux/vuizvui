@@ -9,17 +9,11 @@ let
   mkLabtops = lib.mapAttrs (name: cfg: callMachine (mkLabtop name cfg) {});
 
   labtop = {
-    boot.loader.grub.device = "/dev/sda";
 
     boot.kernelModules = [ "kvm-intel" ];
     boot.initrd.availableKernelModules = [
       "uhci_hcd" "ehci_pci" "ata_piix" "firewire_ohci" "usb_storage"
     ];
-
-    fileSystems."/" = {
-      device = "/dev/sda1";
-      fsType = "ext4";
-    };
 
     vuizvui.hardware.thinkpad.enable = true;
 
@@ -39,12 +33,6 @@ let
 
   labhanns = {
     nixpkgs.system = "i686-linux";
-    boot.loader.grub.device = "/dev/sda";
-
-    fileSystems."/" = {
-      device = "/dev/sda1";
-      fsType = "ext4";
-    };
   };
 
 in
