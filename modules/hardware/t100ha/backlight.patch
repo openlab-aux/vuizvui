@@ -1,5 +1,5 @@
 diff --git a/drivers/gpu/drm/i915/intel_dsi.c b/drivers/gpu/drm/i915/intel_dsi.c
-index 01b8e9f..ef74047 100644
+index 3562bf3..4ae5430 100644
 --- a/drivers/gpu/drm/i915/intel_dsi.c
 +++ b/drivers/gpu/drm/i915/intel_dsi.c
 @@ -551,6 +551,8 @@ static void intel_dsi_disable(struct intel_encoder *encoder)
@@ -20,7 +20,7 @@ index 01b8e9f..ef74047 100644
  	for_each_dsi_port(port, intel_dsi->ports) {
  		/* Panel commands can be sent when clock is in LP11 */
  		I915_WRITE(MIPI_DEVICE_READY(port), 0x0);
-@@ -1065,6 +1069,7 @@ static void intel_dsi_connector_destroy(struct drm_connector *connector)
+@@ -1093,6 +1097,7 @@ static void intel_dsi_connector_destroy(struct drm_connector *connector)
  
  	DRM_DEBUG_KMS("\n");
  	intel_panel_fini(&intel_connector->panel);
@@ -29,7 +29,7 @@ index 01b8e9f..ef74047 100644
  	kfree(connector);
  }
 diff --git a/drivers/gpu/drm/i915/intel_panel.c b/drivers/gpu/drm/i915/intel_panel.c
-index 21ee647..ddd5743 100644
+index 8c8996f..4c8678a 100644
 --- a/drivers/gpu/drm/i915/intel_panel.c
 +++ b/drivers/gpu/drm/i915/intel_panel.c
 @@ -32,6 +32,7 @@
@@ -97,7 +97,7 @@ index 21ee647..ddd5743 100644
  void intel_panel_enable_backlight(struct intel_connector *connector)
  {
  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
-@@ -1659,6 +1689,21 @@ static int pwm_setup_backlight(struct intel_connector *connector,
+@@ -1657,6 +1687,20 @@ static int pwm_setup_backlight(struct intel_connector *connector,
  	return 0;
  }
  
@@ -106,7 +106,6 @@ index 21ee647..ddd5743 100644
 +{
 +	struct intel_panel *panel = &connector->panel;
 +
-+	printk("vlv_pmic_setup_backlight\n");
 +	panel->backlight.present = 1;
 +	panel->backlight.min = 0x00;
 +	panel->backlight.max = 0xFF;
@@ -119,7 +118,7 @@ index 21ee647..ddd5743 100644
  int intel_panel_setup_backlight(struct drm_connector *connector, enum pipe pipe)
  {
  	struct drm_i915_private *dev_priv = to_i915(connector->dev);
-@@ -1666,6 +1711,8 @@ int intel_panel_setup_backlight(struct drm_connector *connector, enum pipe pipe)
+@@ -1664,6 +1708,8 @@ int intel_panel_setup_backlight(struct drm_connector *connector, enum pipe pipe)
  	struct intel_panel *panel = &intel_connector->panel;
  	int ret;
  
@@ -128,10 +127,10 @@ index 21ee647..ddd5743 100644
  	if (!dev_priv->vbt.backlight.present) {
  		if (dev_priv->quirks & QUIRK_BACKLIGHT_PRESENT) {
  			DRM_DEBUG_KMS("no backlight present per VBT, but present per quirk\n");
-@@ -1746,18 +1793,17 @@ intel_panel_init_backlight_funcs(struct intel_panel *panel)
+@@ -1744,18 +1790,17 @@ intel_panel_init_backlight_funcs(struct intel_panel *panel)
  		panel->backlight.hz_to_pwm = pch_hz_to_pwm;
  	} else if (IS_VALLEYVIEW(dev_priv) || IS_CHERRYVIEW(dev_priv)) {
- 		if (dev_priv->vbt.has_mipi) {
+ 		if (connector->base.connector_type == DRM_MODE_CONNECTOR_DSI) {
 -			panel->backlight.setup = pwm_setup_backlight;
 -			panel->backlight.enable = pwm_enable_backlight;
 -			panel->backlight.disable = pwm_disable_backlight;

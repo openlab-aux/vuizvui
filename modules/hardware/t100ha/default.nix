@@ -11,7 +11,21 @@ in {
     # It's a CherryTrail SoC, so we want to have the latest and greatest with a
     # few additional patches:
     boot.kernelPackages = let
-      argsOverride = {
+      nixpkgs = import ../../../nixpkgs-path.nix;
+      linuxNextVersion = "20160426";
+      mkKernel = import "${nixpkgs}/pkgs/os-specific/linux/kernel/generic.nix";
+      t100haKernel = mkKernel rec {
+        version = "4.6-rc5";
+        modDirVersion = "4.6.0-rc5-next-${linuxNextVersion}";
+        extraMeta.branch = "4.6";
+
+        src = pkgs.fetchgit {
+          url = "git://git.kernel.org/pub/scm/linux/kernel/git/next/"
+              + "linux-next.git";
+          rev = "refs/tags/next-${linuxNextVersion}";
+          sha256 = "0qa5fpli9y3xk01yrc7sy2v4vywlkj7aclslmz79r1ry6smfnv2b";
+        };
+
         kernelPatches = [
           { name = "backlight";
             patch = ./backlight.patch;
@@ -33,10 +47,16 @@ in {
           DRM y
           DRM_I915 y
         '';
-      };
 
-      patched = pkgs.linux_testing.override { inherit argsOverride; };
-      self = pkgs.linuxPackagesFor patched self;
+        features.iwlwifi = true;
+        features.efiBootStub = true;
+        features.needsCifsUtils = true;
+        features.canDisableNetfilterConntrackHelpers = true;
+        features.netfilterRPFilter = true;
+
+        inherit (pkgs) stdenv perl buildLinux;
+      };
+      self = pkgs.linuxPackagesFor t100haKernel self;
     in self;
 
     # By default the console is rotated by 90 degrees to the right.
