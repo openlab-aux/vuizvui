@@ -33,7 +33,7 @@
   hardware.pulseaudio.enable = true;
 
   i18n.consoleKeyMap = "de";
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "de_DE.UTF-8";
 
   networking.hostName = "tyree";
   networking.firewall.enable = false;
