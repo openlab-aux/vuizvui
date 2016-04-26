@@ -58,6 +58,9 @@
   services.openssh.enable = true;
   services.tlp.enable = true;
 
+  services.printing.enable = true;
+  services.printing.drivers = [ pkgs.gutenprint pkgs.hplip ];
+
   services.xserver.enable = true;
   services.xserver.layout = "de";
   services.xserver.xkbOptions = "eurosign:e";
