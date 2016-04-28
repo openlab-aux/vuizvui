@@ -50,7 +50,6 @@ in {
     };
 
     hardware.pulseaudio.enable = true;
-    vuizvui.hardware.thinkpad.enable = true;
 
     vuizvui.hardware.thinkpad.enable = true;
 
