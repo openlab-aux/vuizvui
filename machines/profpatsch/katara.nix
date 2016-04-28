@@ -2,6 +2,7 @@
 let
 
   myPkgs = import ./pkgs.nix { inherit pkgs lib; };
+  fish = pkgs.fish;
 
   # mytexlive = with pkgs.texlive; combine { inherit minted; }; # inherit scheme-medium minted units collection-bibtexextra; };
 
@@ -16,7 +17,7 @@ let
     home = "/home/philip";
           passwordFile = "${home}/.config/passwd";
           # password = "test"; # in case of emergency, break glass
-    shell = "${pkgs.fish}/bin/fish";
+    shell = "${fish}/bin/fish";
           openssh.authorizedKeys.keys = authKeys;
     };
 
@@ -32,7 +33,6 @@ in {
     boot.loader.grub.version = 2;
     boot.loader.grub.device = "/dev/sda";
     boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "cryptroot"; } ];
-
 
     ###########
     # Hardware
@@ -52,6 +52,7 @@ in {
     hardware.pulseaudio.enable = true;
     vuizvui.hardware.thinkpad.enable = true;
 
+    vuizvui.hardware.thinkpad.enable = true;
 
     ######
     # Nix
@@ -86,7 +87,6 @@ in {
       [
         atool             # archive tools
         curl              # transfer data to/from a URL
-        diffoscope        # diff whole filetrees (and archives)
         dos2unix          # text file conversion
         fdupes            # file duplicate finder
         file              # file information
@@ -107,13 +107,13 @@ in {
         unzip             # extract zip archives
         vim               # slight improvement over vi
         wget              # the other URL file fetcher
+        wirelesstools     # iwlist (wifi scan)
       ];
       xPkgs = [
         dmenu             # simple UI menu builder
-        dunst             # notification daemon (implements libnotify)
+        dunst             # notification daemon (interfaces with libnotify)
         alock             # lock screen
         libnotify         # notification library
-        lxappearance      # GTK theme chooser
         myPkgs.taffybar   # status bar
         xbindkeys         # keybinding manager
         xclip             # clipboard thingy
@@ -123,46 +123,47 @@ in {
         gnome3.adwaita-icon-theme
         # TODO: get themes to work. See notes.org.
         gnome3.gnome_themes_standard
-        # kde4.oxygen-icons TODO
         pavucontrol
       ];
       hp = haskellPackages;
       programmingTools = [
-        hp.cabal-install  # haskell packaging tool
-        git               # version control system
-        gnumake           # make
-        silver-searcher   # file content searcher, > ack > grep
-        telnet            # tcp debugging
+        hp.cabal-install      # haskell packaging tool
+        hp.cabal2nix          # convert cabal files to nixexprs
+        hp.stack              # saviour of all
+        git                   # version control system
+        gitAndTools.git-annex # version controlled binary file storage
+        # mercurial             # the other version control system
+        silver-searcher       # file content searcher, > ack > grep
+        telnet                # tcp debugging
       ];
       userPrograms = [
         abcde                # high-level cd-ripper with tag support
         anki                 # spaced repetition system
         audacity lame        # audio editor and mp3 codec
-        beets                # audio file metadata tagger
+        myPkgs.beets         # audio file metadata tagger
         # chromium             # browser
         (chromium.override { enablePepperFlash = true; })
+        # droopy               # simple HTML upload server
         dropbox-cli          # dropbox.com client
         emacs                # pretty neat operating system i guess
         feh                  # brother of meh, displays images in a meh way, but fast
         filezilla            # FTP GUI business-ready interface framework
-        ghc                  # Glasgow Haskell Compiler, mostly for ghci
+        ghc                  # <s>Glorious</s>Glasgow Haskell Compiler, mostly for ghci
         gimp                 # graphics
         gmpc                 # mpd client and best music player interface in the world
         httpie               # nice http CLI
-        keybase              # the saviour of GPG™
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm             # terminal emulator, best one around
-        mpv                  # you are my sun and my stars. and you play my stuff.
-        # mytexlive            # you didn’t see a thing
+        myPkgs.mpv           # you are my sun and my stars. and you play my stuff.
         newsbeuter           # RSS/Atom feed reader
         networkmanagerapplet # NetworkManager status bar widget
         pass                 # standard unix password manager
         poezio               # CLI XMPP client
         poppler_utils        # pdfto*
         ranger               # CLI file browser
+        remind               # calender & reminder program
         rtorrent             # monster of a bittorrent client
-        myPkgs.sent                 # suckless presentation tool
-        stack                # haskell package manager
+        myPkgs.sent          # suckless presentation tool
         pkgs.vuizvui.show-qr-code # display a QR code
         zathura              # pdf viewer
       ];
@@ -180,9 +181,8 @@ in {
         # haskellPackages.cabal2nix # convert cabal files to nix
       ];
       tmpPkgs = [
-        # needs user service
+        # TODO needs user service
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
-        snapper
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs ++ programmingTools ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
     system.extraDependencies = with pkgs; lib.singleton (
@@ -312,6 +312,7 @@ in {
       source-code-pro
       dejavu_fonts
       ubuntu_font_family
+      league-of-moveable-type
     ];
 
 
@@ -337,6 +338,8 @@ in {
       '';
     };
 
+    # build derivation on taalo
+    vuizvui.user.aszlig.programs.taalo-build.enable = true;
 
     vuizvui.user.profpatsch.programs.scanning.enable = true;
 

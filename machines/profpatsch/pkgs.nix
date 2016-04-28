@@ -29,4 +29,8 @@ with pkgs;
   # sent = pkgs:q.sent.override { patches = [ ./sent-bg.patch ]; };
   inherit sent;
 
+  mpv = pkgs.mpv.override { scripts = [ pkgs.mpvScripts.convert ]; };
+
+  beets = pkgs.beets.override { enableAlternatives = true; };
+
 }
