@@ -64,7 +64,17 @@ in {
     # Network
 
     networking.hostName = "katara";
-    networking.networkmanager.enable = true;
+    networking.networkmanager = {
+      enable = true;
+      basePackages = with pkgs; {
+        # the openssl backend doesn’t like the protocols of my university
+        networkmanager_openconnect =
+          pkgs.networkmanager_openconnect.override { openconnect = pkgs.openconnect_gnutls; };
+        inherit networkmanager modemmanager wpa_supplicant
+                networkmanager_openvpn networkmanager_vpnc
+                networkmanager_pptp networkmanager_l2tp;
+      };
+    };
 
     networking.firewall.enable = false;
 
