@@ -141,7 +141,7 @@ in {
         hp.cabal2nix          # convert cabal files to nixexprs
         hp.stack              # saviour of all
         git                   # version control system
-        gitAndTools.git-annex # version controlled binary file storage
+        myPkgs.git-annex # version controlled binary file storage
         # mercurial             # the other version control system
         silver-searcher       # file content searcher, > ack > grep
         telnet                # tcp debugging

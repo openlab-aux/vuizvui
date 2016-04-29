@@ -1,19 +1,32 @@
 { pkgs, lib }:
 
+with pkgs;
 let
 
   addPythonRuntimeDeps = drv: deps: drv.overrideDerivation (old: {
     propagatedNativeBuildInputs = old.propagatedNativeBuildInputs ++ deps;
   });
 
-in
-with pkgs;
-{
+  # containered = name: packages: users: { ... }:
+  #   {
+  #     containers."${name}" = {
+  #       config = {
+  #         environment.systemPackages = packages;
+  #         users.users = users;
+  #         services.sshd.enable = true;
+  #       };
+  #       privateNetwork = true;
+  #       localAddress = "127.0.0.2";
+  #     };
+  #     nixpkgs.config.allowUnfree = true;
+  #   };
 
-  offlineimap = addPythonRuntimeDeps offlineimap [ pythonPackages.pygpgme ];
+  # pkgs
 
-  taffybar = taffybar.override {
-    ghcWithPackages = (haskellPackages.override {
+  offlineimap = addPythonRuntimeDeps pkgs.offlineimap [ pkgs.pythonPackages.pygpgme ];
+
+  taffybar = pkgs.taffybar.override {
+    ghcWithPackages = (pkgs.haskellPackages.override {
       overrides = _: super: {
         taffybar = super.taffybar.overrideDerivation (old: {
           name = old.name + "foo";
@@ -27,11 +40,17 @@ with pkgs;
   };
 
   # sent = pkgs:q.sent.override { patches = [ ./sent-bg.patch ]; };
-  inherit sent;
 
   # mpv = pkgs.mpv.override { scripts = [ pkgs.mpvScripts.convert ]; };
-  inherit mpv;
 
   beets = pkgs.beets.override { enableAlternatives = true; };
 
-}
+  git-annex = pkgs.gitAndTools.git-annex.overrideDerivation (old: {
+      buildInputs = old.buildInputs ++ [ pkgs.makeWrapper ];
+      postFixup = ''
+        wrapProgram $out/bin/git-annex --prefix PATH ":" "${pkgs.lsof}/bin";
+      '';
+  });
+
+in
+{ inherit taffybar offlineimap sent mpv beets git-annex; }
