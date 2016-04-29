@@ -88,7 +88,8 @@ in {
     ###########
     # Packages
 
-    environment.profileRelativeEnvVars = { EDITOR = [ "${pkgs.vim}/bin/vim" ]; };
+
+    environment.sessionVariables = { EDITOR = "${pkgs.vim}/bin/vim"; };
 
     environment.systemPackages = with pkgs;
     let
@@ -107,7 +108,7 @@ in {
         mkpasswd          # UNIX password creator
         mosh              # ssh with stable connections
         nfs-utils         # the filesystem of the future for 20 years
-        (nmap.override { graphicalSupport = true; }) # stats about clients in the network
+        nmap              # stats about clients in the network
         smartmontools     # check disk state
         stow              # dotfile management
         tmux              # detachable terminal multiplexer
@@ -280,6 +281,7 @@ in {
             ''
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
+            export PATH+=":$HOME/.bin" #add (temporary) executables
             export EDITOR=emacsclient
 
             eval $(gpg-agent --daemon --enable-ssh-support)
@@ -289,7 +291,7 @@ in {
             set-background &
             # TODO xbindkeys user service file
             xbindkeys
-            nice -n19 dropbox start &
+            nice -n19 dropbox-cli start &
             nm-applet &
             '';
       };
@@ -346,6 +348,7 @@ in {
         set -x GPG_TTY (tty)
       '';
     };
+    vuizvui.programs.fish.fasd.enable = true;
 
     # build derivation on taalo
     vuizvui.user.aszlig.programs.taalo-build.enable = true;
