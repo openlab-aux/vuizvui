@@ -26,7 +26,7 @@
     mkvtoolnix
     mutt-with-sidebar
     nzbget
-    scummvm
+    #scummvm
     slrn
     twister
     urlview
