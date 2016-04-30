@@ -31,9 +31,9 @@ let
   };
 
 
-  hannswurst = {
+  hannswurscht = {
     nixpkgs.system = "i686-linux";
   };
 
 in
-  mkLabtops { inherit labtop hannswurst; }
+  mkLabtops { inherit labtop hannswurscht; }
