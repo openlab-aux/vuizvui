@@ -1,14 +1,18 @@
 { config, pkgs, lib, ... }:
 
 {
-#  virtualisation = {
-#    virtualbox = {
-#      host = {
-#        enable = true;
-#        enableHardening = true;
-#      };
-#    };
-#  };
+  virtualisation = {
+    virtualbox = {
+      host = {
+        enable = true;
+        enableHardening = true;
+      };
+    };
+    libvirtd = {
+      enable = true;
+      enableKVM = true;
+    };
+  };
 
   services = {
     gpm.enable = true;

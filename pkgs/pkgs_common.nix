@@ -22,9 +22,9 @@
       enableOfficalBranding = true;
     };
 
-#    virtualbox = {
-#      enableExtensionPack = true;
-#    };
+    virtualbox = {
+      enableExtensionPack = true;
+    };
 
     mpv = {
       youtubeSupport = true;
@@ -33,6 +33,9 @@
 
   environment.systemPackages = with pkgs; [
     #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
+    #john
+    #sleuthkit
+    #texLiveFull
     abook
     accountsservice
     apg
@@ -142,7 +145,6 @@
     iptraf-ng
     ipv6calc
     jfsutils
-    #john
     jwhois
     keepassx
     kpcli
@@ -207,6 +209,7 @@
     python34Packages.hovercraft
     pythonPackages.livestreamer
     pythonPackages.rainbowstream
+    qemu
     qrencode
     recode
     reiserfsprogs
@@ -217,7 +220,6 @@
     scrot
     shntool
     silver-searcher
-    #sleuthkit
     smartmontools
     sox
     spek
@@ -229,7 +231,6 @@
     taskwarrior
     telnet
     testdisk
-    #texLiveFull
     texmacs
     tftp-hpa
     tldr
@@ -247,6 +248,7 @@
     valgrind
     vanilla-dmz
     vim_configurable
+    virtualbox
     vit
     vlc
     vlock
@@ -269,7 +271,7 @@
     zathura
     zbar
     zip
-    zsync
     zotero
+    zsync
   ];
 }
