@@ -248,7 +248,6 @@
     valgrind
     vanilla-dmz
     vim_configurable
-    virtualbox
     vit
     vlc
     vlock
