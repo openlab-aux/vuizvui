@@ -235,7 +235,7 @@
     tldr
     tmux
     toilet
-    #tomahawk
+    tomahawk
     transmission_remote_gtk
     tree
     tribler
