@@ -45,7 +45,7 @@
     atftp
     atom
     attic
-    #audacity
+    audacity
     axel
     bc
     biber
