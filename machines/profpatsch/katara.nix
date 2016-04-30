@@ -137,9 +137,7 @@ in {
       ];
       hp = haskellPackages;
       programmingTools = [
-        hp.cabal-install      # haskell packaging tool
         hp.cabal2nix          # convert cabal files to nixexprs
-        hp.stack              # saviour of all
         git                   # version control system
         myPkgs.git-annex # version controlled binary file storage
         # mercurial             # the other version control system
