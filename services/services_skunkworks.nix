@@ -139,6 +139,21 @@
         *.color13:      base06
         *.color14:      base0F
         *.color15:      base07
+        ! ------------------------------------------------------------------------------
+        ! ROFI Color theme & Settings
+        ! ------------------------------------------------------------------------------
+        rofi.modi: run
+        rofi.opacity: 85
+        rofi.width: 100
+        rofi.lines: 3
+        rofi.padding: 450
+        rofi.bw: 0
+        rofi.eh: 2
+        rofi.color-enabled: true
+        rofi.color-window: #393939, #393939, #268bd2
+        rofi.color-normal: #393939, #ffffff, #393939, #268bd2, #ffffff
+        rofi.color-active: #393939, #268bd2, #393939, #268bd2, #205171
+        rofi.color-urgent: #393939, #f3843d, #393939, #268bd2, #ffc39c
       ''}"
 
       DISPLAY=:0.1 ${pkgs.windowmaker}/bin/wmaker &

@@ -68,6 +68,21 @@
         XTerm*cursorColor:    #545f65
         *background:          #121212
         *foreground:          #babdb6
+        ! ------------------------------------------------------------------------------
+        ! ROFI Color theme & Settings
+        ! ------------------------------------------------------------------------------
+        rofi.modi: run
+        rofi.opacity: 85
+        rofi.width: 100
+        rofi.lines: 3
+        rofi.padding: 300
+        rofi.bw: 0
+        rofi.eh: 2
+        rofi.color-enabled: true
+        rofi.color-window: #393939, #393939, #268bd2
+        rofi.color-normal: #393939, #ffffff, #393939, #268bd2, #ffffff
+        rofi.color-active: #393939, #268bd2, #393939, #268bd2, #205171
+        rofi.color-urgent: #393939, #f3843d, #393939, #268bd2, #ffc39c
       ''}"
     '';
   };
