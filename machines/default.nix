@@ -27,7 +27,9 @@ in {
     };
   };
   labnet = {
-    labtops = import ./labnet/labtop.nix { inherit (nixpkgs) lib; };
+    labtops = callMachines ./labnet/labtop.nix {
+      extraConfig.vuizvui.user.openlab.labtops.enable = true;
+    };
   };
   profpatsch = {
     katara = callMachine ./profpatsch/katara.nix {};
