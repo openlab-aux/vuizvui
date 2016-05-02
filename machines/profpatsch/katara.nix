@@ -282,7 +282,9 @@ in {
             export PATH+=":$HOME/.bin" #add (temporary) executables
             export EDITOR=emacsclient
 
-            eval $(gpg-agent --daemon --enable-ssh-support)
+            gpg-connect-agent /bye
+            unset SSH_AGENT_PID
+            export SSH_AUTH_SOCK="''${HOME}/.gnupg/S.gpg-agent.ssh"
 
             xset r rate 250 35
 
