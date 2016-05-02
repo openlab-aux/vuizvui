@@ -34,6 +34,7 @@
 <screen>
 nix-channel --add <link
   xlink:href="&hydra.channelbase;/channels.machines.labnet.labtop"/> vuizvui
+nix-channel --remove nixos  # otherwise it will interfere with the rebuild
 nix-channel --update
 </screen>
     </command>
