@@ -1,0 +1,18 @@
+diff --git a/config.def.h b/config.def.h
+index 92d577c..87baee5 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -8,8 +8,11 @@ static char *fontfallbacks[] = {
+ #define NUMFONTSCALES 42
+ #define FONTSZ(x) ((int)(10.0 * powf(1.1288, (x)))) /* x in [0, NUMFONTSCALES-1] */
+ 
+-static const char *fgcol = "#000000";
+-static const char *bgcol = "#FFFFFF";
++/* FUCK YOU */
++/* static const char *fgcol = "#000000"; */
++/* static const char *bgcol = "#FFFFFF"; */
++static const char *bgcol = "#000000";
++static const char *fgcol = "#FFFFFF";
+ 
+ static const float linespacing = 1.4;
+ 

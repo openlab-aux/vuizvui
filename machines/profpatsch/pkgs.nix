@@ -39,7 +39,7 @@ let
     }).ghcWithPackages;
   };
 
-  # sent = pkgs:q.sent.override { patches = [ ./sent-bg.patch ]; };
+  sent = pkgs.sent.override { patches = [ ./sent-bg.patch ]; };
 
   # mpv = pkgs.mpv.override { scripts = [ pkgs.mpvScripts.convert ]; };
 
