@@ -40,7 +40,7 @@ let
   mpath = if vuizvuiSrc == null then ./machines else "${vuizvui}/machines";
   allMachines = import mpath { inherit system; };
 
-  allTests = import ./lib/get-tests.nix ({
+  allTests = with import ./lib; getVuizvuiTests ({
     inherit system nixpkgs;
     excludeVuizvuiGames = true;
   } // pkgsUpstream.lib.optionalAttrs (vuizvuiSrc != null) {

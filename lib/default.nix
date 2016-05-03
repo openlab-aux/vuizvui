@@ -12,4 +12,6 @@ rec {
       };
     } // removeAttrs args [ "extraConfig" ]);
   }) (attrNames machines));
+
+  getVuizvuiTests = import ./get-tests.nix;
 }
