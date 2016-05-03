@@ -13,7 +13,7 @@ with import ../lib;
     };
   };
   labnet = {
-    labtops = callNetwork ./labnet/labtop.nix {
+    labtops = callNetwork ./labnet/labtops.nix {
       vuizvui.user.openlab.labtops.enable = true;
     };
   };
