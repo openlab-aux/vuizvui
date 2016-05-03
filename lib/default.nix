@@ -1,7 +1,7 @@
 rec {
   callMachine = import ./call-machine.nix;
 
-  callMachines = path: args: let
+  callNetwork = path: args: let
     machines = import path;
   in with builtins; listToAttrs (map (name: {
     inherit name;

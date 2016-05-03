@@ -13,7 +13,7 @@ with import ../lib;
     };
   };
   labnet = {
-    labtops = callMachines ./labnet/labtop.nix {
+    labtops = callNetwork ./labnet/labtop.nix {
       extraConfig.vuizvui.user.openlab.labtops.enable = true;
     };
   };
