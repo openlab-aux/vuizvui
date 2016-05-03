@@ -9,9 +9,6 @@ let
 
   anyAttrs = pred: cfg: any id (mapAttrsToList (const pred) cfg);
 
-  isDefault = path: (getAttrFromPath path options).default
-                 == (getAttrFromPath path config);
-
   upstreamTests = concatMap mkTest [
     { check = config.services.avahi.enable;
       path  = ["nixos" "avahi"];
@@ -128,10 +125,29 @@ let
     { check = config.services.xserver.desktopManager.kde4.enable;
       path  = ["nixos" "kde4"];
     }
-    { check = !(isDefault ["services" "xserver" "layout"])
-           || !(isDefault ["services" "xserver" "xkbVariant"])
-           || !(isDefault ["i18n" "consoleKeyMap"]);
-      path  = ["nixos" "keymap"];
+    { check = config.i18n.consoleKeyMap          == "azerty/fr"
+           || config.services.xserver.layout     == "fr";
+      path  = ["nixos" "keymap" "azerty"];
+    }
+    { check = config.i18n.consoleKeyMap          == "en-latin9"
+           || config.services.xserver.xkbVariant == "colemak";
+      path  = ["nixos" "keymap" "colemak"];
+    }
+    { check = config.i18n.consoleKeyMap          == "dvorak"
+           || config.services.xserver.layout     == "dvorak";
+      path  = ["nixos" "keymap" "dvorak"];
+    }
+    { check = config.i18n.consoleKeyMap          == "dvp"
+           || config.services.xserver.xkbVariant == "dvp";
+      path  = ["nixos" "keymap" "dvp"];
+    }
+    { check = config.i18n.consoleKeyMap          == "neo"
+           || config.services.xserver.xkbVariant == "neo";
+      path  = ["nixos" "keymap" "neo"];
+    }
+    { check = config.i18n.consoleKeyMap          == "de"
+           || config.services.xserver.layout     == "de";
+      path  = ["nixos" "keymap" "qwertz"];
     }
     { check = with config.services.kubernetes; apiserver.enable
            || scheduler.enable || controllerManager.enable || kubelet.enable
