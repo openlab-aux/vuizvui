@@ -1,15 +1,10 @@
-path:
-
-{ system ? builtins.currentSystem
-, extraConfig ? {}
-}:
+path: cfg:
 
 let
   nixpkgs = import ../nixpkgs-path.nix;
 
   eval = import "${nixpkgs}/nixos/lib/eval-config.nix" {
-    inherit system;
-    modules = [ path extraConfig ] ++ import ../modules/module-list.nix;
+    modules = [ path cfg ] ++ import ../modules/module-list.nix;
   };
 
   iso = mkIso "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix" (
@@ -54,16 +49,14 @@ let
       };
     };
   in import "${nixpkgs}/nixos/lib/eval-config.nix" {
-    inherit system;
     modules = [ config wrapIso ];
   };
 
   config = {
-    imports = [ path extraConfig ] ++ import ../modules/module-list.nix;
+    imports = [ path cfg ] ++ import ../modules/module-list.nix;
   };
 
   vm = (import "${nixpkgs}/nixos" {
-    inherit system;
     configuration = config;
   }).vm;
 

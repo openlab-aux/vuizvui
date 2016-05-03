@@ -14,7 +14,7 @@ with import ../lib;
   };
   labnet = {
     labtops = callNetwork ./labnet/labtop.nix {
-      extraConfig.vuizvui.user.openlab.labtops.enable = true;
+      vuizvui.user.openlab.labtops.enable = true;
     };
   };
   profpatsch = {
