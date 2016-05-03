@@ -7,7 +7,7 @@ let
     modules = [ path cfg ] ++ import ../modules/module-list.nix;
   };
 
-  iso = mkIso "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix" (
+  iso = mkIso "installer/cd-dvd/iso-image.nix" (
     { lib, ... }: let
       name = eval.config.networking.hostName;
       upperName = lib.toUpper name;
@@ -20,7 +20,7 @@ let
     }
   );
 
-  installerIso = mkIso "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix" {
+  installerIso = mkIso "installer/cd-dvd/installation-cd-minimal.nix" {
     environment.sessionVariables = {
       NIX_PATH = [ "vuizvui=${../.}" ];
     };
@@ -28,7 +28,7 @@ let
 
   mkIso = isoModule: extraConfig: let
     wrapIso = { config, pkgs, lib, ... }@attrs: let
-      isoEval = import isoModule attrs;
+      isoEval = import "${nixpkgs}/nixos/modules/${isoModule}" attrs;
       isoEvalcfg = isoEval.config or {};
       bootcfg = isoEvalcfg.boot or {};
       fscfg = isoEvalcfg.fileSystems or {};
