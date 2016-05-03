@@ -1,15 +1,21 @@
 path: args:
 
-with builtins;
+with import "${import ../nixpkgs-path.nix}/lib";
 
 let
-  machines = import path;
-in listToAttrs (map (name: {
-  inherit name;
-  value = import ./call-machine.nix machines.${name} ({
-    extraConfig = { lib, ... }: {
-      imports = lib.singleton (args.extraConfig or {});
-      networking.hostName = lib.mkOverride 900 name;
-    };
-  } // removeAttrs args [ "extraConfig" ]);
-}) (attrNames machines))
+  machineAttrs = import path;
+
+  mkMachine = name: {
+    inherit name;
+    value = import ./call-machine.nix machineAttrs.${name} ({
+      extraConfig = { lib, ... }: {
+        imports = lib.singleton (args.extraConfig or {});
+        networking.hostName = lib.mkOverride 900 name;
+        _module.args.nodes = mapAttrs (const (m: m ? eval)) machines;
+      };
+    } // removeAttrs args [ "extraConfig" ]);
+  };
+
+  machines = listToAttrs (map mkMachine (attrNames machineAttrs));
+
+in machines
