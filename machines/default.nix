@@ -1,20 +1,6 @@
-{ system ? builtins.currentSystem, ... }:
+with import ../lib;
 
-let
-  callMachine = import ../lib/call-machine.nix;
-  callMachines = path: args: let
-    machines = import path;
-  in with builtins; listToAttrs (map (name: {
-    inherit name;
-    value = callMachine machines.${name} ({
-      extraConfig = { lib, ... }: {
-        imports = lib.singleton (args.extraConfig or {});
-        networking.hostName = lib.mkOverride 900 name;
-      };
-    } // removeAttrs args [ "extraConfig" ]);
-  }) (attrNames machines));
-  nixpkgs = import (import ../nixpkgs-path.nix) {};
-in {
+{
   aszlig = {
     dnyarri   = callMachine ./aszlig/dnyarri.nix {};
     mmrnmhrm  = callMachine ./aszlig/mmrnmhrm.nix {};
