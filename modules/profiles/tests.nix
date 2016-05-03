@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ options, config, pkgs, lib, ... }:
 
 with lib;
 
@@ -9,6 +9,9 @@ let
 
   anyAttrs = pred: cfg: any id (mapAttrsToList (const pred) cfg);
 
+  isDefault = path: (getAttrFromPath path options).default
+                 == (getAttrFromPath path config);
+
   upstreamTests = concatMap mkTest [
     { check = config.services.avahi.enable;
       path  = ["nixos" "avahi"];
@@ -17,6 +20,7 @@ let
       paths = [
         ["nixos" "boot" "biosCdrom"]
         ["nixos" "boot" "biosUsb"]
+        ["nixos" "boot" "netboot"]
         ["nixos" "boot" "uefiCdrom"]
         ["nixos" "boot" "uefiUsb"]
       ];
@@ -29,6 +33,23 @@ let
     }
     { check = config.containers != {};
       path  = ["nixos" "containers"];
+    }
+    { check = anyAttrs (i: i.hostBridge != null) config.containers;
+      path  = ["nixos" "containers-bridge"];
+    }
+    { check = true;
+      path  = ["nixos" "containers-imperative"];
+    }
+    { check = anyAttrs (i: i.hostAddress  != null
+                        || i.localAddress != null) config.containers;
+      path  = ["nixos" "containers-ipv4"];
+    }
+    { check = anyAttrs (i: i.hostAddress6  != null
+                        || i.localAddress6 != null) config.containers;
+      path  = ["nixos" "containers-ipv6"];
+    }
+    { check = config.services.dnscrypt-proxy.enable;
+      path  = ["nixos" "dnscrypt-proxy"];
     }
     { check = config.virtualisation.docker.enable;
       path  = ["nixos" "docker"];
@@ -106,6 +127,11 @@ let
     }
     { check = config.services.xserver.desktopManager.kde4.enable;
       path  = ["nixos" "kde4"];
+    }
+    { check = !(isDefault ["services" "xserver" "layout"])
+           || !(isDefault ["services" "xserver" "xkbVariant"])
+           || !(isDefault ["i18n" "consoleKeyMap"]);
+      path  = ["nixos" "keymap"];
     }
     { check = with config.services.kubernetes; apiserver.enable
            || scheduler.enable || controllerManager.enable || kubelet.enable
@@ -223,6 +249,9 @@ let
     }
     { check = true;
       path  = ["nixos" "simple"];
+    }
+    { check = config.services.taskserver.enable;
+      path  = ["nixos" "taskserver"];
     }
     { check = config.services.tomcat.enable;
       path  = ["nixos" "tomcat"];
