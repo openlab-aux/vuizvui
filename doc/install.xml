@@ -55,7 +55,7 @@ nix-channel --update
     <filename>/etc/nixos/configuration.nix</filename>:
   </para>
 
-  <screen><code language="nix">(import &lt;vuizvui/machines&gt; {}).labnet.labtop.config</code></screen>
+  <screen><code language="nix">(import &lt;vuizvui/machines&gt;).labnet.labtop.config</code></screen>
 
   <para>
     Of course you need to replace <literal>labnet.labtop</literal> with the
