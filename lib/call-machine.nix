@@ -33,13 +33,13 @@ let
 
   mkIso = isoModule: extraConfig: let
     wrapIso = { config, pkgs, lib, ... }@attrs: let
-      isoEval = (import isoModule attrs);
+      isoEval = import isoModule attrs;
       isoEvalcfg = isoEval.config or {};
       bootcfg = isoEvalcfg.boot or {};
       fscfg = isoEvalcfg.fileSystems or {};
     in {
       options = isoEval.options or {};
-      imports = isoEval.imports or [ extraConfig ];
+      imports = (isoEval.imports or []) ++ [ extraConfig ];
       config = isoEvalcfg // {
         boot = bootcfg // lib.optionalAttrs (bootcfg ? loader) {
           loader = lib.mkForce bootcfg.loader;
