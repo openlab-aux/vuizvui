@@ -33,7 +33,7 @@
   hardware.cpu.intel.updateMicrocode = true;
   hardware.pulseaudio.enable = true;
 
-  i18n.consoleKeyMap = "de";
+  i18n.consoleUseXkbConfig = true;
   i18n.defaultLocale = "de_DE.UTF-8";
 
   networking.hostName = "tyree";
@@ -64,7 +64,7 @@
 
   services.xserver.enable = true;
   services.xserver.layout = "de";
-  services.xserver.xkbOptions = "eurosign:e";
+  services.xserver.xkbOptions = "eurosign:e,caps:none";
   services.xserver.displayManager.auto.enable = true;
   services.xserver.displayManager.auto.user = "bla";
   services.xserver.desktopManager.kde5.enable = true;
