@@ -38,7 +38,7 @@ let
   root = import vuizvui { inherit system; };
 
   mpath = if vuizvuiSrc == null then ./machines else "${vuizvui}/machines";
-  allMachines = import mpath { inherit system; };
+  allMachines = import mpath;
 
   allTests = with import ./lib; getVuizvuiTests ({
     inherit system nixpkgs;
