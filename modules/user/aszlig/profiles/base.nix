@@ -66,7 +66,7 @@ in {
 
     nixpkgs.config = {
       pulseaudio = true;
-      firefox.jre = true;
+      firefox.icedtea = true;
 
       # Needed for CPU microcode
       allowUnfree = true;
