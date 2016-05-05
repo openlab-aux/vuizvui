@@ -8,15 +8,14 @@
   };
 
   environment.systemPackages = with pkgs; [
-    skype
-    ipmitool
-    ipmiutil
-    ipmiview
     aircrackng
-    pythonPackages.alot
+    claws-mail
     connmanui
     cura
     horst
+    ipmitool
+    ipmiutil
+    ipmiview
     kismet
     minicom
     msmtp
@@ -27,7 +26,9 @@
     pamixer
     pmtools
     pmutils
+    pythonPackages.alot
     reaverwps
+    skype
     snort
     wavemon
     xbindkeys
