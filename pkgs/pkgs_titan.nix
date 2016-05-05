@@ -30,6 +30,7 @@
     reaverwps
     skype
     snort
+    thunderbird
     wavemon
     xbindkeys
     xorg.xbacklight
