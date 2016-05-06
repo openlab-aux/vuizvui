@@ -11,11 +11,6 @@
 
     networking.enableIntel3945ABGFirmware = true;
 
-    users.users.kevin = {
-      isNormalUser = true;
-      password = "kevin";
-    };
-    users.users.root.password = "root";
   };
 
   hannswurscht = {
