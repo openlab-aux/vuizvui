@@ -40,7 +40,8 @@ pkgs: with pkgs; [
   lastwatch
   lftp
   ltrace
-  manpages
+  man-pages
+  man-pages.docdev
   mmv
   mosh
   mp3info
