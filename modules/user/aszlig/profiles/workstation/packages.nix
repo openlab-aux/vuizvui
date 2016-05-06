@@ -79,7 +79,6 @@ pkgs: with pkgs; [
   sox
   sqlite
   stdmanpages
-  stdmanpages.docdev
   strace
   surfraw
   telnet
