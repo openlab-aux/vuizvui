@@ -22,6 +22,9 @@ let
         ["nixos" "boot" "uefiUsb"]
       ];
     }
+    { check = true;
+      path  = ["nixos" "boot-stage1"];
+    }
     { check = config.services.cadvisor.enable;
       path  = ["nixos" "cadvisor"];
     }
