@@ -131,12 +131,21 @@ in {
           ATTRS{idProduct}=="6001", OWNER="aszlig"
       '';
 
+      redshift = {
+        enable = true;
+        latitude = "48.428404";
+        longitude = "10.866007";
+        temperature.day = 5500;
+        temperature.night = 3500;
+        brightness.day = "1";
+        brightness.night = "0.6";
+      };
+
       xserver = {
         enable = true;
         layout = "dvorak";
 
         displayManager.sessionCommands = ''
-          ${pkgs.redshift}/bin/redshift -l 48.428404:10.866007 &
           ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
             Rxvt*font:                 vga
             Rxvt*background:           black
