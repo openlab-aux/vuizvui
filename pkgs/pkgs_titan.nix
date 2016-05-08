@@ -8,6 +8,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    calibre
     aircrackng
     claws-mail
     connmanui
