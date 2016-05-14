@@ -137,8 +137,6 @@ in {
         longitude = "10.866007";
         temperature.day = 5500;
         temperature.night = 3500;
-        brightness.day = "1";
-        brightness.night = "0.6";
       };
 
       xserver = {
