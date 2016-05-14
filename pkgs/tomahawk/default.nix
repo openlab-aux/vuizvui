@@ -1,5 +1,5 @@
-{ stdenv, fetchFromGitHub, fetchurl, cmake, pkgconfig, attica, boost, gnutls
-, libechonest, liblastfm, lucenepp, vlc_qt5, qca-qt5, qt5, qtkeychain
+{ stdenv, fetchFromGitHub, fetchurl, cmake, pkgconfig, boost, gnutls
+, libechonest, liblastfm, lucenepp, qca-qt5, qt5, qtkeychain
 , kde5, sparsehash, taglib, websocketpp, makeWrapper, ffmpeg_2, v4l_utils
 
 , enableXMPP      ? true,  libjreen     ? null
@@ -46,11 +46,15 @@ let
     ];
   });
 
-  vlc = vlc_qt5.override {
+  vlc = qt5.vlc.override {
     ffmpeg = ffmpeg_2.override {
       v4l_utils = v4l_utils.override { withQt4 = false; };
     };
   };
+
+  attica = kde5.attica.override { extra-cmake-modules = ecm; };
+  ecm = kde5.extra-cmake-modules.override { inherit (qt5) qttools; };
+  qca = qca-qt5.override { inherit (qt5) qtbase; };
 
 in stdenv.mkDerivation rec {
   name = "tomahawk-${version}";
@@ -69,10 +73,9 @@ in stdenv.mkDerivation rec {
   ];
 
   buildInputs = (map useQT5 [ liblastfm qt5.quazip ]) ++ [
-    qca-qt5 qtkeychainQT5 libechonestQT5 kde5.attica cmake pkgconfig
-    kde5.extra-cmake-modules boost gnutls lucenepp vlc qt5.qtbase
-    qt5.qtsvg qt5.qttools qt5.qtwebkit qt5.qtx11extras sparsehash taglib
-    websocketpp makeWrapper
+    qca qtkeychainQT5 libechonestQT5 attica cmake pkgconfig ecm boost gnutls
+    lucenepp vlc qt5.qtbase qt5.qtsvg qt5.qttools qt5.qtwebkit qt5.qtx11extras
+    sparsehash taglib websocketpp makeWrapper
   ] ++ stdenv.lib.optional enableXMPP      (useQT5 libjreen)
     ++ stdenv.lib.optional enableKDE       (useQT5 kdelibs)
     ++ stdenv.lib.optional enableTelepathy (useQT5 telepathy_qt);
