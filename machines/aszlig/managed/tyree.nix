@@ -56,6 +56,11 @@
     chromium.enablePepperFlash = true;
   };
 
+  programs.bash.enableCompletion = true;
+  programs.bash.interactiveShellInit = lib.mkBefore ''
+    export LANG=en_US.UTF-8
+  '';
+
   services.openssh.enable = true;
   services.tlp.enable = true;
 
