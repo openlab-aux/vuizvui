@@ -70,7 +70,7 @@ in {
   services = {
     deluge.enable = true;
     printing.enable = true;
-    printing.drivers = [ pkgs.gutenprint pkgs.hplip ];
+    printing.drivers = [ pkgs.gutenprint pkgs.hplip pkgs.cups-bjnp ];
     tlp.enable = true;
 
     xserver = {
