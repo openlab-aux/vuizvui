@@ -1,11 +1,11 @@
 [
+  ./core/common.nix
+  ./core/licensing.nix
+  ./core/tests.nix
   ./hardware/gamecontroller.nix
   ./hardware/rtl8192cu
   ./hardware/t100ha
   ./hardware/thinkpad.nix
-  ./profiles/common.nix
-  ./profiles/licensing.nix
-  ./profiles/tests.nix
   ./programs/gnupg
   ./programs/fish/fasd.nix
   ./services/multipath-vpn.nix
