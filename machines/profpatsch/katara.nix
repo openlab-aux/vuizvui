@@ -1,11 +1,5 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 let
-
-  # TODO
-  tmpAllowUnfree = drv:
-    let n = import ../../nixpkgs-path.nix;
-    in (import n { config = { allowUnfree = true; }; })."${drv}";
-
 
   myPkgs = import ./pkgs.nix { inherit pkgs lib; };
   fish = pkgs.fish;
@@ -158,7 +152,7 @@ in {
         # chromium             # browser
         (chromium.override { enablePepperFlash = true; })
         # droopy               # simple HTML upload server
-        (tmpAllowUnfree "dropbox-cli")          # dropbox.com client
+        unfreeAndNonDistributablePkgs.dropbox-cli # dropbox.com client
         emacs                # pretty neat operating system i guess
         feh                  # brother of meh, displays images in a meh way, but fast
         filezilla            # FTP GUI business-ready interface framework
