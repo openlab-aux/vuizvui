@@ -4,6 +4,7 @@
   ./hardware/t100ha
   ./hardware/thinkpad.nix
   ./profiles/common.nix
+  ./profiles/licensing.nix
   ./profiles/tests.nix
   ./programs/gnupg
   ./programs/fish/fasd.nix
