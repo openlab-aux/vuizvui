@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, unfreePkgs, lib, ... }:
 
 let
   cfg = config.vuizvui.user.aszlig.profiles.base;
@@ -57,7 +57,7 @@ in {
       htop
       iotop
       psmisc
-      unrar
+      unfreePkgs.unrar
       unzip
       vlock
       wget
@@ -67,9 +67,6 @@ in {
     nixpkgs.config = {
       pulseaudio = true;
       firefox.icedtea = true;
-
-      # Needed for CPU microcode
-      allowUnfree = true;
 
       allowBroken = true;
 
