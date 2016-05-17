@@ -80,6 +80,11 @@ in stdenv.mkDerivation rec {
     ++ stdenv.lib.optional enableKDE       (useQT5 kdelibs)
     ++ stdenv.lib.optional enableTelepathy (useQT5 telepathy_qt);
 
+  # XXX: Workaround for NixOS/nixpkgs#15498
+  preInstall = ''
+    propagatedUserEnvPkgs=
+  '';
+
   enableParallelBuilding = true;
 
   meta = with stdenv.lib; {
