@@ -21,7 +21,6 @@ in {
 
   networking.hostName = "arilou";
   networking.wireless.enable = mkForce true;
-  networking.enableB43Firmware = true;
 
   fileSystems."/".device = "/dev/disk/by-uuid/${rootUUID}";
   fileSystems."/".fsType = "btrfs";
