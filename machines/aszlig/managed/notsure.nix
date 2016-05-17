@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 
 let
   rootUUID = "ata-WDC_WD7500BPVT-22HXZT3_WD-WX71A9124879";
@@ -33,7 +33,6 @@ in {
   nix.maxJobs = 2;
 
   nixpkgs.config = {
-    allowUnfree = true;
     chromium.enablePepperFlash = true;
     pulseaudio = true;
   };
@@ -53,7 +52,7 @@ in {
     pavucontrol
     pulseaudioFull
     samba
-    skype
+    unfreeAndNonDistributablePkgs.skype
     thunderbird
     vuizvui.tomahawk
     wine
