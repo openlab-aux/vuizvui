@@ -52,5 +52,7 @@ let
       '';
   });
 
+  poezio = pkgs.python34Packages.poezio;
+
 in
-{ inherit taffybar offlineimap sent mpv beets git-annex; }
+{ inherit taffybar offlineimap sent mpv beets git-annex poezio; }

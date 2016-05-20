@@ -166,7 +166,7 @@ in {
         newsbeuter           # RSS/Atom feed reader
         networkmanagerapplet # NetworkManager status bar widget
         pass                 # standard unix password manager
-        poezio               # CLI XMPP client
+        myPkgs.poezio               # CLI XMPP client
         poppler_utils        # pdfto*
         ranger               # CLI file browser
         remind               # calender & reminder program
