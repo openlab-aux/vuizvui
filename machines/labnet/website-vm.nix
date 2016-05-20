@@ -6,4 +6,8 @@
   environment.systemPackages = with pkgs; [
     vuizvui.openlab.gitit
   ];
+
+  # dummy values
+  fileSystems."/".label = "root";
+  boot.loader.grub.device = "nodev";
 }
