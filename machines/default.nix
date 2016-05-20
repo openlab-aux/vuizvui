@@ -16,6 +16,7 @@ with import ../lib;
     labtops = callNetwork ./labnet/labtops.nix {
       vuizvui.user.openlab.labtops.enable = true;
     };
+    website-vm = callMachine ./labnet/website-vm.nix {};
   };
   profpatsch = {
     katara = callMachine ./profpatsch/katara.nix {};
