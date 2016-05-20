@@ -33,6 +33,7 @@
 
   environment.systemPackages = with pkgs; [
     #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
+    #attic
     #john
     #sleuthkit
     #texLiveFull
@@ -47,7 +48,6 @@
     aspellDicts.en
     atftp
     atom
-    attic
     audacity
     axel
     bc
