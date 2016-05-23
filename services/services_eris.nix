@@ -22,7 +22,7 @@
       state=`cat $LID | ${pkgs.gawk}/bin/awk '{print $2}'`
       case "$state" in
         *open*) ;;
-        *close*) ${pkgs.pmutils}/sbin/pm-suspend ;;
+        *close*) systemctl suspend ;;
         *) logger -t lid-handler "Failed to detect lid state ($state)" ;;
       esac
     '';
