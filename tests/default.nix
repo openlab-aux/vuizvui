@@ -6,9 +6,6 @@ let
   };
 
 in {
-  aszlig = {
-    i3 = callTest ./aszlig/i3.nix;
-  };
   games = {
     starbound = callTest ./games/starbound.nix;
   };
