@@ -47,6 +47,14 @@ let
     vuizvuiTests = "${vuizvui}/tests";
   });
 
+  pkgs = with pkgsUpstream.lib; let
+    noGames = flip removeAttrs [ "games" ];
+    releaseLib = import "${nixpkgs}/pkgs/top-level/release-lib.nix" {
+      inherit supportedSystems;
+      packageSet = attrs: noGames (import vuizvui attrs).pkgs.vuizvui;
+    };
+  in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
+
 in with pkgsUpstream.lib; with builtins; {
 
   machines = let
@@ -78,13 +86,7 @@ in with pkgsUpstream.lib; with builtins; {
     inherit (allTests) vuizvui;
   };
 
-  pkgs = let
-    noGames = flip removeAttrs [ "games" ];
-    releaseLib = import "${nixpkgs}/pkgs/top-level/release-lib.nix" {
-      inherit supportedSystems;
-      packageSet = attrs: noGames (import vuizvui attrs).pkgs.vuizvui;
-    };
-  in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
+  inherit pkgs;
 
   channels = let
     mkChannel = attrs: root.pkgs.vuizvui.mkChannel (rec {
@@ -98,7 +100,9 @@ in with pkgsUpstream.lib; with builtins; {
     gatherTests = active: map (path: getAttrFromPath path allTests) active;
 
   in {
-    generic = mkChannel {};
+    generic = mkChannel {
+      constituents = collect isDerivation pkgs;
+    };
 
     machines = mapAttrsRecursiveCond (m: !(m ? eval)) (path: attrs: mkChannel {
       name = "machine-${last path}";
