@@ -101,7 +101,9 @@ in with pkgsUpstream.lib; with builtins; {
 
   in {
     generic = mkChannel {
-      constituents = collect isDerivation pkgs;
+      constituents = concatMap (collect isDerivation) [
+        allTests.vuizvui pkgs
+      ];
     };
 
     machines = mapAttrsRecursiveCond (m: !(m ? eval)) (path: attrs: mkChannel {
