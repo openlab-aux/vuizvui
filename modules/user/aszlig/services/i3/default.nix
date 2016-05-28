@@ -106,8 +106,6 @@ in
   config = mkIf cfg.enable {
     vuizvui.user.aszlig.services.i3.workspaces = defaultWorkspaces;
 
-    vuizvui.requiresTests = [ ["vuizvui" "aszlig" "i3"] ];
-
     services.xserver.windowManager = {
       default = "i3";
 
