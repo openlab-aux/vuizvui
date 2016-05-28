@@ -33,6 +33,8 @@ let
       bfqsched = callPackage ./kpatches/bfqsched { };
     };
 
-    openlab.gitit = callPackage ./openlab/gitit { hlib = pkgs.haskell.lib; };
+    openlab = pkgs.recurseIntoAttrs {
+      gitit = callPackage ./openlab/gitit { hlib = pkgs.haskell.lib; };
+    };
   };
 in pkgs // self
