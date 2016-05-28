@@ -20,10 +20,10 @@ in {
         headFactor = if randrHeads == [] then 1 else lib.length randrHeads;
         centerLeft = 100 / (headFactor * 2);
       in ''
-        ${pkgs.imagemagick}/bin/mogrify \
+        "${pkgs.imagemagick.out}/bin/mogrify" \
           -fill '#080010' -draw 'color 0,0 reset' \
           share/slim/themes/nixos-slim-testing/background.png
-        ${pkgs.imagemagick}/bin/mogrify \
+        "${pkgs.imagemagick.out}/bin/mogrify" \
           -negate -region 100x110+0+0 -negate -fill white -colorize 20% \
           share/slim/themes/nixos-slim-testing/panel.png
         sed -i \
