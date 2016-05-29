@@ -10,6 +10,7 @@ let
     axbo = callPackage ./axbo { };
     beehive = callPackage ./beehive { };
     blop = callPackage ./blop { };
+    git-detach = callPackage ./git-detach { };
     grandpa = callPackage ./grandpa { };
     greybird-xfce-theme = callPackage ./greybird-xfce-theme { };
     nixops = callPackage ./nixops { };
