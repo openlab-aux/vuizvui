@@ -21,6 +21,7 @@ pkgs: with pkgs; [
   gdb
   ghostscript
   gimp
+  vuizvui.git-detach
   glxinfo
   gnumake
   gnupg1compat
