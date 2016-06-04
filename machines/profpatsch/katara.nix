@@ -151,7 +151,7 @@ in {
       userPrograms = [
         abcde                # high-level cd-ripper with tag support
         anki                 # spaced repetition system
-        audacity lame        # audio editor and mp3 codec
+        audacity lame.lib    # audio editor and mp3 codec
         myPkgs.beets         # audio file metadata tagger
         # chromium             # browser
         (chromium.override { enablePepperFlash = true; })
