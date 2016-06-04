@@ -11,7 +11,7 @@ let
   philip = rec {
     name = "philip";
     group = "users";
-          extraGroups = [ "wheel" "networkmanager" "sambashare" ];
+    extraGroups = [ "wheel" "networkmanager" ];
     uid = 1000;
     createHome = true;
     home = "/home/philip";
@@ -37,7 +37,6 @@ in {
     ###########
     # Hardware
 
-
     fileSystems."/" = {
       device = "/dev/dm-0";
       fsType = "btrfs";
@@ -49,7 +48,12 @@ in {
       fsType = "ext3";
     };
 
-    hardware.pulseaudio.enable = true;
+    hardware.pulseaudio = {
+      enable = true;
+      # package = pkgs.pulseaudioFull;
+      # zeroconf.discovery = true;
+      # zeroconf.publish = true;
+    };
 
     vuizvui.hardware.thinkpad.enable = true;
 
@@ -267,6 +271,7 @@ in {
       videoDrivers = [ "intel" ];
 
       # otherwise xterm is enabled, creating an xterm that spawns the window manager.
+      # TODO: Try to fix (annoying for new users)
       desktopManager.xterm.enable = false;
 
       # TODO: include taffybar
@@ -274,6 +279,13 @@ in {
         enable = true;
         enableContribAndExtras = true;
       };
+
+      # autorepeat = {
+      #   enable = true;
+      #   delay = 250;
+      #   rate = 35;
+      # };
+
       displayManager = {
         sessionCommands =
             ''
