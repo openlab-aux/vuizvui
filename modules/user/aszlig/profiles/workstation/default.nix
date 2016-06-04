@@ -122,6 +122,9 @@ in {
       printing.enable = true;
       printing.drivers = [ pkgs.gutenprint pkgs.hplip ];
 
+      pcscd.enable = true;
+      pcscd.plugins = [ pkgs.ccid pkgs.pcsc-cyberjack ];
+
       udev.extraRules = ''
         # aXbo S.P.A.C.
         SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", \
