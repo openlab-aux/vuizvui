@@ -12,6 +12,7 @@ let
     };
 
     bastion = callPackage ./bastion.nix {};
+    brigador = callPackage ./brigador.nix {};
     cavestoryplus = callPackage ./cavestoryplus.nix {};
     fez = callPackage ./fez.nix {};
     ftl = callPackage ./ftl.nix {};
