@@ -3,6 +3,7 @@ pkgs: with pkgs; [
   abook
   acpi
   apg
+  aqbanking
   ascii
   aspellDicts.de
   aspellDicts.en
@@ -21,6 +22,7 @@ pkgs: with pkgs; [
   gdb
   ghostscript
   gimp
+  gwenhywfar
   vuizvui.git-detach
   glxinfo
   gnumake
@@ -39,6 +41,7 @@ pkgs: with pkgs; [
   jwhois
   keychain
   lastwatch
+  libchipcard
   lftp
   ltrace
   man-pages
