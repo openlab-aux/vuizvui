@@ -10,7 +10,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     nix = {
-      useChroot = true;
+      useSandbox = true;
       readOnlyStore = true;
       buildCores = 0;
       extraOptions = ''
