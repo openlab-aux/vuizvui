@@ -61,7 +61,7 @@ let
 
   taalo-build = pkgs.writeScriptBin "taalo-build" ''
     #!${pkgs.stdenv.shell}
-    drvs="$(nix-instantiate "$@")" || exit 1
+    drvs="$(nix-instantiate "$@" | cut -d'!' -f1)" || exit 1
     exec ${backend} $drvs
   '';
 
