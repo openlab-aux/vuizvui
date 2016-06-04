@@ -22,7 +22,7 @@
 
   <para>
     So let's say you want to install the machine <literal>labtop</literal> which
-    has the channel attribute <literal>channels.machines.labnet.labtop</literal>
+    has the channel attribute <literal>channels.machines.labnet.labtops.labtop</literal>
   </para>
 
   <para>
