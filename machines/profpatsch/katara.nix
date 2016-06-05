@@ -93,7 +93,7 @@ in {
     # Packages
 
 
-    environment.sessionVariables = { EDITOR = "${pkgs.vim}/bin/vim"; };
+    environment.sessionVariables = { EDITOR = "${myPkgs.vim}/bin/vim"; };
 
     environment.systemPackages = with pkgs;
     let
@@ -119,7 +119,7 @@ in {
         traceroute        # trace ip routes
         # TODO move into atool deps
         unzip             # extract zip archives
-        vim               # slight improvement over vi
+        myPkgs.vim        # slight improvement over vi
         wget              # the other URL file fetcher
         wirelesstools     # iwlist (wifi scan)
       ];
@@ -151,6 +151,7 @@ in {
       userPrograms = [
         abcde                # high-level cd-ripper with tag support
         anki                 # spaced repetition system
+        # TODO integrate lame into audacity
         audacity lame.lib    # audio editor and mp3 codec
         myPkgs.beets         # audio file metadata tagger
         # chromium             # browser

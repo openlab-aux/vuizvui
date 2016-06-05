@@ -54,5 +54,7 @@ let
 
   poezio = pkgs.python34Packages.poezio;
 
+  vim = vim_configurable;
+
 in
-{ inherit taffybar offlineimap sent mpv beets git-annex poezio; }
+{ inherit taffybar offlineimap sent mpv beets git-annex poezio vim; }
