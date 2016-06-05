@@ -1,4 +1,3 @@
-# Edit this configuration file to define what should be installed on
 { config, pkgs, ... }:
 
 let
@@ -7,9 +6,9 @@ in {
   nixpkgs.config.allowUnfree = true;
 
   # hardware
-  boot.blacklistedKernelModules = [ "nouveau" ];
+  boot.blacklistedKernelModules = [ "nouveau" "nvidia"  ];
   boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [ "kvm-intel" "virtio" ];
   boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "crypted"; } ];
 
   fileSystems."/" = {
@@ -25,7 +24,8 @@ in {
 
   nix.maxJobs = 8;
 
-  boot.loader.gummiboot.enable = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.timeout = 5;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # sound
@@ -38,7 +38,7 @@ in {
   hardware.pulseaudio.support32Bit = true;
 
   hardware.opengl.driSupport32Bit = true;
-  hardware.bumblebee.enable = true;
+  hardware.bumblebee.enable = false;
   hardware.bumblebee.driver = "nvidia";
 
   hardware.enableAllFirmware = true;
@@ -74,6 +74,7 @@ in {
     dmenu
     mosh
     gnupg
+    pinentry
     gpgme
     sudo
     silver-searcher
@@ -89,7 +90,7 @@ in {
     atool
     manpages
     man_db
-    sshuttle
+    #sshuttle
     speedtest-cli
     youtube-dl
     yafc
@@ -158,6 +159,8 @@ in {
     screen-message
     mumble
     libreoffice
+    qemu
+    xmpp-client
 
     ## audio / video
     mpv
@@ -236,7 +239,6 @@ in {
       enableContribAndExtras = true;
     };
     displayManager = {
-      desktopManagerHandlesLidAndPower = false;
       sessionCommands =
         ''
         export BROWSER=firefox
@@ -253,8 +255,6 @@ in {
     synaptics.twoFingerScroll = true;
 
     videoDrivers = [ "intel" ];
-
-    startGnuPGAgent = true;
   };
 
   programs.fish.enable = true;
@@ -267,7 +267,7 @@ in {
     shell = "/run/current-system/sw/bin/fish";
     group = "users";
     passwordFile = "/home/lukas/.config/passwd";
-    extraGroups = [ "audio" "wheel" "networkmanager" ];
+    extraGroups = [ "audio" "wheel" "networkmanager" "hugetlbfs"];
   };
 
   system.stateVersion = "unstable";
