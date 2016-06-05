@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra ifplatform xstring doublestroke; };
+   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra ifplatform xstring doublestroke csquotes; };
 
 in {
   nixpkgs.config.allowUnfree = true;
@@ -51,7 +51,7 @@ in {
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "de-latin1";
+    consoleKeyMap = "de";
     defaultLocale = "en_US.UTF-8";
   };
 
@@ -79,6 +79,9 @@ in {
     pavucontrol
     hostapd
     pandoc
+    unison
+    lame
+    ffmpeg
 
     # texlive, minted deps
     mytexlive
@@ -87,7 +90,7 @@ in {
     python
 
     w3m
-    chromium
+    torbrowser
     mpv
     htop
     feh
@@ -114,7 +117,7 @@ in {
   fonts.fontconfig = {
     defaultFonts = {
       monospace = [ "Inconsolata" "Source Code Pro" "DejaVu Sans Mono" ];
-      sansSerif = [ "Liberation Sans" ];
+      sansSerif = [ "Ubuntu" "Liberation Sans" "DejaVu Sans" ];
     };
     ultimate = {
       rendering = {
@@ -136,11 +139,13 @@ in {
     dejavu_fonts
     ubuntu_font_family
     inconsolata
-    tewi-font
     libertine
+    unifont
   ];
 
   services.openssh.enable = true;
+
+  services.tor.enable = true;
 
   services.printing = {
     enable = true;
@@ -151,9 +156,6 @@ in {
   services.upower.enable = true;
 
   services.tlp.enable = true;
-
-  services.syncthing.enable = true;
-  services.syncthing.user = "lukas";
 
   services.xserver = {
     enable = true;
@@ -180,8 +182,6 @@ in {
     synaptics.twoFingerScroll = false;
 
     videoDrivers = [ "intel" ];
-
-    startGnuPGAgent = true;
   };
 
   programs.fish.enable = true;
@@ -189,9 +189,9 @@ in {
   users.users.lukas = {
     isNormalUser = true;
     uid = 1000;
-    shell = "/run/current-system/sw/bin/fish";
+    shell = "${pkgs.fish}/bin/fish";
     group = "users";
-    extraGroups = [ "audio" "wheel" "networkmanager" ];
+    extraGroups = [ "audio" "wheel" "networkmanager" "uucp" ];
   };
 
   environment.etc."vte.sh" = { source = "${pkgs.gnome3.vte}/etc/profile.d/vte.sh"; };
