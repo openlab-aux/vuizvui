@@ -61,11 +61,11 @@ let
 
   taalo-build = pkgs.writeScriptBin "taalo-build" ''
     #!${pkgs.stdenv.shell}
-    if tmpdir="$("${pkgs.coreutils}/bin/mktemp" -d taalo-build.XXXXXX)"; then
+    if tmpdir="$("${pkgs.coreutils}/bin/mktemp" -d -t taalo-build.XXXXXX)"; then
       trap "rm -rf '$tmpdir'" EXIT
       drvs="$(nix-instantiate --add-root "$tmpdir/derivation" --indirect "$@" \
         | cut -d'!' -f1)" || exit 1
-      ${backend} $drvs
+      ${backend} $("${pkgs.coreutils}/bin/readlink" $drvs)
       exit $?
     else
       echo "Unable to create temporary directory for build link!" >&2
