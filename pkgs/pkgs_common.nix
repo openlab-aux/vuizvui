@@ -147,6 +147,7 @@
     jfsutils
     jwhois
     keepassx
+    keybase
     kpcli
     lftp
     libarchive
