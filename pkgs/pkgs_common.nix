@@ -34,6 +34,7 @@
   environment.systemPackages = with pkgs; [
     #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
     #attic
+    #gitAndTools.git-annex
     #john
     #sleuthkit
     #texLiveFull
@@ -103,7 +104,6 @@
     gdb
     ghostscript
     gimp
-    gitAndTools.git-annex
     gitAndTools.git-extras
     gitAndTools.git-remote-hg
     gitAndTools.git2cl
