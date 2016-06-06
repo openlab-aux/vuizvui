@@ -308,6 +308,8 @@ in {
             ${xbindkeys}/bin/xbindkeys
             nice -n19 dropbox-cli start &
             ${networkmanagerapplet}/bin/nm-applet &
+            # synchronize clipboards
+            ${autocutsel}/bin/autocutsel -s PRIMARY &
             '';
       };
 
