@@ -77,6 +77,7 @@ pkgs: with pkgs; [
   rlwrap
   rtorrent
   samplicator
+  vuizvui.santander
   screen
   scrot
   socat
