@@ -129,7 +129,6 @@ in {
         alock             # lock screen
         libnotify         # notification library
         myPkgs.taffybar   # status bar
-        xbindkeys         # keybinding manager
         xclip             # clipboard thingy
         xorg.xkill        # X11 application kill
       ];
@@ -169,7 +168,6 @@ in {
         lilyterm             # terminal emulator, best one around
         myPkgs.mpv           # you are my sun and my stars. and you play my stuff.
         newsbeuter           # RSS/Atom feed reader
-        networkmanagerapplet # NetworkManager status bar widget
         pass                 # standard unix password manager
         myPkgs.poezio               # CLI XMPP client
         poppler_utils        # pdfto*
@@ -228,6 +226,10 @@ in {
     services.printing = {
       enable = true;
       gutenprint = true;
+      # TODO
+      # drivers = [ pkgs.cups-pdf ];
+      # TODO
+      # drivers = [ pkgs.foomatic_filters pkgs.foomatic-db-engine ];
     };
 
     time.timeZone = "Europe/Berlin";
@@ -288,24 +290,24 @@ in {
       # };
 
       displayManager = {
-        sessionCommands =
+        sessionCommands = with pkgs;
             ''
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
             export PATH+=":$HOME/.bin" #add (temporary) executables
             export EDITOR=emacsclient
 
-            gpg-connect-agent /bye
+            ${gnupg}/bin/gpg-connect-agent /bye
             unset SSH_AGENT_PID
             export SSH_AUTH_SOCK="''${HOME}/.gnupg/S.gpg-agent.ssh"
 
-            xset r rate 250 35
+            ${xorg.xset}/bin/xset r rate 250 35
 
             set-background &
             # TODO xbindkeys user service file
-            xbindkeys
+            ${xbindkeys}/bin/xbindkeys
             nice -n19 dropbox-cli start &
-            nm-applet &
+            ${networkmanagerapplet}/bin/nm-applet &
             '';
       };
 
