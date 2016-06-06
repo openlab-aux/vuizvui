@@ -1,0 +1,292 @@
+diff -urN wine-1.9.7-orig/dlls/krnl386.exe16/int21.c wine-1.9.7/dlls/krnl386.exe16/int21.c
+--- wine-1.9.7-orig/dlls/krnl386.exe16/int21.c	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/dlls/krnl386.exe16/int21.c	2016-04-10 02:33:20 +0900
+@@ -35,6 +35,7 @@
+ # include <unistd.h>
+ #endif
+ 
++#include "ntstatus.h"
+ #include "windef.h"
+ #include "winbase.h"
+ #include "winreg.h"
+@@ -842,11 +843,13 @@
+  */
+ static HANDLE INT21_CreateMagicDeviceHandle( LPCWSTR name )
+ {
++    HANDLE ret;
++    NTSTATUS status;
++
++#if 0
+     static const WCHAR prefixW[] = {'\\','?','?','\\','u','n','i','x'};
+     const char *dir = wine_get_server_dir();
+     int len;
+-    HANDLE ret;
+-    NTSTATUS status;
+     OBJECT_ATTRIBUTES attr;
+     UNICODE_STRING nameW;
+     IO_STATUS_BLOCK io;
+@@ -875,12 +878,16 @@
+     status = NtCreateFile( &ret, GENERIC_READ|GENERIC_WRITE|SYNCHRONIZE, &attr, &io, NULL, 0,
+                            FILE_SHARE_READ|FILE_SHARE_WRITE, FILE_OPEN_IF,
+                            FILE_SYNCHRONOUS_IO_ALERT, NULL, 0 );
++    RtlFreeUnicodeString( &nameW );
++#else
++    status = STATUS_NOT_IMPLEMENTED;
++#endif
++
+     if (status)
+     {
+         ret = 0;
+         SetLastError( RtlNtStatusToDosError(status) );
+     }
+-    RtlFreeUnicodeString( &nameW );
+     return ret;
+ }
+ 
+diff -urN wine-1.9.7-orig/dlls/krnl386.exe16/vxd.c wine-1.9.7/dlls/krnl386.exe16/vxd.c
+--- wine-1.9.7-orig/dlls/krnl386.exe16/vxd.c	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/dlls/krnl386.exe16/vxd.c	2016-04-10 02:33:20 +0900
+@@ -113,11 +113,13 @@
+ /* create a file handle to represent a VxD, by opening a dummy file in the wineserver directory */
+ static HANDLE open_vxd_handle( LPCWSTR name )
+ {
++    HANDLE ret;
++    NTSTATUS status;
++
++#if 0
+     static const WCHAR prefixW[] = {'\\','?','?','\\','u','n','i','x'};
+     const char *dir = wine_get_server_dir();
+     int len;
+-    HANDLE ret;
+-    NTSTATUS status;
+     OBJECT_ATTRIBUTES attr;
+     UNICODE_STRING nameW;
+     IO_STATUS_BLOCK io;
+@@ -146,12 +148,16 @@
+     status = NtCreateFile( &ret, SYNCHRONIZE, &attr, &io, NULL, 0,
+                            FILE_SHARE_READ|FILE_SHARE_WRITE, FILE_OPEN_IF,
+                            FILE_SYNCHRONOUS_IO_ALERT, NULL, 0 );
++    RtlFreeUnicodeString( &nameW );
++#else
++    status = STATUS_NOT_IMPLEMENTED;
++#endif
++
+     if (status)
+     {
+         ret = 0;
+         SetLastError( RtlNtStatusToDosError(status) );
+     }
+-    RtlFreeUnicodeString( &nameW );
+     return ret;
+ }
+ 
+diff -urN wine-1.9.7-orig/dlls/ntdll/directory.c wine-1.9.7/dlls/ntdll/directory.c
+--- wine-1.9.7-orig/dlls/ntdll/directory.c	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/dlls/ntdll/directory.c	2016-04-10 02:33:20 +0900
+@@ -3098,8 +3098,10 @@
+ NTSTATUS CDECL wine_nt_to_unix_file_name( const UNICODE_STRING *nameW, ANSI_STRING *unix_name_ret,
+                                           UINT disposition, BOOLEAN check_case )
+ {
++#if 0
+     static const WCHAR unixW[] = {'u','n','i','x'};
+     static const WCHAR pipeW[] = {'p','i','p','e'};
++#endif
+     static const WCHAR invalid_charsW[] = { INVALID_NT_CHARS, 0 };
+ 
+     NTSTATUS status = STATUS_SUCCESS;
+@@ -3143,11 +3145,13 @@
+     name_len -= prefix_len;
+ 
+     /* check for invalid characters (all chars except 0 are valid for unix and pipes) */
++#if 0
+     if (prefix_len == 4)
+     {
+         is_unix = !memcmp( prefix, unixW, sizeof(unixW) );
+         is_pipe = !memcmp( prefix, pipeW, sizeof(pipeW) );
+     }
++#endif
+     if (is_unix || is_pipe)
+     {
+         for (p = name; p < name + name_len; p++)
+diff -urN wine-1.9.7-orig/dlls/ntdll/path.c wine-1.9.7/dlls/ntdll/path.c
+--- wine-1.9.7-orig/dlls/ntdll/path.c	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/dlls/ntdll/path.c	2016-04-10 02:33:20 +0900
+@@ -1025,7 +1025,9 @@
+ NTSTATUS CDECL wine_unix_to_nt_file_name( const ANSI_STRING *name, UNICODE_STRING *nt )
+ {
+     static const WCHAR prefixW[] = {'\\','?','?','\\','A',':','\\'};
++#if 0
+     static const WCHAR unix_prefixW[] = {'\\','?','?','\\','u','n','i','x'};
++#endif
+     unsigned int lenW, lenA = name->Length;
+     const char *path = name->Buffer;
+     char *cwd;
+@@ -1065,6 +1067,7 @@
+ 
+     if (status != STATUS_SUCCESS)
+     {
++#if 0
+         if (status == STATUS_OBJECT_PATH_NOT_FOUND)
+         {
+             lenW = ntdll_umbstowcs( 0, path, lenA, NULL, 0 );
+@@ -1084,6 +1087,7 @@
+             for (p = nt->Buffer + sizeof(unix_prefixW)/sizeof(WCHAR); *p; p++) if (*p == '/') *p = '\\';
+             status = STATUS_SUCCESS;
+         }
++#endif
+         goto done;
+     }
+     while (lenA && path[0] == '/') { lenA--; path++; }
+diff -urN wine-1.9.7-orig/dlls/shell32/folders.c wine-1.9.7/dlls/shell32/folders.c
+--- wine-1.9.7-orig/dlls/shell32/folders.c	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/dlls/shell32/folders.c	2016-04-10 02:33:20 +0900
+@@ -236,9 +236,11 @@
+                 *piIndex = -IDI_SHELL_MY_DOCUMENTS;
+             else if(IsEqualGUID(riid, &CLSID_NetworkPlaces))
+                 *piIndex = -IDI_SHELL_MY_NETWORK_PLACES;
++#if 0
+             else if(IsEqualGUID(riid, &CLSID_UnixFolder) ||
+                     IsEqualGUID(riid, &CLSID_UnixDosFolder))
+                 *piIndex = -IDI_SHELL_DRIVE;
++#endif
+             else
+                 *piIndex = -IDI_SHELL_FOLDER;
+ 	  }
+diff -urN wine-1.9.7-orig/dlls/shell32/shellole.c wine-1.9.7/dlls/shell32/shellole.c
+--- wine-1.9.7-orig/dlls/shell32/shellole.c	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/dlls/shell32/shellole.c	2016-04-10 02:33:20 +0900
+@@ -78,8 +78,10 @@
+ 	{&CLSID_ShellFSFolder,	IFSFolder_Constructor},
+ 	{&CLSID_ShellItem,	IShellItem_Constructor},
+ 	{&CLSID_ShellLink,	IShellLink_Constructor},
++#if 0
+ 	{&CLSID_UnixDosFolder,  UnixDosFolder_Constructor},
+ 	{&CLSID_UnixFolder,     UnixFolder_Constructor},
++#endif
+ 	{&CLSID_ExplorerBrowser,ExplorerBrowser_Constructor},
+ 	{&CLSID_KnownFolderManager, KnownFolderManager_Constructor},
+ 	{&CLSID_Shell,          IShellDispatch_Constructor},
+diff -urN wine-1.9.7-orig/dlls/shell32/shellpath.c wine-1.9.7/dlls/shell32/shellpath.c
+--- wine-1.9.7-orig/dlls/shell32/shellpath.c	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/dlls/shell32/shellpath.c	2016-04-10 02:33:20 +0900
+@@ -4481,9 +4481,11 @@
+         DWORD call_for_attr;
+     } folders[] =
+     {
++#if 0
+         { &CLSID_UnixFolder, TRUE, FALSE, FALSE },
+         { &CLSID_UnixDosFolder, TRUE, FALSE, FALSE,
+           SFGAO_FILESYSANCESTOR|SFGAO_FOLDER|SFGAO_HASSUBFOLDER, SFGAO_FILESYSTEM },
++#endif
+         { &CLSID_FolderShortcut, FALSE, FALSE, FALSE,
+           SFGAO_FILESYSTEM|SFGAO_FOLDER|SFGAO_LINK,
+           SFGAO_HASSUBFOLDER|SFGAO_FILESYSTEM|SFGAO_FOLDER|SFGAO_FILESYSANCESTOR },
+@@ -4613,9 +4615,11 @@
+             *ppidl = _ILCreateDesktop();
+             break;
+ 
++#if 0
+         case CSIDL_PERSONAL:
+             *ppidl = _ILCreateMyDocuments();
+             break;
++#endif
+ 
+         case CSIDL_INTERNET:
+             *ppidl = _ILCreateIExplore();
+diff -urN wine-1.9.7-orig/dlls/shell32/shfldr.h wine-1.9.7/dlls/shell32/shfldr.h
+--- wine-1.9.7-orig/dlls/shell32/shfldr.h	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/dlls/shell32/shfldr.h	2016-04-10 02:33:20 +0900
+@@ -75,5 +75,7 @@
+ void SHELL_FS_ProcessDisplayFilename(LPWSTR szPath, DWORD dwFlags) DECLSPEC_HIDDEN;
+ BOOL SHELL_FS_HideExtension(LPCWSTR pwszPath) DECLSPEC_HIDDEN;
+ 
++#if 0
+ DEFINE_GUID( CLSID_UnixFolder, 0xcc702eb2, 0x7dc5, 0x11d9, 0xc6, 0x87, 0x00, 0x04, 0x23, 0x8a, 0x01, 0xcd );
+ DEFINE_GUID( CLSID_UnixDosFolder, 0x9d20aae8, 0x0625, 0x44b0, 0x9c, 0xa7, 0x71, 0x88, 0x9c, 0x22, 0x54, 0xd9 );
++#endif
+diff -urN wine-1.9.7-orig/dlls/shell32/shfldr_desktop.c wine-1.9.7/dlls/shell32/shfldr_desktop.c
+--- wine-1.9.7-orig/dlls/shell32/shfldr_desktop.c	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/dlls/shell32/shfldr_desktop.c	2016-04-10 02:33:20 +0900
+@@ -186,26 +186,30 @@
+     }
+     else if (PathGetDriveNumberW (lpszDisplayName) >= 0)
+     {
++#if 0
+         /*
+          * UNIXFS can't handle drives without a mount point yet. We fall back
+          * to use the MyComputer interface if we can't get the file attributes
+          * on the device.
+          */
+         char drivePath[] = "A:\\";
+         drivePath[0] = 'A' + PathGetDriveNumberW(lpszDisplayName);
+ 
+         /* it's a filesystem path with a drive. Let MyComputer/UnixDosFolder parse it */
+         if (UNIXFS_is_rooted_at_desktop() &&
+             GetFileAttributesA(drivePath) != INVALID_FILE_ATTRIBUTES)
+         {
+             pidlTemp = _ILCreateGuid(PT_GUID, &CLSID_UnixDosFolder);
+             TRACE("Using unixfs for %s\n", debugstr_w(lpszDisplayName));
+         }
+         else
+         {
++#endif
+             pidlTemp = _ILCreateMyComputer ();
+             TRACE("Using MyComputer for %s\n", debugstr_w(lpszDisplayName));
++#if 0
+         }
++#endif
+         szNext = lpszDisplayName;
+     }
+     else if (PathIsUNCW(lpszDisplayName))
+diff -urN wine-1.9.7-orig/dlls/shell32/shfldr_unixfs.c wine-1.9.7/dlls/shell32/shfldr_unixfs.c
+--- wine-1.9.7-orig/dlls/shell32/shfldr_unixfs.c	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/dlls/shell32/shfldr_unixfs.c	2016-04-10 02:33:20 +0900
+@@ -167,7 +167,7 @@
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(shell);
+ 
+-#if !defined(__MINGW32__) && !defined(_MSC_VER)
++#if 0
+ 
+ #define LEN_SHITEMID_FIXED_PART ((USHORT) \
+     ( sizeof(USHORT)      /* SHITEMID's cb field. */ \
+@@ -2569,6 +2569,7 @@
+  *  FALSE, if not.
+  */
+ BOOL UNIXFS_is_rooted_at_desktop(void) {
++#if 0
+     HKEY hKey;
+     WCHAR wszRootedAtDesktop[69 + CHARS_IN_GUID] = {
+         'S','o','f','t','w','a','r','e','\\','M','i','c','r','o','s','o','f','t','\\',
+@@ -2582,5 +2583,6 @@
+         RegCloseKey(hKey);
+         return TRUE;
+     }
++#endif
+     return FALSE;
+ }
+diff -urN wine-1.9.7-orig/include/config.h.in wine-1.9.7/include/config.h.in
+--- wine-1.9.7-orig/include/config.h.in	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/include/config.h.in	2016-04-10 02:33:20 +0900
+@@ -7,6 +7,9 @@
+ /* Define to a function attribute for Microsoft hotpatch assembly prefix. */
+ #undef DECLSPEC_HOTPATCH
+ 
++/* Define to enable unixfs */
++#undef ENABLE_UNIXFS
++
+ /* Define to the file extension for executables. */
+ #undef EXEEXT
+ 
+diff -urN wine-1.9.7-orig/programs/wineboot/wineboot.c wine-1.9.7/programs/wineboot/wineboot.c
+--- wine-1.9.7-orig/programs/wineboot/wineboot.c	2016-04-02 00:02:39 +0900
++++ wine-1.9.7/programs/wineboot/wineboot.c	2016-04-10 02:33:20 +0900
+@@ -946,7 +946,7 @@
+                                      'I','n','s','t','a','l','l','H','i','n','f','S','e','c','t','i','o','n',0};
+     static const WCHAR definstall[] = {' ','D','e','f','a','u','l','t','I','n','s','t','a','l','l',0};
+     static const WCHAR wowinstall[] = {' ','W','o','w','6','4','I','n','s','t','a','l','l',0};
+-    static const WCHAR inf[] = {' ','1','2','8',' ','\\','\\','?','\\','u','n','i','x',0 };
++    static const WCHAR inf[] = {' ','1','2','8',' ','z',':',0 };
+ 
+     WCHAR app[MAX_PATH + sizeof(rundll)/sizeof(WCHAR)];
+     STARTUPINFOW si;

@@ -19,6 +19,7 @@ let
     list-gamecontrollers = callPackage ./list-gamecontrollers { };
     lockdev = callPackage ./lockdev { };
     pvolctrl = callPackage ./pvolctrl { };
+    santander = callPackage ./santander { };
     show-qr-code = callPackage ./show-qr-code { };
     sidplayfp = callPackage ./sidplayfp { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
