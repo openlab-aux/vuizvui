@@ -36,7 +36,6 @@ in {
     };
 
     fonts = {
-      enableCoreFonts = true;
       enableFontDir = true;
       enableGhostscriptFonts = true;
       fonts = [
