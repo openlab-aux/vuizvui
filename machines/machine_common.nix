@@ -8,7 +8,7 @@
 
   nix = {
     buildCores = 0;
-    useChroot = true;
+    useSandbox = true;
     binaryCaches = [
       "https://headcounter.org/hydra/"
       "https://cache.nixos.org/"

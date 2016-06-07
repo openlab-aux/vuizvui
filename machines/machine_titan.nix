@@ -5,9 +5,9 @@
 
   boot = {
     loader = {
-      gummiboot = {
+      timeout = 2;
+      systemd-boot = {
         enable = true;
-        timeout = 2;
       };
 
       efi.canTouchEfiVariables = true;
@@ -22,6 +22,12 @@
     extraModulePackages = [ ];
 
     kernelParams = [ "elevator=noop" ];
+  };
+
+  hardware = {
+    opengl = {
+      extraPackages = [ pkgs.vaapiIntel ];
+    };
   };
 
   fileSystems."/" = {
