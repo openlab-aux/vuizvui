@@ -8,7 +8,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    calibre
     aircrackng
     claws-mail
     connmanui
@@ -33,6 +32,7 @@
     snort
     thunderbird
     wavemon
+    wirelesstools
     xbindkeys
     xorg.xbacklight
   ];

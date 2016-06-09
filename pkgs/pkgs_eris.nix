@@ -19,6 +19,7 @@
     reaverwps
     snort
     wavemon
+    wirelesstools
     xbindkeys
     xorg.xbacklight
   ];
