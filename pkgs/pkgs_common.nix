@@ -35,6 +35,7 @@
     #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
     #attic
     #gitAndTools.git-annex
+    #ipfs
     #john
     #sleuthkit
     #texLiveFull
@@ -141,7 +142,6 @@
     impressive
     inkscape
     iotop
-    ipfs
     iptraf-ng
     ipv6calc
     jfsutils
