@@ -78,7 +78,7 @@ in {
     silver-searcher
     pavucontrol
     hostapd
-    pandoc
+    #pandoc
     unison
     lame
     ffmpeg
