@@ -333,7 +333,7 @@ in {
       };
     };
     fonts.fonts = with pkgs; [
-      corefonts
+      unfreeAndNonDistributablePkgs.corefonts
       source-han-sans-japanese
       source-han-sans-korean
       source-han-sans-simplified-chinese
