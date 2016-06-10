@@ -8,7 +8,7 @@ let
 
     aacolorize = callPackage ./aacolorize { };
     axbo = callPackage ./axbo { };
-    beehive = callPackage ./beehive { };
+    # beehive = callPackage ./beehive { }; TODO get running again
     blop = callPackage ./blop { };
     git-detach = callPackage ./git-detach { };
     grandpa = callPackage ./grandpa { };
