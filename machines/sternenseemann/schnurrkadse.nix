@@ -101,10 +101,10 @@ in {
     youtube-dl
     pass
 
-    ghc
-    cabal-install
-    haskellPackages.stylish-haskell
-    haskellPackages.cabal2nix
+    #ghc
+    #cabal-install
+    #haskellPackages.stylish-haskell
+    #haskellPackages.cabal2nix
 
     mutt
     notmuch
