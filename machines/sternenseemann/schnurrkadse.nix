@@ -5,6 +5,7 @@ let
 
 in {
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.system = "i686-linux";
 
   boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ata_piix" "usb_storage" "floppy" "usblp" "pcspkr" ];
   boot.kernelModules = [ ];
@@ -101,10 +102,10 @@ in {
     youtube-dl
     pass
 
-    #ghc
-    #cabal-install
-    #haskellPackages.stylish-haskell
-    #haskellPackages.cabal2nix
+    ghc
+    cabal-install
+    haskellPackages.stylish-haskell
+    haskellPackages.cabal2nix
 
     mutt
     notmuch
