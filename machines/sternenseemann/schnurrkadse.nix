@@ -80,6 +80,7 @@ in {
     hostapd
     #pandoc
     unison
+    connect
     lame
     ffmpeg
 
