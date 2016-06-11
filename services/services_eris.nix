@@ -32,7 +32,6 @@
     enable = true;
     layout = "gb";
     videoDrivers = [ "intel" ];
-    vaapiDrivers = [ pkgs.vaapiIntel ];
 
     synaptics = {
       enable = true;

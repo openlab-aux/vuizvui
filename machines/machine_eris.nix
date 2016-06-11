@@ -5,9 +5,9 @@
 
   boot = {
     loader = {
-      gummiboot = {
+      timeout = 2;
+      systemd-boot = {
         enable = true;
-        timeout = 2;
       };
 
       efi.canTouchEfiVariables = true;
@@ -23,6 +23,12 @@
 
     kernelModules = [ "tp_smapi" ];
     extraModulePackages = [ config.boot.kernelPackages.tp_smapi ];
+  };
+
+  hardware = {
+    opengl = {
+      extraPackages = [ pkgs.vaapiIntel ];
+    };
   };
 
   fileSystems."/" = {
