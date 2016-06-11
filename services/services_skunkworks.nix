@@ -17,7 +17,6 @@
     enable = true;
     layout = "dvorak";
     videoDrivers = [ "ati" ];
-    vaapiDrivers = [ pkgs.vaapiVdpau ];
 
     serverLayoutSection = ''
       Screen "Center/Right"

@@ -26,6 +26,12 @@
     blacklistedKernelModules = [ "pcspkr" ];
   };
 
+  hardware = {
+    opengl = {
+      extraPackages = [ pkgs.vaapiVdpau ];
+    };
+  };
+
   fileSystems."/" = {
     label = "nixos";
     fsType = "btrfs";

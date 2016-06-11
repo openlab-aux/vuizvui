@@ -20,7 +20,7 @@
     cli-visualizer
     cmus
     dosbox
-    go15Packages.ipfs
+    ipfs
     handbrake
     hplip
     mkvtoolnix
