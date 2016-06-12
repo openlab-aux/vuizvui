@@ -2,6 +2,7 @@
 
 { name, src, constituents ? [], meta ? {}, ... }@args:
 
+# TODO document
 stdenv.mkDerivation ({
   inherit name src constituents;
   preferLocalBuild = true;
