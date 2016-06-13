@@ -11,6 +11,9 @@ let hp = haskellPackages.override {
       };
       platforms = [ "x86_64-linux" ];
     }));
+    filestore = (hlib.overrideCabal super.filestore (drv: {
+      patches = [ ./filestore.patch ];
+    }));
   });
 };
 in hp.gitit
