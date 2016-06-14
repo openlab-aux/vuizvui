@@ -16,7 +16,6 @@ with import ../lib;
     labtops = callNetwork ./labnet/labtops.nix {
       vuizvui.user.openlab.labtops.enable = true;
     };
-    gitit-stub = callMachine ./labnet/gitit-stub.nix {};
   };
   profpatsch = {
     katara = callMachine ./profpatsch/katara.nix {};
