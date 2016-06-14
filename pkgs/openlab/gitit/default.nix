@@ -2,7 +2,7 @@
 
 let hp = haskellPackages.override {
   overrides = (self: super: {
-    gitit = (hlib.overrideCabal super.gitit (drv: {
+    gitit = (hlib.overrideCabal super.gitit (drv: rec {
       src = fetchFromGitHub {
         owner = "openlab-aux";
         repo = "gitit";
@@ -10,6 +10,7 @@ let hp = haskellPackages.override {
         sha256 = "0qhkbvm4ixav4nln3m9845w9m3gzfq5xh4nxp2c9qj4w9p79if7z";
       };
       platforms = [ "x86_64-linux" ];
+      hydraPlatforms = platforms;
     }));
     filestore = (hlib.overrideCabal super.filestore (drv: {
       patches = [ ./filestore.patch ];
