@@ -23,6 +23,7 @@
     networkmanagerapplet
     notmuch
     offlineimap
+    openjdk8
     pamixer
     pmtools
     pmutils
