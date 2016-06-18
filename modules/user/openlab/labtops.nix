@@ -68,10 +68,11 @@ in
         printrun
         slic3r
       ];
-      arduino = [
+      arduinoPkgs = [
         ino
+        arduino
       ];
-      in base ++ baseGUI ++ image ++ three-d ++ three-d-printing ++ arduino;
+      in base ++ baseGUI ++ image ++ three-d ++ three-d-printing ++ arduinoPkgs;
 
     services.xserver = {
       enable = true;
