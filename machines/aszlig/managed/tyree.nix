@@ -32,7 +32,7 @@
 
   hardware.cpu.intel.updateMicrocode = true;
   hardware.pulseaudio.enable = true;
-  hardvare.pulseaudio.package = pkgs.pulseaudioFull;
+  hardware.pulseaudio.package = pkgs.pulseaudioFull;
 
   i18n.consoleUseXkbConfig = true;
   i18n.defaultLocale = "de_DE.UTF-8";
