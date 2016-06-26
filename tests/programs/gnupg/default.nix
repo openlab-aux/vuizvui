@@ -102,8 +102,14 @@ in {
       $machine->succeed("test -e /i_still_have_thu_powarr");
     };
 
+    subtest "socket persists after restart", sub {
+      $machine->succeed(ssh 'test -e "$SSH_AUTH_SOCK"');
+      $machine->succeed(ssh 'systemctl --user stop gpg-agent.service');
+      $machine->succeed(ssh 'test -e "$SSH_AUTH_SOCK"');
+    };
+
     subtest "test from SSH", sub {
-      $machine->succeed(ssh "systemctl --user reload gpg-agent");
+      $machine->execute(ssh "systemctl --user reload gpg-agent");
       $machine->succeed(ssh "${cliTestWithPassphrase ''
         echo encrypt me > to_encrypt
         gpg2 -sea -r ECC15FE1 to_encrypt
@@ -115,7 +121,7 @@ in {
     };
 
     subtest "test from X", sub {
-      $machine->succeed(ssh "systemctl --user reload gpg-agent");
+      $machine->execute(ssh "systemctl --user reload gpg-agent");
       my $pid = $machine->succeed(xsu
         'echo encrypt me | gpg2 -sea -r ECC15FE1 > encrypted_x.asc & echo $!'
       );

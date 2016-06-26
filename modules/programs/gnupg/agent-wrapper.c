@@ -15,10 +15,15 @@ static int main_fd = 0;
 static int ssh_fd = 0;
 static int scdaemon_fd = 0;
 
-/* Get the systemd file descriptor for a particular socket file.
- * Returns -1 if there is an error or -2 if it is an unnamed socket.
+/* Get a systemd file descriptor corresponding to the specified socket path.
+ *
+ * Return values:
+ *   -1 Socket path not a systemd socket
+ *   -2 Provided socket path is not absolute
+ *   -3 No suitable file descriptors in LISTEN_FDS
+ *   -4 Error while determining LISTEN_FDS
  */
-static int get_sd_fd_for(const struct sockaddr_un *addr)
+static int get_sd_fd(const char *sockpath)
 {
     if (main_fd == 0 && ssh_fd == 0 && scdaemon_fd == 0) {
         int num_fds;
@@ -28,7 +33,7 @@ static int get_sd_fd_for(const struct sockaddr_un *addr)
 
         if ((libsystemd = dlopen(LIBSYSTEMD, RTLD_LAZY)) == NULL) {
             fprintf(stderr, "dlopen %s\n", dlerror());
-            return -1;
+            return -4;
         }
 
         _sd_listen_fds_with_names =
@@ -36,7 +41,7 @@ static int get_sd_fd_for(const struct sockaddr_un *addr)
 
         if (_sd_listen_fds_with_names == NULL) {
             fprintf(stderr, "dlsym %s\n", dlerror());
-            return -1;
+            return -4;
         }
 
         num_fds = _sd_listen_fds_with_names(0, &fdmap);
@@ -44,8 +49,8 @@ static int get_sd_fd_for(const struct sockaddr_un *addr)
         if (num_fds <= 0) {
             fputs("No suitable file descriptors in LISTEN_FDS.\n", stderr);
             if (num_fds == 0)
-                errno = EADDRNOTAVAIL;
-            return -1;
+                return -3;
+            return -4;
         }
 
         if (fdmap != NULL) {
@@ -65,30 +70,49 @@ static int get_sd_fd_for(const struct sockaddr_un *addr)
             return -1;
     }
 
+    char *basename = strrchr(sockpath, '/');
+    if (basename == NULL)
+        return -2;
+    else
+        basename++;
+
+    if (strncmp(basename, "S.gpg-agent", 12) == 0)
+        return main_fd;
+    else if (strncmp(basename, "S.gpg-agent.ssh", 16) == 0)
+        return ssh_fd;
+    else if (strncmp(basename, "S.scdaemon", 11) == 0)
+        return scdaemon_fd;
+
+    return -1;
+}
+
+/* Get the systemd file descriptor for a particular sockaddr.
+ * Returns -1 if there is an error or -2 if it is an unnamed socket.
+ */
+static int get_sd_fd_sockaddr(const struct sockaddr_un *addr)
+{
+    int ret;
+
     if (addr->sun_path == NULL || *(addr->sun_path) == 0)
         return -2;
 
-    char *basename = strrchr(addr->sun_path, '/');
-    if (basename == NULL) {
-        fprintf(stderr, "Socket path %s is not absolute.\n",
-                addr->sun_path);
+    ret = get_sd_fd(addr->sun_path);
+
+    if (ret < 0) {
+        switch (ret) {
+            case -1:
+                fprintf(stderr, "Socket path %s is unknown.\n", addr->sun_path);
+                break;
+            case -2:
+                fprintf(stderr, "Socket path %s is not absolute.\n",
+                        addr->sun_path);
+                break;
+        }
         errno = EADDRNOTAVAIL;
         return -1;
-    } else {
-        basename++;
     }
 
-    if (strncmp(basename, "S.gpg-agent", 12) == 0) {
-        return main_fd;
-    } else if (strncmp(basename, "S.gpg-agent.ssh", 16) == 0) {
-        return ssh_fd;
-    } else if (strncmp(basename, "S.scdaemon", 11) == 0) {
-        return scdaemon_fd;
-    } else {
-        fprintf(stderr, "Socket path %s is unknown.\n", addr->sun_path);
-        errno = EADDRNOTAVAIL;
-        return -1;
-    }
+    return ret;
 }
 
 /* Replace the systemd-provided socket FD with the one that is used by the
@@ -108,6 +132,36 @@ int listen(int sockfd, int backlog)
     return 0;
 }
 
+/* Don't unlink() the socket, because it breaks systemd socket functionality. */
+int remove(const char *pathname)
+{
+    static int (*_remove)(const char*) = NULL;
+
+    if (get_sd_fd(pathname) > 0)
+        return 0;
+
+    if (_remove == NULL)
+        _remove = dlsym(RTLD_NEXT, "remove");
+
+    return _remove(pathname);
+}
+
+/* Don't close the socket either, because we want to re-use it. */
+int close(int fd)
+{
+    static int (*_close)(int) = NULL;
+
+    if (_close == NULL)
+        _close = dlsym(RTLD_NEXT, "close");
+
+    if (fd <= 0)
+        return _close(fd);
+    else if (fd == main_fd || fd == ssh_fd || fd == scdaemon_fd)
+        return 0;
+
+    return _close(fd);
+}
+
 /* The agent should already have called socket() before and we need to close the
  * file descriptor that the socket() call has returned and replace it with the
  * one provided by systemd.
@@ -116,7 +170,7 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 {
     int new_fd;
 
-    new_fd = get_sd_fd_for((const struct sockaddr_un *)addr);
+    new_fd = get_sd_fd_sockaddr((const struct sockaddr_un *)addr);
 
     switch (new_fd) {
         case -1: return -1;
@@ -124,7 +178,7 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
         case -2: return 0;
     }
 
-    if ((new_fd = get_sd_fd_for((const struct sockaddr_un *)addr)) == -1)
+    if ((new_fd = get_sd_fd_sockaddr((const struct sockaddr_un *)addr)) == -1)
         return -1;
 
     fprintf(stderr, "bind: Redirecting FD %d to systemd-provided FD %d.\n",
