@@ -5,6 +5,16 @@ with lib;
 let
   cfg = config.vuizvui.programs.gnupg;
 
+  hasXdgSupport = versionAtLeast (getVersion cfg.package) "2.1.13";
+  isDefaultHome = cfg.homeDir == ".gnupg";
+
+  sockDir = if hasXdgSupport && isDefaultHome
+            then "%t/gnupg"
+            else "%h/${cfg.homeDir}";
+  shellSockDir = if hasXdgSupport && isDefaultHome
+                 then "$XDG_RUNTIME_DIR/gnupg"
+                 else "$HOME/${cfg.homeDir}";
+
   pinentryWrapper = pkgs.runCommand "pinentry-wrapper" {
     pinentryProgram = cfg.agent.pinentry.program;
   } ''
@@ -15,7 +25,7 @@ let
   scdaemonRedirector = pkgs.writeScript "scdaemon-redirector" ''
     #!${pkgs.stdenv.shell}
     exec "${pkgs.socat}/bin/socat" - \
-      UNIX-CONNECT:"$HOME/${cfg.homeDir}/S.scdaemon"
+      UNIX-CONNECT:"${shellSockDir}/S.scdaemon"
   '';
 
   agentWrapper = pkgs.runCommand "gpg-agent-wrapper" {
@@ -94,7 +104,7 @@ in {
       vuizvui.requiresTests = singleton ["vuizvui" "programs" "gnupg"];
       environment.systemPackages = [ cfg.package ];
     })
-    (mkIf (cfg.enable && cfg.homeDir != ".gnupg") {
+    (mkIf (cfg.enable && !isDefaultHome) {
       environment.variables.GNUPGHOME = "~/${cfg.homeDir}";
     })
     (mkIf (cfg.enable && cfg.agent.enable) {
@@ -123,7 +133,7 @@ in {
       systemd.user.sockets.gpg-agent-main = {
         wantedBy = [ "sockets.target" ];
         description = "Main Socket For GnuPG Agent";
-        listenStreams = [ "%h/${cfg.homeDir}/S.gpg-agent" ];
+        listenStreams = singleton "${sockDir}/S.gpg-agent";
         socketConfig = agentSocketConfig "main";
       };
     })
@@ -131,7 +141,7 @@ in {
       systemd.user.sockets.gnupg-scdaemon = {
         wantedBy = [ "sockets.target" ];
         description = "GnuPG Smartcard Daemon Socket";
-        listenStreams = [ "%h/${cfg.homeDir}/S.scdaemon" ];
+        listenStreams = singleton "${sockDir}/S.scdaemon";
         socketConfig = {
           FileDescriptorName = "scdaemon";
           SocketMode = "0600";
@@ -152,13 +162,12 @@ in {
       };
     })
     (mkIf (cfg.enable && cfg.agent.enable && cfg.agent.sshSupport) {
-      environment.variables.SSH_AUTH_SOCK =
-        "$HOME/${cfg.homeDir}/S.gpg-agent.ssh";
+      environment.variables.SSH_AUTH_SOCK = "${shellSockDir}/S.gpg-agent.ssh";
 
       systemd.user.sockets.gpg-agent-ssh = {
         wantedBy = [ "sockets.target" ];
         description = "SSH Socket For GnuPG Agent";
-        listenStreams = [ "%h/${cfg.homeDir}/S.gpg-agent.ssh" ];
+        listenStreams = singleton "${sockDir}/S.gpg-agent.ssh";
         socketConfig = agentSocketConfig "ssh";
       };
 
