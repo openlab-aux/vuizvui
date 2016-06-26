@@ -5,7 +5,7 @@ let
     #!${pkgs.expect}/bin/expect -f
     set timeout 20
     spawn ${pkgs.writeScript "cli-testscript.sh" ''
-      #!${pkgs.stdenv.shell} -ex
+      #!${pkgs.stdenv.shell} -e
       ${script}
     ''}
     ${expectScript}
