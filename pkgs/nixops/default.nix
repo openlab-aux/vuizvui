@@ -18,6 +18,7 @@ let
     postPatch = ''
       sed -i -re 's!<nixpkgs([^>]*)>!${import ../../nixpkgs-path.nix}\1!g' \
         release.nix doc/manual/default.nix doc/manual/resource.nix
+      sed -i -e '/^docbookxsl/s/1\.78\.1/1.79.1/' doc/manual/Makefile
     '';
 
     installPhase = ''
