@@ -315,5 +315,20 @@ in {
     # fix for emacs ssh
     programs.bash.promptInit = "PS1=\"# \"";
 
+    ################
+    # User services
+    systemd.user = {
+      services.offlineimap = {
+        description = "offlineimap sync";
+        # NixOS doesn't support "Also" so we bring it in manually
+        wantedBy = [ "network.target" ];
+        serviceConfig = {
+          Type = "simple";
+          ExecStart = "${lib.getBin myPkgs.offlineimap}/bin/offlineimap";
+        };
+        # every 15 minutes
+        startAt = "*:0/15";
+      };
+    };
   };
 }
