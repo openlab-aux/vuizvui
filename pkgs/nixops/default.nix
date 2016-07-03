@@ -1,8 +1,8 @@
 { stdenv, fetchFromGitHub, fetchpatch, git }:
 
 let
-  rev = "7c4659663722c05959f74db45e85073759a0b5ee";
-  sha256 = "026jsp34fw199saqcfrixhcv53wkpc5y0vn57qx9wdyygjasibf8";
+  rev = "e6f012a95988e52cc6555c04242056d319478b24";
+  sha256 = "0xz1nz3a49vwhzkjb0b9c7c83iwfpkpvsnq5bpgm2w3qii75vhkj";
 
   master = stdenv.mkDerivation rec {
     name = "nixops-upstream-patched";
@@ -18,9 +18,7 @@ let
     postPatch = ''
       sed -i -re 's!<nixpkgs([^>]*)>!${import ../../nixpkgs-path.nix}\1!g' \
         release.nix doc/manual/default.nix doc/manual/resource.nix
-      # XXX: Hack to get it to build for now.
-      sed -i -e 's/pkgs\.libxslt/pkgs.libxslt.bin/g' \
-        doc/manual/default.nix doc/manual/resource.nix
+      sed -i -e '/^docbookxsl/s/1\.78\.1/1.79.1/' doc/manual/Makefile
     '';
 
     installPhase = ''

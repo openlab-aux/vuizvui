@@ -4,7 +4,7 @@
   boot.initrd.availableKernelModules = [ "usbhid" ];
   boot.kernelModules = [ "kvm-intel" ];
 
-  boot.loader.gummiboot.enable = true;
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   environment.systemPackages = with pkgs; [
@@ -44,7 +44,7 @@
   networking.useNetworkd = true;
 
   nix.maxJobs = 4;
-  nix.useChroot = true;
+  nix.useSandbox = true;
   nix.readOnlyStore = true;
   nix.buildCores = 0;
   nix.extraOptions = ''
