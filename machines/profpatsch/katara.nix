@@ -109,8 +109,8 @@ in {
         # TODO integrate lame into audacity
         audacity lame.lib    # audio editor and mp3 codec
         myPkgs.beets         # audio file metadata tagger
-        # chromium             # browser
-        (chromium.override { enablePepperFlash = true; })
+        chromium             # browser
+        # (chromium.override { enablePepperFlash = true; })
         # droopy               # simple HTML upload server
         unfreeAndNonDistributablePkgs.dropbox-cli # dropbox.com client
         emacs                # pretty neat operating system i guess
