@@ -255,6 +255,8 @@ in {
     # TODO: taffybar battery depends on this
     services.upower.enable = true;
 
+    services.searx.enable = true;
+
     ###################
     # Graphical System
 
