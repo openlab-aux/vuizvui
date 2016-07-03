@@ -193,18 +193,11 @@ in {
       temperature.day = 6300;
     };
 
-    # locate
-    services.locate = {
-      enable = true;
-    };
-
     # Automount
     services.udisks2.enable = true;
 
     # TODO: taffybar battery depends on this
     services.upower.enable = true;
-
-    services.searx.enable = true;
 
     ###################
     # Graphical System
