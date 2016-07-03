@@ -251,7 +251,7 @@ in {
             # TODO xbindkeys user service file
             ${xbindkeys}/bin/xbindkeys
             nice -n19 dropbox-cli start &
-            ${networkmanagerapplet}/bin/nm-applet &
+            nm-applet &
             # synchronize clipboards
             ${autocutsel}/bin/autocutsel -s PRIMARY &
             '';
