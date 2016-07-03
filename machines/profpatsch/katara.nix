@@ -2,26 +2,12 @@
 let
 
   myPkgs = import ./pkgs.nix { inherit pkgs lib; };
-  fish = pkgs.fish;
-
-  # mytexlive = with pkgs.texlive; combine { inherit minted; }; # inherit scheme-medium minted units collection-bibtexextra; };
-
-  authKeys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJhthfk38lzDvoI7lPqRneI0yBpZEhLDGRBpcXzpPSu+V0YlgrDix5fHhBl+EKfw4aeQNvQNuAky3pDtX+BDK1b7idbz9ZMCExy2a1kBKDVJz/onLSQxiiZMuHlAljVj9iU4uoTOxX3vB85Ok9aZtMP1rByRIWR9e81/km4HdfZTCjFVRLWfvo0s29H7l0fnbG9bb2E6kydlvjnXJnZFXX+KUM16X11lK53ilPdPJdm87VtxeSKZ7GOiBz6q7FHzEd2Zc3CnzgupQiXGSblXrlN22IY3IWfm5S/8RTeQbMLVoH0TncgCeenXH7FU/sXD79ypqQV/WaVVDYMOirsnh/ philip@nyx"];
- 
-  philip = rec {
-    name = "philip";
-    group = "users";
-    extraGroups = [ "wheel" "networkmanager" ];
-    uid = 1000;
-    createHome = true;
-    home = "/home/philip";
-          passwordFile = "${home}/.config/passwd";
-          # password = "test"; # in case of emergency, break glass
-    shell = "${fish}/bin/fish";
-          openssh.authorizedKeys.keys = authKeys;
-    };
 
 in {
+
+  imports = [
+    ./base.nix
+  ];
 
   config = rec {
 
@@ -29,8 +15,6 @@ in {
     # Kernel
 
     boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" ];
-    boot.loader.grub.enable = true;
-    boot.loader.grub.version = 2;
     boot.loader.grub.device = "/dev/sda";
     boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "cryptroot"; } ];
 
@@ -68,60 +52,33 @@ in {
     # Network
 
     networking.hostName = "katara";
-    networking.networkmanager = {
-      enable = true;
-      basePackages = with pkgs; {
+
+    networking.networkmanager.basePackages =
+      with pkgs; {
         # the openssl backend doesn’t like the protocols of my university
         networkmanager_openconnect =
           pkgs.networkmanager_openconnect.override { openconnect = pkgs.openconnect_gnutls; };
         inherit networkmanager modemmanager wpa_supplicant
                 networkmanager_openvpn networkmanager_vpnc
                 networkmanager_pptp networkmanager_l2tp;
-      };
-    };
-
-    networking.firewall.enable = false;
-
-    i18n = {
-      consoleFont = "lat9w-16";
-      consoleKeyMap = "us";
-      defaultLocale = "en_US.UTF-8";
     };
 
 
     ###########
     # Packages
 
-
-    environment.sessionVariables = { EDITOR = "${myPkgs.vim}/bin/vim"; };
-
     environment.systemPackages = with pkgs;
     let
       systemPkgs =
       [
         atool             # archive tools
-        curl              # transfer data to/from a URL
-        dos2unix          # text file conversion
-        fdupes            # file duplicate finder
-        file              # file information
         gnupg gnupg1compat # PGP encryption
-        htop              # top replacement
         imagemagick       # image conversion
         jmtpfs            # MTP fuse
-        manpages          # system manpages (not included by default)
-        mkpasswd          # UNIX password creator
         mosh              # ssh with stable connections
         nfs-utils         # the filesystem of the future for 20 years
-        nmap              # stats about clients in the network
-        smartmontools     # check disk state
-        stow              # dotfile management
-        tmux              # detachable terminal multiplexer
-        traceroute        # trace ip routes
         # TODO move into atool deps
         unzip             # extract zip archives
-        myPkgs.vim        # slight improvement over vi
-        wget              # the other URL file fetcher
-        wirelesstools     # iwlist (wifi scan)
       ];
       xPkgs = [
         dmenu             # simple UI menu builder
@@ -137,14 +94,13 @@ in {
         # TODO: get themes to work. See notes.org.
         gnome3.gnome_themes_standard
         pavucontrol
+        networkmanagerapplet
       ];
       hp = haskellPackages;
       programmingTools = [
         hp.cabal2nix          # convert cabal files to nixexprs
-        git                   # version control system
         myPkgs.git-annex # version controlled binary file storage
         # mercurial             # the other version control system
-        silver-searcher       # file content searcher, > ack > grep
         telnet                # tcp debugging
       ];
       userPrograms = [
@@ -219,10 +175,6 @@ in {
     ###########
     # Services
 
-    # Enable the OpenSSH daemon.
-    services.openssh.enable = true;
-
-    # Enable CUPS to print documents.
     services.printing = {
       enable = true;
       gutenprint = true;
@@ -231,8 +183,6 @@ in {
       # TODO
       # drivers = [ pkgs.foomatic_filters pkgs.foomatic-db-engine ];
     };
-
-    time.timeZone = "Europe/Berlin";
 
     # redshift TODO as user
     services.redshift = {
@@ -249,8 +199,6 @@ in {
 
     # Automount
     services.udisks2.enable = true;
-
-    services.journald.extraConfig = "SystemMaxUse=50M";
 
     # TODO: taffybar battery depends on this
     services.upower.enable = true;
@@ -346,27 +294,15 @@ in {
     ];
 
 
-    ########
-    # Users
-
-    # Nobody wants mutable state. :)
-    users.mutableUsers = false;
-    users.users = { inherit philip; };
-
     ###########
     # Programs
 
-    # use gpg-agent
-    programs.ssh.startAgent = false;
-
-    # friendly user shell
-    programs.fish = {
-      enable = true;
       # gpg-agent; TODO: move to module
-      shellInit = ''
+    programs.fish.shellInit = ''
         set -x GPG_TTY (tty)
       '';
-    };
+
+    # TODO: base config?
     vuizvui.programs.fish.fasd.enable = true;
 
     # build derivation on taalo
