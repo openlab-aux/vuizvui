@@ -1,12 +1,11 @@
 --- a/src/common/gnupg.py	1970-01-01 01:00:01.000000000 +0100
-+++ b/src/common/gnupg.py	2016-07-04 12:23:04.660012839 +0200
-@@ -229,7 +229,8 @@
-                      "DECRYPTION_OKAY", "INV_SGNR", "FILE_START", "FILE_ERROR",
-                      "FILE_DONE", "PKA_TRUST_GOOD", "PKA_TRUST_BAD", "BADMDC",
-                      "GOODMDC", "NO_SGNR", "NOTATION_NAME", "NOTATION_DATA",
--                     "PROGRESS", "PINENTRY_LAUNCHED", "NEWSIG"):
-+                     "PROGRESS", "PINENTRY_LAUNCHED", "NEWSIG",
-+                     "KEY_CONSIDERED"):
++++ b/src/common/gnupg.py	2016-07-04 12:44:42.680621101 +0200
+@@ -613,7 +613,7 @@
+                    "GOOD_PASSPHRASE", "BEGIN_SIGNING", "CARDCTRL", "INV_SGNR",
+                    "NO_SGNR", "MISSING_PASSPHRASE", "NEED_PASSPHRASE_PIN",
+                    "SC_OP_FAILURE", "SC_OP_SUCCESS", "PROGRESS",
+-                   "PINENTRY_LAUNCHED"):
++                   "PINENTRY_LAUNCHED", "KEY_CONSIDERED"):
              pass
-         elif key == "BADSIG":
-             self.valid = False
+         elif key in ("KEYEXPIRED", "SIGEXPIRED"):
+             self.status = 'key expired'
