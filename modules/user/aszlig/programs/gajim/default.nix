@@ -37,11 +37,16 @@ let
     gtk-enable-animations = 0
   '';
 
-  gajimPatched = overrideDerivation pkgs.gajim (o: {
+  gajimPatched = let
+    o = pkgs.gajim.drvAttrs;
+  in pkgs.stdenv.mkDerivation (pkgs.gajim.drvAttrs // {
     patches = (o.patches or []) ++ singleton (pkgs.substituteAll {
       src = ./config.patch;
       nix_config = pkgs.writeText "gajim.config" (import ./config.nix lib);
     }) ++ singleton ./gnupg-2.1.13.patch;
+    propagatedBuildInputs = (o.propagatedBuildInputs or []) ++ [
+      pkgs.pythonPackages.python-axolotl
+    ];
     postPatch = (o.postPatch or "") + ''
       sed -i -e '/^export/i export GTK2_RC_FILES="${gtkTheme}"' \
         scripts/gajim.in
