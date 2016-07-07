@@ -41,7 +41,8 @@
 
     displayManager.sessionCommands = ''
       ${pkgs.xorg.xsetroot}/bin/xsetroot -solid black
-      ${pkgs.networkmanagerapplet}/bin/nm-applet &
+      #${pkgs.networkmanagerapplet}/bin/nm-applet &
+      ${pkgs.connmanui}/bin/connman-ui-gtk &
       ${pkgs.pasystray}/bin/pasystray &
       #${pkgs.compton}/bin/compton -f &
       ${pkgs.rofi}/bin/rofi &

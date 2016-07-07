@@ -4,5 +4,8 @@
   imports = [ ./network_common.nix ];
 
   networking.hostName = "eris";
-  networking.networkmanager.enable = true;
+  networking.wireless.enable = true;
+  networking.connman.enable = true;
+  networking.wicd.enable = false;
+  networking.networkmanager.enable = false;
 }
