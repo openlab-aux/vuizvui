@@ -2,12 +2,12 @@
 
 {
   virtualisation = {
-#    virtualbox = {
-#      host = {
-#        enable = true;
-#        enableHardening = true;
-#      };
-#    };
+    virtualbox = {
+      host = {
+        enable = true;
+        enableHardening = true;
+      };
+    };
     libvirtd = {
       enable = true;
       enableKVM = true;
