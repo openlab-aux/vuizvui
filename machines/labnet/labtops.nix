@@ -1,5 +1,6 @@
 {
   labtop = {
+    vuizvui.user.openlab.labtops.enable = true;
     boot.kernelModules = [ "kvm-intel" ];
     boot.initrd.availableKernelModules = [
       "uhci_hcd" "ehci_pci" "ata_piix" "firewire_ohci" "usb_storage"
@@ -14,6 +15,7 @@
   };
 
   hannswurscht = {
+    vuizvui.user.openlab.base.enable = true;
     nixpkgs.system = "i686-linux";
   };
 }
