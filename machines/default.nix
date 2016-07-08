@@ -13,9 +13,7 @@ with import ../lib;
     };
   };
   labnet = {
-    labtops = callNetwork ./labnet/labtops.nix {
-      vuizvui.user.openlab.labtops.enable = true;
-    };
+    labtops = callNetwork ./labnet/labtops.nix {};
   };
   profpatsch = {
     katara = callMachine ./profpatsch/katara.nix {};
