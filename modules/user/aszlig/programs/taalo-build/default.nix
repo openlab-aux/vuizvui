@@ -63,6 +63,7 @@ let
     #!${pkgs.stdenv.shell}
     if tmpdir="$("${pkgs.coreutils}/bin/mktemp" -d -t taalo-build.XXXXXX)"; then
       trap "rm -rf '$tmpdir'" EXIT
+      set -o pipefail
       drvs="$(nix-instantiate --add-root "$tmpdir/derivation" --indirect "$@" \
         | cut -d'!' -f1)" || exit 1
       ${backend} $("${pkgs.coreutils}/bin/readlink" $drvs)
