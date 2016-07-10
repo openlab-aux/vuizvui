@@ -321,6 +321,7 @@ let
     " filetype defaults
     filetype plugin indent on
     au BufNewFile,BufRead *.as set ft=actionscript
+    au BufNewFile,BufRead *.tt set ft=tt2html ts=2 sw=2 sts=2 et
     au BufNewFile,BufRead *.html set ts=2 sw=2 sts=2 et
     au FileType python set textwidth=79
     au FileType gitcommit set textwidth=72
