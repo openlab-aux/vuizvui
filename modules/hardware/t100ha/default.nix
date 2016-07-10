@@ -36,6 +36,8 @@ in {
         ];
 
         extraConfig = ''
+          MATOM y
+
           MMC y
           MMC_BLOCK y
           MMC_SDHCI y
