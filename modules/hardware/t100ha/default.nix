@@ -12,18 +12,17 @@ in {
     # few additional patches:
     boot.kernelPackages = let
       nixpkgs = import ../../../nixpkgs-path.nix;
-      linuxNextVersion = "20160426";
       mkKernel = import "${nixpkgs}/pkgs/os-specific/linux/kernel/generic.nix";
       t100haKernel = mkKernel rec {
-        version = "4.6-rc5";
-        modDirVersion = "4.6.0-rc5-next-${linuxNextVersion}";
-        extraMeta.branch = "4.6";
+        version = "4.7-rc6";
+        modDirVersion = "4.7.0-rc6";
+        extraMeta.branch = "4.7";
 
         src = pkgs.fetchgit {
-          url = "git://git.kernel.org/pub/scm/linux/kernel/git/next/"
-              + "linux-next.git";
-          rev = "refs/tags/next-${linuxNextVersion}";
-          sha256 = "0qa5fpli9y3xk01yrc7sy2v4vywlkj7aclslmz79r1ry6smfnv2b";
+          url = "git://git.kernel.org/pub/scm/linux/kernel/git/"
+              + "torvalds/linux.git";
+          rev = "ee40fb2948fc99096836995d4f3ddcc0efbac790";
+          sha256 = "02mdw2wcghsrncrab77pznqx150w2r5jswxb5s71zmzq88bxc6h8";
         };
 
         kernelPatches = [
