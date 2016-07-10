@@ -80,7 +80,7 @@
   users.users.bla = {
     isNormalUser = true;
     uid = 1000;
-    extraGroups = [ "video" "wheel" ];
+    extraGroups = [ "video" "wheel" "networkmanager" ];
   };
 
   # XXX: Temporary until internal WiFi works
