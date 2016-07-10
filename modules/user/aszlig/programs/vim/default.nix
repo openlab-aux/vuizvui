@@ -320,8 +320,8 @@ let
 
     " filetype defaults
     filetype plugin indent on
-    au BufNewFile,BufRead *.as set filetype=actionscript
-    au BufNewFile,BufRead *.html set tabstop=4|set shiftwidth=4|set expandtab
+    au BufNewFile,BufRead *.as set ft=actionscript
+    au BufNewFile,BufRead *.html set ts=2 sw=2 sts=2 et
     au FileType python set textwidth=79
     au FileType gitcommit set textwidth=72
     au FileType docbk set tabstop=2 shiftwidth=2 expandtab
