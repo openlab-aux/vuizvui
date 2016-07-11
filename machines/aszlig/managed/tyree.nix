@@ -43,6 +43,9 @@
   networking.networkmanager.enable = true;
   networking.useNetworkd = true;
 
+  # Temporary, seems to be a bug in NetworkManager:
+  networking.usePredictableInterfaceNames = false;
+
   nix.maxJobs = 4;
   nix.useSandbox = true;
   nix.readOnlyStore = true;
