@@ -32,6 +32,9 @@ in {
           { name = "meta-keys";
             patch = ./meta-keys.patch;
           }
+          { name = "revert-fix-acpica-namespace-interpreter-lock";
+            patch = ./revert-fix-acpica-namespace-interpreter-lock.patch;
+          }
         ];
 
         extraConfig = ''
