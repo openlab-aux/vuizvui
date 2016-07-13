@@ -95,7 +95,8 @@ let
     primary_netdev="$(echo "$raw_netinfo" | \
       ${pkgs.gnused}/bin/sed -nre 's/^.*dev *([^ ]+).*$/\1/p')"
 
-    ${conky}/bin/conky -c "${baseConfig}" -t "${text}"
+    # FIXME: Log stderr to the journal!
+    ${conky}/bin/conky -c "${baseConfig}" -t "${text}" 2> /dev/null
   '';
 
 in {
