@@ -99,6 +99,7 @@ in {
       hp = haskellPackages;
       programmingTools = [
         hp.cabal2nix          # convert cabal files to nixexprs
+        hp.cabal-install      # haskell project management
         myPkgs.git-annex # version controlled binary file storage
         # mercurial             # the other version control system
         telnet                # tcp debugging
@@ -146,7 +147,6 @@ in {
       nixPkgs = [
         nix-repl                  # nix REPL
         nix-prefetch-scripts      # prefetch store paths from various destinations
-        # haskellPackages.cabal2nix # convert cabal files to nix
       ];
       tmpPkgs = [
         # TODO needs user service
