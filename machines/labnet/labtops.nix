@@ -16,6 +16,19 @@
 
   hannswurscht = {
     vuizvui.user.openlab.base.enable = true;
+
     nixpkgs.system = "i686-linux";
+
+    users.users.openlab.extraGroups = [ "audio" ];
+
+    hardware.pulseaudio = {
+      enable = true;
+      systemWide = true;
+      tcp.enable = true;
+      tcp.anonymousClients.allowedIpRanges = [ "172.16.0.0/16" ];
+      zeroconf.publish.enable = true;
+    };
+
+    services.logind.extraConfig = "HandleLidSwitch=ignore";
   };
 }
