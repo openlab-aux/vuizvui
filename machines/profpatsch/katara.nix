@@ -241,10 +241,6 @@ in {
             export PATH+=":$HOME/.bin" #add (temporary) executables
             export EDITOR=emacsclient
 
-            ${gnupg}/bin/gpg-connect-agent /bye
-            unset SSH_AGENT_PID
-            export SSH_AUTH_SOCK="''${HOME}/.gnupg/S.gpg-agent.ssh"
-
             ${xorg.xset}/bin/xset r rate 250 35
 
             set-background &
@@ -292,8 +288,14 @@ in {
     # Programs
 
       # gpg-agent; TODO: move to module
-    programs.fish.shellInit = ''
-        set -x GPG_TTY (tty)
+    programs.fish.interactiveShellInit = ''
+        set -l ssh_keys (find ${config.users.users.philip.home}/.ssh/ -name "*rsa*" | grep -v ".pub")
+        for l in (${lib.getBin pkgs.keychain}/bin/keychain \
+                    --eval --agents ssh $ssh_keys 2>/dev/null | \
+                    sed 's/^\(.*\)=\(.*\); export.*$/set \1 \2/')
+          eval $l
+        end; \
+          and test -S $SSH_AUTH_SOCK; or echo "ssh agent (keychain) init failed!"
       '';
 
     # TODO: base config?
