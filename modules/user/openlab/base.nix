@@ -14,6 +14,7 @@ in
 
   config = mkIf cfg.enable {
     boot.loader.grub.device = mkDefault "/dev/sda";
+    boot.loader.timeout = 2;
 
     fileSystems."/" = mkDefault {
       device = "/dev/disk/by-label/labtop";
