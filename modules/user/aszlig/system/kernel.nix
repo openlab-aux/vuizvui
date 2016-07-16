@@ -22,7 +22,7 @@ let
     src = pkgs.fetchgit {
       url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;
       rev = "47ef4ad2684d380dd6d596140fb79395115c3950";
-      sha256 = "0qwqqvidwy6jbi1pqpr4wm7p491f6mb96nh3p5djkaigx8mvnwqw";
+      sha256 = "15b6fqfwyi3lh13qa7hz7x9za6r32cdaiww6labqn229vp8362ys";
     };
   };
 
