@@ -29,9 +29,6 @@ with lib;
     ];
   };
 
-  virtualisation.virtualbox.host.enable = true;
-  nixpkgs.config.virtualbox.enableExtensionPack = true;
-
   vuizvui.user.aszlig.system.kernel.enable = true;
   vuizvui.user.aszlig.system.kernel.config = let
     radeonFw = [
@@ -110,7 +107,7 @@ with lib;
   # TODO: Try to avoid this, but as there is only a single user using audio on
   # this machine, it's okay for now. But remember that this will break heavily,
   # should there be another user accessing the audio devices.
-  users.users.aszlig.extraGroups = [ "audio" "vboxusers" ];
+  users.users.aszlig.extraGroups = [ "audio" ];
 
   services.synergy.client.enable = true;
   services.synergy.client.serverAddress = "mmrnmhrm";
