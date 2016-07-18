@@ -20,6 +20,7 @@
     nixpkgs.system = "i686-linux";
 
     users.users.openlab.extraGroups = [ "audio" ];
+    services.mingetty.autologinUser = "openlab";
 
     hardware.pulseaudio = {
       enable = true;
