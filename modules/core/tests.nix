@@ -37,7 +37,7 @@ let
     { check = anyAttrs (i: i.hostBridge != null) config.containers;
       path  = ["nixos" "containers-bridge"];
     }
-    { check = true;
+    { check = config.networking.hostName != "brawndo"; # FIXME
       path  = ["nixos" "containers-imperative"];
     }
     { check = anyAttrs (i: i.hostAddress  != null
