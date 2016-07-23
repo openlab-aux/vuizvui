@@ -45,6 +45,7 @@ in {
   nix.maxJobs = 4;
 
   nixpkgs.config = {
+    allowUnfree = true; # XXX: More granularity!
     chromium.enablePepperFlash = true;
     pulseaudio = true;
   };
