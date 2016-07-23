@@ -1,4 +1,4 @@
-{ pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
+{ config, pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 
 let
   mainDisk = "ata-WDC_WD5000LPVX-22V0TT0_WD-WXG1E2559AYH";
@@ -6,8 +6,13 @@ let
 
 in {
   boot = {
-    initrd.availableKernelModules = [ "ehci_pci" "ahci" ];
+    initrd.availableKernelModules = [
+      "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "sr_mod"
+      "rtsx_pci_sdmmc"
+    ];
+    kernelModules = [ "kvm-intel" "wl" ];
     kernelPackages = pkgs.linuxPackages_latest;
+    extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     loader.grub.enable = true;
     loader.grub.version = 2;
     loader.grub.device = "/dev/disk/by-id/${mainDisk}";
@@ -25,6 +30,7 @@ in {
   };
 
   hardware = {
+    cpu.intel.updateMicrocode = true;
     enableAllFirmware = true;
     opengl.s3tcSupport = true;
     pulseaudio.enable = true;
