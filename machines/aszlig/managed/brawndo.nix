@@ -13,9 +13,8 @@ in {
     kernelModules = [ "kvm-intel" "wl" ];
     kernelPackages = pkgs.linuxPackages_latest;
     extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
-    loader.grub.enable = true;
-    loader.grub.version = 2;
-    loader.grub.device = "/dev/disk/by-id/${mainDisk}";
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
   };
 
   fileSystems."/" = {
