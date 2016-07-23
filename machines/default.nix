@@ -8,6 +8,7 @@ with import ../lib;
     kzerza    = callMachine ./aszlig/kzerza.nix {};
     tishtushi = callMachine ./aszlig/tishtushi.nix {};
     managed = {
+      brawndo = callMachine ./aszlig/managed/brawndo.nix {};
       notsure = callMachine ./aszlig/managed/notsure.nix {};
       tyree   = callMachine ./aszlig/managed/tyree.nix {};
     };
