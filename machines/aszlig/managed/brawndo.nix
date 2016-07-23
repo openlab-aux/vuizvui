@@ -90,6 +90,9 @@ in {
       layout = "de";
       xkbOptions = "eurosign:e";
 
+      synaptics.enable = true;
+      synaptics.twoFingerScroll = true;
+
       displayManager.kdm.enable = true;
       desktopManager.kde5.enable = true;
     };
