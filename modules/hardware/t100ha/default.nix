@@ -37,19 +37,52 @@ in {
           }
         ];
 
+        # Missing device drivers:
+        #
+        #   808622B8 -> Intel(R) Imaging Signal Processor 2401
+        #   808622D8 -> Intel(R) Integrated Sensor Solution
+        #   HIMX2051 -> Camera Sensor Unicam hm2051
+        #   IMPJ0003 -> Impinj RFID Device (MonzaX 8K)
+        #   OVTI5670 -> Camera Sensor ov5670
+        #
         extraConfig = ''
+          # CPU
           MATOM y
 
+          # MMC
           MMC y
           MMC_BLOCK y
           MMC_SDHCI y
           MMC_SDHCI_ACPI y
-          PINCTRL_CHERRYVIEW y
-          INTEL_SOC_PMIC y
 
+          # PMIC
+          INTEL_PMC_IPC y
+          INTEL_SOC_PMIC y
+          MFD_AXP20X y
+          MFD_AXP20X_I2C y
+
+          # GPU
           AGP n
           DRM y
           DRM_I915 y
+
+          # Thermal
+          INT3406_THERMAL y
+          INT340X_THERMAL y
+
+          # GPIO
+          PINCTRL_CHERRYVIEW y
+
+          # I2C
+          CONFIG_I2C_DESIGNWARE_BAYTRAIL y
+          CONFIG_I2C_DESIGNWARE_PLATFORM y
+
+          # HID
+          INTEL_HID_EVENT y
+
+          # MEI
+          CONFIG_INTEL_MEI y
+          CONFIG_INTEL_MEI_TXE y
         '';
 
         features.iwlwifi = true;
