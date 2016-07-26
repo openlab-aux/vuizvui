@@ -24,11 +24,11 @@
 
     hardware.pulseaudio = {
       enable = true;
-      # systemWide = true;
       # tcp.enable = true;
       # tcp.anonymousClients.allowedIpRanges = [ "172.16.0.0/16" ];
       # zeroconf.publish.enable = true;
     };
+    services.shairport-sync.enable = true;
 
     services.logind.extraConfig = "HandleLidSwitch=ignore";
   };
