@@ -24,9 +24,9 @@
     services.mingetty.autologinUser = "openlab";
 
     hardware.pulseaudio = {
-      package = pkgs.pulseaudioLight.overrideDerivation (old: {
-        patches = old.patches or [] ++ [ ./buffer.patch ];
-      });
+      #package = pkgs.pulseaudioLight.overrideDerivation (old: {
+      #  patches = old.patches or [] ++ [ ./buffer.patch ];
+      #});
       enable = true;
       # tcp.enable = true;
       # tcp.anonymousClients.allowedIpRanges = [ "172.16.0.0/16" ];
