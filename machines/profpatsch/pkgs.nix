@@ -30,16 +30,16 @@ let
       overrides = _: super: {
         taffybar = super.taffybar.overrideDerivation (old: {
           name = old.name + "foo";
-          patches = (old.patches or []) ++ [ ./taffybar.patch ];
+          patches = (old.patches or []) ++ [ ./patches/taffybar.patch ];
           postPatch = old.postPathPhase or "" + ''
-            patch -R ${./taffybar-color.patch}
+            patch -R ${./patches/taffybar-color.patch}
           '';
         });
       };
     }).ghcWithPackages;
   };
 
-  sent = pkgs.sent.override { patches = [ ./sent-bg.patch ]; };
+  sent = pkgs.sent.override { patches = [ ./patches/sent-bg.patch ]; };
 
   mpv = pkgs.mpv.override { scripts = [ pkgs.mpvScripts.convert ]; };
 
