@@ -47,6 +47,7 @@ in {
     nix.maxJobs = 2;
     # what was this activated for?!
     # vuizvui.enableGlobalNixpkgsConfig = true;
+    vuizvui.requiresTests = false;
 
     ##########
     # Network
