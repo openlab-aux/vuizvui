@@ -278,6 +278,7 @@ in {
       source-han-sans-korean
       source-han-sans-simplified-chinese
       source-code-pro
+      hasklig
       dejavu_fonts
       ubuntu_font_family
       league-of-moveable-type
