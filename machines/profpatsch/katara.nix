@@ -122,7 +122,7 @@ in {
         gmpc                 # mpd client and best music player interface in the world
         httpie               # nice http CLI
         inkscape             # vector graphics
-        libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
+        # libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm             # terminal emulator, best one around
         myPkgs.mpv           # you are my sun and my stars. and you play my stuff.
         newsbeuter           # RSS/Atom feed reader
