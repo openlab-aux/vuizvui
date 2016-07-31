@@ -13,6 +13,11 @@ let
     git-detach = callPackage ./git-detach { };
     grandpa = callPackage ./grandpa { };
     greybird-xfce-theme = callPackage ./greybird-xfce-theme { };
+    jmtpfs = pkgs.jmtpfs.override {
+      libmtp = pkgs.libmtp.overrideDerivation (old: {
+        patches = old.patches or [] ++ [ ./mtp-jolla.patch ];
+      });
+    };
     nixops = callPackage ./nixops { };
     libCMT = callPackage ./libcmt { };
     librxtx_java = callPackage ./librxtx-java { };
