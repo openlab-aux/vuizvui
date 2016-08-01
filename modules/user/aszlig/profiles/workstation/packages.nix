@@ -87,6 +87,7 @@ pkgs: with pkgs; [
   strace
   surfraw
   telnet
+  vuizvui.tomahawk
   unzip
   uqm
   valgrind

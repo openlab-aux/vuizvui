@@ -67,7 +67,7 @@ in {
     samba
     unfreeAndNonDistributablePkgs.skype
     thunderbird
-    # XXX: vuizvui.tomahawk
+    vuizvui.tomahawk
     wine
     xpdf
     youtubeDL
