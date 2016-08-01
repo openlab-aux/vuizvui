@@ -37,18 +37,21 @@ let
     { check = anyAttrs (i: i.hostBridge != null) config.containers;
       path  = ["nixos" "containers-bridge"];
     }
-    { check = config.networking.hostName != "brawndo"; # FIXME
+    { check = config.boot.enableContainers;
       path  = ["nixos" "containers-imperative"];
     }
-    { check = anyAttrs (i: i.hostAddress  != null
+    { check = config.boot.enableContainers
+           && anyAttrs (i: i.hostAddress  != null
                         || i.localAddress != null) config.containers;
       path  = ["nixos" "containers-ipv4"];
     }
-    { check = anyAttrs (i: i.hostAddress6  != null
+    { check = config.boot.enableContainers
+           && anyAttrs (i: i.hostAddress6  != null
                         || i.localAddress6 != null) config.containers;
       path  = ["nixos" "containers-ipv6"];
     }
-    { check = anyAttrs (i: i.extraVeths != {}) config.containers;
+    { check = config.boot.enableContainers
+           && anyAttrs (i: i.extraVeths != {}) config.containers;
       path  = ["nixos" "containers-extra_veth"];
     }
     { check = config.services.dnscrypt-proxy.enable;
