@@ -48,6 +48,9 @@ let
                         || i.localAddress6 != null) config.containers;
       path  = ["nixos" "containers-ipv6"];
     }
+    { check = anyAttrs (i: i.extraVeths != {}) config.containers;
+      path  = ["nixos" "containers-extra_veth"];
+    }
     { check = config.services.dnscrypt-proxy.enable;
       path  = ["nixos" "dnscrypt-proxy"];
     }
@@ -56,6 +59,9 @@ let
     }
     { check = config.services.dockerRegistry.enable;
       path  = ["nixos" "dockerRegistry"];
+    }
+    { check = config.security.pam.enableEcryptfs;
+      path  = ["nixos" "ecryptfs"];
     }
     { check = config.services.etcd.enable;
       path  = ["nixos" "etcd"];
@@ -72,8 +78,17 @@ let
     { check = config.services.xserver.displayManager.gdm.enable;
       path  = ["nixos" "gnome3-gdm"];
     }
+    { check = services.gocd-agent.enable;
+      path  = ["nixos" "gocd-agent"];
+    }
+    { check = services.gocd-server.enable;
+      path  = ["nixos" "gocd-server"];
+    }
     { check = config.boot.kernelPackages.kernel.features.grsecurity or false;
       path  = ["nixos" "grsecurity"];
+    }
+    { check = true;
+      path  = ["nixos" "hibernate"];
     }
     { check = config.services.xserver.windowManager.i3.enable;
       path  = ["nixos" "i3wm"];
@@ -268,6 +283,9 @@ let
     }
     { check = true;
       path  = ["nixos" "simple"];
+    }
+    { check = config.services.smokeping.enable;
+      path  = ["nixos" "smokeping"];
     }
     { check = config.services.taskserver.enable;
       path  = ["nixos" "taskserver"];
