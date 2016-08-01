@@ -81,10 +81,10 @@ let
     { check = config.services.xserver.displayManager.gdm.enable;
       path  = ["nixos" "gnome3-gdm"];
     }
-    { check = services.gocd-agent.enable;
+    { check = config.services.gocd-agent.enable;
       path  = ["nixos" "gocd-agent"];
     }
-    { check = services.gocd-server.enable;
+    { check = config.services.gocd-server.enable;
       path  = ["nixos" "gocd-server"];
     }
     { check = config.boot.kernelPackages.kernel.features.grsecurity or false;
