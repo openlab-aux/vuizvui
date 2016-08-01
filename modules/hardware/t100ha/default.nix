@@ -74,15 +74,15 @@ in {
           PINCTRL_CHERRYVIEW y
 
           # I2C
-          CONFIG_I2C_DESIGNWARE_BAYTRAIL y
-          CONFIG_I2C_DESIGNWARE_PLATFORM y
+          I2C_DESIGNWARE_BAYTRAIL y
+          I2C_DESIGNWARE_PLATFORM y
 
           # HID
           INTEL_HID_EVENT y
 
           # MEI
-          CONFIG_INTEL_MEI y
-          CONFIG_INTEL_MEI_TXE y
+          INTEL_MEI y
+          INTEL_MEI_TXE y
         '';
 
         features.iwlwifi = true;
