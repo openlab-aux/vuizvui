@@ -96,16 +96,6 @@ in {
       self = pkgs.linuxPackagesFor t100haKernel self;
     in self;
 
-    # Fix boot loader, otherwise it's hard (not impossible though if you press
-    # the key combinations fast enough) to choose anything else than the default
-    # entry.
-    #
-    # Upstream issue with workaround:
-    #   https://github.com/systemd/systemd/issues/3632
-    systemd.package = lib.overrideDerivation pkgs.systemd (drv: {
-      patches = (drv.patches or []) ++ [ ./fix-bootloader.patch ];
-    });
-
     # By default the console is rotated by 90 degrees to the right.
     boot.kernelParams = [ "fbcon=rotate:3" ];
     services.xserver.deviceSection = ''
