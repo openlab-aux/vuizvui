@@ -59,8 +59,8 @@ in stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "tomahawk-player";
     repo = "tomahawk";
-    rev = "77e9b69679ede50a6f9f0325a0dd910b5af59cd3";
-    sha256 = "1vdfsg5vn9nc979w43miq24a0d7qf6bjg6qiv2pqyhv0crivj5rg";
+    rev = "09e9a6e960b7cc29018721075d82ba994dc87ab6";
+    sha256 = "0cvfnf996alvxx010bj7pf6xk14k9ig33ahjp6zyz92bj8136c1w";
   };
 
   cmakeFlags = [
