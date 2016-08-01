@@ -28,7 +28,10 @@ let
     show-qr-code = callPackage ./show-qr-code { };
     sidplayfp = callPackage ./sidplayfp { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };
-    tomahawk = callPackage ./tomahawk { qt5 = pkgs.qt55; };
+    tomahawk = callPackage ./tomahawk {
+      qt5 = pkgs.qt55;
+      boost = pkgs.boost155;
+    };
     twitchstream = callPackage ./twitchstream { };
 
     games = import ./games {
