@@ -6,7 +6,7 @@ in {
   nixpkgs.config.allowUnfree = true;
 
   # hardware
-  boot.blacklistedKernelModules = [ "nouveau" "nvidia"  ];
+  boot.blacklistedKernelModules = [ "nouveau" "nvidia" ];
   boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" ];
   boot.kernelModules = [ "kvm-intel" "virtio" ];
   boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "crypted"; } ];
@@ -34,8 +34,11 @@ in {
   options snd-hda-intel index=1,0 enable_msi=1
   '';
 
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio.support32Bit = true;
+  hardware.pulseaudio = {
+    enable = true;
+    support32Bit = true;
+#    zeroconf.discovery.enable = true;
+  };
 
   hardware.opengl.driSupport32Bit = true;
   hardware.bumblebee.enable = false;
@@ -65,13 +68,15 @@ in {
 
   environment.systemPackages = with pkgs; [
     ## tools
-    rdiff-backup
+    # rdiff-backup
+    # rdup
     pass
     wget
     curl
     stow
     scrot
     dmenu
+    i3status
     mosh
     gnupg
     pinentry
@@ -130,7 +135,6 @@ in {
     notmuch
     irssi
     mytexlive
-    gimp
 
     ## GUI
     # wm etc.
@@ -153,6 +157,9 @@ in {
     gstreamer
     termite
     feh
+    gimp
+    darktable
+    rawtherapee
     pavucontrol
     cbatticon
     filezilla
@@ -161,6 +168,7 @@ in {
     libreoffice
     qemu
     xmpp-client
+    ## GUI
 
     ## audio / video
     mpv
@@ -173,9 +181,6 @@ in {
     ## services
     gutenprint
     acpi
-
-    ## games
-    jdk
   ];
 
   # Proudly stolen from Profpatsch
@@ -235,9 +240,12 @@ in {
     desktopManager.xterm.enable = false;
 
     windowManager.xmonad = {
-      enable = true;
+      enable = false;
       enableContribAndExtras = true;
     };
+
+    windowManager.i3.enable = true;
+
     displayManager = {
       sessionCommands =
         ''
