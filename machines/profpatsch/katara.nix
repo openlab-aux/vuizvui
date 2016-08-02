@@ -318,6 +318,8 @@ in {
     # fix for emacs ssh
     programs.bash.promptInit = "PS1=\"# \"";
 
+    # containers are currently broken TODO
+    boot.enableContainers = false;
     ################
     # User services
     systemd.user = {
