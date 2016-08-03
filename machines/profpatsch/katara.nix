@@ -34,9 +34,7 @@ in {
 
     hardware.pulseaudio = {
       enable = true;
-      # package = pkgs.pulseaudioFull;
-      # zeroconf.discovery = true;
-      # zeroconf.publish = true;
+      zeroconf.discovery.enable = true;
     };
 
     vuizvui.hardware.thinkpad.enable = true;
