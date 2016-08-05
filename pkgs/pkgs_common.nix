@@ -22,9 +22,9 @@
       enableOfficalBranding = true;
     };
 
-    virtualbox = {
-      enableExtensionPack = true;
-    };
+#virtualbox = {
+#enableExtensionPack = true;
+#};
 
     mpv = {
       youtubeSupport = true;
