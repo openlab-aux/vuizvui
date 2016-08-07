@@ -14,15 +14,13 @@ in {
       nixpkgs = import ../../../nixpkgs-path.nix;
       mkKernel = import "${nixpkgs}/pkgs/os-specific/linux/kernel/generic.nix";
       t100haKernel = mkKernel rec {
-        version = "4.7-rc6";
-        modDirVersion = "4.7.0-rc6";
+        version = "4.7";
+        modDirVersion = "4.7.0";
         extraMeta.branch = "4.7";
 
-        src = pkgs.fetchgit {
-          url = "git://git.kernel.org/pub/scm/linux/kernel/git/"
-              + "torvalds/linux.git";
-          rev = "ee40fb2948fc99096836995d4f3ddcc0efbac790";
-          sha256 = "02mdw2wcghsrncrab77pznqx150w2r5jswxb5s71zmzq88bxc6h8";
+        src = pkgs.fetchurl {
+          url = "mirror://kernel/linux/kernel/v4.x/linux-${version}.tar.xz";
+          sha256 = "042z53ik3mqaqlfrn5b70kw882fwd42zanqld10s1vcs438w742i";
         };
 
         kernelPatches = [
@@ -31,9 +29,6 @@ in {
           }
           { name = "meta-keys";
             patch = ./meta-keys.patch;
-          }
-          { name = "revert-fix-acpica-namespace-interpreter-lock";
-            patch = ./revert-fix-acpica-namespace-interpreter-lock.patch;
           }
         ];
 
