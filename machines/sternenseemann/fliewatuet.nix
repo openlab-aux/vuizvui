@@ -68,8 +68,8 @@ in {
 
   environment.systemPackages = with pkgs; [
     ## tools
-    # rdiff-backup
-    # rdup
+    rdiff-backup
+    rdup
     pass
     wget
     curl
@@ -168,6 +168,7 @@ in {
     libreoffice
     qemu
     xmpp-client
+    cutegram
     ## GUI
 
     ## audio / video
@@ -240,11 +241,9 @@ in {
     desktopManager.xterm.enable = false;
 
     windowManager.xmonad = {
-      enable = false;
+      enable = true;
       enableContribAndExtras = true;
     };
-
-    windowManager.i3.enable = true;
 
     displayManager = {
       sessionCommands =
