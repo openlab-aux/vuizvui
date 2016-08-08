@@ -12,11 +12,13 @@
     claws-mail
     connmanui
     cura
+    glxinfo
     horst
     ipmitool
     ipmiutil
     ipmiview
     kismet
+    libvdpau-va-gl
     minicom
     msmtp
     mutt
@@ -32,6 +34,8 @@
     skype
     snort
     thunderbird
+    vaapiVdpau
+    vdpauinfo
     wavemon
     wirelesstools
     xbindkeys

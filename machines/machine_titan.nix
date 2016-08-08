@@ -26,7 +26,8 @@
 
   hardware = {
     opengl = {
-      extraPackages = [ pkgs.vaapiIntel ];
+      enable = true;
+      extraPackages = [ pkgs.libvdpau-va-gl pkgs.vaapiVdpau pkgs.vaapiIntel ];
     };
   };
 
