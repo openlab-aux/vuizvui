@@ -1,4 +1,4 @@
-{ config, pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
+{ config, pkgs, unfreePkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 
 let
   mainDisk = "ata-WDC_WD5000LPVX-22V0TT0_WD-WXG1E2559AYH";
@@ -66,6 +66,7 @@ in {
     pavucontrol
     pulseaudioFull
     samba
+    unfreePkgs.steam
     unfreeAndNonDistributablePkgs.skype
     thunderbird
     vuizvui.tomahawk

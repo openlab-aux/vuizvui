@@ -1,4 +1,4 @@
-{ pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
+{ pkgs, unfreePkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 
 let
   rootUUID = "ata-WDC_WD7500BPVT-22HXZT3_WD-WX71A9124879";
@@ -53,6 +53,7 @@ in {
     pavucontrol
     pulseaudioFull
     samba
+    unfreePkgs.steam
     unfreeAndNonDistributablePkgs.skype
     thunderbird
     vuizvui.tomahawk
