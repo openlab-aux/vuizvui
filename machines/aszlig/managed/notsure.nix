@@ -21,6 +21,7 @@ in {
   hardware = {
     enableAllFirmware = true;
     opengl.s3tcSupport = true;
+    opengl.driSupport32Bit = true;
     pulseaudio.enable = true;
   };
 
