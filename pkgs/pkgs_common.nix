@@ -248,6 +248,9 @@
     valgrind
     vanilla-dmz
     vim_configurable
+    virtmanager
+    virt-viewer
+    virtinst
     vit
     vlc
     vlock
