@@ -73,8 +73,7 @@
   services.xserver.enable = true;
   services.xserver.layout = "de";
   services.xserver.xkbOptions = "eurosign:e,caps:none";
-  services.xserver.displayManager.auto.enable = true;
-  services.xserver.displayManager.auto.user = "bla";
+  services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.kde5.enable = true;
   services.xserver.wacom.enable = true;
 
