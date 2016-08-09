@@ -8,6 +8,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    libva
     aircrackng
     claws-mail
     connmanui
