@@ -114,9 +114,18 @@ in {
     #
     # I know this is very ugly, but another mitigation would be to disable power
     # management entirely, which I think is even uglier.
-    services.xserver.displayManager.sessionCommands = ''
-      ${pkgs.xorg.xset}/bin/xset dpms force standby
-      ${pkgs.xorg.xset}/bin/xset dpms force on
+    boot.initrd.preDeviceCommands = "fix-vblank";
+    boot.initrd.extraUtilsCommands = ''
+      cc -Wall -o "$out/bin/fix-vblank" "${pkgs.writeText "fix-vblank.c" ''
+        #include <sys/ioctl.h>
+
+        int main(void) {
+          char cmd = 14;
+          ioctl(0, TIOCLINUX, &cmd);
+          cmd = 4;
+          ioctl(0, TIOCLINUX, &cmd);
+        }
+      ''}"
     '';
   };
 }
