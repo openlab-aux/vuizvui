@@ -75,6 +75,7 @@
   services.xserver.xkbOptions = "eurosign:e,caps:none";
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.kde5.enable = true;
+  services.xserver.desktopManager.xterm.enable = false;
   services.xserver.wacom.enable = true;
 
   time.timeZone = "Europe/Berlin";
