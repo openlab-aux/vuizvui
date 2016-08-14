@@ -237,6 +237,7 @@
     tmux
     toilet
     tomahawk
+    transgui
     transmission_remote_gtk
     tree
     tribler
@@ -248,9 +249,9 @@
     valgrind
     vanilla-dmz
     vim_configurable
-    virtmanager
     virt-viewer
     virtinst
+    virtmanager
     vit
     vlc
     vlock
