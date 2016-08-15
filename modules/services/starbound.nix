@@ -35,7 +35,8 @@ let
     }) cfg.users;
 
     inherit (cfg)
-      allowAssetsMismatch maxPlayers safeScripts serverName serverFidelity;
+      allowAssetsMismatch maxPlayers maxTeamSize safeScripts serverName
+      serverFidelity;
 
     clearPlayerFiles = false;
     clearUniverseFiles = false;
@@ -267,6 +268,14 @@ in {
       default = 8;
       description = ''
         Maximum amount of players to allow concurrently.
+      '';
+    };
+
+    maxTeamSize = mkOption {
+      type = types.int;
+      default = 4;
+      description = ''
+        Maximum amount of players to allow within a party.
       '';
     };
   } // mkListenerOptions "game server" 21025;
