@@ -34,8 +34,11 @@ let
       inherit (attrs) admin password;
     }) cfg.users;
 
-    inherit (cfg) allowAssetsMismatch clearPlayerFiles clearUniverseFiles;
-    inherit (cfc) maxPlayers safeScripts serverName serverFidelity;
+    inherit (cfg)
+      allowAssetsMismatch maxPlayers safeScripts serverName serverFidelity;
+
+    clearPlayerFiles = false;
+    clearUniverseFiles = false;
 
     gameServerBind = cfg.bind;
     gameServerPort = cfg.port;
@@ -140,24 +143,6 @@ in {
       description = ''
         Check whether the assets on the client match the ones from the server
         and deny connection if they don't match.
-      '';
-    };
-
-    clearPlayerFiles = mkOption {
-      # XXX: Figure out the exact semantics of this.
-      type = types.bool;
-      default = false;
-      description = ''
-        Forces players to use new characters or to have no gear or tech.
-      '';
-    };
-
-    clearUniverseFiles = mkOption {
-      # XXX: Figure out the exact semantics of this.
-      type = types.bool;
-      default = false;
-      description = ''
-        Forces player characters to use fresh universe data and navigation maps.
       '';
     };
 
