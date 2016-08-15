@@ -1,4 +1,4 @@
-{ fetchFromGitHub, buildPythonPackage, pythonPackages, cython, gpm }:
+{ fetchFromGitHub, buildPythonPackage, pythonPackages, gpm }:
 
 pythonPackages.buildPythonPackage {
   name = "grandpa-0.5";
@@ -13,7 +13,7 @@ pythonPackages.buildPythonPackage {
 
   doCheck = false;
 
-  buildInputs = [ cython gpm ];
+  buildInputs = [ pythonPackages.cython gpm ];
   propagatedBuildInputs = with pythonPackages; [
     bsddb curses pyserial
   ];
