@@ -8,9 +8,9 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   environment.systemPackages = with pkgs; [
-    cdparanoia chromium figlet gajim gimp htop inkscape kde5.gwenview kde5.krita
-    kde5.okular libreoffice mosh mpv pciutils thunderbird vlc vuizvui.tomahawk
-    wget wine youtubeDL unfreeAndNonDistributablePkgs.skype
+    cdparanoia chromium figlet gajim gimp htop inkscape kde5.gwenview
+    kde5.okular krita libreoffice mosh mpv pciutils thunderbird vlc
+    vuizvui.tomahawk wget wine youtubeDL unfreeAndNonDistributablePkgs.skype
   ];
 
   fileSystems."/boot".device = "/dev/disk/by-uuid/A0D5-269D";
