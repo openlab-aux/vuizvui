@@ -36,7 +36,6 @@ let
 
     inherit (cfg) checkAssetsDigest clearPlayerFiles clearUniverseFiles;
     inherit (cfg) maxPlayers safeScripts serverName;
-    inherit (cfg) upnpPortForwarding;
 
     gameServerBind = cfg.bind;
     gameServerPort = cfg.port;
@@ -262,14 +261,6 @@ in {
       example = "My shiny Starbound Server";
       description = ''
         A short description or name of the Starbound server to run.
-      '';
-    };
-
-    upnpPortForwarding = mkOption {
-      type = types.bool;
-      default = true;
-      description = ''
-        Whether to use UPnP to forward ports from NAT gateways.
       '';
     };
 
