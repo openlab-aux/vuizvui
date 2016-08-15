@@ -194,8 +194,8 @@ in {
 
     package = mkOption {
       type = types.package;
-      default = pkgs.vuizvui.games.steam.starbound;
-      defaultText = "pkgs.vuizvui.games.steam.starbound";
+      default = pkgs.vuizvui.games.humblebundle.starbound;
+      defaultText = "pkgs.vuizvui.games.humblebundle.starbound";
       description = ''
         The starbound package to use for running this game server.
       '';

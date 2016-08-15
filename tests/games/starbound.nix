@@ -58,7 +58,9 @@ in {
         "${import ../../nixpkgs-path.nix}/nixos/tests/common/x11.nix"
       ];
       virtualisation.memorySize = 2047;
-      environment.systemPackages = [ pkgs.vuizvui.games.steam.starbound ];
+      environment.systemPackages = [
+        pkgs.vuizvui.games.humblebundle.starbound
+      ];
       networking.interfaces.eth1.ipAddress = "192.168.0.2";
       networking.interfaces.eth1.prefixLength = 24;
       networking.firewall.enable = false;
