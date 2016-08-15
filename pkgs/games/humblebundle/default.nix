@@ -23,6 +23,7 @@ let
     megabytepunch = callPackage ./megabytepunch.nix {};
     rocketbirds = callPackage ./rocketbirds.nix {};
     spaz = callPackage ./spaz.nix {};
+    starbound = callPackage ./starbound.nix {};
     swordsandsoldiers = callPackage ./swordsandsoldiers.nix {};
     unepic = callPackage ./unepic.nix {};
   };
