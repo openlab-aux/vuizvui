@@ -47,7 +47,7 @@ in {
         dataDir = "/var/lib/starbound-test";
         users.alice.password = "secret";
       };
-      virtualisation.memorySize = 1024;
+      virtualisation.memorySize = 2047;
       networking.interfaces.eth1.ipAddress = "192.168.0.1";
       networking.interfaces.eth1.prefixLength = 24;
       networking.firewall.enable = false;
@@ -76,44 +76,27 @@ in {
       $client->waitForText(qr/options/i);
     });
 
-    ${clickAt "multiplayer" 100 460}
+    ${clickAt "join-game" 100 560}
     $client->waitForText(qr/select/i);
-    ${clickAt "new-character" 460 170}
+    ${clickAt "new-character" 460 220}
     $client->waitForText(qr/species/i);
-    ${clickAt "create-character" 600 525}
+    ${clickAt "create-character" 600 625}
     $client->waitForText(qr/select/i);
-    ${clickAt "use-character" 460 170}
+    ${clickAt "use-character" 460 220}
     $client->waitForText(qr/ser[vu]er/i);
 
-    ${clickAt "server-address" 460 272}
+    ${clickAt "server-address" 460 322}
     ${typeText "server-address" "192.168.0.1"}
 
-    ${clickAt "server-account" 490 304}
+    ${clickAt "server-account" 490 354}
     ${typeText "server-account" "alice"}
 
-    ${clickAt "server-password" 490 336}
+    ${clickAt "server-password" 490 386}
     ${typeText "server-password" "secret"}
 
-    ${clickAt "join-server" 495 370}
+    ${clickAt "join-server" 495 420}
 
-    $client->waitForText(qr/q[uv]est/i);
-    ${xdo {
-      name = "close-quest-dialog";
-      description = "closing the quest dialog window";
-      xdoScript = ''
-        key Escape
-      '';
-    }}
-    ${xdo {
-      name = "move-right";
-      description = "moving to the right of the ship";
-      xdoScript = ''
-        keydown d
-        sleep 10
-        keyup d
-      '';
-    }}
-
+    $client->waitForText(qr/graduation/i);
     $client->screenshot("client");
   '';
 }
