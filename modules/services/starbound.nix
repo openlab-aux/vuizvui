@@ -35,7 +35,7 @@ let
     }) cfg.users;
 
     inherit (cfg) checkAssetsDigest clearPlayerFiles clearUniverseFiles;
-    inherit (cfg) maxPlayers safeScripts serverName;
+    inherit (cfg) maxPlayers safeScripts serverName serverFidelity;
 
     gameServerBind = cfg.bind;
     gameServerPort = cfg.port;
@@ -261,6 +261,19 @@ in {
       example = "My shiny Starbound Server";
       description = ''
         A short description or name of the Starbound server to run.
+      '';
+    };
+
+    serverFidelity = mkOption {
+      type = types.enum [ "automatic" "minimum" "low" "medium" "high" ];
+      default = "automatic";
+      example = "high";
+      description = ''
+        The fidelity profile to use for this server as defined in
+        <path>worldserver.config</path> inside the packed assets.
+
+        If this is set to <literal>automatic</literal> the server will
+        automatically switch between these profiles.
       '';
     };
 
