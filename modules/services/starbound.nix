@@ -34,8 +34,8 @@ let
       inherit (attrs) admin password;
     }) cfg.users;
 
-    inherit (cfg) checkAssetsDigest clearPlayerFiles clearUniverseFiles;
-    inherit (cfg) maxPlayers safeScripts serverName serverFidelity;
+    inherit (cfg) allowAssetsMismatch clearPlayerFiles clearUniverseFiles;
+    inherit (cfc) maxPlayers safeScripts serverName serverFidelity;
 
     gameServerBind = cfg.bind;
     gameServerPort = cfg.port;
@@ -134,7 +134,7 @@ in {
       '';
     };
 
-    checkAssetsDigest = mkOption {
+    allowAssetsMismatch = mkOption {
       type = types.bool;
       default = false;
       description = ''
