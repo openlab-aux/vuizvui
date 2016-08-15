@@ -81,7 +81,8 @@ in stdenv.mkDerivation {
   buildCommand = ''
     url="$(python "${getDownloadURL}")"
     header "downloading $name from $url"
-    ${curl.bin}/bin/curl --cacert "${cafile}" --fail --output "$out" "$url"
+    "${curl.bin or curl}/bin/curl" --cacert "${cafile}" --fail \
+      --output "$out" "$url"
     stopNest
   '';
 }
