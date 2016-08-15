@@ -55,18 +55,12 @@ let
     queryServerPort = cfg.queryServer.port;
   } // cfg.extraConfig;
 
-  bootConfig = pkgs.runCommand "sbboot.config" {
-    overrides = pkgs.writeText "sbboot.overrides" (builtins.toJSON {
-      logFileBackups = 0;
-      modSource = "";
-      storageDirectory = cfg.dataDir;
-      defaultConfiguration = serverConfig;
-    });
-  } ''
-    "${pkgs.jq}/bin/jq" -s '.[0] * .[1]' \
-      "${cfg.package}/etc/sbboot.config" "$overrides" \
-      > "$out"
-  '';
+  bootConfig = pkgs.writeText "sbinit.config" (builtins.toJSON {
+    logFileBackups = 0;
+    storageDirectory = cfg.dataDir;
+    assetDirectories = singleton (cfg.package.assets);
+    defaultConfiguration = serverConfig;
+  });
 
   # Traverse a given path with ../ until we get to the root directory (/).
   gotoRoot = p: concatStringsSep "/" (map (const "..") (splitString "/" p));
