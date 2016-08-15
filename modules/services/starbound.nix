@@ -35,11 +35,17 @@ let
     }) cfg.users;
 
     inherit (cfg)
-      allowAssetsMismatch maxPlayers maxTeamSize safeScripts serverName
-      serverFidelity;
+      allowAssetsMismatch maxPlayers maxTeamSize serverName serverFidelity;
 
     clearPlayerFiles = false;
     clearUniverseFiles = false;
+
+    safeScripts = cfg.safeScripts.enable;
+    scriptInstructionLimit = cfg.safeScripts.instructionLimit;
+    scriptInstructionMeasureInterval =
+      cfg.safeScripts.instructionMeasureInterval;
+    scriptProfilingEnabled = cfg.safeScripts.profiling.enable;
+    scriptRecursionLimit = cfg.safeScripts.recursionLimit;
 
     gameServerBind = cfg.bind;
     gameServerPort = cfg.port;
@@ -231,14 +237,41 @@ in {
       };
     } // mkListenerOptions "query server" 21025;
 
-    safeScripts = mkOption {
-      type = types.bool;
-      default = true;
-      # XXX: The description is just a guess and we need to find out what this
-      # really does.
-      description = ''
-        This is to make sure scripts can't call unsafe functions.
-      '';
+    safeScripts = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = ''
+          Enable certain limitations of LUA scripts.
+        '';
+      };
+
+      instructionLimit = mkOption {
+        type = types.int;
+        default = 10000000;
+        description = ''
+          The maximum amount of instructions a LUA function can have.
+        '';
+      };
+
+      instructionMeasureInterval = mkOption {
+        type = types.int;
+        default = 10000;
+        description = ''
+          The amount of milliseconds to wait between consecutive checks of the
+          <option>instructionLimit</option> on LUA scripts.
+        '';
+      };
+
+      recursionLimit = mkOption {
+        type = types.int;
+        default = 100;
+        description = ''
+          Maximum depth of recursion for LUA scripts.
+        '';
+      };
+
+      profiling.enable = mkEnableOption "LUA script profiling";
     };
 
     serverName = mkOption {
