@@ -147,6 +147,7 @@
     jfsutils
     jwhois
     keepassx
+    keepassx2
     kpcli
     lftp
     libarchive
