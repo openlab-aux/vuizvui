@@ -215,6 +215,7 @@
     recode
     reiserfsprogs
     rofi
+    rsync
     ruby
     safecopy
     screen
