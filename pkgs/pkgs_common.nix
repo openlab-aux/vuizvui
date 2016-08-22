@@ -81,6 +81,7 @@
     dmidecode
     docker
     dos2unix
+    dosbox
     duff
     dynamic-colors
     e2fsprogs

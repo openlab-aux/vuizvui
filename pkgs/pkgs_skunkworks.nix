@@ -19,7 +19,6 @@
     canto-curses
     cli-visualizer
     cmus
-    dosbox
     ipfs
     handbrake
     hplip
