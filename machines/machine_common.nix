@@ -85,11 +85,11 @@
         style = "slight";
         autohint = false;
       };
-#      ultimate = {
-#        allowBitmaps = false;
-#        enable = true;
-#        rendering = pkgs.fontconfig-ultimate.rendering.ultimate-darker;
-#      };
+      ultimate = {
+        allowBitmaps = false;
+        enable = true;
+        rendering = pkgs.fontconfig-ultimate.rendering.ultimate-darker;
+      };
     };
     enableGhostscriptFonts = true;
     enableCoreFonts = true;
