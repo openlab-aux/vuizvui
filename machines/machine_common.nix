@@ -88,7 +88,7 @@
       ultimate = {
         allowBitmaps = false;
         enable = true;
-        rendering = pkgs.fontconfig-ultimate.rendering.ultimate-darker;
+        preset = "ultimate5";
       };
     };
     enableGhostscriptFonts = true;
