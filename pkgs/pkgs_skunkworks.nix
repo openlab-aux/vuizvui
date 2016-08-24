@@ -22,7 +22,6 @@
     ipfs
     handbrake
     hplip
-    mkvtoolnix
     mutt-with-sidebar
     nzbget
     #scummvm

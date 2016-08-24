@@ -164,6 +164,7 @@
     mcabber
     mdp
     mediainfo
+    mkvtoolnix
     mmv
     monkeysAudio
     mono
