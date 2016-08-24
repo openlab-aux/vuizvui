@@ -28,9 +28,9 @@
       #  patches = old.patches or [] ++ [ ./buffer.patch ];
       #});
       enable = true;
-      # tcp.enable = true;
-      # tcp.anonymousClients.allowedIpRanges = [ "172.16.0.0/16" ];
-      # zeroconf.publish.enable = true;
+      tcp.enable = true;
+      tcp.anonymousClients.allowedIpRanges = [ "172.16.0.0/16" ];
+      zeroconf.publish.enable = true;
     };
     services.shairport-sync.enable = true;
 
