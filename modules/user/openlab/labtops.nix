@@ -31,6 +31,10 @@ in
         gimp
         inkscape
       ];
+      media = [
+        mpv
+        vlc
+      ];
       three-d = [
         # TODO doesn’t build on i686
         # TODO add a “packageset” mechanism
@@ -48,7 +52,7 @@ in
         ino
         arduino
       ];
-      in baseGUI ++ image ++ three-d ++ three-d-printing ++ arduinoPkgs;
+      in baseGUI ++ image ++ media ++ three-d ++ three-d-printing ++ arduinoPkgs;
 
     services.xserver = {
       enable = true;
