@@ -70,6 +70,8 @@ in
     # fix for emacs
     programs.bash.promptInit = "PS=\"# \"";
 
+    programs.man.enable = true;
+
   };
 
 }

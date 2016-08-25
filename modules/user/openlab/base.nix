@@ -45,7 +45,9 @@ in
       ];
       in base;
 
-      
+    # manual generation takes too long on slow machines
+    programs.man.enable = false;
+
     services.openssh.enable = true;
 
     networking.firewall.enable = false;
