@@ -46,7 +46,7 @@ in
       in base;
 
     # manual generation takes too long on slow machines
-    programs.man.enable = false;
+    programs.man.enable = mkDefault false;
 
     services.openssh.enable = true;
 
