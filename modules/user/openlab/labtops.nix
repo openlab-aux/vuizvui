@@ -34,11 +34,12 @@ in
       media = [
         mpv
         vlc
+        pavucontrol
       ];
       three-d = [
         # TODO doesn’t build on i686
         # TODO add a “packageset” mechanism
-        # blender
+        blender
         # TODO build fail
         # antimony
       ];
@@ -52,7 +53,12 @@ in
         ino
         arduino
       ];
-      in baseGUI ++ image ++ media ++ three-d ++ three-d-printing ++ arduinoPkgs;
+      tools = [
+        unzip
+      ];
+      in baseGUI ++ image ++ media
+      ++ three-d ++ three-d-printing ++ arduinoPkgs
+      ++ tools;
 
     services.xserver = {
       enable = true;
