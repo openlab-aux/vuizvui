@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   src = fetchHumbleBundle {
     machineName = "loversinadangerousspacetime_linux";
     suffix = "zip";
-    md5 = "0d81adb63ca9233165fb5de415fa5963";
+    md5 = "e838cad67e8814e955dab42efd4995e2";
   };
 
   unpackCmd = ''
