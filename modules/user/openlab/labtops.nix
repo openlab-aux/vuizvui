@@ -17,6 +17,11 @@ in
 
     vuizvui.user.openlab.base.enable = true;
 
+    hardware.pulseaudio = {
+      enable = true;
+      zeroconf.discovery.enable = true;
+    };
+
     # TODO: a way to modularly specify usage patterns (e.g. 3d-printing, arduino &c.)
     environment.systemPackages = with pkgs; let
       baseGUI = [
