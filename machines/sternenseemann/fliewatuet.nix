@@ -74,6 +74,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     ## tools
+    remind
     rdiff-backup
     rdup
     pass
@@ -125,6 +126,10 @@ in {
     haskellPackages.stylish-haskell
     clisp
     go
+    # aspell
+    aspell
+    aspellDicts.en
+    aspellDicts.de
 
     ## applications
     tmux
@@ -141,6 +146,7 @@ in {
     notmuch
     irssi
     mytexlive
+    chromium
 
     ## GUI
     # wm etc.
@@ -171,7 +177,7 @@ in {
     filezilla
     screen-message
     mumble
-    libreoffice
+    #libreoffice
     qemu
     xmpp-client
     cutegram
