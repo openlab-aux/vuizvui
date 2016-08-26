@@ -43,7 +43,7 @@ in {
   hardware.pulseaudio = {
     enable = true;
     support32Bit = true;
-#    zeroconf.discovery.enable = true;
+    zeroconf.discovery.enable = true;
   };
 
   hardware.opengl.driSupport32Bit = true;
