@@ -196,11 +196,11 @@ in {
     acpi
   ];
 
-  # Proudly stolen from Profpatsch
   fonts.fontconfig = {
     defaultFonts = {
-      monospace = [ "Inconsolata" "Source Code Pro" "DejaVu Sans Mono" ];
-      sansSerif = [ "Liberation Sans" ];
+      monospace = [ "Inconsolata" ];
+      sansSerif = [ "Linux Biolinium" ];
+      serif     = [ "Linux Libertine" ];
     };
     ultimate = {
       preset = "ultimate1";
@@ -216,6 +216,8 @@ in {
     ubuntu_font_family
     inconsolata
     tewi-font
+    libertine
+    cm_unicode
   ];
 
   # to make Ctrl-Shift-t work in termite
