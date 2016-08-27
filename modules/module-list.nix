@@ -28,5 +28,6 @@
   ./user/aszlig/system/kernel.nix
   ./user/openlab/base.nix
   ./user/openlab/labtops.nix
+  ./user/openlab/stackenblocken.nix
   ./user/profpatsch/programs/scanning.nix
 ]
