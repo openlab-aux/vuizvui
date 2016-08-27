@@ -34,7 +34,7 @@ in
 
     environment.systemPackages = with pkgs; let
       base = [
-        ack
+        ack ag
         fish
         git
         netcat-openbsd
