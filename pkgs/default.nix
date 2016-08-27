@@ -45,6 +45,7 @@ let
 
     openlab = pkgs.recurseIntoAttrs {
       gitit = callPackage ./openlab/gitit { hlib = pkgs.haskell.lib; };
+      stackenblocken = callPackage ./openlab/stackenblocken {};
     };
   };
 in pkgs // self
