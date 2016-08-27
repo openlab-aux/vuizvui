@@ -26,6 +26,7 @@ in
       consoleKeyMap = "us";
       defaultLocale = "de_DE.UTF-8";
     };
+    time.timeZone = "Europe/Berlin";
 
     hardware.enableAllFirmware = true;
 
