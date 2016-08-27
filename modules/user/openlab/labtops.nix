@@ -70,8 +70,13 @@ in
       layout = "us";
       xkbOptions = "eurosign:e";
 
-      displayManager.auto.enable = true;
-      displayManager.auto.user = "openlab";
+      displayManager = {
+        auto.enable = true;
+        auto.user = "openlab";
+        sessionCommands = with pkgs; ''
+          ${xorg.xset}/bin/xset r rate 250 35
+        '';
+      };
       desktopManager.xfce.enable = true;
       synaptics = {
         enable = true;
