@@ -16,9 +16,8 @@ in
     systemd.user = {
       services.stackenblocken = {
         description = "stackenblocken timer";
-        wantedBy = [ "network.target" ];
+        wantedBy = [ "default.target" ];
         serviceConfig = {
-          Type = "simple";
           ExecStart = "${lib.getBin pkgs.vuizvui.openlab.stackenblocken}/bin/stackenblocken";
         };
         # everyday at 21:45
