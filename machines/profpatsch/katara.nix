@@ -218,10 +218,11 @@ in {
       synaptics.enable = true;
       synaptics.minSpeed = "0.5";
       synaptics.accelFactor = "0.01";
+
+
       videoDrivers = [ "intel" ];
 
       # otherwise xterm is enabled, creating an xterm that spawns the window manager.
-      # TODO: Try to fix (annoying for new users)
       desktopManager.xterm.enable = false;
 
       # TODO: include taffybar
@@ -294,16 +295,14 @@ in {
     ###########
     # Programs
 
-      # gpg-agent; TODO: move to module
-    programs.fish.interactiveShellInit = ''
-        set -l ssh_keys (find ${config.users.users.philip.home}/.ssh/ -name "*rsa*" | grep -v ".pub")
-        for l in (${lib.getBin pkgs.keychain}/bin/keychain \
-                    --eval --agents ssh $ssh_keys 2>/dev/null | \
-                    sed 's/^\(.*\)=\(.*\); export.*$/set \1 \2/')
-          eval $l
-        end; \
-          and test -S $SSH_AUTH_SOCK; or echo "ssh agent (keychain) init failed!"
-      '';
+    vuizvui.programs.gnupg = {
+      enable = true;
+      agent = {
+        enable = true;
+        sshSupport = true;
+      };
+    };
+
 
     # TODO: base config?
     vuizvui.programs.fish.fasd.enable = true;
