@@ -177,6 +177,8 @@ in {
     ###########
     # Services
 
+    services.searx.enable = true;
+
     services.printing = {
       enable = true;
       gutenprint = true;
