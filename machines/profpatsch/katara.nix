@@ -72,7 +72,7 @@ in {
         atool             # archive tools
         gnupg gnupg1compat # PGP encryption
         imagemagick       # image conversion
-        jmtpfs            # MTP fuse
+        pkgs.vuizvui.jmtpfs     # MTP fuse
         mosh              # ssh with stable connections
         nfs-utils         # the filesystem of the future for 20 years
         # TODO move into atool deps
@@ -83,9 +83,10 @@ in {
         dunst             # notification daemon (interfaces with libnotify)
         alock             # lock screen
         libnotify         # notification library
-        myPkgs.taffybar   # status bar
         xclip             # clipboard thingy
         xorg.xkill        # X11 application kill
+        # TODO get service to work (requires user dbus)
+        myPkgs.taffybar
       ];
       guiPkgs = [
         gnome3.adwaita-icon-theme
@@ -96,12 +97,12 @@ in {
       ];
       hp = haskellPackages;
       programmingTools = [
-        hp.cabal2nix          # convert cabal files to nixexprs
-        hp.cabal-install      # haskell project management
-        myPkgs.git-annex # version controlled binary file storage
-        # mercurial             # the other version control system
-        telnet                # tcp debugging
+        cabal2nix            # convert cabal files to nixexprs
+        cabal-install        # haskell project management
         myPkgs.fast-init     # fast-init of haskell projects
+        gitAndTools.git-annex     # version controlled binary file storage
+        # mercurial          # the other version control system
+        telnet               # tcp debugging
       ];
       userPrograms = [
         abcde                # high-level cd-ripper with tag support
@@ -109,8 +110,8 @@ in {
         # TODO integrate lame into audacity
         audacity lame.lib    # audio editor and mp3 codec
         myPkgs.beets         # audio file metadata tagger
-        chromium             # browser
-        # (chromium.override { enablePepperFlash = true; })
+        # chromium             # browser
+        (chromium.override { enablePepperFlash = true; })
         # droopy               # simple HTML upload server
         unfreeAndNonDistributablePkgs.dropbox-cli # dropbox.com client
         emacs                # pretty neat operating system i guess
@@ -133,6 +134,7 @@ in {
         rtorrent             # monster of a bittorrent client
         myPkgs.sent          # suckless presentation tool
         pkgs.vuizvui.show-qr-code # display a QR code
+        youtube-dl           # download videos
         zathura              # pdf viewer
       ];
       mailPkgs = [

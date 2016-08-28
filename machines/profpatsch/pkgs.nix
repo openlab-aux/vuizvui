@@ -45,12 +45,12 @@ let
 
   beets = pkgs.beets.override { enableAlternatives = true; };
 
-  git-annex = pkgs.gitAndTools.git-annex.overrideDerivation (old: {
-      buildInputs = old.buildInputs ++ [ pkgs.makeWrapper ];
-      postFixup = ''
-        wrapProgram $out/bin/git-annex --prefix PATH ":" "${pkgs.lsof}/bin";
-      '';
-  });
+  # git-annex = hplts.git-annex.overrideDerivation (old: {
+  #     buildInputs = old.buildInputs ++ [ pkgs.makeWrapper ];
+  #     postFixup = ''
+  #       wrapProgram $out/bin/git-annex --prefix PATH ":" "${getBin pkgs.lsof}/bin";
+  #     '';
+  # });
 
   poezio = pkgs.python34Packages.poezio;
 
@@ -66,4 +66,4 @@ let
 
 
 in
-{ inherit taffybar offlineimap sent mpv beets git-annex poezio vim fast-init; }
+{ inherit taffybar offlineimap sent mpv beets poezio vim fast-init; }

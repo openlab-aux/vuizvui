@@ -60,6 +60,7 @@ in {
         manpages          # system manpages (not included by default)
         mkpasswd          # UNIX password creator
         nmap              # stats about clients in the network
+        rsync             # file syncing tool
         smartmontools     # check disk state
         stow              # dotfile management
         tmux              # detachable terminal multiplexer
