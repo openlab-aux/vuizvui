@@ -84,6 +84,25 @@ in {
     # bounded journal size
     services.journald.extraConfig = "SystemMaxUse=50M";
 
+    # services.xserver = {
+      # libinput = {
+      #   enable = true;
+      #   naturalScrolling = true;
+      #   accelSpeed = "0.01";
+      # };
+
+      # # TODO: modify libinput module so that you can do libinput."trackpoint".scrollMethod = "button";
+      # # and maybe a convenience option for thinkpads (maybe in the hardware repo?).
+      # config = ''
+      #   Section "InputClass"
+      #     Identifier     "Enable libinput for TrackPoint"
+      #     MatchIsPointer "on"
+      #     Driver         "libinput"
+      #     Option         "ScrollMethod" "button"
+      #     Option         "ScrollButton" "8"
+      #   EndSection
+      # '';
+    # };
 
     ########
     # Users
