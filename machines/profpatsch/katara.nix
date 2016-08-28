@@ -101,6 +101,7 @@ in {
         myPkgs.git-annex # version controlled binary file storage
         # mercurial             # the other version control system
         telnet                # tcp debugging
+        myPkgs.fast-init     # fast-init of haskell projects
       ];
       userPrograms = [
         abcde                # high-level cd-ripper with tag support

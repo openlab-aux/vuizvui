@@ -56,5 +56,14 @@ let
 
   vim = vim_configurable;
 
+  fast-init = pkgs.haskellPackages.callPackage (import "${(pkgs.fetchFromGitHub {
+    owner = "Profpatsch";
+    repo = "fast-init";
+    # TODO fix version
+    rev = "master";
+    sha256 = "13b626ggpfs2r4lmbg85gqrxi9a17njfkjn2400xrgm6635qq35w";
+  })}/overrides.nix") {};
+
+
 in
-{ inherit taffybar offlineimap sent mpv beets git-annex poezio vim; }
+{ inherit taffybar offlineimap sent mpv beets git-annex poezio vim fast-init; }
