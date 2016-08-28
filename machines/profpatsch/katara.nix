@@ -139,7 +139,7 @@ in {
       ];
       mailPkgs = [
         elinks             # command line browser
-        myPkgs.offlineimap # IMAP client
+        # myPkgs.offlineimap # IMAP client
         mutt-with-sidebar  # has been sucking less since 1970
         msmtp              # SMTP client
         notmuch            # mail indexer
@@ -186,6 +186,12 @@ in {
       # drivers = [ pkgs.cups-pdf ];
       # TODO
       # drivers = [ pkgs.foomatic_filters pkgs.foomatic-db-engine ];
+    };
+
+    services.offlineimap = {
+      # enable user service
+      install = true;
+      onCalendar = "*:0/15";
     };
 
     # redshift TODO as user
@@ -314,18 +320,7 @@ in {
 
     ################
     # User services
-    systemd.user = {
-      services.offlineimap = {
-        description = "offlineimap sync";
-        # NixOS doesn't support "Also" so we bring it in manually
-        wantedBy = [ "network.target" ];
-        serviceConfig = {
-          Type = "simple";
-          ExecStart = "${lib.getBin myPkgs.offlineimap}/bin/offlineimap";
-        };
-        # every 15 minutes
-        startAt = "*:0/15";
-      };
-    };
+    # systemd.user = {
+    # };
   };
 }
