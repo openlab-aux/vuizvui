@@ -265,19 +265,8 @@ in {
         monospace = [ "Source Code Pro" "DejaVu Sans Mono" ]; # TODO does not work
         sansSerif = [ "Liberation Sans" ];
       };
-      # ultimate = {
-      #   rendering = {
-      #   };
-      # };
-    };
-    # use overkill infinality settings from old Arch installation
-    environment.variables = {
-          INFINALITY_FT_FILTER_PARAMS = "08 24 36 24 08";
-          INFINALITY_FT_FRINGE_FILTER_STRENGTH = "25";
-          INFINALITY_FT_USE_VARIOUS_TWEAKS = "true";
-          INFINALITY_FT_WINDOWS_STYLE_SHARPENING_STRENGTH = "25";
-          INFINALITY_FT_STEM_ALIGNMENT_STRENGTH = "15";
-          INFINALITY_FT_STEM_FITTING_STRENGTH = "15";
+      ultimate.preset = "ultimate3";
+      ultimate.substitutions = "combi";
     };
     fonts.fonts = with pkgs; [
       unfreeAndNonDistributablePkgs.corefonts
