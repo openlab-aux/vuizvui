@@ -1,10 +1,9 @@
 { stdenv, fetchurl }:
 
 let
-  bfqVersion = "v7r11";
-  kernelVersion = "4.4";
-  fullKernelVersion = "${kernelVersion}.0";
-  version = "${fullKernelVersion}-${bfqVersion}";
+  bfqVersion = "v8r2";
+  kernelVersion = "4.7.0";
+  version = "${kernelVersion}-${bfqVersion}";
 
   baseURL = "http://algo.ing.unimo.it/people/paolo/disk_sched/patches";
 
@@ -15,19 +14,20 @@ let
 
   allPatches = [
     (fetchPatch {
-      name = "0001-block-cgroups-kconfig-build-bits-for-BFQ-"
-           + "${bfqVersion}-${fullKernelVersion}";
-      sha256 = "1kmlfz63610zc4lxhanjsn4hhw43cdsbk3pyaij723vbd7619kyi";
+      name = "0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r11-4.7.0";
+      sha256 = "116jfdgjgmy1fv6kzz7dm1c7rjy1pbsfzzcjv5mgsb7pnaxq3gd6";
     })
     (fetchPatch {
-      name = "0002-block-introduce-the-BFQ-"
-           + "${bfqVersion}-I-O-sched-for-${fullKernelVersion}";
-      sha256 = "1i5jqkxglp3ah76i4vyi13pnmjkr6qlqy69qbaj2132vijqkyz5i";
+      name = "0002-block-introduce-the-BFQ-v7r11-I-O-sched-for-4.7.0";
+      sha256 = "0wjmnym2ycglx42f513n97b45x3xqi33q7z4cs0aiz0zbblm8jql";
     })
     (fetchPatch {
-      name = "0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-"
-           + "${bfqVersion}-for";
-      sha256 = "09bv31s8d2aphi3d9py4sz1gcvyb5645a8s7zj614a56hv11p8k9";
+      name = "0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r11-for";
+      sha256 = "0898aklynxb9dr0nb0kdhc2incjkjihds9dakxvdy0mwjqr0jd6v";
+    })
+    (fetchPatch {
+      name = "0004-block-bfq-turn-BFQ-v7r11-for-4.7.0-into-BFQ-v8r2-for";
+      sha256 = "1aljji6ww73h0vpimbcmk0hj886m6fnnbahgmrkfcq1gc0n0484n";
     })
   ];
 
