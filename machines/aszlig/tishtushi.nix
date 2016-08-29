@@ -16,16 +16,17 @@ in {
       trimVer = ver: take 2 (splitString "." (replaceChars ["-"] ["."] ver));
       tooOld = trimVer linux_latest.version == trimVer linux_testing.version;
       origKernel = if tooOld then linux_latest else linux_testing;
-      bfqsched = pkgs.vuizvui.kernelPatches.bfqsched // {
-        extraConfig = ''
-          IOSCHED_BFQ y
-          DEFAULT_BFQ y
-          DEFAULT_CFQ n
-          DEFAULT_IOSCHED "bfq"
-        '';
-      };
       kernel = origKernel.override (origArgs: {
-        kernelPatches = origArgs.kernelPatches ++ singleton bfqsched;
+        kernelPatches = origArgs.kernelPatches ++ singleton {
+          name = "bfqsched";
+          patch = pkgs.fetchpatch {
+            name = "cfq-replacement.patch";
+            url = "https://github.com/linusw/linux-bfq/compare/"
+                + "29b4817d4018df78086157ea3a55c1d9424a7cfc"
+                + "...cfq_replacement-logical.patch";
+            sha256 = "1b3n287r31g0sn85f88dmd00wlsccnm90mr5sr8lj4g1fvnfswqv";
+          };
+        };
       });
     in linuxPackagesFor kernel kernelPackages;
 
