@@ -61,7 +61,7 @@ let
     repo = "fast-init";
     # TODO fix version
     rev = "master";
-    sha256 = "13b626ggpfs2r4lmbg85gqrxi9a17njfkjn2400xrgm6635qq35w";
+    sha256 = "03006xzs250knzcyr6j564kn9jf2a6cp3mxkpqsqmmyp6v28w90z";
   })}/overrides.nix") {};
 
 
