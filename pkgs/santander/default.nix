@@ -117,6 +117,9 @@ let
             if (configFile.is_open()) return true;
         }' src/linux/libpipelight/configloader.c
       '';
+
+      # We don't want or have share/pipelight/install-dependency!
+      preFixup = null;
     });
   } ''
     install -vD "$pipelight/lib/pipelight/libpipelight.so" \
