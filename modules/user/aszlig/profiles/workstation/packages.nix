@@ -39,6 +39,7 @@ pkgs: with pkgs; [
   i3lock
   imagemagick
   jwhois
+  jq
   keychain
   lastwatch
   libchipcard
@@ -69,12 +70,15 @@ pkgs: with pkgs; [
   posix_man_pages
   pulseaudioLight
   vuizvui.pvolctrl
+  pass
   python
   python3
   pythonPackages.hetzner
   pythonPackages.pep8
   pythonPackages.polib
+  radare2
   rlwrap
+  rtmpdump
   rtorrent
   samplicator
   vuizvui.santander
@@ -96,4 +100,5 @@ pkgs: with pkgs; [
   w3m
   wireshark
   youtubeDL
+  zathura
 ]
