@@ -34,6 +34,9 @@ in {
   boot.loader.timeout = 5;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # limit journal size
+  services.journald.extraConfig = "SystemMaxUse=100M";
+
   # sound
   # fix sound
   boot.extraModprobeConfig = ''
@@ -112,7 +115,7 @@ in {
 
     ## dev
     git
-    vim
+    darcs
     neovim
     gnumake
     clang
@@ -146,7 +149,7 @@ in {
     notmuch
     irssi
     mytexlive
-    chromium
+    (chromium.override { enablePepperFlash = true; })
 
     ## GUI
     # wm etc.
@@ -172,6 +175,7 @@ in {
     gimp
     darktable
     rawtherapee
+    inkscape
     pavucontrol
     cbatticon
     filezilla
@@ -199,7 +203,7 @@ in {
   fonts.fontconfig = {
     defaultFonts = {
       monospace = [ "Inconsolata" ];
-      sansSerif = [ "Linux Biolinium" ];
+      sansSerif = [ "Open Sans" ];
       serif     = [ "Linux Libertine" ];
     };
     ultimate = {
@@ -208,6 +212,7 @@ in {
   };
   fonts.fonts = with pkgs; [
     corefonts
+    opensans-ttf
     source-han-sans-japanese
     source-han-sans-korean
     source-han-sans-simplified-chinese
