@@ -32,7 +32,7 @@ in {
 
     initrd.kernelModules = [ "fbcon" "usb_storage" ];
     loader.grub.device = "/dev/disk/by-id/${diskID}";
-    loader.timeout = 0;
+    loader.timeout = 1;
   };
 
   networking.hostName = "tishtushi";
