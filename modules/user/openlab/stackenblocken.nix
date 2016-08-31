@@ -20,8 +20,8 @@ in
         serviceConfig = {
           ExecStart = "${lib.getBin pkgs.vuizvui.openlab.stackenblocken}/bin/stackenblocken";
         };
-        # everyday at 21:45
-        startAt = "21:45";
+        # everyday at 21:45, except Wednesday (Yoga silence)
+        startAt = [ "Mon,Tue,Thu,Fri,Sat,Sun 21:45" "Wed 22:00" ];
       };
     };
 
