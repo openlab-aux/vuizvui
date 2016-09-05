@@ -21,6 +21,7 @@ let
     jamestown = callPackage ./jamestown.nix {};
     liads = callPackage ./liads.nix {};
     megabytepunch = callPackage ./megabytepunch.nix {};
+    pico-8 = callPackage ./pico-8.nix {};
     rocketbirds = callPackage ./rocketbirds.nix {};
     spaz = callPackage ./spaz.nix {};
     starbound = callPackage ./starbound.nix {};
