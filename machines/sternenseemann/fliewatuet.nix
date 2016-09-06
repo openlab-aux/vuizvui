@@ -105,13 +105,14 @@ in {
     atool
     manpages
     man_db
-    #sshuttle
+    sshuttle
     speedtest-cli
     youtube-dl
     yafc
     psmisc
     telnet
     unison
+    bar-xft
 
     ## dev
     git
@@ -252,20 +253,20 @@ in {
 
     desktopManager.xterm.enable = false;
 
-    windowManager.xmonad = {
-      enable = true;
-      enableContribAndExtras = true;
-    };
+    # windowManager.xmonad = {
+    #   enable = true;
+    #   enableContribAndExtras = true;
+    # };
+
+    windowManager.herbstluftwm.enable = true;
 
     displayManager = {
       sessionCommands =
         ''
-        export BROWSER=firefox
         redshift -c .redshift &
         xmodmap -e "pointer = 1 25 3 4 5 6 7 8 9"
         xbindkeys
         cbatticon &
-        set-bg
         '';
     };
 
