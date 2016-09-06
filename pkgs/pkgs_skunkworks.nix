@@ -19,7 +19,7 @@
     canto-curses
     cli-visualizer
     cmus
-    ipfs
+    #ipfs
     handbrake
     hplip
     mutt-with-sidebar
