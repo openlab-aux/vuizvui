@@ -63,6 +63,7 @@ in {
   };
 
   networking.hostName = "fliewatuet"; # Define your hostname.
+  networking.firewall.enable = false;
   networking.networkmanager.enable = true;
 
   # Select internationalisation properties.
