@@ -1,5 +1,5 @@
 { stdenv, fetchFromGitHub, fetchurl, cmake, pkgconfig, boost, gnutls
-, libechonest, liblastfm, lucenepp, qt5, qtkeychain, kde5, sparsehash, taglib
+, libechonest, liblastfm, lucenepp, qt5, kde5, sparsehash, taglib
 , websocketpp, ffmpeg_2, v4l_utils
 
 , enableXMPP      ? true,  libjreen     ? null
@@ -39,13 +39,6 @@ let
     cmakeFlags = (drv.cmakeFlags or []) ++ [ "-DBUILD_WITH_QT4=OFF" ];
   });
 
-  qtkeychainQT5 = overrideDerivation (useQT5 qtkeychain) (drv: {
-    cmakeFlags = (drv.cmakeFlags or []) ++ [
-      "-DBUILD_WITH_QT4=OFF"
-      "-DQt5LinguistTools_DIR=${qt5.qttools}/lib/cmake/Qt5LinguistTools"
-    ];
-  });
-
   vlc = qt5.vlc.override {
     ffmpeg = ffmpeg_2.override {
       v4l_utils = v4l_utils.override { withQt4 = false; };
@@ -71,10 +64,9 @@ in stdenv.mkDerivation rec {
   nativeBuildInputs = [ cmake pkgconfig ];
 
   buildInputs = (with qt5; [
-    attica ecm qca-qt5 qtbase qtsvg qttools qtwebkit qtx11extras
+    attica ecm qca-qt5 qtbase qtkeychain qtsvg qttools qtwebkit qtx11extras
   ]) ++ map useQT5 [ liblastfm qt5.quazip ] ++ [
-    boost gnutls lucenepp sparsehash taglib vlc websocketpp
-    qtkeychainQT5 libechonestQT5
+    boost gnutls lucenepp sparsehash taglib vlc websocketpp libechonestQT5
   ] ++ stdenv.lib.optional enableXMPP      (useQT5 libjreen)
     ++ stdenv.lib.optional enableKDE       (useQT5 kdelibs)
     ++ stdenv.lib.optional enableTelepathy (useQT5 telepathy_qt);
