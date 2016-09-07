@@ -18,6 +18,8 @@ let
     patches = lib.optional (lib.versionAtLeast kernel.version "4.0")
       ./kernel-4.x.patch;
 
+    hardeningDisable = [ "stackprotector" "pic" ];
+
     postPatch = ''
       substituteInPlace Makefile --replace /sbin/depmod :
     '';
