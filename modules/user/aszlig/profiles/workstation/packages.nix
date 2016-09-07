@@ -99,7 +99,7 @@ pkgs: with pkgs; [
   vorbisTools
   w3m
   wireshark
-  xhost
+  xorg.xhost
   youtubeDL
   zathura
 ]
