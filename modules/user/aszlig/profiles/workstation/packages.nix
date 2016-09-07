@@ -46,7 +46,6 @@ pkgs: with pkgs; [
   lftp
   ltrace
   man-pages
-  man-pages.docdev
   mmv
   mosh
   mp3info
