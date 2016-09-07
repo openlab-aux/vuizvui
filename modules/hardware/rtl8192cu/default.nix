@@ -11,12 +11,9 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "pvaret";
       repo = "rtl8192cu-fixes";
-      rev = "f3edeeef68808f0f6fc06b5e36b559e1d06232ab";
-      sha256 = "0v0rrxfmvi9flrg3xns826a6n1mlgd3vs5z2x59aqvwfj5b4rv7b";
+      rev = "6a58e2f77d75ca9a3b80868a344ed4e2ea1816df";
+      sha256 = "130ym6ag5kgg1hdwpsfpg1i5l08lwqp1ylgjhfyhmz31h92b3h2x";
     };
-
-    patches = lib.optional (lib.versionAtLeast kernel.version "4.0")
-      ./kernel-4.x.patch;
 
     hardeningDisable = [ "stackprotector" "pic" ];
 
