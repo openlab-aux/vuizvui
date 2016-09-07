@@ -241,6 +241,7 @@
     tmux
     toilet
     tomahawk
+    transcode
     transgui
     transmission_remote_gtk
     tree
