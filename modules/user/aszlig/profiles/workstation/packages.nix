@@ -77,6 +77,7 @@ pkgs: with pkgs; [
   pythonPackages.polib
   radare2
   rlwrap
+  rsync
   rtmpdump
   rtorrent
   samplicator
@@ -98,6 +99,7 @@ pkgs: with pkgs; [
   vorbisTools
   w3m
   wireshark
+  xhost
   youtubeDL
   zathura
 ]
