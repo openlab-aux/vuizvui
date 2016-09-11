@@ -25,7 +25,7 @@ let
      ${lib.getBin bot}/bin/stackenblocken &
 
      echo "DOING STACKENBLOCKEN"
-     ${lib.getBin mpg321}/bin/mpg321 -q ${jingle}
+     ${lib.getBin mpg321}/bin/mpg321 --gain 40 -q ${jingle}
    done
  '';
 
