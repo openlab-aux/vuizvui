@@ -149,6 +149,7 @@
     jwhois
     keepassx
     keepassx2
+    keybase
     kpcli
     lftp
     libarchive
