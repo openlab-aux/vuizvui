@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, unzip, fetchurl, writeText, SDL2, mesa
+{ stdenv, fetchHumbleBundle, unrar, fetchurl, writeText, SDL2, mesa
 , makeDesktopItem
 }:
 
@@ -268,17 +268,17 @@ let
 
 in stdenv.mkDerivation rec {
   name = "starbound-${version}";
-  version = "1.0.5";
+  version = "1.1.0";
 
   src = fetchHumbleBundle {
-    name = "starbound-linux-${version}.zip";
+    name = "starbound-linux-${version}.rar";
     machineName = "starbound_linux";
-    md5 = "0416fa1ddd6a420644fcf3ec18feb90c";
+    md5 = "ed4caf272ce34ce1f59480dcd26886ae";
   };
 
   outputs = [ "out" "lib" "assets" ];
 
-  nativeBuildInputs = [ unzip ];
+  nativeBuildInputs = [ unrar ];
 
   buildPhase = with stdenv.lib; ''
     cc -Werror -shared "${preloaderSource}" -o preload.so -ldl -fPIC \
