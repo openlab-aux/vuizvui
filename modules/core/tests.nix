@@ -60,14 +60,14 @@ let
     { check = config.virtualisation.docker.enable;
       path  = ["nixos" "docker"];
     }
-    { check = config.services.dockerRegistry.enable;
-      path  = ["nixos" "dockerRegistry"];
-    }
     { check = config.security.pam.enableEcryptfs;
       path  = ["nixos" "ecryptfs"];
     }
     { check = config.services.etcd.enable;
       path  = ["nixos" "etcd"];
+    }
+    { check = config.services.ferm.enable;
+      path  = ["nixos" "ferm"];
     }
     { check = config.networking.firewall.enable;
       path  = ["nixos" "firewall"];
@@ -145,6 +145,10 @@ let
     }
     { check = config.services.xserver.desktopManager.kde4.enable;
       path  = ["nixos" "kde4"];
+    }
+    { check = config.services.xserver.displayManager.sddm.enable
+           || config.services.xserver.desktopManager.kde5.enable;
+      path  = ["nixos" "kde5"];
     }
     { check = config.i18n.consoleKeyMap          == "azerty/fr"
            || config.services.xserver.layout     == "fr";
@@ -274,15 +278,15 @@ let
     { check = config.services.pumpio.enable;
       path  = ["nixos" "pumpio"];
     }
+    { check = config.services.quagga.ospf.enable;
+      path  = ["nixos" "quagga"];
+    }
     { check = config.hardware.opengl.driSupport
            && config.services.xserver.enable;
       path  = ["nixos" "quake3"];
     }
     { check = true;
       path  = ["nixos" "runInMachine"];
-    }
-    { check = config.services.xserver.displayManager.sddm.enable;
-      path  = ["nixos" "sddm"];
     }
     { check = true;
       path  = ["nixos" "simple"];
