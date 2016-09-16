@@ -5,10 +5,10 @@ writeScriptBin "xmpp-client" ''
   #!/usr/bin/env bash
   PASS=$(${lib.getBin pass}/bin/pass "${passwordentry}" | head -n1)
 
-  # pipe cofnig with password in fifo
-  TMP=$(mktemp)
+  # pipe config with password in fifo
+  TMP="$(mktemp -d)/fifo"
   mkfifo "$TMP"
-  sed "s/@PASS@/$PASS/" ${home}/.config/xmpp-client/config > "$TMP"
+  sed "s/@PASS@/$PASS/" ${home}/.config/xmpp-client/config > "$TMP" &
 
 
   # execute the client with logging enabled
