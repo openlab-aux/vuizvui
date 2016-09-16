@@ -1,7 +1,8 @@
 { config, pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 let
 
-  myPkgs = import ./pkgs.nix { inherit pkgs lib; };
+  myLib  = import ./lib.nix  { inherit pkgs lib; };
+  myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
 
 in {
 
@@ -127,7 +128,6 @@ in {
         myPkgs.mpv           # you are my sun and my stars. and you play my stuff.
         newsbeuter           # RSS/Atom feed reader
         pass                 # standard unix password manager
-        myPkgs.poezio               # CLI XMPP client
         poppler_utils        # pdfto*
         ranger               # CLI file browser
         remind               # calender & reminder program
@@ -135,6 +135,7 @@ in {
         myPkgs.sent          # suckless presentation tool
         pkgs.vuizvui.show-qr-code # display a QR code
         youtube-dl           # download videos
+        myPkgs.xmpp-client   # CLI XMPP Client
         zathura              # pdf viewer
       ];
       mailPkgs = [
