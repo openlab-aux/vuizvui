@@ -8,21 +8,9 @@ in {
   options.vuizvui.hardware.t100ha.enable = lib.mkEnableOption desc;
 
   config = lib.mkIf cfg.enable {
-    # It's a CherryTrail SoC, so we want to have the latest and greatest with a
-    # few additional patches:
     boot.kernelPackages = let
       nixpkgs = import ../../../nixpkgs-path.nix;
-      mkKernel = import "${nixpkgs}/pkgs/os-specific/linux/kernel/generic.nix";
-      t100haKernel = mkKernel rec {
-        version = "4.7";
-        modDirVersion = "4.7.0";
-        extraMeta.branch = "4.7";
-
-        src = pkgs.fetchurl {
-          url = "mirror://kernel/linux/kernel/v4.x/linux-${version}.tar.xz";
-          sha256 = "042z53ik3mqaqlfrn5b70kw882fwd42zanqld10s1vcs438w742i";
-        };
-
+      t100haKernel = pkgs.linux_4_7.override {
         kernelPatches = [
           { name = "backlight";
             patch = ./backlight.patch;
@@ -79,14 +67,6 @@ in {
           INTEL_MEI y
           INTEL_MEI_TXE y
         '';
-
-        features.iwlwifi = true;
-        features.efiBootStub = true;
-        features.needsCifsUtils = true;
-        features.canDisableNetfilterConntrackHelpers = true;
-        features.netfilterRPFilter = true;
-
-        inherit (pkgs) stdenv perl buildLinux;
       };
       self = pkgs.linuxPackagesFor t100haKernel self;
     in self;
