@@ -8,6 +8,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    abcde
     aircrackng
     cdrtools
     claws-mail
