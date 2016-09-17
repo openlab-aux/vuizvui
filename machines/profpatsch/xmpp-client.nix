@@ -4,10 +4,10 @@ home: passwordentry:
 let
   myClient = xmpp-client.overrideDerivation (old: {
     src = fetchFromGitHub {
-      rev = "32cdd273edd354932ce0c5d28d0c4159068bd498";
+      rev = "785ad1629930bab03a73cc858951db1f78156743";
       owner = "Profpatsch";
       repo = "xmpp-client";
-      sha256 = "0ivppc8q2cp0g88dvrlggqipfdz194i7k2irfxq6c0dlzj1638jn";
+      sha256 = "02nlx5kx0s1rz9rsyncgi9hmb62i1pl322a91ama4sm00qbi4fs7";
     };
   });
 
