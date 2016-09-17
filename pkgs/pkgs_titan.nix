@@ -8,17 +8,19 @@
   };
 
   environment.systemPackages = with pkgs; [
-    libva
     aircrackng
+    cdrtools
     claws-mail
     connmanui
     cura
+    dvdplusrwtools
     glxinfo
     horst
     ipmitool
     ipmiutil
     ipmiview
     kismet
+    libva
     libvdpau-va-gl
     minicom
     msmtp
