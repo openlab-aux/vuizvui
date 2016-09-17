@@ -15,7 +15,6 @@
 
   environment.systemPackages = with pkgs; [
     abook
-    beets
     canto-curses
     cli-visualizer
     cmus

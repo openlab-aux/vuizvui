@@ -53,6 +53,7 @@
     audacity
     axel
     bc
+    beets
     biber
     bind
     brotli
