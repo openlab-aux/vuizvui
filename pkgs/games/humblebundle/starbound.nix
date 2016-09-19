@@ -1,10 +1,12 @@
-{ stdenv, fetchHumbleBundle, unrar, fetchurl, writeText, SDL2, mesa
+{ stdenv, fetchHumbleBundle, unzip, fetchurl, writeText, SDL2, mesa, xorg
 , makeDesktopItem
 }:
 
 let
   binaryDeps = {
-    starbound.deps = [ SDL2 mesa ];
+    starbound.deps = [
+      SDL2 mesa xorg.libX11 xorg.libICE xorg.libSM xorg.libXext
+    ];
     starbound.needsBootconfig = true;
 
     starbound_server.name = "starbound-server";
@@ -17,7 +19,6 @@ let
     make_versioned_json.name = "starbound-make-versioned-json";
 
     planet_mapgen.name = "starbound-planet-mapgen";
-    update_tilesets.name = "starbound-update-tilesets";
   };
 
   desktopItem = makeDesktopItem {
@@ -268,17 +269,17 @@ let
 
 in stdenv.mkDerivation rec {
   name = "starbound-${version}";
-  version = "1.1.0";
+  version = "1.1.1";
 
   src = fetchHumbleBundle {
-    name = "starbound-linux-${version}.rar";
+    name = "starbound-linux-${version}.zip";
     machineName = "starbound_linux";
-    md5 = "ed4caf272ce34ce1f59480dcd26886ae";
+    md5 = "7dea0864ed505f8f8164ef11c90d8481";
   };
 
   outputs = [ "out" "lib" "assets" ];
 
-  nativeBuildInputs = [ unrar ];
+  nativeBuildInputs = [ unzip ];
 
   buildPhase = with stdenv.lib; ''
     cc -Werror -shared "${preloaderSource}" -o preload.so -ldl -fPIC \
