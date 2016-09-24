@@ -7,7 +7,7 @@ in {
   nixpkgs.config.allowUnfree = true;
   nixpkgs.system = "i686-linux";
 
-  boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ata_piix" "usb_storage" "floppy" "usblp" "pcspkr" ];
+  boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ata_piix" "usb_storage" "floppy" "usblp" "pcspkr" "btusb" ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
@@ -33,6 +33,8 @@ in {
 
   nix.maxJobs = 1;
   networking.enableIntel2200BGFirmware = true;
+
+  hardware.bluetooth.enable = true;
 
   hardware.pulseaudio.enable = true;
 
@@ -64,6 +66,7 @@ in {
     bzip2
     wget
     vim
+    neovim
     git
     stow
     acpi
@@ -113,6 +116,12 @@ in {
     msmtp
     gnupg
     gpgme
+
+    # huette2016
+    nodePackages.npm
+    nodePackages.typescript
+    nodejs
+    bluez-tools
   ];
 
   # Proudly stolen from Profpatsch
