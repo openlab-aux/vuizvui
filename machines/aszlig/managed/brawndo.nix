@@ -51,6 +51,7 @@ in {
   };
 
   environment.systemPackages = with pkgs; [
+    vuizvui.axbo
     chromium
     file
     gajim
