@@ -1,4 +1,4 @@
-{ fetchFromGitHub, buildPythonPackage, pythonPackages, gpm }:
+{ fetchFromGitHub, pythonPackages, gpm }:
 
 pythonPackages.buildPythonPackage {
   name = "grandpa-0.5";

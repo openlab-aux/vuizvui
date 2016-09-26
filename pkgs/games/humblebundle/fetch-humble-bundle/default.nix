@@ -1,5 +1,5 @@
 { stdenv, curl, cacert, writeText, fetchFromGitHub, fetchpatch
-, python, buildPythonPackage, pythonPackages
+, python, pythonPackages
 
 , email, password
 }:
@@ -7,7 +7,7 @@
 { name ? null, machineName, downloadName ? "Download", suffix ? "humblebundle", md5 }: let
   cafile = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
-  humbleAPI = buildPythonPackage rec {
+  humbleAPI = pythonPackages.buildPythonPackage rec {
     name = "humblebundle-${version}";
     version = "0.1.1";
 
