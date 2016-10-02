@@ -48,7 +48,7 @@
   '';
 
   services.psd = {
-    enable = true;
+    enable = false;
     users = [ "dev" ];
     browsers = [ "chromium" ];
   };
