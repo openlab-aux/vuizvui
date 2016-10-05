@@ -131,6 +131,7 @@
     gptfdisk
     graphviz
     gstreamer
+    handbrake
     hdparm
     heimdall
     hexedit
