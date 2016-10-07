@@ -3,7 +3,12 @@
 let
    mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra; };
 in {
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    packageOverides = pkgs: {
+      bluez = pkgs.bluez5;
+    };
+  };
 
   # hardware
   boot.blacklistedKernelModules = [ "nouveau" "nvidia" ];
@@ -46,8 +51,11 @@ in {
   hardware.pulseaudio = {
     enable = true;
     support32Bit = true;
+    package = pkgs.pulseaudioFull;
     zeroconf.discovery.enable = true;
   };
+
+  hardware.bluetooth.enable = true;
 
   hardware.opengl.driSupport32Bit = true;
   hardware.bumblebee.enable = false;
@@ -80,7 +88,8 @@ in {
     ## tools
     remind
     rdiff-backup
-    rdup
+    bup
+    attic
     pass
     wget
     curl
