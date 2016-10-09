@@ -45,6 +45,12 @@ let
     };
   };
 
+  jreenPatched = overrideDerivation (useQT5 libjreen) (drv: {
+    postPatch = (drv.postPatch or "") + ''
+      sed -i -e 's/QMetaTypeId/QMap/g' src/stanzaextension.h
+    '';
+  });
+
 in stdenv.mkDerivation rec {
   name = "tomahawk-${version}";
   version = "0.9.0-git";
@@ -67,7 +73,7 @@ in stdenv.mkDerivation rec {
     attica ecm qca-qt5 qtbase qtkeychain qtsvg qttools qtwebkit qtx11extras
   ]) ++ map useQT5 [ liblastfm qt5.quazip ] ++ [
     boost gnutls lucenepp sparsehash taglib vlc websocketpp libechonestQT5
-  ] ++ stdenv.lib.optional enableXMPP      (useQT5 libjreen)
+  ] ++ stdenv.lib.optional enableXMPP      jreenPatched
     ++ stdenv.lib.optional enableKDE       (useQT5 kdelibs)
     ++ stdenv.lib.optional enableTelepathy (useQT5 telepathy_qt);
 
