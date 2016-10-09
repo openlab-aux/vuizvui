@@ -15,7 +15,7 @@ let
                  then "$XDG_RUNTIME_DIR/gnupg"
                  else "$HOME/${cfg.homeDir}";
 
-  pinentryWrapper = pkgs.runCommand "pinentry-wrapper" {
+  pinentryWrapper = pkgs.runCommandCC "pinentry-wrapper" {
     pinentryProgram = cfg.agent.pinentry.program;
   } ''
     cc -Wall -std=gnu11 -DPINENTRY_PROGRAM=\"$pinentryProgram\" \
@@ -28,7 +28,7 @@ let
       UNIX-CONNECT:"${shellSockDir}/S.scdaemon"
   '';
 
-  agentWrapper = pkgs.runCommand "gpg-agent-wrapper" {
+  agentWrapper = pkgs.runCommandCC "gpg-agent-wrapper" {
     buildInputs = with pkgs; [ pkgconfig systemd ];
     inherit pinentryWrapper;
   } ''
