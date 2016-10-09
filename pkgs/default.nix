@@ -13,8 +13,9 @@ let
     git-detach = callPackage ./git-detach { };
     grandpa = callPackage ./grandpa { };
     greybird-xfce-theme = callPackage ./greybird-xfce-theme { };
-    iec16022 = callPackage ./iec16022 { };
-    multi-iec16022 = callPackage ./multi_iec16022 { };
+    # TODO: Profpatsch needs to include these files!
+    #iec16022 = callPackage ./iec16022 { };
+    #multi-iec16022 = callPackage ./multi_iec16022 { };
     jmtpfs = pkgs.jmtpfs.override {
       libmtp = pkgs.libmtp.overrideDerivation (old: {
         patches = old.patches or [] ++ [ ./mtp-jolla.patch ];
