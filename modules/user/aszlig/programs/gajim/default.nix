@@ -43,7 +43,7 @@ let
     patches = (o.patches or []) ++ singleton (pkgs.substituteAll {
       src = ./config.patch;
       nix_config = pkgs.writeText "gajim.config" (import ./config.nix lib);
-    }) ++ singleton ./gnupg-2.1.13.patch;
+    });
     propagatedBuildInputs = (o.propagatedBuildInputs or []) ++ [
       pkgs.pythonPackages.python-axolotl
     ];
