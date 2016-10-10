@@ -34,6 +34,7 @@ in {
   nix.binaryCachePublicKeys = [
     "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
   ];
+  nix.useSandbox = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.timeout = 5;
