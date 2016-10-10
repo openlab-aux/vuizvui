@@ -43,7 +43,7 @@ in {
     ######
     # Nix
 
-    nix.maxJobs = 2;
+    nix.maxJobs = 4;
     # what was this activated for?!
     # vuizvui.enableGlobalNixpkgsConfig = true;
 
