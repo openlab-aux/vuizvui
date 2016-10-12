@@ -10,7 +10,7 @@ pkgs: with pkgs; [
   vuizvui.axbo
   bc
   beets
-  chromiumBeta
+  chromium # XXX: Move to chromiumBeta as soon as the GN build is done
   dash
   dos2unix
   erlang
