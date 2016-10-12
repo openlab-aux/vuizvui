@@ -68,8 +68,7 @@ in {
           INTEL_MEI_TXE y
         '';
       };
-      self = pkgs.linuxPackagesFor t100haKernel self;
-    in self;
+    in pkgs.linuxPackagesFor t100haKernel;
 
     # By default the console is rotated by 90 degrees to the right.
     boot.kernelParams = [ "fbcon=rotate:3" ];

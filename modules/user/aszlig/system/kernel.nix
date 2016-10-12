@@ -41,17 +41,12 @@ in {
   };
 
   config = mkIf cfg.enable {
-    boot = let
-      linuxVuizvui = pkgs.buildLinux {
+    boot = {
+      kernelPatches = singleton pkgs.vuizvui.kernelPatches.bfqsched;
+      kernelPackages = pkgs.linuxPackages_custom {
         inherit (mainlineKernel) version src;
-
-        kernelPatches = singleton pkgs.vuizvui.kernelPatches.bfqsched;
         configfile = generateKConf cfg.config;
-        allowImportFromDerivation = true;
       };
-    in rec {
-      kernelPackages = pkgs.recurseIntoAttrs
-        (pkgs.linuxPackagesFor linuxVuizvui kernelPackages);
     };
   };
 }

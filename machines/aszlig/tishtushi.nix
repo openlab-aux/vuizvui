@@ -12,23 +12,22 @@ in {
   vuizvui.user.aszlig.programs.taalo-build.enable = true;
 
   boot = rec {
+    kernelPatches = singleton {
+      name = "bfqsched";
+      patch = pkgs.fetchpatch {
+        name = "cfq-replacement.patch";
+        url = "https://github.com/linusw/linux-bfq/compare/"
+            + "29b4817d4018df78086157ea3a55c1d9424a7cfc"
+            + "...cfq_replacement-logical.patch";
+        sha256 = "1b3n287r31g0sn85f88dmd00wlsccnm90mr5sr8lj4g1fvnfswqv";
+      };
+    };
+
     kernelPackages = with pkgs; let
       trimVer = ver: take 2 (splitString "." (replaceChars ["-"] ["."] ver));
       tooOld = trimVer linux_latest.version == trimVer linux_testing.version;
-      origKernel = if tooOld then linux_latest else linux_testing;
-      kernel = origKernel.override (origArgs: {
-        kernelPatches = origArgs.kernelPatches ++ singleton {
-          name = "bfqsched";
-          patch = pkgs.fetchpatch {
-            name = "cfq-replacement.patch";
-            url = "https://github.com/linusw/linux-bfq/compare/"
-                + "29b4817d4018df78086157ea3a55c1d9424a7cfc"
-                + "...cfq_replacement-logical.patch";
-            sha256 = "1b3n287r31g0sn85f88dmd00wlsccnm90mr5sr8lj4g1fvnfswqv";
-          };
-        };
-      });
-    in linuxPackagesFor kernel kernelPackages;
+      kernel = if tooOld then linux_latest else linux_testing;
+    in linuxPackagesFor kernel;
 
     initrd.kernelModules = [ "fbcon" "usb_storage" ];
     loader.grub.device = "/dev/disk/by-id/${diskID}";
