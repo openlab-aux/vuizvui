@@ -86,9 +86,6 @@
     extraGroups = [ "video" "wheel" "networkmanager" ];
   };
 
-  # XXX: Temporary until internal WiFi works
-  vuizvui.hardware.rtl8192cu.enable = true;
-
   vuizvui.hardware.t100ha.enable = true;
   vuizvui.user.aszlig.programs.vim.enable = true;
 }
