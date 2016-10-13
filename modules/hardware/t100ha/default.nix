@@ -8,6 +8,15 @@ in {
   options.vuizvui.hardware.t100ha.enable = lib.mkEnableOption desc;
 
   config = lib.mkIf cfg.enable {
+    hardware.firmware = lib.singleton (pkgs.runCommand "brcm43340-firmware" {
+      params = ./brcmfmac43340-sdio.txt;
+      fwbase = "lib/firmware/brcm/brcmfmac43340-sdio";
+      install = "install -vD -m 0644";
+    } ''
+      $install "${pkgs.firmwareLinuxNonfree}/$fwbase.bin" "$out/$fwbase.bin"
+      $install "$params" "$out/$fwbase.txt"
+    '');
+
     boot.kernelPackages = let
       nixpkgs = import ../../../nixpkgs-path.nix;
       t100haKernel = pkgs.linux_4_7.override {
@@ -17,6 +26,9 @@ in {
           }
           { name = "meta-keys";
             patch = ./meta-keys.patch;
+          }
+          { name = "sdio";
+            patch = ./sdio.patch;
           }
         ];
 
