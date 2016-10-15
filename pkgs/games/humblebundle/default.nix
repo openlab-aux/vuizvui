@@ -11,9 +11,12 @@ let
       inherit (config.humblebundle) email password;
     };
 
+    humbleApi  = callPackage ./humbleApi { requests2 = pkgs.pythonPackages.requests2; };
+    
     bastion = callPackage ./bastion.nix {};
     brigador = callPackage ./brigador.nix {};
     cavestoryplus = callPackage ./cavestoryplus.nix {};
+    curious-expedition = callPackage ./curious-expedition.nix {};
     fez = callPackage ./fez.nix {};
     ftl = callPackage ./ftl.nix {};
     guacamelee = callPackage_i686 ./guacamelee.nix {};

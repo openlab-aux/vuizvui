@@ -36,7 +36,14 @@ in {
     hardware.pulseaudio = {
       enable = true;
       zeroconf.discovery.enable = true;
+      extraDaemonConfig = ''
+        flat-volumes = no
+      '';
+      # for Pillars of Eternity
+      support32Bit = true;
     };
+
+    hardware.opengl.driSupport32Bit = true;
 
     vuizvui.hardware.thinkpad.enable = true;
 
@@ -76,6 +83,7 @@ in {
         pkgs.vuizvui.jmtpfs     # MTP fuse
         mosh              # ssh with stable connections
         nfs-utils         # the filesystem of the future for 20 years
+        tarsnap           # encrypting online backup tool
         # TODO move into atool deps
         unzip             # extract zip archives
       ];
@@ -105,6 +113,9 @@ in {
         # mercurial          # the other version control system
         telnet               # tcp debugging
       ];
+      documentation = [
+        # mustache-spec NOT IN 16.09
+      ];
       userPrograms = [
         abcde                # high-level cd-ripper with tag support
         anki                 # spaced repetition system
@@ -115,6 +126,7 @@ in {
         (chromium.override { enablePepperFlash = true; })
         # droopy               # simple HTML upload server
         unfreeAndNonDistributablePkgs.dropbox-cli # dropbox.com client
+        electrum             # bitcoin client
         emacs                # pretty neat operating system i guess
         feh                  # brother of meh, displays images in a meh way, but fast
         filezilla            # FTP GUI business-ready interface framework
@@ -133,18 +145,21 @@ in {
         remind               # calender & reminder program
         rtorrent             # monster of a bittorrent client
         myPkgs.sent          # suckless presentation tool
-        pkgs.vuizvui.show-qr-code # display a QR code
-        youtube-dl           # download videos
         myPkgs.xmpp-client   # CLI XMPP Client
+        myPkgs.youtube-dl    # download videos
         zathura              # pdf viewer
       ];
+      userScripts = with pkgs.vuizvui; [
+        profpatsch.display-infos  # show time & battery
+        show-qr-code              # display a QR code
+      ];
       mailPkgs = [
-        elinks             # command line browser
+        elinks               # command line browser
         # myPkgs.offlineimap # IMAP client
-        mutt-with-sidebar  # has been sucking less since 1970
-        msmtp              # SMTP client
-        notmuch            # mail indexer
-        pythonPackages.alot # the next cool thing!
+        mutt-with-sidebar    # has been sucking less since 1970
+        msmtp                # SMTP client
+        notmuch              # mail indexer
+        pythonPackages.alot  # the next cool thing!
       ];
       nixPkgs = [
         nix-repl                  # nix REPL
@@ -154,31 +169,51 @@ in {
         # TODO needs user service
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
       ];
-    in systemPkgs ++ xPkgs ++ guiPkgs ++ programmingTools ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
-    system.extraDependencies = with pkgs; lib.singleton (
-       # Haskell packages I want to keep around
-       haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
-         [
-           # frp
-           frpnow
-           gloss
-           gtk
-           frpnow-gtk
-           frpnow-gloss
+    in systemPkgs ++ xPkgs ++ guiPkgs
+    ++ programmingTools ++ documentation
+    ++ userPrograms ++ userScripts
+    ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
+    # system.extraDependencies = with pkgs; lib.singleton (
+    #    # Haskell packages I want to keep around
+    #    haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
+    #      [
+    #        # frp
+    #        frpnow
+    #        gloss
+    #        gtk
+    #        frpnow-gtk
+    #        frpnow-gloss
 
-           lens
-           wreq
-           aeson-lens
-         ]))
-       ++
-       # other packages that I use sometimes in a shell
-       [
-       ];
+    #        lens
+    #        wreq
+    #        aeson-lens
+    #      ]))
+    #    ++
+    #    # other packages that I use sometimes in a shell
+    #    [
+    #    ];
 
     ###########
     # Services
 
-    #services.searx.enable = true;
+    services.tinc.networks.freifunk = {
+      name = "profpatsch_client";
+      debugLevel = 3;
+      listenAddress = "10.11.63.101";
+      ed25519PrivateKeyFile = "/var/lib/tinc/key.priv";
+      hosts = {
+        steini = ''
+          Address = augsburg2.total-connection.net
+          Port = 4223
+          ECDSAPublicKey = CEwnNOmriVHPnhQvVZLFNhU9vk/HCIhLotixM0w/eJh+FKEs8IbgX6mof30s3WTBHQd33XYXldx1fulLpAXURzTPgD
+        '';
+      };
+      extraConfig = ''
+        ConnectTo = steini
+      '';
+    };
+
+    services.searx.enable = true;
 
     services.printing = {
       enable = true;
@@ -222,9 +257,13 @@ in {
         Option "SuspendTime" "20"
         Option "OffTime" "30"
       '';
-      synaptics.enable = true;
-      synaptics.minSpeed = "0.5";
-      synaptics.accelFactor = "0.01";
+      synaptics = {
+        enable = true;
+        minSpeed = "0.5";
+        accelFactor = "0.01";
+        twoFingerScroll = true;
+        vertEdgeScroll = false;
+      };
 
 
       videoDrivers = [ "intel" ];
@@ -245,8 +284,7 @@ in {
       # };
 
       displayManager = {
-        sessionCommands = with pkgs;
-            ''
+        sessionCommands = with pkgs; ''
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
             export PATH+=":$HOME/.bin" #add (temporary) executables
@@ -256,12 +294,13 @@ in {
 
             set-background &
             # TODO xbindkeys user service file
-            ${xbindkeys}/bin/xbindkeys
+            ${lib.getBin xbindkeys}/bin/xbindkeys
             nice -n19 dropbox-cli start &
             nm-applet &
             # synchronize clipboards
-            ${autocutsel}/bin/autocutsel -s PRIMARY &
-            '';
+            ${lib.getBin autocutsel}/bin/autocutsel -s PRIMARY &
+            ${lib.getBin twmn}/bin/twmnd &
+          '';
       };
 
     };
@@ -272,7 +311,7 @@ in {
         monospace = [ "Source Code Pro" "DejaVu Sans Mono" ]; # TODO does not work
         sansSerif = [ "Liberation Sans" ];
       };
-      ultimate.preset = "ultimate3";
+      ultimate.preset = "ultimate4";
       ultimate.substitutions = "combi";
     };
     fonts.fonts = with pkgs; [
@@ -306,7 +345,12 @@ in {
     # build derivation on taalo
     vuizvui.user.aszlig.programs.taalo-build.enable = true;
 
-    vuizvui.user.profpatsch.programs.scanning.enable = true;
+    vuizvui.user.profpatsch.programs = {
+      scanning.enable = true;
+
+      taffybar.enable = true;
+      taffybar.package = myPkgs.taffybar;
+    };
 
     #######
     # Misc
@@ -318,6 +362,8 @@ in {
 
     # fix for emacs ssh
     programs.bash.promptInit = "PS1=\"# \"";
+
+    # containers.isso.config = ./isso-test.nix;
 
     ################
     # User services
