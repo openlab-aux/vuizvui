@@ -43,7 +43,7 @@
     accountsservice
     apg
     arandr
-    arc-gtk-theme
+    arc-theme
     ascii
     aspell
     aspellDicts.de
