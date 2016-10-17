@@ -30,5 +30,6 @@
   ./user/openlab/labtops.nix
   ./user/openlab/stackenblocken.nix
   ./user/profpatsch/programs/scanning.nix
-  ./user/profpatsch/programs/taffybar.nix
+  # XXX: @Profpatsch forgot to include this
+  #./user/profpatsch/programs/taffybar.nix
 ]
