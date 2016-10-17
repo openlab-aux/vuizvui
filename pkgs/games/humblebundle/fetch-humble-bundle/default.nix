@@ -1,9 +1,5 @@
 { stdenv, curl, cacert, writeText, fetchFromGitHub, fetchpatch
-<<<<<<< Updated upstream
 , python, pythonPackages
-=======
-, python, buildPythonPackage, pythonPackages, humbleApi
->>>>>>> Stashed changes
 
 , email, password
 }:
@@ -11,7 +7,6 @@
 { name ? null, machineName, downloadName ? "Download", suffix ? "humblebundle", md5 }: let
   cafile = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
-<<<<<<< Updated upstream
   humbleAPI = pythonPackages.buildPythonPackage rec {
     name = "humblebundle-${version}";
     version = "0.1.1";
@@ -25,8 +20,6 @@
 
     propagatedBuildInputs = with pythonPackages; [ requests2 ];
   };
-=======
->>>>>>> Stashed changes
 
   pyStr = str: "'${stdenv.lib.escape ["'" "\\"] str}'";
 
@@ -55,12 +48,7 @@
             ${pyStr "Unable to find ${downloadName} for ${machineName}!"}
           print >>sys.stderr, 'Available download types:'
           for ds in dstruct:
-            print >>sys.stderr, """
-              Name: {}
-              md5:  {}
-              Url:  {}
-              Size: {}
-            """.format(ds.name, ds.md5, ds.url, ds.human_size)
+            print >>sys.stderr, "  " + ds.name
           raise SystemExit(1)
 
     hb = humblebundle.HumbleApi()
@@ -88,7 +76,7 @@ in stdenv.mkDerivation {
   outputHashAlgo = "md5";
   outputHash = md5;
 
-  buildInputs = [ python humbleApi ];
+  buildInputs = [ python humbleAPI ];
 
   buildCommand = ''
     url="$(python "${getDownloadURL}")"
