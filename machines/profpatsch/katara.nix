@@ -36,7 +36,7 @@ in {
     hardware.pulseaudio = {
       enable = true;
       zeroconf.discovery.enable = true;
-      extraDaemonConfig = ''
+      extraConfig = ''
         flat-volumes = no
       '';
       # for Pillars of Eternity
