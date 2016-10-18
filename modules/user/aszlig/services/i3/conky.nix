@@ -42,7 +42,7 @@ let
   gpuTemp = "${cexpr "hwmon" [ "0" "temp" "1" ]}C";
 
   weather = (cexpr "weather" [
-    "http://weather.noaa.gov/pub/data/observations/metar/stations/"
+    "http://tgftp.nws.noaa.gov/data/observations/metar/stations/"
     "EDMA"
     "temperature"
   ]) + "C";
