@@ -233,9 +233,13 @@ in {
         Option "SuspendTime" "20"
         Option "OffTime" "30"
       '';
-      synaptics.enable = true;
-      synaptics.minSpeed = "0.5";
-      synaptics.accelFactor = "0.01";
+      synaptics = {
+        enable = true;
+        minSpeed = "0.5";
+        accelFactor = "0.01";
+        twoFingerScroll = true;
+        vertEdgeScroll = false;
+      };
 
 
       videoDrivers = [ "intel" ];
