@@ -27,15 +27,11 @@
     layout = "gb";
     videoDrivers = [ "intel" ];
 
-    desktopManager.gnome3 = {
+    synaptics = {
       enable = true;
+      twoFingerScroll = true;
+      palmDetect = true;
     };
-
-#    synaptics = {
-#      enable = true;
-#      twoFingerScroll = true;
-#      palmDetect = true;
-#    };
 
     displayManager.sessionCommands = ''
       ${pkgs.xbindkeys}/bin/xbindkeys &
