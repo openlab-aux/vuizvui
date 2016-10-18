@@ -80,6 +80,7 @@ in {
         pkgs.vuizvui.jmtpfs     # MTP fuse
         mosh              # ssh with stable connections
         nfs-utils         # the filesystem of the future for 20 years
+        tarsnap           # encrypting online backup tool
         # TODO move into atool deps
         unzip             # extract zip archives
       ];
@@ -108,6 +109,9 @@ in {
         # mercurial          # the other version control system
         telnet               # tcp debugging
       ];
+      documentation = [
+        # mustache-spec NOT IN 16.09
+      ];
       userPrograms = [
         abcde                # high-level cd-ripper with tag support
         anki                 # spaced repetition system
@@ -118,6 +122,7 @@ in {
         (chromium.override { enablePepperFlash = true; })
         # droopy               # simple HTML upload server
         unfreeAndNonDistributablePkgs.dropbox-cli # dropbox.com client
+        electrum             # bitcoin client
         emacs                # pretty neat operating system i guess
         feh                  # brother of meh, displays images in a meh way, but fast
         filezilla            # FTP GUI business-ready interface framework
@@ -136,18 +141,21 @@ in {
         remind               # calender & reminder program
         rtorrent             # monster of a bittorrent client
         myPkgs.sent          # suckless presentation tool
-        pkgs.vuizvui.show-qr-code # display a QR code
-        youtube-dl           # download videos
         myPkgs.xmpp-client   # CLI XMPP Client
+        youtube-dl           # download videos
         zathura              # pdf viewer
       ];
+      userScripts = with pkgs.vuizvui; [
+        profpatsch.display-infos  # show time & battery
+        show-qr-code              # display a QR code
+      ];
       mailPkgs = [
-        elinks             # command line browser
+        elinks               # command line browser
         # myPkgs.offlineimap # IMAP client
-        mutt-with-sidebar  # has been sucking less since 1970
-        msmtp              # SMTP client
-        notmuch            # mail indexer
-        pythonPackages.alot # the next cool thing!
+        mutt-with-sidebar    # has been sucking less since 1970
+        msmtp                # SMTP client
+        notmuch              # mail indexer
+        pythonPackages.alot  # the next cool thing!
       ];
       nixPkgs = [
         nix-repl                  # nix REPL
@@ -157,26 +165,29 @@ in {
         # TODO needs user service
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
       ];
-    in systemPkgs ++ xPkgs ++ guiPkgs ++ programmingTools ++ userPrograms ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
-    system.extraDependencies = with pkgs; lib.singleton (
-       # Haskell packages I want to keep around
-       haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
-         [
-           # frp
-           frpnow
-           gloss
-           gtk
-           frpnow-gtk
-           frpnow-gloss
+    in systemPkgs ++ xPkgs ++ guiPkgs
+    ++ programmingTools ++ documentation
+    ++ userPrograms ++ userScripts
+    ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
+    # system.extraDependencies = with pkgs; lib.singleton (
+    #    # Haskell packages I want to keep around
+    #    haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
+    #      [
+    #        # frp
+    #        frpnow
+    #        gloss
+    #        gtk
+    #        frpnow-gtk
+    #        frpnow-gloss
 
-           lens
-           wreq
-           aeson-lens
-         ]))
-       ++
-       # other packages that I use sometimes in a shell
-       [
-       ];
+    #        lens
+    #        wreq
+    #        aeson-lens
+    #      ]))
+    #    ++
+    #    # other packages that I use sometimes in a shell
+    #    [
+    #    ];
 
     ###########
     # Services
@@ -245,8 +256,7 @@ in {
       # };
 
       displayManager = {
-        sessionCommands = with pkgs;
-            ''
+        sessionCommands = with pkgs; ''
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
             export PATH+=":$HOME/.bin" #add (temporary) executables
