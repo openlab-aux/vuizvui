@@ -36,8 +36,12 @@ in {
     hardware.pulseaudio = {
       enable = true;
       zeroconf.discovery.enable = true;
+      # for Pillars of Eternity
+      support32Bit = true;
     };
 
+    # needed by some games (TODO: general module for games)
+    # hardware.opengl.driSupport32Bit = true;
     vuizvui.hardware.thinkpad.enable = true;
 
     ######
