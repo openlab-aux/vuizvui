@@ -192,7 +192,7 @@ in {
     ###########
     # Services
 
-    #services.searx.enable = true;
+    services.searx.enable = true;
 
     services.printing = {
       enable = true;
