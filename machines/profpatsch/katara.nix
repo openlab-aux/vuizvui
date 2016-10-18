@@ -266,12 +266,13 @@ in {
 
             set-background &
             # TODO xbindkeys user service file
-            ${xbindkeys}/bin/xbindkeys
+            ${lib.getBin xbindkeys}/bin/xbindkeys
             nice -n19 dropbox-cli start &
             nm-applet &
             # synchronize clipboards
-            ${autocutsel}/bin/autocutsel -s PRIMARY &
-            '';
+            ${lib.getBin autocutsel}/bin/autocutsel -s PRIMARY &
+            ${lib.getBin twmn}/bin/twmnd &
+          '';
       };
 
     };
