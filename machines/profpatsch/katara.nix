@@ -87,7 +87,6 @@ in {
         xclip             # clipboard thingy
         xorg.xkill        # X11 application kill
         # TODO get service to work (requires user dbus)
-        myPkgs.taffybar
       ];
       guiPkgs = [
         gnome3.adwaita-icon-theme
@@ -206,9 +205,6 @@ in {
     # Automount
     services.udisks2.enable = true;
 
-    # TODO: taffybar battery depends on this
-    services.upower.enable = true;
-
     ###################
     # Graphical System
 
@@ -232,7 +228,7 @@ in {
       # otherwise xterm is enabled, creating an xterm that spawns the window manager.
       desktopManager.xterm.enable = false;
 
-      # TODO: include taffybar
+
       windowManager.xmonad = {
         enable = true;
         enableContribAndExtras = true;
