@@ -1,6 +1,6 @@
 { stdenv, pkgsi686Linux, fetchurl, fetchgit, fetchFromBitbucket
 , runCommand, writeScript, writeScriptBin, writeText
-, xvfb_run, xdotool, coreutils, wineStaging, pipelight, dwb
+, xvfb_run, xdotool, coreutils, wineMinimal, pipelight, dwb
 }:
 
 let
@@ -16,8 +16,9 @@ let
 
   patchedWine = let
     libpcsclite = "${pkgsi686Linux.pcsclite}/lib/libpcsclite.so";
-  in (wineStaging.override {
+  in (wineMinimal.override {
     wineBuild = "wine32";
+    wineRelease = "staging";
   }).overrideDerivation (drv: {
     scard4wine = fetchgit {
       url = "git://git.code.sf.net/p/scard4wine/code";
@@ -57,6 +58,7 @@ let
     installPath = stdenv.lib.concatStringsSep "/" (installPath ++ [ dllName ]);
   } ''
     export WINEPREFIX="$out"
+    export WINEDLLOVERRIDES="mscoree,mshtml="
     mkdir -p "$out"
     ${patchedWine}/bin/wine wineboot.exe
     ${xvfb_run}/bin/xvfb-run "${writeScript "install-santander-wine" ''
