@@ -1,7 +1,9 @@
 { pkgs ? import (import ../nixpkgs-path.nix) {} }:
 
 let
-  callPackage = pkgs.lib.callPackageWith (pkgs // self.vuizvui);
+  inherit (pkgs.lib) callPackageWith;
+  callPackage = callPackageWith (pkgs // self.vuizvui);
+  callPackage_i686 = callPackageWith (pkgs.pkgsi686Linux // self.vuizvui);
 
   self.vuizvui = {
     mkChannel = callPackage ./build-support/channel.nix { };
@@ -24,7 +26,7 @@ let
     list-gamecontrollers = callPackage ./list-gamecontrollers { };
     lockdev = callPackage ./lockdev { };
     pvolctrl = callPackage ./pvolctrl { };
-    santander = callPackage ./santander { };
+    santander = callPackage_i686 ./santander { };
     show-qr-code = callPackage ./show-qr-code { };
     sidplayfp = callPackage ./sidplayfp { };
     tkabber_urgent_plugin = callPackage ./tkabber-urgent-plugin { };

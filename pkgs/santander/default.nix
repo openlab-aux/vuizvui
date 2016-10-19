@@ -1,6 +1,6 @@
-{ stdenv, pkgsi686Linux, fetchurl, fetchgit, fetchFromBitbucket
+{ stdenv, fetchurl, fetchgit, fetchFromBitbucket
 , runCommand, writeScript, writeScriptBin, writeText
-, xvfb_run, xdotool, coreutils, wineMinimal, pipelight, dwb
+, xvfb_run, xdotool, coreutils, wineMinimal, pipelight, dwb, pcsclite
 }:
 
 let
@@ -15,7 +15,7 @@ let
   };
 
   patchedWine = let
-    libpcsclite = "${pkgsi686Linux.pcsclite}/lib/libpcsclite.so";
+    libpcsclite = "${pcsclite}/lib/libpcsclite.so";
   in (wineMinimal.override {
     wineBuild = "wine32";
     wineRelease = "staging";
