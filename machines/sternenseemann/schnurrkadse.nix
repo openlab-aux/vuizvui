@@ -76,7 +76,6 @@ in {
     sudo
     mosh
     dmenu
-    taffybar
     alock
     graphicsmagick
     silver-searcher
@@ -87,6 +86,10 @@ in {
     connect
     lame
     ffmpeg
+
+    aspell
+    aspellDicts.en
+    aspellDicts.de
 
     # texlive, minted deps
     mytexlive
@@ -153,9 +156,6 @@ in {
     drivers = [ pkgs.gutenprint pkgs.hplip ];
   };
 
-  # for taffybar
-  services.upower.enable = true;
-
   services.tlp.enable = true;
 
   services.xserver = {
@@ -165,10 +165,7 @@ in {
 
     desktopManager.xterm.enable = false;
 
-    windowManager.xmonad = {
-      enable = true;
-      enableContribAndExtras = true;
-    };
+    windowManager.herbstluftwm.enable = true;
 
     displayManager = {
       sessionCommands =
