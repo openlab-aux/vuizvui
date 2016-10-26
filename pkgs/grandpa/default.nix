@@ -14,7 +14,5 @@ pythonPackages.buildPythonPackage {
   doCheck = false;
 
   buildInputs = [ pythonPackages.cython gpm ];
-  propagatedBuildInputs = with pythonPackages; [
-    curses pyserial
-  ];
+  propagatedBuildInputs = [ pythonPackages.pyserial ];
 }
