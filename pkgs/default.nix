@@ -42,6 +42,7 @@ let
 
     kernel = {
       bfqsched = callPackage ./kernel/bfqsched { };
+      linux_4_7 = callPackage ./kernel/linux-4.7.nix { };
     };
 
     openlab = pkgs.recurseIntoAttrs {

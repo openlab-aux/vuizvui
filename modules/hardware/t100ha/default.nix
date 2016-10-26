@@ -19,7 +19,7 @@ in {
 
     boot.kernelPackages = let
       nixpkgs = import ../../../nixpkgs-path.nix;
-      t100haKernel = pkgs.linux_4_7.override {
+      t100haKernel = pkgs.vuizvui.linux_4_7.override {
         kernelPatches = [
           { name = "backlight";
             patch = ./backlight.patch;
