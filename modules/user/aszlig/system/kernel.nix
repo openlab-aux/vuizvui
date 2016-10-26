@@ -42,7 +42,7 @@ in {
 
   config = mkIf cfg.enable {
     boot = {
-      kernelPatches = singleton pkgs.vuizvui.kernelPatches.bfqsched;
+      kernelPatches = singleton pkgs.vuizvui.kernel.bfqsched;
       kernelPackages = pkgs.linuxPackages_custom {
         inherit (mainlineKernel) version src;
         configfile = generateKConf cfg.config;

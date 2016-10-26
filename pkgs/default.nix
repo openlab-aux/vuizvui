@@ -40,8 +40,8 @@ let
       config = pkgs.config.vuizvui.games or null;
     };
 
-    kernelPatches = {
-      bfqsched = callPackage ./kpatches/bfqsched { };
+    kernel = {
+      bfqsched = callPackage ./kernel/bfqsched { };
     };
 
     openlab = pkgs.recurseIntoAttrs {
