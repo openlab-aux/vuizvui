@@ -15,6 +15,6 @@ pythonPackages.buildPythonPackage {
 
   buildInputs = [ pythonPackages.cython gpm ];
   propagatedBuildInputs = with pythonPackages; [
-    bsddb curses pyserial
+    curses pyserial
   ];
 }
