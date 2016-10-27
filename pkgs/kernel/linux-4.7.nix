@@ -13,6 +13,7 @@ in import generic (args // rec {
   };
 
   kernelPatches = (args.kernelPatches or []) ++ [
+    pkgs.kernelPatches.bridge_stp_helper
     pkgs.kernelPatches.cpu-cgroup-v2."4.7"
   ];
 
