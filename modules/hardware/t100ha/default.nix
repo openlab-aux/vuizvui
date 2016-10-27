@@ -17,21 +17,21 @@ in {
       $install "$params" "$out/$fwbase.txt"
     '');
 
+    boot.kernelPatches = [
+      { name = "backlight";
+        patch = ./backlight.patch;
+      }
+      { name = "meta-keys";
+        patch = ./meta-keys.patch;
+      }
+      { name = "sdio";
+        patch = ./sdio.patch;
+      }
+    ];
+
     boot.kernelPackages = let
       nixpkgs = import ../../../nixpkgs-path.nix;
       t100haKernel = pkgs.vuizvui.kernel.linux_4_7.override {
-        kernelPatches = [
-          { name = "backlight";
-            patch = ./backlight.patch;
-          }
-          { name = "meta-keys";
-            patch = ./meta-keys.patch;
-          }
-          { name = "sdio";
-            patch = ./sdio.patch;
-          }
-        ];
-
         # Missing device drivers:
         #
         #   808622B8 -> Intel(R) Imaging Signal Processor 2401
