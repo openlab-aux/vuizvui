@@ -15,12 +15,18 @@ in {
     kernelPatches = singleton {
       name = "bfqsched";
       patch = pkgs.fetchpatch {
-        name = "cfq-replacement.patch";
+        name = "bfqsched.patch";
         url = "https://github.com/linusw/linux-bfq/compare/"
-            + "29b4817d4018df78086157ea3a55c1d9424a7cfc"
-            + "...cfq_replacement-logical.patch";
-        sha256 = "1b3n287r31g0sn85f88dmd00wlsccnm90mr5sr8lj4g1fvnfswqv";
+            + "07d9a380680d1c0eb51ef87ff2eab5c994949e69"
+            + "...add-bfq-logical.patch";
+        sha256 = "078k0fm7d4ahfrz6g9xgzsv3iqbcc2haj803jrn2c1rpghcpm9g8";
       };
+      extraConfig = ''
+        IOSCHED_BFQ y
+        DEFAULT_BFQ y
+        DEFAULT_CFQ n
+        DEFAULT_IOSCHED "bfq"
+      '';
     };
 
     kernelPackages = with pkgs; let
