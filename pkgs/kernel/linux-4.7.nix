@@ -12,10 +12,7 @@ in import generic (args // rec {
     sha256 = "1p2r5d0jcrak9gxp0339g9z198x9laf09h08ck4jllhhaajrnicj";
   };
 
-  kernelPatches = (args.kernelPatches or []) ++ [
-    pkgs.kernelPatches.bridge_stp_helper
-    pkgs.kernelPatches.cpu-cgroup-v2."4.7"
-  ];
+  kernelPatches = args.kernelPatches;
 
   features.iwlwifi = true;
   features.efiBootStub = true;

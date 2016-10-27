@@ -42,7 +42,12 @@ let
 
     kernel = {
       bfqsched = callPackage ./kernel/bfqsched { };
-      linux_4_7 = callPackage ./kernel/linux-4.7.nix { };
+      linux_4_7 = callPackage ./kernel/linux-4.7.nix {
+        kernelPatches = [
+          pkgs.kernelPatches.bridge_stp_helper
+          pkgs.kernelPatches.cpu-cgroup-v2."4.7"
+        ];
+      };
     };
 
     openlab = pkgs.recurseIntoAttrs {
