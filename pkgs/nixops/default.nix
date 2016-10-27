@@ -1,8 +1,8 @@
 { stdenv, fetchFromGitHub, fetchpatch, git }:
 
 let
-  rev = "e6f012a95988e52cc6555c04242056d319478b24";
-  sha256 = "0xz1nz3a49vwhzkjb0b9c7c83iwfpkpvsnq5bpgm2w3qii75vhkj";
+  rev = "06e3a4b961b80ada9293632d0ec62493c0740282";
+  sha256 = "0w2b1m9z42g56mw2g2sw5izb7gn0nhlp3v8c96m65r121gdil9fj";
 
   master = stdenv.mkDerivation rec {
     name = "nixops-upstream-patched";
@@ -15,10 +15,15 @@ let
 
     phases = [ "unpackPhase" "patchPhase" "installPhase" ];
 
+    patches = stdenv.lib.singleton (fetchpatch {
+      url = "https://github.com/NixOS/nixops/pull/508.patch";
+      sha256 = "1x0cjjpw7ykavnkz1ndxlkcymp9vx6lkyqhbf9wz5jvplqhpb9z7";
+    });
+
     postPatch = ''
       sed -i -re 's!<nixpkgs([^>]*)>!${import ../../nixpkgs-path.nix}\1!g' \
         release.nix doc/manual/default.nix doc/manual/resource.nix
-      sed -i -e '/^docbookxsl/s/1\.78\.1/1.79.1/' doc/manual/Makefile
+      sed -i -e 's/\<sqlite3\>//' release.nix
     '';
 
     installPhase = ''
