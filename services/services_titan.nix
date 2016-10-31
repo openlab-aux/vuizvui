@@ -27,6 +27,10 @@
     layout = "gb";
     videoDrivers = [ "intel" ];
 
+    desktopManager.kde5 = {
+      enable = true;
+    };
+
     synaptics = {
       enable = true;
       twoFingerScroll = true;
@@ -34,14 +38,14 @@
     };
 
     displayManager.sessionCommands = ''
-      ${pkgs.xbindkeys}/bin/xbindkeys &
-      ${pkgs.nitrogen}/bin/nitrogen --restore &
+      #${pkgs.xbindkeys}/bin/xbindkeys &
+      #${pkgs.nitrogen}/bin/nitrogen --restore &
       #${pkgs.networkmanagerapplet}/bin/nm-applet &
-      ${pkgs.connmanui}/bin/connman-ui-gtk &
-      ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
-      ${pkgs.pasystray}/bin/pasystray &
-      ${pkgs.compton}/bin/compton -f &
-      ${pkgs.rofi}/bin/rofi &
+      #${pkgs.connmanui}/bin/connman-ui-gtk &
+      #${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
+      #${pkgs.pasystray}/bin/pasystray &
+      #${pkgs.compton}/bin/compton -f &
+      #${pkgs.rofi}/bin/rofi &
       ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
         Xft.dpi:              96
         Xft.antialias:        true
