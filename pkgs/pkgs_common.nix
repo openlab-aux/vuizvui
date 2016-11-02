@@ -39,6 +39,7 @@
     #john
     #sleuthkit
     #texLiveFull
+    #zotero
     abook
     accountsservice
     apg
@@ -283,7 +284,6 @@
     zathura
     zbar
     zip
-    zotero
     zsync
   ];
 }
