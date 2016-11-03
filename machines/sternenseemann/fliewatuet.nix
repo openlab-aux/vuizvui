@@ -1,7 +1,8 @@
 { config, pkgs, ... }:
 
 let
-   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra; };
+   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra wrapfig; };
+   mympv = pkgs.mpv.override { scripts = [ pkgs.mpvScripts.convert ]; };
 in {
   nixpkgs.config = {
     allowUnfree = true;
@@ -140,7 +141,8 @@ in {
     haskellPackages.cabal2nix
     haskellPackages.stylish-haskell
     clisp
-    go
+    rust.cargo
+    rust.rustc
     # aspell
     aspell
     aspellDicts.en
@@ -196,11 +198,12 @@ in {
     #libreoffice
     qemu
     xmpp-client
+    jackline
     cutegram
     ## GUI
 
     ## audio / video
-    mpv
+    mympv
     abcde
     audacity
     beets
