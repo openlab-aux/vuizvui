@@ -14,7 +14,7 @@ in {
   # hardware
   boot.blacklistedKernelModules = [ "nouveau" "nvidia" ];
   boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" ];
-  boot.kernelModules = [ "kvm-intel" "virtio" ];
+  boot.kernelModules = [ "kvm-intel" ];
   boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "crypted"; } ];
 
   fileSystems."/" = {
@@ -60,9 +60,6 @@ in {
   hardware.bluetooth.enable = true;
 
   hardware.opengl.driSupport32Bit = true;
-  hardware.bumblebee.enable = false;
-  hardware.bumblebee.driver = "nvidia";
-
   hardware.enableAllFirmware = true;
 
   hardware.trackpoint = {
@@ -72,25 +69,21 @@ in {
     sensitivity = 140;
   };
 
-  networking.hostName = "fliewatuet"; # Define your hostname.
+  networking.hostName = "fliewatuet";
   networking.firewall.enable = false;
   networking.networkmanager.enable = true;
 
-  # Select internationalisation properties.
   i18n = {
     consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "de-latin1";
     defaultLocale = "en_US.UTF-8";
   };
 
-  # Set your time zone.
   time.timeZone = "Europe/Berlin";
 
   environment.systemPackages = with pkgs; [
     ## tools
     remind
-    rdiff-backup
-    bup
     attic
     pass
     wget
@@ -98,7 +91,6 @@ in {
     stow
     scrot
     dmenu
-    i3status
     mosh
     gnupg
     pinentry
@@ -106,12 +98,9 @@ in {
     sudo
     silver-searcher
     graphicsmagick
-    dcraw
     mkpasswd
     nmap
-    traceroute
     file
-    progress
     zip
     unzip
     atool
@@ -122,31 +111,19 @@ in {
     youtube-dl
     yafc
     psmisc
-    telnet
-    unison
     bar-xft
-
-    ## dev
-    git
-    darcs
-    neovim
-    gnumake
-    clang
-    gcc
-    gnum4
-    automake
-    valgrind
-    ghc
-    cabal-install
-    haskellPackages.cabal2nix
-    haskellPackages.stylish-haskell
-    clisp
-    rust.cargo
-    rust.rustc
     # aspell
     aspell
     aspellDicts.en
     aspellDicts.de
+
+    ## dev
+    git
+    neovim
+    ghc
+    cabal-install
+    haskellPackages.cabal2nix
+    haskellPackages.stylish-haskell
 
     ## applications
     tmux
@@ -154,59 +131,40 @@ in {
     mutt
     tor
     torbrowser
-    mupdf
     zathura
-    w3m
-    pythonPackages.alot
     msmtp
     offlineimap
     notmuch
     irssi
     mytexlive
     (chromium.override { enablePepperFlash = true; })
+    termite
+    feh
+    gimp
+    inkscape
+    pavucontrol
+    cbatticon
+    filezilla
+    screen-message
+    xmpp-client
+    jackline
 
     ## GUI
     # wm etc.
-    taffybar
     xbindkeys
     alock
     dunst
     libnotify
     redshift
     xorg.xbacklight
-    xorg.xmodmap
     hicolor_icon_theme
     networkmanagerapplet
     xclip
     xsel
-    # applications
-    lxappearance
-    firefox
-    qutebrowser
-    gstreamer
-    termite
-    feh
-    gimp
-    darktable
-    rawtherapee
-    inkscape
-    pavucontrol
-    cbatticon
-    filezilla
-    screen-message
-    mumble
-    #libreoffice
-    qemu
-    xmpp-client
-    jackline
-    cutegram
-    ## GUI
 
     ## audio / video
     mympv
-    abcde
     audacity
-    beets
     lame
     ffmpeg
 
@@ -225,6 +183,7 @@ in {
       preset = "ultimate1";
     };
   };
+
   fonts.fonts = with pkgs; [
     corefonts
     opensans-ttf
