@@ -25,5 +25,6 @@ with import ../lib;
   sternenseemann = {
     fliewatuet   = callMachine ./sternenseemann/fliewatuet.nix {};
     schnurrkadse = callMachine ./sternenseemann/schnurrkadse.nix {};
+    schaf        = callMachine ./sternenseemann/schaf.nix {};
   };
 }
