@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
    mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra wrapfig; };
@@ -147,7 +147,6 @@ in {
     filezilla
     screen-message
     xmpp-client
-    jackline
 
     ## GUI
     # wm etc.
@@ -171,7 +170,7 @@ in {
     ## services
     gutenprint
     acpi
-  ];
+  ] ++ lib.optional (pkgs ? jackline) pkgs.jackline;
 
   fonts.fontconfig = {
     defaultFonts = {
