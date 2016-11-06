@@ -8,12 +8,14 @@
   };
 
   environment.systemPackages = with pkgs; [
+    #cura
+    #openjdk8
+    #skype
     abcde
     aircrackng
     cdrtools
     claws-mail
     connmanui
-    cura
     dvdplusrwtools
     glxinfo
     horst
@@ -29,13 +31,11 @@
     networkmanagerapplet
     notmuch
     offlineimap
-    openjdk8
     pamixer
     pmtools
     pmutils
     pythonPackages.alot
     reaverwps
-    skype
     snort
     thunderbird
     vaapiVdpau
