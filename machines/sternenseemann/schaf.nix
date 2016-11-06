@@ -19,6 +19,9 @@
 
   networking.hostName = "schaf";
 
+  time.timeZone = "Europe/Berlin";
+
+
   fileSystems = {
     "/boot" = {
       device = "/dev/disk/by-label/NIXOS_BOOT";
