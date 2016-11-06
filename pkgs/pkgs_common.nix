@@ -34,11 +34,12 @@
   environment.systemPackages = with pkgs; [
     #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
     #attic
+    #emacs
     #gitAndTools.git-annex
     #ipfs
     #john
+    #lxappearance
     #sleuthkit
-    #texLiveFull
     #zotero
     abook
     accountsservice
@@ -89,7 +90,6 @@
     e2fsprogs
     easytag
     electrum
-    emacs
     enhanced-ctorrent
     ethtool
     evince
@@ -159,7 +159,6 @@
     libreoffice
     lm_sensors
     lsof
-    lxappearance
     lxc
     lynx
     macchanger
