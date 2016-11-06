@@ -14,6 +14,7 @@
     gc-keep-derivations = false
   '';
 
+  nixpkgs.system = "armv7l-linux";
   hardware.opengl.enable = lib.mkDefault false;
   powerManagement.enable = false;
 
