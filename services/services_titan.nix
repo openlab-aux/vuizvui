@@ -40,7 +40,7 @@
     displayManager.sessionCommands = ''
       #${pkgs.xbindkeys}/bin/xbindkeys &
       #${pkgs.nitrogen}/bin/nitrogen --restore &
-      #${pkgs.networkmanagerapplet}/bin/nm-applet &
+      ${pkgs.networkmanagerapplet}/bin/nm-applet &
       #${pkgs.connmanui}/bin/connman-ui-gtk &
       #${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
       #${pkgs.pasystray}/bin/pasystray &
