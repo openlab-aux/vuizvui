@@ -8,13 +8,13 @@
   services.nixosManual.enable = false;
 
   nix.binaryCaches = [ 
-    "http://nixos-arm.dezgeg.me/channel"
     "https://headcounter.org/hydra/"
+    "http://nixos-arm.dezgeg.me/channel"
   ];
 
   nix.binaryCachePublicKeys = [
-    "nixos-arm.dezgeg.me-1:xBaUKS3n17BZPKeyxL4JfbTqECsT+ysbDJz29kLFRW0=%"
     "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
+    "nixos-arm.dezgeg.me-1:xBaUKS3n17BZPKeyxL4JfbTqECsT+ysbDJz29kLFRW0=%"
   ];
 
   nix.maxJobs = 3;
