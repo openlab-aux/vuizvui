@@ -7,15 +7,23 @@
 
   services.nixosManual.enable = false;
 
-  nix.binaryCaches = lib.mkForce [ "http://nixos-arm.dezgeg.me/channel" ];
-  nix.binaryCachePublicKeys = [ "nixos-arm.dezgeg.me-1:xBaUKS3n17BZPKeyxL4JfbTqECsT+ysbDJz29kLFRW0=%" ];
+  nix.binaryCaches = [ 
+    "http://nixos-arm.dezgeg.me/channel"
+    "https://headcounter.org/hydra/"
+  ];
+
+  nix.binaryCachePublicKeys = [
+    "nixos-arm.dezgeg.me-1:xBaUKS3n17BZPKeyxL4JfbTqECsT+ysbDJz29kLFRW0=%"
+    "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
+  ];
+
   nix.maxJobs = 3;
   nix.extraOptions = ''
     gc-keep-derivations = false
   '';
 
   nixpkgs.system = "armv7l-linux";
-  hardware.opengl.enable = lib.mkDefault false;
+  hardware.opengl.enable = false;
   powerManagement.enable = false;
 
   networking.hostName = "schaf";
