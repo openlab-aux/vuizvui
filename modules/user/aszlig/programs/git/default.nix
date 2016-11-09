@@ -45,8 +45,9 @@ in {
       description = "System-wide default config for Git";
 
       type = with types; let
-        value = either (either bool int) str;
-      in attrsOf (either (attrsOf value) value);
+        options = attrsOf (either (either bool int) str);
+        subSection = addCheck (attrsOf options) (s: all isAttrs (attrValues s));
+      in attrsOf (either subSection options);
 
       default = {};
       example = {
