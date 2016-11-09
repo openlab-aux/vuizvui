@@ -229,6 +229,7 @@
     silver-searcher
     smartmontools
     sox
+    speedtest-cli
     spek
     ssdeep
     stow
