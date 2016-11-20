@@ -22,7 +22,6 @@
     ipmitool
     ipmiutil
     ipmiview
-    kdenlive
     kismet
     libva
     libvdpau-va-gl
