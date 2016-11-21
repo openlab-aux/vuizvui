@@ -31,7 +31,7 @@
     networkmanagerapplet
     notmuch
     offlineimap
-    openshot
+    openshot-qt
     pamixer
     pmtools
     pmutils
