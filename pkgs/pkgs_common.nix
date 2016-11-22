@@ -45,6 +45,7 @@
     #zotero
     abook
     accountsservice
+    antiword
     apg
     arandr
     arc-theme
