@@ -170,7 +170,7 @@ in {
     ## services
     gutenprint
     acpi
-  ]
+  ];
 
   fonts.fontconfig = {
     defaultFonts = {
