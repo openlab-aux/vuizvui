@@ -207,10 +207,6 @@ in {
     controlPort = 9051;
   };
 
-  services.gnunet = {
-    enable = true;
-  };
-
   # Enable CUPS to print documents.
   services.printing = {
     enable = true;
