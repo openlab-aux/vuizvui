@@ -146,7 +146,7 @@ in {
     cbatticon
     filezilla
     screen-message
-    xmpp-client
+    jackline
 
     ## GUI
     # wm etc.
@@ -170,7 +170,7 @@ in {
     ## services
     gutenprint
     acpi
-  ] ++ lib.optional (pkgs ? jackline) pkgs.jackline;
+  ]
 
   fonts.fontconfig = {
     defaultFonts = {
@@ -186,16 +186,11 @@ in {
   fonts.fonts = with pkgs; [
     corefonts
     opensans-ttf
-    source-han-sans-japanese
-    source-han-sans-korean
-    source-han-sans-simplified-chinese
-    source-code-pro
     dejavu_fonts
-    ubuntu_font_family
     inconsolata
     tewi-font
     libertine
-    cm_unicode
+    go-font
   ];
 
   # to make Ctrl-Shift-t work in termite
@@ -207,7 +202,14 @@ in {
   # for taffybar
   services.upower.enable = true;
 
-  services.tor.enable = true;
+  services.tor = {
+    enable = true;
+    controlPort = 9051;
+  };
+
+  services.gnunet = {
+    enable = true;
+  };
 
   # Enable CUPS to print documents.
   services.printing = {
