@@ -34,7 +34,6 @@
   environment.systemPackages = with pkgs; [
     #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
     #attic
-    #beets
     #emacs
     #gitAndTools.git-annex
     #ipfs
@@ -58,6 +57,7 @@
     audacity
     axel
     bc
+    beets
     biber
     bind
     brotli
