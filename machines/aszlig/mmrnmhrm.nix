@@ -15,6 +15,7 @@ with lib;
   };
 
   vuizvui.user.aszlig.system.kernel.enable = true;
+  hardware.enableAllFirmware = true;
 
   networking.hostName = "mmrnmhrm";
 
