@@ -11,21 +11,19 @@
 #include <sys/un.h>
 #include <systemd/sd-daemon.h>
 
+#ifndef SUPERVISOR_SUPPORT
 static int main_fd = 0;
-static int ssh_fd = 0;
 static int scdaemon_fd = 0;
+#endif
 
-/* Get a systemd file descriptor corresponding to the specified socket path.
- *
- * Return values:
- *   -1 Socket path not a systemd socket
- *   -2 Provided socket path is not absolute
- *   -3 No suitable file descriptors in LISTEN_FDS
- *   -4 Error while determining LISTEN_FDS
- */
-static int get_sd_fd(const char *sockpath)
-{
+static int ssh_fd = 0;
+
+static int gather_sd_fds(void) {
+#ifdef SUPERVISOR_SUPPORT
+    if (ssh_fd == 0) {
+#else
     if (main_fd == 0 && ssh_fd == 0 && scdaemon_fd == 0) {
+#endif
         int num_fds;
         char **fdmap = NULL;
         void *libsystemd = NULL;
@@ -55,12 +53,14 @@ static int get_sd_fd(const char *sockpath)
 
         if (fdmap != NULL) {
             for (int i = 0; i < num_fds; i++) {
-                if (strncmp(fdmap[i], "main", 5) == 0)
-                    main_fd = SD_LISTEN_FDS_START + i;
-                else if (strncmp(fdmap[i], "ssh", 4) == 0)
+                if (strncmp(fdmap[i], "ssh", 4) == 0)
                     ssh_fd = SD_LISTEN_FDS_START + i;
+#ifndef SUPERVISOR_SUPPORT
+                else if (strncmp(fdmap[i], "main", 5) == 0)
+                    main_fd = SD_LISTEN_FDS_START + i;
                 else if (strncmp(fdmap[i], "scdaemon", 9) == 0)
                     scdaemon_fd = SD_LISTEN_FDS_START + i;
+#endif
                 free(fdmap[i]);
             }
             free(fdmap);
@@ -69,6 +69,26 @@ static int get_sd_fd(const char *sockpath)
         if (dlclose(libsystemd) != 0)
             return -1;
     }
+
+    return 0;
+}
+
+#ifndef SUPERVISOR_SUPPORT
+
+/* Get a systemd file descriptor corresponding to the specified socket path.
+ *
+ * Return values:
+ *   -1 Socket path not a systemd socket
+ *   -2 Provided socket path is not absolute
+ *   -3 No suitable file descriptors in LISTEN_FDS
+ *   -4 Error while determining LISTEN_FDS
+ */
+static int get_sd_fd(const char *sockpath)
+{
+    int ret;
+
+    if ((ret = gather_sd_fds()) != 0)
+        return ret;
 
     char *basename = strrchr(sockpath, '/');
     if (basename == NULL)
@@ -215,6 +235,8 @@ pid_t fork(void)
     return _fork();
 }
 
+#endif /* !SUPERVISOR_SUPPORT */
+
 /* Get the PID of the client connected to the given socket FD. */
 static pid_t get_socket_pid(int sockfd)
 {
@@ -246,6 +268,10 @@ int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
     retval = _accept(sockfd, addr, addrlen);
 
     last_pid = 0;
+
+#ifdef SUPERVISOR_SUPPORT
+    if (ssh_fd == 0) gather_sd_fds();
+#endif
 
     if (retval != -1 && ssh_fd != 0 && sockfd == ssh_fd) {
         pid_t client_pid = get_socket_pid(retval);

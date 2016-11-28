@@ -8,6 +8,8 @@ let
   hasXdgSupport = versionAtLeast (getVersion cfg.package) "2.1.13";
   isDefaultHome = cfg.homeDir == ".gnupg";
 
+  hasSupervisorSupport = versionAtLeast (getVersion cfg.package) "2.1.16";
+
   sockDir = if hasXdgSupport && isDefaultHome
             then "%t/gnupg"
             else "%h/${cfg.homeDir}";
@@ -28,11 +30,12 @@ let
       UNIX-CONNECT:"${shellSockDir}/S.scdaemon"
   '';
 
-  agentWrapper = pkgs.runCommandCC "gpg-agent-wrapper" {
+  agentWrapper = withSupervisor: pkgs.runCommandCC "gpg-agent-wrapper" {
     buildInputs = with pkgs; [ pkgconfig systemd ];
     inherit pinentryWrapper;
   } ''
     cc -Wall -shared -std=c11 \
+      ${optionalString withSupervisor "-DSUPERVISOR_SUPPORT=1"} \
       -DLIBSYSTEMD=\"${pkgs.systemd.lib}/lib/libsystemd.so\" \
       -DPINENTRY_WRAPPER=\"$pinentryWrapper\" \
       $(pkg-config --cflags libsystemd) -ldl \
@@ -110,7 +113,7 @@ in {
     (mkIf (cfg.enable && cfg.agent.enable) {
       systemd.user.services.gpg-agent = {
         description = "GnuPG Agent";
-        environment.LD_PRELOAD = agentWrapper;
+        environment.LD_PRELOAD = agentWrapper hasSupervisorSupport;
         environment.GNUPGHOME = "~/${cfg.homeDir}";
 
         serviceConfig.ExecStart = toString ([
@@ -119,8 +122,9 @@ in {
           (if cfg.agent.scdaemon.enable
            then "--scdaemon-program=${scdaemonRedirector}"
            else "--disable-scdaemon")
-          "--no-detach"
-          "--daemon"
+          (if hasSupervisorSupport
+           then "--supervised"
+           else "--no-detach --daemon")
         ] ++ optional cfg.agent.sshSupport "--enable-ssh-support");
 
         serviceConfig.ExecReload = toString [
@@ -134,7 +138,9 @@ in {
         wantedBy = [ "sockets.target" ];
         description = "Main Socket For GnuPG Agent";
         listenStreams = singleton "${sockDir}/S.gpg-agent";
-        socketConfig = agentSocketConfig "main";
+        socketConfig = let
+          sockName = if hasSupervisorSupport then "std" else "main";
+        in agentSocketConfig sockName;
       };
     })
     (mkIf (cfg.enable && cfg.agent.enable && cfg.agent.scdaemon.enable) {
@@ -151,7 +157,7 @@ in {
 
       systemd.user.services.gnupg-scdaemon = {
         description = "GnuPG Smartcard Daemon";
-        environment.LD_PRELOAD = agentWrapper;
+        environment.LD_PRELOAD = agentWrapper false;
         environment.GNUPGHOME = "~/${cfg.homeDir}";
 
         serviceConfig.ExecStart = toString [
