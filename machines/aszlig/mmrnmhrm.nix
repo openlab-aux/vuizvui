@@ -15,7 +15,6 @@ with lib;
   };
 
   vuizvui.user.aszlig.system.kernel.enable = true;
-  vuizvui.user.aszlig.system.kernel.config = import ./mmrnmhrm-kconf.nix;
 
   networking.hostName = "mmrnmhrm";
 
