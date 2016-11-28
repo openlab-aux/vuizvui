@@ -11,30 +11,9 @@ in {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
   vuizvui.user.aszlig.programs.taalo-build.enable = true;
 
-  boot = rec {
-    kernelPatches = singleton {
-      name = "bfqsched";
-      patch = pkgs.fetchpatch {
-        name = "bfqsched.patch";
-        url = "https://github.com/linusw/linux-bfq/compare/"
-            + "07d9a380680d1c0eb51ef87ff2eab5c994949e69"
-            + "...add-bfq-logical.patch";
-        sha256 = "078k0fm7d4ahfrz6g9xgzsv3iqbcc2haj803jrn2c1rpghcpm9g8";
-      };
-      extraConfig = ''
-        IOSCHED_BFQ y
-        DEFAULT_BFQ y
-        DEFAULT_CFQ n
-        DEFAULT_IOSCHED "bfq"
-      '';
-    };
+  vuizvui.user.aszlig.system.kernel.enable = true;
 
-    kernelPackages = with pkgs; let
-      trimVer = ver: take 2 (splitString "." (replaceChars ["-"] ["."] ver));
-      tooOld = trimVer linux_latest.version == trimVer linux_testing.version;
-      kernel = if tooOld then linux_latest else linux_testing;
-    in linuxPackagesFor kernel;
-
+  boot = {
     initrd.kernelModules = [ "fbcon" "usb_storage" ];
     loader.grub.device = "/dev/disk/by-id/${diskID}";
     loader.timeout = 1;
