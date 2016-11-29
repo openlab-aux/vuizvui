@@ -294,6 +294,7 @@ in {
       dejavu_fonts
       ubuntu_font_family
       league-of-moveable-type
+      symbola # emoji
     ];
 
 
