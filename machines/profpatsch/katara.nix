@@ -151,7 +151,6 @@ in {
       ];
       mailPkgs = [
         elinks               # command line browser
-        # myPkgs.offlineimap # IMAP client
         mutt-with-sidebar    # has been sucking less since 1970
         msmtp                # SMTP client
         notmuch              # mail indexer
@@ -201,12 +200,6 @@ in {
       # drivers = [ pkgs.cups-pdf ];
       # TODO
       # drivers = [ pkgs.foomatic_filters pkgs.foomatic-db-engine ];
-    };
-
-    services.offlineimap = {
-      # enable user service
-      install = true;
-      onCalendar = "*:0/15";
     };
 
     # redshift TODO as user
@@ -314,7 +307,6 @@ in {
       };
     };
 
-
     # TODO: base config?
     vuizvui.programs.fish.fasd.enable = true;
 
@@ -336,7 +328,54 @@ in {
 
     ################
     # User services
-    # systemd.user = {
-    # };
+    systemd.user = lib.mkMerge [
+
+      (lib.mkIf config.vuizvui.programs.gnupg.enable {
+        services.unlock-password-store = {
+          description = "unlock the user password store";
+          wantedBy = [ "default.target" ];
+          # make sure gpg-agent is running
+          wants = [ "gpg-agent.service" ];
+          after = [ "gpg-agent.service" ];
+          serviceConfig = {
+            # use special unlock key in the password store (needs to exist of course)
+            ExecStart = "${lib.getBin pkgs.pass}/bin/pass misc/unlock";
+            StandardOutput = "null";
+          };
+        };
+        timers.unlock-password-store = {
+          description = "unlock password store on system start";
+          wantedBy = [ "timers.target" ];
+          timerConfig.OnStartupSec = "5s";
+        };
+       })
+
+      {
+        services.mbsync = {
+          description = "mbsync job";
+          wants = [ "notmuch.service" ];
+          before = [ "notmuch.service"];
+          path = [ pkgs.pass ];
+          serviceConfig = {
+            Restart = "no";
+            ExecStart = "${pkgs.isync}/bin/mbsync -a";
+            };
+        };
+        timers.mbsync = {
+          description = "run mbsync job every 15 minutes";
+          wantedBy = [ "timers.target" ];
+          timerConfig.OnActiveSec="15m";
+        };
+        services.notmuch = {
+          description = "notmuch job";
+          serviceConfig = {
+            Restart = "no";
+            ExecStart = "${pkgs.notmuch}/bin/notmuch new";
+            };
+        };
+      }
+
+    ];
+
   };
 }

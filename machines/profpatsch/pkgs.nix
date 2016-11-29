@@ -23,8 +23,6 @@ let
 
   # pkgs
 
-  offlineimap = addPythonRuntimeDeps pkgs.offlineimap [ pkgs.pythonPackages.pygpgme ];
-
   taffybar = pkgs.taffybar.override {
     ghcWithPackages = (pkgs.haskellPackages.override {
       overrides = _: super: {
@@ -67,4 +65,4 @@ let
   xmpp-client = pkgs.callPackage (import ./xmpp-client.nix myLib.philip.home "irc/xmppOla.wtf") { inherit (pkgs) xmpp-client; };
 
 in
-{ inherit taffybar offlineimap sent mpv beets poezio vim fast-init xmpp-client; }
+{ inherit taffybar sent mpv beets poezio vim fast-init xmpp-client; }
