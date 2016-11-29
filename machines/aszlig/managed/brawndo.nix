@@ -42,7 +42,12 @@ in {
     networkmanager.enable = true;
   };
 
-  nix.maxJobs = 4;
+  nix = {
+    maxJobs = 4;
+    useSandbox = true;
+    readOnlyStore = true;
+    buildCores = 0;
+  };
 
   nixpkgs.config = {
     allowUnfree = true; # XXX: More granularity!
