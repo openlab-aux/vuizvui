@@ -366,7 +366,10 @@ in {
         timers.mbsync = {
           description = "run mbsync job every 15 minutes";
           wantedBy = [ "timers.target" ];
-          timerConfig.OnActiveSec="15m";
+          timerConfig = {
+            OnStartupSec="10s";
+            OnUnitActiveSec ="15m";
+          };
         };
         services.notmuch = {
           description = "notmuch job";
