@@ -53,6 +53,17 @@ let
       inherit supportedSystems;
       packageSet = attrs: noGames (import vuizvui attrs).pkgs.vuizvui;
     };
+
+    packagePlatforms = mapAttrs (name: value: let
+      platforms = value.meta.hydraPlatforms or (value.meta.platforms or []);
+      isRecursive = value.recurseForDerivations or false
+                 || value.recurseForRelease or false;
+      result = if isDerivation value then platforms
+               else if isRecursive then packagePlatforms value
+               else [];
+      tried = builtins.tryEval result;
+    in if tried.success then tried.value else []);
+
   in with releaseLib; mapTestOn (packagePlatforms releaseLib.pkgs);
 
 in with pkgsUpstream.lib; with builtins; {
