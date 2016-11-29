@@ -104,7 +104,7 @@ in {
       programmingTools = [
         cabal2nix            # convert cabal files to nixexprs
         cabal-install        # haskell project management
-        myPkgs.fast-init     # fast-init of haskell projects
+        # myPkgs.fast-init     # fast-init of haskell projects
         gitAndTools.git-annex     # version controlled binary file storage
         # mercurial          # the other version control system
         telnet               # tcp debugging
