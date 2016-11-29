@@ -163,6 +163,7 @@ in {
       tmpPkgs = [
         # TODO needs user service
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
+        (texlive.combine { inherit (texlive) scheme-medium latexmk IEEEtran needspace; })
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
     ++ programmingTools ++ documentation
