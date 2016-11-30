@@ -107,9 +107,7 @@ in {
     manpages
     man_db
     sshuttle
-    speedtest-cli
     youtube-dl
-    yafc
     psmisc
     bar-xft
     # aspell
@@ -123,7 +121,6 @@ in {
     ghc
     cabal-install
     haskellPackages.cabal2nix
-    haskellPackages.stylish-haskell
 
     ## applications
     tmux
@@ -141,7 +138,6 @@ in {
     termite
     feh
     gimp
-    inkscape
     pavucontrol
     cbatticon
     filezilla
@@ -154,7 +150,6 @@ in {
     alock
     dunst
     libnotify
-    redshift
     xorg.xbacklight
     hicolor_icon_theme
     networkmanagerapplet
@@ -199,9 +194,6 @@ in {
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
-  # for taffybar
-  services.upower.enable = true;
-
   services.tor = {
     enable = true;
     controlPort = 9051;
@@ -222,12 +214,6 @@ in {
     xkbVariant = "neo";
 
     desktopManager.xterm.enable = false;
-
-    # windowManager.xmonad = {
-    #   enable = true;
-    #   enableContribAndExtras = true;
-    # };
-
     windowManager.herbstluftwm.enable = true;
 
     displayManager = {
@@ -242,7 +228,7 @@ in {
 
     synaptics.enable = true;
     synaptics.tapButtons = false;
-    synaptics.twoFingerScroll = true;
+    synaptics.twoFingerScroll = false;
 
     videoDrivers = [ "intel" ];
   };
