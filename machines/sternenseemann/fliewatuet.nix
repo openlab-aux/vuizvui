@@ -136,7 +136,7 @@ in {
     mytexlive
     (chromium.override { enablePepperFlash = true; })
     termite
-    feh
+    imv
     gimp
     pavucontrol
     cbatticon
