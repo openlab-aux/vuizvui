@@ -138,6 +138,7 @@ in {
     termite
     imv
     gimp
+    rawtherapee
     pavucontrol
     cbatticon
     filezilla
