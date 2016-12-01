@@ -13,6 +13,7 @@
     #skype
     abcde
     aircrackng
+    calibre
     cdrtools
     claws-mail
     connmanui
@@ -31,7 +32,6 @@
     networkmanagerapplet
     notmuch
     offlineimap
-    openshot-qt
     pamixer
     pmtools
     pmutils
