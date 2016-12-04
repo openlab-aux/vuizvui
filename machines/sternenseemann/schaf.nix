@@ -53,7 +53,7 @@
   swapDevices = [ { device = "/swapfile"; size = 1024; } ];
 
   services.openssh.enable = true;
-  services.openssh.permitRootLogin = "no";
+  services.openssh.permitRootLogin = "without-password";
   networking.firewall.enable = false;
 
   services.journald.extraConfig = "SystemMaxUse=10M";
