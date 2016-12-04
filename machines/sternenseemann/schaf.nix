@@ -64,12 +64,16 @@
     sudo
     git
     dtach
+    speedtest-cli
   ];
 
   services.tor.enable = true;
   services.tor.extraConfig = ''
     HiddenServiceDir /var/lib/tor/hs
     HiddenServicePort 22 127.0.0.1:22
+
+    HiddenServiceDir /var/lib/tor/books
+    HiddenServicePorT 22 127.0.0.1:22
   '';
 
   users.extraUsers.lukas = {
@@ -82,6 +86,12 @@
     shell = "${pkgs.fish}/bin/fish";
     group = "users";
     extraGroups = [ "wheel" ];
+  };
+
+  users.extraUsers.books = {
+    uid = 1001;
+    isNormalUser = true;
+    group = "users";
   };
 
   programs.fish.enable = true;
