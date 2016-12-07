@@ -71,7 +71,15 @@ in {
 
   networking.hostName = "fliewatuet";
   networking.firewall.enable = false;
-  networking.networkmanager.enable = true;
+
+  networking.supplicant = {
+    wlp4s0 = {
+      configFile.path = "/etc/wpa_supplicant.conf";
+      userControlled.enable = true;
+      userControlled.group = "users";
+    };
+  };
+
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
@@ -166,6 +174,10 @@ in {
     ## services
     gutenprint
     acpi
+
+    ## games
+    steam
+    sauerbraten
   ];
 
   fonts.fontconfig = {
