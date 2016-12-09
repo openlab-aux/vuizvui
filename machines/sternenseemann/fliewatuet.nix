@@ -138,7 +138,7 @@ in {
     torbrowser
     zathura
     msmtp
-    offlineimap
+    isync
     notmuch
     irssi
     mytexlive
