@@ -198,7 +198,7 @@ in {
     inconsolata
     tewi-font
     libertine
-    go-font
+    google-fonts
   ];
 
   # to make Ctrl-Shift-t work in termite
