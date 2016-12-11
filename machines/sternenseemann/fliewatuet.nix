@@ -77,6 +77,9 @@ in {
       configFile.path = "/etc/wpa_supplicant.conf";
       userControlled.enable = true;
       userControlled.group = "users";
+      driver = "wext";
+      extraCmdArgs = "-u -W";
+      extraConf = "ap_scan=1";
     };
   };
 
