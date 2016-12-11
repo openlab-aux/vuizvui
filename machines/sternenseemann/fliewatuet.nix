@@ -147,6 +147,7 @@ in {
     irssi
     mytexlive
     (chromium.override { enablePepperFlash = true; })
+    gopher
     termite
     imv
     gimp
