@@ -36,6 +36,7 @@ in {
     "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
   ];
   nix.useSandbox = true;
+  nix.extraOptions = "gc-keep-derivations = false";
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.timeout = 5;
