@@ -8,12 +8,14 @@ in {
   options.vuizvui.hardware.t100ha.enable = lib.mkEnableOption desc;
 
   config = lib.mkIf cfg.enable {
-    hardware.firmware = lib.singleton (pkgs.runCommand "brcm43340-firmware" {
+    hardware.firmware = lib.singleton (pkgs.runCommand "t100ha-firmware" {
       params = ./brcmfmac43340-sdio.txt;
-      fwbase = "lib/firmware/brcm/brcmfmac43340-sdio";
+      fwpkg = pkgs.firmwareLinuxNonfree;
       install = "install -vD -m 0644";
     } ''
-      $install "${pkgs.firmwareLinuxNonfree}/$fwbase.bin" "$out/$fwbase.bin"
+      for fw in brcm/brcmfmac43340-sdio intel/fw_sst_22a8; do
+        $install "$fwpkg/lib/firmware/$fw.bin" "$out/lib/firmware/$fw.bin"
+      done
       $install "$params" "$out/$fwbase.txt"
     '');
 
@@ -26,6 +28,9 @@ in {
       }
       { name = "sdio";
         patch = ./sdio.patch;
+      }
+      { name = "sound";
+        patch = ./sound.patch;
       }
     ];
 
