@@ -18,8 +18,8 @@ in {
     '');
 
     boot.kernelPatches = [
-      { name = "backlight";
-        patch = ./backlight.patch;
+      { name = "drm";
+        patch = ./drm.patch;
       }
       { name = "meta-keys";
         patch = ./meta-keys.patch;
