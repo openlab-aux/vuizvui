@@ -36,7 +36,7 @@ in {
 
     boot.kernelPackages = let
       nixpkgs = import ../../../nixpkgs-path.nix;
-      t100haKernel = pkgs.vuizvui.kernel.linux_4_7.override {
+      t100haKernel = pkgs.linux_4_9.override {
         # Missing device drivers:
         #
         #   808622B8 -> Intel(R) Imaging Signal Processor 2401
