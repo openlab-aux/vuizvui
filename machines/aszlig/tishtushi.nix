@@ -9,7 +9,6 @@ let
   diskID = "ata-Hitachi_HTS543232A7A384_E2P31243FGB6PJ";
 in {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
-  vuizvui.user.aszlig.programs.taalo-build.enable = true;
 
   vuizvui.user.aszlig.system.kernel.enable = true;
 
