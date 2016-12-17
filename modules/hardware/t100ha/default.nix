@@ -103,25 +103,5 @@ in {
       MatchProduct "SIS0457"
       Option "TransformationMatrix" "0 -1 1 1 0 0 0 0 1"
     '';
-
-    # XXX: Workaround for a vblank issue that causes the display to stay blank
-    # until the next subsequent vblank (usually on no activity for a while until
-    # the monitor gets powered down).
-    #
-    # I know this is very ugly, but another mitigation would be to disable power
-    # management entirely, which I think is even uglier.
-    boot.initrd.preDeviceCommands = "fix-vblank";
-    boot.initrd.extraUtilsCommands = ''
-      cc -Wall -o "$out/bin/fix-vblank" "${pkgs.writeText "fix-vblank.c" ''
-        #include <sys/ioctl.h>
-
-        int main(void) {
-          char cmd = 14;
-          ioctl(0, TIOCLINUX, &cmd);
-          cmd = 4;
-          ioctl(0, TIOCLINUX, &cmd);
-        }
-      ''}"
-    '';
   };
 }
