@@ -16,7 +16,7 @@ in {
       for fw in brcm/brcmfmac43340-sdio intel/fw_sst_22a8; do
         $install "$fwpkg/lib/firmware/$fw.bin" "$out/lib/firmware/$fw.bin"
       done
-      $install "$params" "$out/$fwbase.txt"
+      $install "$params" "$out/lib/firmware/brcm/brcmfmac43340-sdio.txt"
     '');
 
     boot.kernelPatches = [
