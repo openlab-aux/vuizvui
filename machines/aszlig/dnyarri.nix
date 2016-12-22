@@ -27,6 +27,8 @@ with lib;
     ];
   };
 
+  environment.systemPackages = [ pkgs.paperwork ];
+
   vuizvui.user.aszlig.system.kernel.enable = true;
   hardware.enableAllFirmware = true;
 
