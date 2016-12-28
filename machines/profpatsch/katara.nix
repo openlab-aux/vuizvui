@@ -106,6 +106,7 @@ in {
         cabal-install        # haskell project management
         # myPkgs.fast-init     # fast-init of haskell projects
         gitAndTools.git-annex     # version controlled binary file storage
+        httpie               # nice http CLI
         # mercurial          # the other version control system
         telnet               # tcp debugging
       ];
@@ -129,7 +130,6 @@ in {
         ghc                  # <s>Glorious</s>Glasgow Haskell Compiler, mostly for ghci
         gimp                 # graphics
         gmpc                 # mpd client and best music player interface in the world
-        httpie               # nice http CLI
         inkscape             # vector graphics
         # libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm             # terminal emulator, best one around
@@ -203,14 +203,6 @@ in {
       # drivers = [ pkgs.foomatic_filters pkgs.foomatic-db-engine ];
     };
 
-    # redshift TODO as user
-    services.redshift = {
-      # enable = true;
-      latitude = "48";
-      longitude = "10";
-      temperature.day = 6300;
-    };
-
     # Automount
     services.udisks2.enable = true;
 
@@ -240,7 +232,6 @@ in {
 
       # otherwise xterm is enabled, creating an xterm that spawns the window manager.
       desktopManager.xterm.enable = false;
-
 
       windowManager.xmonad = {
         enable = true;
@@ -296,7 +287,6 @@ in {
       league-of-moveable-type
       symbola # emoji
     ];
-
 
     ###########
     # Programs
