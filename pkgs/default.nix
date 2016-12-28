@@ -57,5 +57,9 @@ let
     profpatsch = pkgs.recurseIntoAttrs {
       display-infos = callPackage ./profpatsch/display-infos {};
     };
+    sternenseemann = pkgs.recurseIntoAttrs {
+      spacecookie = pkgs.haskellPackages.callPackage ./sternenseemann/spacecookie {};
+      gopher-proxy = pkgs.haskellPackages.callPackage ./sternenseemann/gopher-proxy {};
+    };
   };
 in pkgs // self
