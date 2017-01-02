@@ -27,6 +27,20 @@
 
   environment.systemPackages = [ pkgs.paperwork ];
 
+  # This is very ugly and I really want to avoid non-free packages on all
+  # of my workstations. But right now I need to get rid of useless paper.
+  nixpkgs.config = {
+    allowUnfreePredicate = pkg: let
+      inherit (builtins.parseDrvName pkg.name) name;
+    in lib.hasSuffix "-hplip" name && lib.hasPrefix "python" name;
+    packageOverrides = super: {
+      hplip = super.hplip.override { withPlugin = true; };
+    };
+  };
+
+  hardware.sane.enable = true;
+  hardware.sane.extraBackends = [ pkgs.hplip ];
+
   vuizvui.user.aszlig.system.kernel.enable = true;
   hardware.enableAllFirmware = true;
 
@@ -52,10 +66,13 @@
     device = "/dev/shofixti/swap";
   };
 
-  # TODO: Try to avoid this, but as there is only a single user using audio on
-  # this machine, it's okay for now. But remember that this will break heavily,
-  # should there be another user accessing the audio devices.
-  users.users.aszlig.extraGroups = [ "audio" ];
+  users.users.aszlig.extraGroups = [
+    "scanner"
+    # TODO: Try to avoid this, but as there is only a single user using audio
+    # on this machine, it's okay for now. But remember that this will break
+    # heavily, should there be another user accessing the audio devices.
+    "audio"
+  ];
 
   services.synergy.client.enable = true;
   services.synergy.client.serverAddress = "mmrnmhrm";
