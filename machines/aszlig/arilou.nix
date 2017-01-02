@@ -1,7 +1,5 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
 let
   rootUUID = "e9c95c74-e4cf-41f6-bb45-baf8dd579217";
   swapUUID = "4d172959-5cfd-4164-a46e-fa7be0dfd03a";
@@ -20,7 +18,7 @@ in {
   };
 
   networking.hostName = "arilou";
-  networking.wireless.enable = mkForce true;
+  networking.wireless.enable = lib.mkForce true;
 
   fileSystems."/".device = "/dev/disk/by-uuid/${rootUUID}";
   fileSystems."/".fsType = "btrfs";
@@ -35,12 +33,12 @@ in {
   fileSystems."/tmp".fsType = "tmpfs";
   fileSystems."/tmp".options = [ "nosuid" "nodev" "relatime" ];
 
-  swapDevices = singleton {
+  swapDevices = lib.singleton {
     device = "/dev/disk/by-uuid/${swapUUID}";
   };
 
-  services.openssh.enable = mkForce false;
+  services.openssh.enable = lib.mkForce false;
   services.xserver.videoDrivers = [ "intel" "ati" "nouveau" ];
 
-  nix.maxJobs = mkForce 2;
+  nix.maxJobs = lib.mkForce 2;
 }

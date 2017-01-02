@@ -1,7 +1,5 @@
 { pkgs, lib, ... }:
 
-with lib;
-
 {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
@@ -66,11 +64,11 @@ with lib;
 
   vuizvui.user.aszlig.services.i3.workspaces."1" = {
     label = "XMPP";
-    assign = singleton { class = "^(?:Tkabber|Gajim)\$"; };
+    assign = lib.singleton { class = "^(?:Tkabber|Gajim)\$"; };
   };
 
   vuizvui.user.aszlig.services.i3.workspaces."3" = {
     label = "Chromium";
-    assign = singleton { class = "^Chromium(?:-browser)?\$"; };
+    assign = lib.singleton { class = "^Chromium(?:-browser)?\$"; };
   };
 }

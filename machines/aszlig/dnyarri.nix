@@ -1,7 +1,5 @@
 { pkgs, lib, ... }:
 
-with lib;
-
 {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
@@ -50,7 +48,7 @@ with lib;
     ${pkgs.hdparm}/sbin/hdparm -B 255 /dev/disk/by-id/ata-ST31500541AS_6XW0M217
   '';
 
-  swapDevices = singleton {
+  swapDevices = lib.singleton {
     device = "/dev/shofixti/swap";
   };
 
@@ -73,6 +71,6 @@ with lib;
   vuizvui.user.aszlig.services.i3.reverseHeads = true;
   vuizvui.user.aszlig.services.i3.workspaces."6" = {
     label = "Chromium";
-    assign = singleton { class = "^Chromium(?:-browser)?\$"; };
+    assign = lib.singleton { class = "^Chromium(?:-browser)?\$"; };
   };
 }

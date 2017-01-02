@@ -1,7 +1,5 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
 let
   rootUUID = "e33a3dda-a87d-473b-b113-37783aa35667";
   swapUUID = "e9f59283-143c-4c36-978c-c730c6ca27c7";
@@ -19,7 +17,7 @@ in {
   };
 
   networking.hostName = "tishtushi";
-  networking.wireless.enable = mkForce true;
+  networking.wireless.enable = lib.mkForce true;
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/${rootUUID}";
@@ -33,7 +31,7 @@ in {
     options = [ "ssd" "compress-force=zlib" "noatime" ];
   };
 
-  swapDevices = singleton {
+  swapDevices = lib.singleton {
     device = "/dev/disk/by-uuid/${swapUUID}";
   };
 
