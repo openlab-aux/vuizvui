@@ -13,6 +13,7 @@
   ./services/starbound.nix
   ./system/iso.nix
   ./user/aszlig/profiles/base.nix
+  ./user/aszlig/profiles/managed.nix
   ./user/aszlig/profiles/workstation
   ./user/aszlig/programs/gajim
   ./user/aszlig/programs/git

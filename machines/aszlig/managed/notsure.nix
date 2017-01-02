@@ -70,8 +70,7 @@ in {
 
   services = {
     deluge.enable = true;
-    printing.enable = true;
-    printing.drivers = [ pkgs.gutenprint pkgs.hplip pkgs.cups-bjnp ];
+    printing.drivers = [ pkgs.cups-bjnp ];
     tlp.enable = true;
 
     xserver = {
@@ -87,6 +86,9 @@ in {
   swapDevices = lib.singleton { label = "swap"; };
 
   time.timeZone = "Europe/Berlin";
+
+  vuizvui.user.aszlig.profiles.managed.enable = true;
+  vuizvui.user.aszlig.profiles.managed.mainUser = "dwenola";
 
   vuizvui.user.aszlig.programs.vim.enable = true;
   vuizvui.enableGlobalNixpkgsConfig = true;

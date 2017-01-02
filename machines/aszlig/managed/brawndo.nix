@@ -89,8 +89,7 @@ in {
 
   services = {
     deluge.enable = true;
-    printing.enable = true;
-    printing.drivers = [ pkgs.gutenprint pkgs.hplip pkgs.cups-bjnp ];
+    printing.drivers = [ pkgs.cups-bjnp ];
     tlp.enable = true;
 
     xserver = {
@@ -110,11 +109,8 @@ in {
 
   time.timeZone = "Europe/Berlin";
 
-  users.users.dwenola = {
-    isNormalUser = true;
-    uid = 1000;
-    extraGroups = [ "video" "wheel" "networkmanager" ];
-  };
+  vuizvui.user.aszlig.profiles.managed.enable = true;
+  vuizvui.user.aszlig.profiles.managed.mainUser = "dwenola";
 
   vuizvui.user.aszlig.programs.vim.enable = true;
   vuizvui.enableGlobalNixpkgsConfig = true;

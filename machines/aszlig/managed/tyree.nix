@@ -67,9 +67,6 @@
   services.openssh.enable = true;
   services.tlp.enable = true;
 
-  services.printing.enable = true;
-  services.printing.drivers = [ pkgs.gutenprint pkgs.hplip ];
-
   services.xserver.enable = true;
   services.xserver.layout = "de";
   services.xserver.xkbOptions = "eurosign:e,caps:none";
@@ -80,11 +77,8 @@
 
   time.timeZone = "Europe/Berlin";
 
-  users.users.bla = {
-    isNormalUser = true;
-    uid = 1000;
-    extraGroups = [ "video" "wheel" "networkmanager" ];
-  };
+  vuizvui.user.aszlig.profiles.managed.enable = true;
+  vuizvui.user.aszlig.profiles.managed.mainUser = "bla";
 
   vuizvui.hardware.t100ha.enable = true;
   vuizvui.user.aszlig.programs.vim.enable = true;
