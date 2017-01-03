@@ -83,6 +83,7 @@ in {
     python
 
     w3m
+    elinks
     torbrowser
     mpv
     htop
