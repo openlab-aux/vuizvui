@@ -2,7 +2,7 @@
 
 let
    mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra ifplatform xstring doublestroke csquotes; };
-
+   urxvt = pkgs.rxvt_unicode-with-plugins.override { plugins = [ pkgs.urxvt_perls ]; };
 in {
   nixpkgs.config.allowUnfree = true;
   nixpkgs.system = "i686-linux";
@@ -34,8 +34,6 @@ in {
   nix.maxJobs = 1;
   networking.enableIntel2200BGFirmware = true;
 
-  hardware.bluetooth.enable = true;
-
   hardware.pulseaudio.enable = true;
 
   hardware.trackpoint = {
@@ -65,35 +63,22 @@ in {
     zip
     bzip2
     wget
-    vim
     neovim
     git
     stow
     acpi
-    termite
-    redshift
-    networkmanagerapplet
+    urxvt
+    xsel
     sudo
     mosh
     dmenu
+    bar-xft
     alock
-    graphicsmagick
     silver-searcher
     pavucontrol
-    hostapd
-    #pandoc
     unison
-    connect
-    lame
-    ffmpeg
 
-    aspell
-    aspellDicts.en
-    aspellDicts.de
-
-    # texlive, minted deps
     mytexlive
-    which
     pythonPackages.pygments
     python
 
@@ -101,33 +86,20 @@ in {
     torbrowser
     mpv
     htop
-    feh
-    mupdf
+    imv
     screen-message
     zathura
     youtube-dl
     pass
 
-    ghc
-    cabal-install
-    haskellPackages.stylish-haskell
-    haskellPackages.cabal2nix
-
     mutt
     notmuch
-    offlineimap
     msmtp
+    isync
     gnupg
     gpgme
-
-    # huette2016
-    nodePackages.npm
-    nodePackages.typescript
-    nodejs
-    bluez-tools
   ];
 
-  # Proudly stolen from Profpatsch
   fonts.fontconfig = {
     defaultFonts = {
       monospace = [ "Inconsolata" "Source Code Pro" "DejaVu Sans Mono" ];
@@ -136,12 +108,7 @@ in {
   };
   fonts.fonts = with pkgs; [
     corefonts
-    source-han-sans-japanese
-    source-han-sans-korean
-    source-han-sans-simplified-chinese
-    source-code-pro
     dejavu_fonts
-    ubuntu_font_family
     inconsolata
     libertine
     unifont
@@ -150,6 +117,7 @@ in {
   services.openssh.enable = true;
 
   services.tor.enable = true;
+  services.tor.controlPort = 9051;
 
   services.printing = {
     enable = true;
@@ -170,8 +138,7 @@ in {
     displayManager = {
       sessionCommands =
         ''
-        redshift -c .redshift &
-        xsetroot -solid '#0fffb0'
+            ${urxvt}/bin/urxvtd -q -f -o
         '';
     };
 
