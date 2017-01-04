@@ -32,7 +32,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    #(lib.overrideDerivation mcabber (o: { buildInputs = (o.buildInputs or []) ++ lib.singleton pkgs.gpgme; }))
     #attic
     #emacs
     #gitAndTools.git-annex
@@ -188,6 +187,7 @@
     netsniff-ng
     nitrogen
     nix-prefetch-scripts
+    nix-repl
     nixops
     nload
     nmap
