@@ -275,6 +275,7 @@
     weechat
     wget
     which
+    wipe
     wireshark
     xfsprogs
     xlibs.xev
