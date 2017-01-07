@@ -58,7 +58,7 @@ in {
     zeroconf.discovery.enable = true;
   };
 
-  hardware.bluetooth.enable = true;
+  hardware.bluetooth.enable = false;
 
   hardware.opengl.driSupport32Bit = true;
   hardware.enableAllFirmware = true;
@@ -79,8 +79,9 @@ in {
       userControlled.enable = true;
       userControlled.group = "users";
       driver = "wext";
-      extraCmdArgs = "-u -W";
-      extraConf = "ap_scan=1";
+      extraConf = ''
+        ap_scan=1
+      '';
     };
   };
 
@@ -122,6 +123,7 @@ in {
     youtube-dl
     psmisc
     bar-xft
+    unison
     # aspell
     aspell
     aspellDicts.en
@@ -146,8 +148,8 @@ in {
     notmuch
     irssi
     mytexlive
-    (chromium.override { enablePepperFlash = true; })
-    gopher
+    firefox
+    elinks
     termite
     imv
     gimp
@@ -157,6 +159,7 @@ in {
     filezilla
     screen-message
     jackline
+    w3m
 
     ## GUI
     # wm etc.
@@ -209,7 +212,6 @@ in {
   # to make Ctrl-Shift-t work in termite
   environment.etc."vte.sh" = { source = "${pkgs.gnome3.vte}/etc/profile.d/vte.sh"; };
 
-  # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
   services.tor = {
@@ -217,7 +219,6 @@ in {
     controlPort = 9051;
   };
 
-  # Enable CUPS to print documents.
   services.printing = {
     enable = true;
     drivers = [ pkgs.gutenprint pkgs.hplip ];
