@@ -104,7 +104,8 @@ in {
   fonts.fontconfig = {
     defaultFonts = {
       monospace = [ "Inconsolata" "Source Code Pro" "DejaVu Sans Mono" ];
-      sansSerif = [ "Ubuntu" "Liberation Sans" "DejaVu Sans" ];
+      sansSerif = [ "DejaVu Sans" ];
+      serif = [ "Vollkorn" ];
     };
   };
   fonts.fonts = with pkgs; [
@@ -113,6 +114,7 @@ in {
     inconsolata
     libertine
     unifont
+    google-fonts
   ];
 
   services.openssh.enable = true;
