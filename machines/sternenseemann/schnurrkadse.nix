@@ -32,6 +32,13 @@ in {
     ];
 
   nix.maxJobs = 1;
+  nix.binaryCaches = [
+    "https://headcounter.org/hydra/"
+  ];
+  nix.binaryCachePublicKeys = [
+    "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
+  ];
+
   networking.enableIntel2200BGFirmware = true;
 
   hardware.pulseaudio.enable = true;
