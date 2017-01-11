@@ -27,6 +27,7 @@
   powerManagement.enable = false;
 
   networking.hostName = "schaf";
+  networking.dhcpcd.allowInterfaces = [ "eth0" ];
 
   time.timeZone = "Europe/Berlin";
 
@@ -64,8 +65,15 @@
     sudo
     git
     dtach
-    speedtest-cli
+    cryptsetup
   ];
+
+  virtualisation.lxc = {
+    enable = true;
+    usernetConfig = ''
+      lukas veth lxcbr0 10
+    '';
+  };
 
   services.tor.enable = true;
   services.tor.extraConfig = ''
