@@ -68,6 +68,7 @@
     cryptsetup
   ];
 
+  security.apparmor.enable = true;
   virtualisation.lxc = {
     enable = true;
     usernetConfig = ''
