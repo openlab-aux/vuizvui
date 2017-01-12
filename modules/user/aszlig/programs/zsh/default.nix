@@ -4,10 +4,22 @@ with lib;
 
 let
   cfg = config.vuizvui.user.aszlig.programs.zsh;
+  inherit (cfg) machineColor;
 
 in {
   options.vuizvui.user.aszlig.programs.zsh = {
     enable = mkEnableOption "zsh";
+
+    machineColor = mkOption {
+      type = types.enum [
+        "black" "red" "green" "yellow" "blue" "magenta" "cyan" "white"
+      ];
+      default = "red";
+      example = "green";
+      description = ''
+        The color used for coloring the machine name in the prompt.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -107,7 +119,7 @@ in {
       autoload -Uz prompt_special_chars
 
       () {
-          local p_machine='%(!..%B%F{red}%n%b%F{blue}@)%b%F{red}%m'
+          local p_machine='%(!..%B%F{red}%n%b%F{blue}@)%b%F{${machineColor}}%m'
           local p_path='%B%F{blue}[%F{cyan}%~%B%F{blue}]'
           local p_exitcode='%F{green}%?%(!.%F{cyan}>.%b%F{green}>)%b%f '
           PROMPT="$p_machine$p_path$p_exitcode"

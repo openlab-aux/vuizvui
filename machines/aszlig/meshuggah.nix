@@ -2,6 +2,7 @@
 
 {
   vuizvui.user.aszlig.profiles.base.enable = true;
+  vuizvui.user.aszlig.programs.zsh.machineColor = "cyan";
 
   boot.initrd.availableKernelModules = [ "sdhci_acpi" ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
