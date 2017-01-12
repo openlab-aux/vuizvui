@@ -6,6 +6,7 @@ with import ../lib;
     mmrnmhrm  = callMachine ./aszlig/mmrnmhrm.nix {};
     arilou    = callMachine ./aszlig/arilou.nix {};
     kzerza    = callMachine ./aszlig/kzerza.nix {};
+    meshuggah = callMachine ./aszlig/meshuggah.nix {};
     tishtushi = callMachine ./aszlig/tishtushi.nix {};
     managed = {
       brawndo = callMachine ./aszlig/managed/brawndo.nix {};
