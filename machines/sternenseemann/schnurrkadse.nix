@@ -14,22 +14,17 @@ in {
   boot.initrd.luks.devices =
     [ { name = "schnurrkadse";
         device = "/dev/disk/by-uuid/544529b8-81cb-4e8e-9b6b-44f828ea2a7b";
-        preLVM = true;
-    } ];
+        preLVM = true; } ];
 
   fileSystems."/" =
     { device = "/dev/mapper/schnurrkadse-root";
-      fsType = "btrfs";
-    };
+      fsType = "btrfs"; };
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/e42bd75d-627d-4469-90cb-282dca7fdd4f";
-      fsType = "ext4";
-    };
+      fsType = "ext4"; };
 
-  swapDevices =
-    [ { device = "/dev/mapper/schnurrkadse-swap"; }
-    ];
+  swapDevices = [ { device = "/dev/mapper/schnurrkadse-swap"; } ];
 
   nix.maxJobs = 1;
   nix.binaryCaches = [
@@ -38,8 +33,6 @@ in {
   nix.binaryCachePublicKeys = [
     "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
   ];
-
-  networking.enableIntel2200BGFirmware = true;
 
   hardware.pulseaudio.enable = true;
 
@@ -55,7 +48,18 @@ in {
   boot.loader.grub.device = "/dev/sda";
 
   networking.hostName = "schnurrkadse";
-  networking.networkmanager.enable = true;
+  networking.enableIntel2200BGFirmware = true;
+  networking.supplicant = {
+    wlp4s0 = {
+      configFile.path = "/etc/wpa_supplicant.conf";
+      userControlled.enable = true;
+      userControlled.group = "users";
+      driver = "wext";
+      extraConf = ''
+        ap_scan=1
+      '';
+    };
+  };
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
@@ -99,6 +103,7 @@ in {
     zathura
     youtube-dl
     pass
+    gobby5
 
     mutt
     notmuch
@@ -169,7 +174,6 @@ in {
     extraGroups = [ "audio" "wheel" "networkmanager" "uucp" ];
   };
 
-  environment.etc."vte.sh" = { source = "${pkgs.gnome3.vte}/etc/profile.d/vte.sh"; };
   programs.ssh.startAgent = false;
 
   system.stateVersion = "unstable";
