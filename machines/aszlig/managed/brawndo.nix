@@ -100,7 +100,7 @@ in {
       synaptics.enable = true;
       synaptics.twoFingerScroll = true;
 
-      displayManager.kdm.enable = true;
+      displayManager.sddm.enable = true;
       desktopManager.kde5.enable = true;
     };
   };
