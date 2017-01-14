@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra wrapfig; };
+   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra wrapfig libertine; };
    mympv = pkgs.mpv.override { scripts = [ pkgs.mpvScripts.convert ]; };
 in {
   nixpkgs.config = {
@@ -56,6 +56,7 @@ in {
     support32Bit = true;
     package = pkgs.pulseaudioFull;
     zeroconf.discovery.enable = true;
+    daemon.config.flat-volumes = "no";
   };
 
   hardware.bluetooth.enable = false;
