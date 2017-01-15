@@ -186,7 +186,6 @@ in {
 
     ## games
     steam
-    sauerbraten
   ];
 
   fonts.fontconfig = {
