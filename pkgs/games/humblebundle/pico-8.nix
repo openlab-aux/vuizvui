@@ -1,4 +1,5 @@
-{ stdenv, fetchHumbleBundle, SDL2, unzip, xorg}:
+{ stdenv, fetchHumbleBundle, SDL2, unzip, xorg, libudev, alsaLib, dbus
+, libpulseaudio, libdrm, libvorbis, json_c }:
 
 stdenv.mkDerivation rec {
   name = "pico-8-${version}";
@@ -12,8 +13,8 @@ stdenv.mkDerivation rec {
       "i686-linux"   = "32-bit";
     }.${stdenv.system};
     md5 = {
-      "x86_64-linux" = "3c280c31f53443a4bc7f32647cfdc8f6";
-      "i686-linux"   = "54c22267748812952f3a0f6363fedc70";
+      "x86_64-linux" = "d6bb4bcae76aba431d31a344da798553";
+      "i686-linux"   = "377eb626672e3184ea7bb459bb7183a0";
     }.${stdenv.system};
   };
 
@@ -25,7 +26,9 @@ stdenv.mkDerivation rec {
 
   buildPhase = let
     rpath = stdenv.lib.makeLibraryPath [
-      stdenv.cc.cc SDL2 xorg.libXxf86vm
+      stdenv.cc.cc SDL2 xorg.libXxf86vm xorg.libXcursor xorg.libXi
+      xorg.libXrandr libudev alsaLib dbus
+      libpulseaudio libdrm libvorbis json_c
     ];
   in ''
     patchelf \
