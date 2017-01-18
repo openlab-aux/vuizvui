@@ -50,7 +50,7 @@ in {
   networking.hostName = "schnurrkadse";
   networking.enableIntel2200BGFirmware = true;
   networking.supplicant = {
-    wlp4s0 = {
+    wlp4s2 = {
       configFile.path = "/etc/wpa_supplicant.conf";
       userControlled.enable = true;
       userControlled.group = "users";
