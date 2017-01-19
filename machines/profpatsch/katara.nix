@@ -102,13 +102,15 @@ in {
       ];
       hp = haskellPackages;
       programmingTools = [
-        cabal2nix            # convert cabal files to nixexprs
-        cabal-install        # haskell project management
-        # myPkgs.fast-init     # fast-init of haskell projects
-        gitAndTools.git-annex     # version controlled binary file storage
-        httpie               # nice http CLI
-        # mercurial          # the other version control system
-        telnet               # tcp debugging
+        cabal2nix                    # convert cabal files to nixexprs
+        cabal-install                # haskell project management
+        # myPkgs.fast-init             # fast-init of haskell projects
+        gitAndTools.git-annex        # version controlled binary file storage
+        httpie                       # nice http CLI
+        # jid                          # interactive/incremental JSON digger
+        # mercurial                    # the other version control system
+        telnet                       # tcp debugging
+        pkgs.vuizvui.profpatsch.warpspeed # trivial http file server
       ];
       documentation = [
         # mustache-spec NOT IN 16.09
