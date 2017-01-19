@@ -17,6 +17,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = [ pkgs.simple-scan ];
+
     # Printing for the most common printers among the managed machines.
     services.printing.enable = true;
     services.printing.drivers = [
