@@ -4567,7 +4567,7 @@ index cdcced9f32b6..a95ae141e3a6 100644
  	if (ret_val) {
  		dev_err(&pdev->dev,
 diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 56056ed7fcfd..e792f9849f98 100644
+index 16c94c45ce50..e792f9849f98 100644
 --- a/sound/soc/intel/boards/cht_bsw_rt5645.c
 +++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
 @@ -23,7 +23,11 @@
@@ -4592,11 +4592,10 @@ index 56056ed7fcfd..e792f9849f98 100644
  
  struct cht_acpi_card {
  	char *codec_id;
-@@ -44,15 +49,37 @@ struct cht_acpi_card {
- struct cht_mc_private {
+@@ -45,15 +50,36 @@ struct cht_mc_private {
  	struct snd_soc_jack jack;
  	struct cht_acpi_card *acpi_card;
-+	char codec_name[16];
+ 	char codec_name[16];
 +	struct clk *mclk;
  };
  
@@ -4632,7 +4631,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  			return rtd->codec_dai;
  	}
  	return NULL;
-@@ -64,6 +91,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+@@ -65,6 +91,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
  	struct snd_soc_dapm_context *dapm = w->dapm;
  	struct snd_soc_card *card = dapm->card;
  	struct snd_soc_dai *codec_dai;
@@ -4640,7 +4639,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  	int ret;
  
  	codec_dai = cht_get_codec_dai(card);
-@@ -72,19 +100,30 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+@@ -73,19 +100,30 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
  		return -EIO;
  	}
  
@@ -4683,7 +4682,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  	}
  
  	return 0;
-@@ -96,7 +135,7 @@ static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
+@@ -97,7 +135,7 @@ static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
  	SND_SOC_DAPM_MIC("Int Mic", NULL),
  	SND_SOC_DAPM_SPK("Ext Spk", NULL),
  	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
@@ -4692,7 +4691,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  };
  
  static const struct snd_soc_dapm_route cht_rt5645_audio_map[] = {
-@@ -108,12 +147,6 @@ static const struct snd_soc_dapm_route cht_rt5645_audio_map[] = {
+@@ -109,12 +147,6 @@ static const struct snd_soc_dapm_route cht_rt5645_audio_map[] = {
  	{"Headphone", NULL, "HPOR"},
  	{"Ext Spk", NULL, "SPOL"},
  	{"Ext Spk", NULL, "SPOR"},
@@ -4705,7 +4704,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  	{"Headphone", NULL, "Platform Clock"},
  	{"Headset Mic", NULL, "Platform Clock"},
  	{"Int Mic", NULL, "Platform Clock"},
-@@ -129,16 +162,42 @@ static const struct snd_soc_dapm_route cht_rt5650_audio_map[] = {
+@@ -130,16 +162,42 @@ static const struct snd_soc_dapm_route cht_rt5650_audio_map[] = {
  	{"Headphone", NULL, "HPOR"},
  	{"Ext Spk", NULL, "SPOL"},
  	{"Ext Spk", NULL, "SPOR"},
@@ -4752,7 +4751,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  };
  
  static const struct snd_kcontrol_new cht_mc_controls[] = {
-@@ -184,11 +243,25 @@ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
+@@ -185,11 +243,25 @@ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
@@ -4778,7 +4777,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  	struct snd_soc_dai *codec_dai = runtime->codec_dai;
  	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
  
-@@ -200,6 +273,26 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+@@ -201,6 +273,26 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
  				RT5645_AD_STEREO_FILTER,
  				RT5645_CLK_SEL_I2S1_ASRC);
  
@@ -4805,7 +4804,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
  	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
  	if (ret < 0) {
-@@ -224,12 +317,33 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+@@ -225,12 +317,33 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
  
  	rt5645_set_jack_detect(codec, &ctx->jack, &ctx->jack, &ctx->jack);
  
@@ -4839,7 +4838,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  	struct snd_interval *rate = hw_param_interval(params,
  			SNDRV_PCM_HW_PARAM_RATE);
  	struct snd_interval *channels = hw_param_interval(params,
-@@ -239,8 +353,39 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+@@ -240,8 +353,39 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
  	rate->min = rate->max = 48000;
  	channels->min = channels->max = 2;
  
@@ -4881,7 +4880,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  	return 0;
  }
  
-@@ -343,10 +488,31 @@ static struct snd_soc_card snd_soc_card_chtrt5650 = {
+@@ -344,10 +488,31 @@ static struct snd_soc_card snd_soc_card_chtrt5650 = {
  static struct cht_acpi_card snd_soc_cards[] = {
  	{"10EC5640", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
  	{"10EC5645", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
@@ -4914,11 +4913,7 @@ index 56056ed7fcfd..e792f9849f98 100644
  
  static int snd_cht_mc_probe(struct platform_device *pdev)
  {
-@@ -354,41 +520,147 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	int i;
- 	struct cht_mc_private *drv;
- 	struct snd_soc_card *card = snd_soc_cards[0].soc_card;
--	char codec_name[16];
+@@ -358,22 +523,33 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
  	struct sst_acpi_mach *mach;
  	const char *i2c_name = NULL;
  	int dai_index = 0;
@@ -4951,17 +4946,10 @@ index 56056ed7fcfd..e792f9849f98 100644
 +
  	card->dev = &pdev->dev;
 -	mach = card->dev->platform_data;
--	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
-+	sprintf(drv->codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
+ 	sprintf(drv->codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
  
  	/* set correct codec name */
- 	for (i = 0; i < ARRAY_SIZE(cht_dailink); i++)
- 		if (!strcmp(card->dai_link[i].codec_name, "i2c-10EC5645:00")) {
--			card->dai_link[i].codec_name = kstrdup(codec_name, GFP_KERNEL);
-+			card->dai_link[i].codec_name = drv->codec_name;
- 			dai_index = i;
- 		}
- 
+@@ -386,9 +562,105 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
  	/* fixup codec name based on HID */
  	i2c_name = sst_acpi_find_name_from_hid(mach->id);
  	if (i2c_name != NULL) {
