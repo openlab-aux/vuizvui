@@ -56,6 +56,9 @@ let
     };
     profpatsch = pkgs.recurseIntoAttrs {
       display-infos = callPackage ./profpatsch/display-infos {};
+      warpspeed = callPackage ./profpatsch/warpspeed {
+        inherit (pkgs.haskellPackages) ghcWithPackages;
+      };
     };
     sternenseemann = pkgs.recurseIntoAttrs {
       spacecookie = pkgs.haskellPackages.callPackage ./sternenseemann/spacecookie {};
