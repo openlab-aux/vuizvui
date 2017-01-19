@@ -8,7 +8,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   environment.systemPackages = with pkgs; [
-    cdparanoia chromium figlet gajim gimp htop inkscape kde5.gwenview
+    calibre cdparanoia chromium figlet gajim gimp htop inkscape kde5.gwenview
     kde5.okular krita libreoffice mosh mpv pciutils thunderbird vlc
     vuizvui.tomahawk wget wine youtubeDL unfreeAndNonDistributablePkgs.skype
   ];
