@@ -27,10 +27,10 @@ index 8405b5a367d7..7e3545f65257 100644
  	MIPI_SEQ_BACKLIGHT_OFF,		/* sequence block v2+ */
  	MIPI_SEQ_TEAR_ON,		/* sequence block v2+ */
 diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
-index 3cb70d73239b..0ca7a684267c 100644
+index c9e83f39ec0a..6a6ae51996d0 100644
 --- a/drivers/gpu/drm/i915/intel_display.c
 +++ b/drivers/gpu/drm/i915/intel_display.c
-@@ -13775,6 +13775,13 @@ static void update_scanline_offset(struct intel_crtc *crtc)
+@@ -13764,6 +13764,13 @@ static void update_scanline_offset(struct intel_crtc *crtc)
  	 * type. For DP ports it behaves like most other platforms, but on HDMI
  	 * there's an extra 1 line difference. So we need to add two instead of
  	 * one to the value.
@@ -407,7 +407,7 @@ index 5967ea6d6045..548649158abd 100644
  int intel_compute_dsi_pll(struct intel_encoder *encoder,
  			  struct intel_crtc_state *config);
 diff --git a/drivers/gpu/drm/i915/intel_dsi_panel_vbt.c b/drivers/gpu/drm/i915/intel_dsi_panel_vbt.c
-index cd154ce6b6c1..a4e3c642b39a 100644
+index 34601574fc6e..a4e3c642b39a 100644
 --- a/drivers/gpu/drm/i915/intel_dsi_panel_vbt.c
 +++ b/drivers/gpu/drm/i915/intel_dsi_panel_vbt.c
 @@ -189,6 +189,8 @@ static const u8 *mipi_exec_send_packet(struct intel_dsi *intel_dsi,
@@ -419,17 +419,7 @@ index cd154ce6b6c1..a4e3c642b39a 100644
  out:
  	data += len;
  
-@@ -296,7 +298,8 @@ static void chv_exec_gpio(struct drm_i915_private *dev_priv,
- 	mutex_lock(&dev_priv->sb_lock);
- 	vlv_iosf_sb_write(dev_priv, port, cfg1, 0);
- 	vlv_iosf_sb_write(dev_priv, port, cfg0,
--			  CHV_GPIO_GPIOCFG_GPO | CHV_GPIO_GPIOTXSTATE(value));
-+			  CHV_GPIO_GPIOEN | CHV_GPIO_GPIOCFG_GPO |
-+			  CHV_GPIO_GPIOTXSTATE(value));
- 	mutex_unlock(&dev_priv->sb_lock);
- }
- 
-@@ -352,11 +355,11 @@ static const fn_mipi_elem_exec exec_elem[] = {
+@@ -353,11 +355,11 @@ static const fn_mipi_elem_exec exec_elem[] = {
   */
  
  static const char * const seq_name[] = {
@@ -443,7 +433,7 @@ index cd154ce6b6c1..a4e3c642b39a 100644
  	[MIPI_SEQ_BACKLIGHT_ON] = "MIPI_SEQ_BACKLIGHT_ON",
  	[MIPI_SEQ_BACKLIGHT_OFF] = "MIPI_SEQ_BACKLIGHT_OFF",
  	[MIPI_SEQ_TEAR_ON] = "MIPI_SEQ_TEAR_ON",
-@@ -373,10 +376,9 @@ static const char *sequence_name(enum mipi_seq seq_id)
+@@ -374,10 +376,9 @@ static const char *sequence_name(enum mipi_seq seq_id)
  		return "(unknown)";
  }
  
@@ -456,7 +446,7 @@ index cd154ce6b6c1..a4e3c642b39a 100644
  	struct drm_i915_private *dev_priv = to_i915(intel_dsi->base.base.dev);
  	const u8 *data;
  	fn_mipi_elem_exec mipi_elem_exec;
-@@ -435,35 +437,6 @@ static void generic_exec_sequence(struct drm_panel *panel, enum mipi_seq seq_id)
+@@ -436,35 +437,6 @@ static void generic_exec_sequence(struct drm_panel *panel, enum mipi_seq seq_id)
  	}
  }
  
@@ -492,7 +482,7 @@ index cd154ce6b6c1..a4e3c642b39a 100644
  static int vbt_panel_get_modes(struct drm_panel *panel)
  {
  	struct vbt_panel *vbt_panel = to_vbt_panel(panel);
-@@ -487,10 +460,6 @@ static int vbt_panel_get_modes(struct drm_panel *panel)
+@@ -488,10 +460,6 @@ static int vbt_panel_get_modes(struct drm_panel *panel)
  }
  
  static const struct drm_panel_funcs vbt_panel_funcs = {
@@ -626,30 +616,6 @@ index be4b4d546fd9..5aac10c3239f 100644
  		}
  	} else if (IS_GEN4(dev_priv)) {
  		panel->backlight.setup = i965_setup_backlight;
-diff --git a/drivers/gpu/drm/i915/intel_runtime_pm.c b/drivers/gpu/drm/i915/intel_runtime_pm.c
-index a38c2fefe85a..23ed3f5972fa 100644
---- a/drivers/gpu/drm/i915/intel_runtime_pm.c
-+++ b/drivers/gpu/drm/i915/intel_runtime_pm.c
-@@ -1065,7 +1065,18 @@ static bool vlv_power_well_enabled(struct drm_i915_private *dev_priv,
- 
- static void vlv_init_display_clock_gating(struct drm_i915_private *dev_priv)
- {
--	I915_WRITE(DSPCLK_GATE_D, VRHUNIT_CLOCK_GATE_DISABLE);
-+	u32 val;
-+
-+	/*
-+	 * On driver load, a pipe may be active and driving a DSI display.
-+	 * Preserve DPOUNIT_CLOCK_GATE_DISABLE to avoid the pipe getting stuck
-+	 * (and never recovering) in this case. intel_dsi_post_disable() will
-+	 * clear it when we turn off the display.
-+	 */
-+	val = I915_READ(DSPCLK_GATE_D);
-+	val &= DPOUNIT_CLOCK_GATE_DISABLE;
-+	val |= VRHUNIT_CLOCK_GATE_DISABLE;
-+	I915_WRITE(DSPCLK_GATE_D, val);
- 
- 	/*
- 	 * Disable trickle feed and enable pnd deadline calculation
 diff --git a/drivers/gpu/drm/i915/intel_sprite.c b/drivers/gpu/drm/i915/intel_sprite.c
 index dbed12c484c9..a2f9a4671193 100644
 --- a/drivers/gpu/drm/i915/intel_sprite.c
