@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra ifplatform xstring doublestroke csquotes; };
+   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra ifplatform xstring doublestroke csquotes libertine; };
    urxvt = pkgs.rxvt_unicode-with-plugins.override { plugins = [ pkgs.urxvt_perls ]; };
 in {
   nixpkgs.config.allowUnfree = true;
@@ -94,9 +94,9 @@ in {
     pythonPackages.pygments
     python
 
-    w3m
     elinks
     torbrowser
+    chromium
     mpv
     htop
     imv
@@ -104,7 +104,9 @@ in {
     zathura
     youtube-dl
     pass
-    gobby5
+    aspell
+    aspellDicts.de
+    aspellDicts.en
 
     mutt
     notmuch
@@ -112,6 +114,7 @@ in {
     isync
     gnupg
     gpgme
+    w3m
   ];
 
   fonts.fontconfig = {
