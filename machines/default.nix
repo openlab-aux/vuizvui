@@ -19,6 +19,7 @@ with import ../lib;
   };
   profpatsch = {
     katara = callMachine ./profpatsch/katara.nix {};
+    haku   = callMachine ./profpatsch/haku.nix {};
   };
   misc = {
     mailserver = callMachine ./misc/mailserver.nix {};
