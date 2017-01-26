@@ -70,6 +70,7 @@ in {
     ###########
     # Packages
 
+    environment.extraOutputsToInstall = [ "devdoc" ];
     environment.systemPackages = with pkgs;
     let
       systemPkgs =
