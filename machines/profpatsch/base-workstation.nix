@@ -8,6 +8,10 @@ let
 
 in {
 
+  imports = [
+    ./base.nix
+  ];
+
   config = {
 
     boot.loader = {
@@ -29,7 +33,6 @@ in {
 
     programs.ssh.startAgent = false;
 
-
     ###########
     # Packages
 
@@ -40,27 +43,18 @@ in {
       # of utmost necessity for me to function
       basePkgs = [
         silver-searcher   # file content searcher, > ack > grep
-        curl              # transfer data to/from a URL
         dos2unix          # text file conversion
-        file              # file information
-        git               # version control system
-        htop              # top replacement
         manpages          # system manpages (not included by default)
         mkpasswd          # UNIX password creator
-        nmap              # stats about clients in the network
-        rsync             # file syncing tool
         smartmontools     # check disk state
         stow              # dotfile management
-        tmux              # detachable terminal multiplexer
         traceroute        # trace ip routes
-        wget              # the other URL file fetcher
         wirelesstools     # iwlist (wifi scan)
-        myPkgs.vim        # slight improvement over vi
       ];
     in basePkgs;
 
     # friendly user shell
-    programs.fish.enable = true;
+   programs.fish.enable = true;
 
     ###########
     # Services
