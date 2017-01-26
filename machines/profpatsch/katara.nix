@@ -7,7 +7,7 @@ let
 in {
 
   imports = [
-    ./base.nix
+    ./base-workstation.nix
   ];
 
   config = rec {
