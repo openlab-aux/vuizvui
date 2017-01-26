@@ -103,7 +103,6 @@ in {
       hp = haskellPackages;
       programmingTools = [
         cabal2nix                    # convert cabal files to nixexprs
-        cabal-install                # haskell project management
         # myPkgs.fast-init             # fast-init of haskell projects
         gitAndTools.git-annex        # version controlled binary file storage
         httpie                       # nice http CLI
@@ -138,6 +137,7 @@ in {
         myPkgs.mpv           # you are my sun and my stars. and you play my stuff.
         newsbeuter           # RSS/Atom feed reader
         pass                 # standard unix password manager
+        picard               # jean-luc, music tagger
         poppler_utils        # pdfto*
         ranger               # CLI file browser
         remind               # calender & reminder program
