@@ -108,6 +108,7 @@ in {
     dmenu
     mosh
     gnupg
+    signing-party
     pinentry
     gpgme
     sudo
