@@ -20,11 +20,12 @@ in
       listenAddresses = [ { addr = "0.0.0.0"; port = sshPort; } ];
     };
 
-    firewall = {
+    networking.firewall = {
       enable = true;
       allowPing = true;
       allowedTCPPorts = [ sshPort ];
     };
 
-
   };
+
+}
