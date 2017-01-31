@@ -259,7 +259,7 @@
     valgrind
     vanilla-dmz
     vim_configurable
-    #vimiv
+    vimiv
     virt-viewer
     virtinst
     virtmanager
