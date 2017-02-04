@@ -73,15 +73,15 @@ in {
     let
       systemPkgs =
       [
-        atool             # archive tools
-        gnupg gnupg1compat # PGP encryption
-        imagemagick       # image conversion
-        pkgs.vuizvui.jmtpfs     # MTP fuse
-        mosh              # ssh with stable connections
-        nfs-utils         # the filesystem of the future for 20 years
-        tarsnap           # encrypting online backup tool
+        atool               # archive tools
+        gnupg gnupg1compat  # PGP encryption
+        imagemagick         # image conversion
+        pkgs.vuizvui.jmtpfs # MTP fuse
+        mosh                # ssh with stable connections
+        nfs-utils           # the filesystem of the future for 20 years
+        tarsnap             # encrypting online backup tool
         # TODO move into atool deps
-        unzip             # extract zip archives
+        unzip               # extract zip archives
         wpa_supplicant_gui  # configure wireless connections
       ];
       xPkgs = [
