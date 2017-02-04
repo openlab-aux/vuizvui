@@ -20,9 +20,7 @@ in {
     };
 
     networking = {
-      wireless.enable = false;
       firewall.enable = false;
-      networkmanager.enable = true;
     };
 
     i18n = {

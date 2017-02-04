@@ -54,18 +54,16 @@ in {
     ##########
     # Network
 
+    networking.useNetworkd = true;
+
     networking.hostName = "katara";
-
-    networking.networkmanager.basePackages =
-      with pkgs; {
-        # the openssl backend doesn’t like the protocols of my university
-        networkmanager_openconnect =
-          pkgs.networkmanager_openconnect.override { openconnect = pkgs.openconnect_gnutls; };
-        inherit networkmanager modemmanager wpa_supplicant
-                networkmanager_openvpn networkmanager_vpnc
-                networkmanager_pptp networkmanager_l2tp;
+    networking.supplicant.wlp3s0 = {
+      configFile = {
+        path = "/var/wifi-networks";
+        writable = true;
+      };
+      userControlled.enable = true;
     };
-
 
     ###########
     # Packages
@@ -84,6 +82,7 @@ in {
         tarsnap           # encrypting online backup tool
         # TODO move into atool deps
         unzip             # extract zip archives
+        wpa_supplicant_gui  # configure wireless connections
       ];
       xPkgs = [
         dmenu             # simple UI menu builder
@@ -99,7 +98,6 @@ in {
         # TODO: get themes to work. See notes.org.
         gnome3.gnome_themes_standard
         pavucontrol
-        networkmanagerapplet
       ];
       hp = haskellPackages;
       programmingTools = [
