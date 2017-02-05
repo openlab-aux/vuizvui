@@ -8,7 +8,8 @@
   ./hardware/thinkpad.nix
   ./programs/gnupg
   ./programs/fish/fasd.nix
-  ./services/multipath-vpn.nix
+  # broken
+  # ./services/multipath-vpn.nix
   ./services/postfix
   ./services/starbound.nix
   ./system/iso.nix
