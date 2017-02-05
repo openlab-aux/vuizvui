@@ -1,4 +1,4 @@
-{ lib, fetchFromGitHub, writeScriptBin, curl
+{ lib, fetchFromGitHub, writeScriptBin, curl, bash, gawk
 , haskellPackages, mpg321 }:
 
 let
@@ -13,7 +13,7 @@ let
  jingle = "${repo}/stackenblocken_jingle.mp3";
 
  script = ''
-    #!/usr/bin/env bash
+    #!${lib.getBin bash}/bin/bash
     percent=10
     no_stackenblocken="no STACKENBLOCKEN today"
     tmpd=$(mktemp -d)
@@ -24,7 +24,7 @@ let
     trap "kill 0" EXIT
 
     function icsfile {
-      awk -v date=''${1:-nodate} '
+      ${lib.getBin gawk}/bin/awk -v date=''${1:-nodate} '
         /BEGIN:VEVENT/ { cache = 1; }
         /DTSTART:/ {
           if( index( $0, date ) )
@@ -45,7 +45,7 @@ let
 
     function check_events {
       ${lib.getBin curl}/bin/curl -s https://openlab-augsburg.de/veranstaltungen/events.ics \
-        | icsfile `date +%Y%m%d` \
+        | icsfile `date --utc +%Y%m%d` \
         > "$tmpd/events-today"
 
       # filter out events that have the no-stackenblocken tag
