@@ -54,8 +54,6 @@ in {
     ##########
     # Network
 
-    networking.useNetworkd = true;
-
     networking.hostName = "katara";
     networking.supplicant.wlp3s0 = {
       configFile = {
