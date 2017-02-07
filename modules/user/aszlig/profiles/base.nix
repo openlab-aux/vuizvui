@@ -87,9 +87,12 @@ in {
           src = pkgs.fetchFromGitHub {
             owner = "edolstra";
             repo = "nix-repl";
-            rev = "e37bca136eb58cc156f88cc8aa8e7bf47ed31d42";
-            sha256 = "1myqffvhklqvab3plcy5xmg51fdfncj2wibchxw80pb13wq21r71";
+            rev = "0e49f941205769852846cb8afa228831cf6ae363";
+            sha256 = "0zsxkxypnm8zzzslvcdqips7glbxw1riq9mxn9w23kayl8d1mfpx";
           };
+          postPatch = (drv.postPatch or "") + ''
+            sed -i -e 's/pid\.wait(true)/pid.wait()/g' nix-repl.cc
+          '';
         });
         uqm = pkgs.uqm.override {
           use3DOVideos = true;
