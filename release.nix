@@ -69,8 +69,19 @@ let
 in with pkgsUpstream.lib; with builtins; {
 
   machines = let
-    getBuild = const (getAttr "build");
-  in mapAttrsRecursiveCond (m: !(m ? eval)) getBuild allMachines;
+    # We need to expose all the real builds within vuizvui.lazyPackages to make
+    # sure they don't get garbage collected on the Hydra instance.
+    wrapLazy = machine: pkgsUpstream.runCommand machine.build.name {
+      fakeRuntimeDeps = machine.eval.config.vuizvui.lazyPackages;
+      product = machine.build;
+    } ''
+      mkdir -p "$out/nix-support"
+      echo "$product" > "$out/nix-support/fake-runtime-dependencies"
+      for i in $fakeRuntimeDeps; do
+        echo "$i" >> "$out/nix-support/fake-runtime-dependencies"
+      done
+    '';
+  in mapAttrsRecursiveCond (m: !(m ? eval)) (const wrapLazy) allMachines;
 
   isoImages = let
     buildIso = attrs: let

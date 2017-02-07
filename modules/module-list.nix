@@ -2,6 +2,7 @@
   ./core/common.nix
   ./core/licensing.nix
   ./core/tests.nix
+  ./core/lazy-packages.nix
   ./hardware/gamecontroller.nix
   ./hardware/rtl8192cu
   ./hardware/t100ha
