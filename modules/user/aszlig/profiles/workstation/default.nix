@@ -27,6 +27,8 @@ in {
       ${pkgs.xorg.xrandr}/bin/xrandr ${concatStringsSep " " randrConf}
     '') ++ import ./packages.nix pkgs;
 
+    vuizvui.lazyPackages = import ./lazy-packages.nix pkgs;
+
     hardware = {
       pulseaudio.enable = true;
       pulseaudio.package = pkgs.pulseaudioFull;

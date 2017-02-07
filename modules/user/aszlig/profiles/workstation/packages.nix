@@ -1,9 +1,7 @@
 pkgs: with pkgs; [
-  vuizvui.aacolorize
   abook
   acpi
   apg
-  aqbanking
   ascii
   aspellDicts.de
   aspellDicts.en
@@ -13,27 +11,15 @@ pkgs: with pkgs; [
   chromiumBeta
   dash
   dos2unix
-  erlang
-  fbida
   ffmpeg
   figlet
-  firefox
   flac
   gdb
   ghostscript
-  gimp
-  gwenhywfar
   vuizvui.git-detach
   glxinfo
   gnumake
   gnupg1compat
-  gpodder
-  graphviz
-  haskellPackages.cabal2nix
-  haskellPackages.cabal-install
-  haskellPackages.hlint
-  haskellPackages.yesod-bin
-  haxe
   hexedit
   i3
   i3lock
@@ -41,31 +27,22 @@ pkgs: with pkgs; [
   jwhois
   jq
   keychain
-  lastwatch
-  libchipcard
-  lftp
   ltrace
   man-pages
   mmv
   mosh
-  mp3info
-  mpg321
   mtr
-  mumble
   mutt
   ncdu
-  neko
   netrw
   nix-prefetch-scripts
   nix-repl
   vuizvui.nixops
-  nixpkgs-lint
   nmap
   openssh
   openssl
   p7zip
   pavucontrol
-  picard
   posix_man_pages
   pulseaudioLight
   vuizvui.pvolctrl
@@ -78,10 +55,7 @@ pkgs: with pkgs; [
   radare2
   rlwrap
   rsync
-  rtmpdump
-  rtorrent
   samplicator
-  vuizvui.santander
   screen
   scrot
   socat
@@ -91,9 +65,7 @@ pkgs: with pkgs; [
   strace
   surfraw
   telnet
-  vuizvui.tomahawk
   unzip
-  uqm
   valgrind
   vbindiff
   vorbisTools
