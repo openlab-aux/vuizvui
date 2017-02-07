@@ -48,6 +48,12 @@ let
       pkgs.pythonPackages.python-axolotl
     ];
     postPatch = (o.postPatch or "") + ''
+      # Disable a few config-related and GUI tests that won't work with our
+      # patches.
+      sed -i -e '/integration\.test_roster/d' \
+             -e '/unit.test_gui_interface/d' \
+             test/runtests.py
+
       sed -i -e '/^export/i export GTK2_RC_FILES="${gtkTheme}"' \
         scripts/gajim.in
     '';
