@@ -16,7 +16,7 @@ in
 
     programs.fish = {
       interactiveShellInit = let fasd = "${pkgs.fasd}/bin/fasd"; in ''
-        function -e fish_preexec _run_fasd
+        function _run_fasd -e fish_preexec
           ${fasd} --proc (${fasd} --sanitize "$argv") > "/dev/null" 2>&1
         end
         function z --description "Jump to folder by usage frequency"
