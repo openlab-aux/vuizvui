@@ -67,5 +67,9 @@ let
   searx = pkgs.pythonPackages.searx.overrideDerivation (old: {
     patches = old.patches or [] ++ [ ./patches/searx_secret_key.patch ];
   });
+
+  # A ghci with some sane default packages in scope, & hoogle
+  saneGhci = haskellPackages.ghcWithHoogle (h: with h; [ protolude ]);
+
 in
-{ inherit taffybar sent mpv beets poezio vim fast-init xmpp-client searx; }
+{ inherit taffybar sent mpv beets poezio vim fast-init xmpp-client searx saneGhci; }

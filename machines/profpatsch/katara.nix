@@ -126,7 +126,7 @@ in {
         emacs                # pretty neat operating system i guess
         feh                  # brother of meh, displays images in a meh way, but fast
         filezilla            # FTP GUI business-ready interface framework
-        ghc                  # <s>Glorious</s>Glasgow Haskell Compiler, mostly for ghci
+        myPkgs.saneGhci      # <s>Glorious</s>Glasgow Haskell Compiler, mostly for ghci
         gimp                 # graphics
         gmpc                 # mpd client and best music player interface in the world
         inkscape             # vector graphics
