@@ -64,5 +64,8 @@ let
 
   xmpp-client = pkgs.callPackage (import ./xmpp-client.nix myLib.philip.home "irc/xmppOla.wtf") { inherit (pkgs) xmpp-client; };
 
+  searx = pkgs.pythonPackages.searx.overrideDerivation (old: {
+    patches = old.patches or [] ++ [ ./patches/searx_secret_key.patch ];
+  });
 in
-{ inherit taffybar sent mpv beets poezio vim fast-init xmpp-client; }
+{ inherit taffybar sent mpv beets poezio vim fast-init xmpp-client searx; }
