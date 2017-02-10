@@ -77,6 +77,7 @@ in {
         pkgs.vuizvui.jmtpfs # MTP fuse
         mosh                # ssh with stable connections
         nfs-utils           # the filesystem of the future for 20 years
+        sshfsFuse           # mount ssh machines
         tarsnap             # encrypting online backup tool
         # TODO move into atool deps
         unzip               # extract zip archives
@@ -129,7 +130,7 @@ in {
         gimp                 # graphics
         gmpc                 # mpd client and best music player interface in the world
         inkscape             # vector graphics
-        # libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
+        libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm             # terminal emulator, best one around
         myPkgs.mpv           # you are my sun and my stars. and you play my stuff.
         newsbeuter           # RSS/Atom feed reader
