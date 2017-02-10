@@ -59,6 +59,14 @@ let
       warpspeed = callPackage ./profpatsch/warpspeed {
         inherit (pkgs.haskellPackages) ghcWithPackages;
       };
+      droopy = pkgs.droopy.overrideDerivation (old: {
+        src = pkgs.fetchFromGitHub {
+          owner = "Profpatsch";
+          repo = "Droopy";
+          rev = "5639149113d83a258d666cbd18b90e3a4a8c7c64";
+          sha256 = "0lbf5qh5nknvvm9zmxmchc54k6j4wvx98h1dc5ijdh5xwq45k0f5";
+        };
+      });
     };
     sternenseemann = pkgs.recurseIntoAttrs {
       spacecookie = pkgs.haskellPackages.callPackage ./sternenseemann/spacecookie {};
