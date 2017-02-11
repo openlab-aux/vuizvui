@@ -54,18 +54,29 @@ let
       gitit = callPackage ./openlab/gitit { hlib = pkgs.haskell.lib; };
       stackenblocken = callPackage ./openlab/stackenblocken {};
     };
+
     profpatsch = pkgs.recurseIntoAttrs {
       display-infos = callPackage ./profpatsch/display-infos {};
       warpspeed = callPackage ./profpatsch/warpspeed {
         inherit (pkgs.haskellPackages) ghcWithPackages;
       };
+
+      # patched version of droopy, with javascript user-enhancement
       droopy = pkgs.droopy.overrideDerivation (old: {
         src = pkgs.fetchFromGitHub {
           owner = "Profpatsch";
           repo = "Droopy";
-          rev = "5639149113d83a258d666cbd18b90e3a4a8c7c64";
-          sha256 = "0lbf5qh5nknvvm9zmxmchc54k6j4wvx98h1dc5ijdh5xwq45k0f5";
+          rev = "dc63d0ac9cecd74cdff84ab9ea2a5849d6953e8a";
+          sha256 = "09sms524wrnpdkhnpv9f2qbq30s8h02ljiv934g0dvmxy8571ph7";
         };
+        installPhase = old.installPhase or "" + ''
+          mkdir -p $out/share/droopy
+          cp -r $src/static $out/share/droopy
+        '';
+        makeWrapperArgs = old.makeWrapperArgs or [] ++ [
+          "--set DROOPY_STATIC \"$out/share/droopy/static\""
+        ];
+
       });
     };
     sternenseemann = pkgs.recurseIntoAttrs {
