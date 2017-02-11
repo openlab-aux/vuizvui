@@ -1,0 +1,15 @@
+diff --git a/searx/settings.yml b/searx/settings.yml
+index 053cb44..48a542b 100644
+--- a/searx/settings.yml
++++ b/searx/settings.yml
+@@ -437,10 +437,6 @@ engines:
+     engine : scanr_structures
+     disabled : True
+ 
+-  - name : soundcloud
+-    engine : soundcloud
+-    shortcut : sc
+-
+   - name : stackoverflow
+     engine : stackoverflow
+     shortcut : st

@@ -65,7 +65,10 @@ let
   xmpp-client = pkgs.callPackage (import ./xmpp-client.nix myLib.philip.home "irc/xmppOla.wtf") { inherit (pkgs) xmpp-client; };
 
   searx = pkgs.pythonPackages.searx.overrideDerivation (old: {
-    patches = old.patches or [] ++ [ ./patches/searx_secret_key.patch ];
+    patches = old.patches or [] ++ [
+      ./patches/searx-secret-key.patch
+      ./patches/searx-rm-soundcloud.patch
+    ];
   });
 
   # A ghci with some sane default packages in scope, & hoogle
