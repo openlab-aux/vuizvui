@@ -31,11 +31,21 @@ let
     { check = config.services.cjdns.enable;
       path  = ["nixos" "cjdns"];
     }
-    { check = config.containers != {};
+    { check = config.boot.enableContainers
+           && config.containers != {};
       path  = ["nixos" "containers"];
     }
-    { check = anyAttrs (i: i.hostBridge != null) config.containers;
+    { check = config.boot.enableContainers
+           && anyAttrs (i: i.hostBridge != null) config.containers;
       path  = ["nixos" "containers-bridge"];
+    }
+    { check = config.boot.enableContainers
+           && anyAttrs (i: i.extraVeths != {}) config.containers;
+      path  = ["nixos" "containers-extra_veth"];
+    }
+    { check = config.boot.enableContainers
+           && anyAttrs (i: i.localAddress != []) config.containers;
+      path  = ["nixos" "containers-hosts"];
     }
     { check = config.boot.enableContainers;
       path  = ["nixos" "containers-imperative"];
@@ -51,8 +61,16 @@ let
       path  = ["nixos" "containers-ipv6"];
     }
     { check = config.boot.enableContainers
-           && anyAttrs (i: i.extraVeths != {}) config.containers;
-      path  = ["nixos" "containers-extra_veth"];
+           && anyAttrs (i: i.macvlans != []) config.containers;
+      path  = ["nixos" "containers-macvlans"];
+    }
+    { check = config.boot.enableContainers
+           && anyAttrs (i: i.interfaces != []) config.containers;
+      path  = ["nixos" "containers-physical_interfaces"];
+    }
+    { check = config.boot.enableContainers
+           && anyAttrs (i: i.tmpfs != []) config.containers;
+      path  = ["nixos" "containers-tmpfs"];
     }
     { check = config.services.dnscrypt-proxy.enable;
       path  = ["nixos" "dnscrypt-proxy"];
@@ -75,6 +93,9 @@ let
     { check = config.services.fleet.enable;
       path  = ["nixos" "fleet"];
     }
+    { check = config.virtualisation.openstack.glance.enable;
+      path  = ["nixos" "glance"];
+    }
     { check = config.services.xserver.desktopManager.gnome3.enable;
       path  = ["nixos" "gnome3"];
     }
@@ -92,6 +113,9 @@ let
     }
     { check = true;
       path  = ["nixos" "hibernate"];
+    }
+    { check = config.services.hound.enable;
+      path  = ["nixos" "hound"];
     }
     { check = config.services.xserver.windowManager.i3.enable;
       path  = ["nixos" "i3wm"];
@@ -143,11 +167,7 @@ let
     { check = config.services.jenkins.enable;
       path  = ["nixos" "jenkins"];
     }
-    { check = config.services.xserver.desktopManager.kde4.enable;
-      path  = ["nixos" "kde4"];
-    }
-    { check = config.services.xserver.displayManager.sddm.enable
-           || config.services.xserver.desktopManager.kde5.enable;
+    { check = config.services.xserver.desktopManager.kde5.enable;
       path  = ["nixos" "kde5"];
     }
     { check = config.i18n.consoleKeyMap          == "azerty/fr"
@@ -174,6 +194,9 @@ let
            || config.services.xserver.layout     == "de";
       path  = ["nixos" "keymap" "qwertz"];
     }
+    { check = config.virtualisation.openstack.keystone.enable;
+      path  = ["nixos" "keystone"];
+    }
     { check = with config.services.kubernetes; apiserver.enable
            || scheduler.enable || controllerManager.enable || kubelet.enable
            || proxy.enable;
@@ -183,6 +206,9 @@ let
            == pkgs.linuxPackages_latest.kernel.version;
       path  = ["nixos" "latestKernel" "login"];
     }
+    { check = config.services.leaps.enable;
+      path  = ["nixos" "leaps"];
+    }
     { check = true;
       path  = ["nixos" "login"];
     }
@@ -191,6 +217,9 @@ let
     }
     { check = true;
       path  = ["nixos" "misc"];
+    }
+    { check = config.services.mongodb.enable;
+      path  = ["nixos" "mongodb"];
     }
     { check = config.services.murmur.enable;
       path  = ["nixos" "mumble"];
@@ -209,6 +238,13 @@ let
     { check = config.networking.nat.enable
            && config.networking.firewall.enable;
       path  = ["nixos" "nat" "firewall"];
+    }
+    { check = with config.networking; let
+        isIptables = nat.enable || firewall.enable;
+        hasConntrack = firewall.connectionTrackingModules != []
+                    || firewall.autoLoadConntrackHelpers;
+      in isIptables && hasConntrack;
+      path  = ["nixos" "nat" "firewall-conntrack"];
     }
     { check = config.networking.nat.enable
            && !config.networking.firewall.enable;
@@ -259,8 +295,8 @@ let
     { check = config.services.openssh.enable;
       path  = ["nixos" "openssh"];
     }
-    { check = config.services.panamax.enable;
-      path  = ["nixos" "panamax"];
+    { check = config.security.pam.oath.enable;
+      path  = ["nixos" "pam-oath-login"];
     }
     { check = config.services.peerflix.enable;
       path  = ["nixos" "peerflix"];
@@ -287,6 +323,12 @@ let
     }
     { check = true;
       path  = ["nixos" "runInMachine"];
+    }
+    { check = config.services.samba.enable;
+      path  = ["nixos" "samba"];
+    }
+    { check = config.services.xserver.displayManager.sddm.enable;
+      path  = ["nixos" "sddm"];
     }
     { check = true;
       path  = ["nixos" "simple"];
