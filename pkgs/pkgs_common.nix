@@ -236,7 +236,6 @@
     ssdeep
     stow
     strace
-    super-user-spark
     surfraw
     taskwarrior
     telnet
