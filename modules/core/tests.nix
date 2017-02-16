@@ -149,6 +149,9 @@ let
     { check = elem "ext3" config.boot.supportedFilesystems;
       path  = ["nixos" "installer" "simple"];
     }
+    { check = config.boot.loader.systemd-boot.enable;
+      path  = ["nixos" "installer" "simpleUefiGummiboot"];
+    }
     { check = config.boot.loader.grub.fsIdentifier == "label";
       path  = ["nixos" "installer" "simpleLabels"];
     }
@@ -353,6 +356,10 @@ let
         ["nixos" "virtualbox" "simple-gui"]
         ["nixos" "virtualbox" "systemd-detect-virt"]
       ];
+    }
+    { check = config.virtualisation.virtualbox.host.enable
+           && config.virtualisation.virtualbox.headless;
+      path  = ["nixos" "virtualbox" "headless"];
     }
     { check = config.services.xserver.desktopManager.xfce.enable;
       path  = ["nixos" "xfce"];
