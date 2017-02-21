@@ -46,10 +46,6 @@
     };
   };
 
-  security = {
-    setuidPrograms = [ ];
-  };
-
   programs = {
     ssh = {
       startAgent = false;
