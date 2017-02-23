@@ -72,7 +72,7 @@ let
   });
 
   # A ghci with some sane default packages in scope, & hoogle
-  saneGhci = haskellPackages.ghcWithHoogle (h: with h; [ protolude ]);
+  saneGhci = haskellPackages.ghcWithHoogle (h: with h; [ protolude pretty-show ]);
 
 in
 { inherit taffybar sent mpv beets poezio vim fast-init xmpp-client searx saneGhci; }
