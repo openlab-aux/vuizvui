@@ -63,6 +63,17 @@ in {
       userControlled.enable = true;
     };
 
+    networking.bonds = {
+      wifiAndEthernet = {
+        interfaces = [ "wlp3s0" "enp0s25" ];
+        driverOptions = {
+          miimon = "100";
+          primary = "enp0s25";
+          mode = "active-backup";
+        };
+      };
+    };
+
     ###########
     # Packages
 
