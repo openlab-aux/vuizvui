@@ -39,6 +39,9 @@ in {
       # for Pillars of Eternity
       support32Bit = true;
     };
+    # steam
+    hardware.opengl.driSupport32Bit = true;
+
 
     # needed by some games (TODO: general module for games)
     # hardware.opengl.driSupport32Bit = true;
@@ -174,6 +177,7 @@ in {
       tmpPkgs = [
         # TODO needs user service
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
+        # on remove keep pdfjam!
         (texlive.combine { inherit (texlive) scheme-medium latexmk IEEEtran needspace; })
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
