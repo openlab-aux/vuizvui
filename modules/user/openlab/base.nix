@@ -56,10 +56,6 @@ in
     services.openssh.enable = true;
 
     networking.firewall.enable = false;
-    networking.wireless = {
-      enable = true;
-      networks."Labor 2.0".psk = "nerdhoehle2";
-    };
 
     users.mutableUsers = false;
     users.users.openlab = {

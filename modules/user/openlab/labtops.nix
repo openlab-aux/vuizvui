@@ -22,6 +22,11 @@ in
       zeroconf.discovery.enable = true;
     };
 
+    networking.wireless = {
+      enable = true;
+      networks."Labor 2.0".psk = "nerdhoehle2";
+    };
+
     # TODO: a way to modularly specify usage patterns (e.g. 3d-printing, arduino &c.)
     environment.systemPackages = with pkgs; let
       baseGUI = [
