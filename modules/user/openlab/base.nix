@@ -16,6 +16,10 @@ in
     boot.loader.grub.device = mkDefault "/dev/sda";
     boot.loader.timeout = 2;
 
+    # tmp (and nix builds) should be fast by default
+    # might make sense to disable that on machines with little RAM
+    boot.tmpOnTmpfs = mkDefault true;
+
     fileSystems."/" = mkDefault {
       device = "/dev/disk/by-label/labtop";
       fsType = "ext4";
