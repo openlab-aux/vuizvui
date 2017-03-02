@@ -1,5 +1,5 @@
 { stdenv, fetchFromGitHub, fetchurl, cmake, pkgconfig, boost, gnutls
-, libechonest, liblastfm, lucenepp, qt5, kde5, sparsehash, taglib
+, libechonest, liblastfm, lucenepp, qt5, sparsehash, taglib
 , websocketpp, ffmpeg_2, v4l_utils
 
 , enableXMPP      ? true,  libjreen     ? null

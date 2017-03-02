@@ -170,7 +170,7 @@ let
     { check = config.services.jenkins.enable;
       path  = ["nixos" "jenkins"];
     }
-    { check = config.services.xserver.desktopManager.kde5.enable;
+    { check = config.services.xserver.desktopManager.plasma5.enable;
       path  = ["nixos" "kde5"];
     }
     { check = config.i18n.consoleKeyMap          == "azerty/fr"

@@ -8,9 +8,10 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   environment.systemPackages = with pkgs; [
-    calibre cdparanoia chromium figlet gajim gimp htop inkscape kde5.gwenview
-    kde5.okular krita libreoffice mosh mpv pciutils thunderbird vlc
-    vuizvui.tomahawk wget wine youtubeDL unfreeAndNonDistributablePkgs.skype
+    calibre cdparanoia chromium figlet gajim gimp htop inkscape thunderbird
+    kdeApplications.gwenview kdeApplications.okular krita libreoffice mosh mpv
+    pciutils vlc vuizvui.tomahawk wget wine youtubeDL
+    unfreeAndNonDistributablePkgs.skype
   ];
 
   fileSystems."/boot".device = "/dev/disk/by-uuid/A0D5-269D";
@@ -71,7 +72,7 @@
   services.xserver.layout = "de";
   services.xserver.xkbOptions = "eurosign:e,caps:none";
   services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.kde5.enable = true;
+  services.xserver.desktopManager.plasma5.enable = true;
   services.xserver.desktopManager.xterm.enable = false;
   services.xserver.wacom.enable = true;
 

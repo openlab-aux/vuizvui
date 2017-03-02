@@ -63,8 +63,8 @@ in {
     gimp
     git
     htop
-    kde5.gwenview
-    kde5.okular
+    kdeApplications.gwenview
+    kdeApplications.okular
     libreoffice
     miro
     mpv
@@ -101,7 +101,7 @@ in {
       synaptics.twoFingerScroll = true;
 
       displayManager.sddm.enable = true;
-      desktopManager.kde5.enable = true;
+      desktopManager.plasma5.enable = true;
     };
   };
 
