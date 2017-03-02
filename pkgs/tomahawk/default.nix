@@ -1,6 +1,6 @@
 { stdenv, fetchFromGitHub, fetchurl, cmake, pkgconfig, boost, gnutls
-, libechonest, liblastfm, lucenepp, qt5, sparsehash, taglib
-, websocketpp, ffmpeg_2, v4l_utils
+, libechonest, liblastfm, lucenepp, kdeFrameworks, qt5, libsForQt5, sparsehash
+, taglib, websocketpp, ffmpeg_2, v4l_utils
 
 , enableXMPP      ? true,  libjreen     ? null
 , enableKDE       ? false, kdelibs      ? null
@@ -39,12 +39,6 @@ let
     cmakeFlags = (drv.cmakeFlags or []) ++ [ "-DBUILD_WITH_QT4=OFF" ];
   });
 
-  vlc = qt5.vlc.override {
-    ffmpeg = ffmpeg_2.override {
-      v4l_utils = v4l_utils.override { withQt4 = false; };
-    };
-  };
-
   jreenPatched = overrideDerivation (useQT5 libjreen) (drv: {
     postPatch = (drv.postPatch or "") + ''
       sed -i -e 's/QMetaTypeId/QMap/g' src/stanzaextension.h
@@ -67,12 +61,13 @@ in stdenv.mkDerivation rec {
     "-DLUCENEPP_LIBRARY_DIR=${lucenepp}/lib"
   ];
 
-  nativeBuildInputs = [ cmake pkgconfig ];
+  nativeBuildInputs = [ cmake pkgconfig kdeFrameworks.extra-cmake-modules ];
 
-  buildInputs = (with qt5; [
-    attica ecm qca-qt5 qtbase qtkeychain qtsvg qttools qtwebkit qtx11extras
-  ]) ++ map useQT5 [ liblastfm qt5.quazip ] ++ [
-    boost gnutls lucenepp sparsehash taglib vlc websocketpp libechonestQT5
+  buildInputs = [
+    libsForQt5.attica libsForQt5.qca-qt5 libsForQt5.qtkeychain libsForQt5.quazip
+    libsForQt5.vlc qt5.qtbase qt5.qtsvg qt5.qttools qt5.qtwebkit qt5.qtx11extras
+  ] ++ map useQT5 [ liblastfm ] ++ [
+    boost gnutls lucenepp sparsehash taglib websocketpp libechonestQT5
   ] ++ stdenv.lib.optional enableXMPP      jreenPatched
     ++ stdenv.lib.optional enableKDE       (useQT5 kdelibs)
     ++ stdenv.lib.optional enableTelepathy (useQT5 telepathy_qt);
