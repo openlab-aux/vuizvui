@@ -64,15 +64,23 @@ let
 
   xmpp-client = pkgs.callPackage (import ./xmpp-client.nix myLib.philip.home "irc/xmppOla.wtf") { inherit (pkgs) xmpp-client; };
 
-  searx = pkgs.pythonPackages.searx.overrideDerivation (old: {
-    patches = old.patches or [] ++ [
-      ./patches/searx-secret-key.patch
-      ./patches/searx-rm-soundcloud.patch
-    ];
-  });
+  pythonPackagesMod = pkgs.pythonPackages.override {
+    overrides = self: super: {
+      searx = super.searx.overrideAttrs (old: {
+        propagatedBuildInputs = old.propagatedBuildInputs ++ [ pythonPackages.pyxdg ];
+        patches = old.patches or [] ++ [
+          ./patches/searx-secret-key.patch
+          ./patches/searx-rm-soundcloud.patch
+        ];
+      });
+    };
+  };
+
 
   # A ghci with some sane default packages in scope, & hoogle
   saneGhci = haskellPackages.ghcWithHoogle (h: with h; [ protolude pretty-show ]);
 
 in
-{ inherit taffybar sent mpv beets poezio vim fast-init xmpp-client searx saneGhci; }
+{ inherit taffybar sent mpv beets poezio vim
+  fast-init xmpp-client saneGhci;
+  inherit (pythonPackagesMod) searx; }
