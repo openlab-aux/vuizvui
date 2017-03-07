@@ -1,11 +1,6 @@
 { pkgs, lib, ... }:
 
 {
-  # whitelist insecure webkitgtk
-  nixpkgs.config.permittedInsecurePackages = [
-    "webkitgtk-2.4.11"
-  ];
-
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
   nix.maxJobs = 8;
@@ -41,6 +36,10 @@
     packageOverrides = super: {
       hplip = super.hplip.override { withPlugin = true; };
     };
+    # whitelist insecure webkitgtk
+    permittedInsecurePackages = [
+      "webkitgtk-2.4.11"
+    ];
   };
 
   hardware.sane.enable = true;

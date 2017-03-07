@@ -1,11 +1,6 @@
 { config, pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 
 {
-  # whitelist insecure webkitgtk
-  nixpkgs.config.permittedInsecurePackages = [
-    "webkitgtk-2.4.11"
-  ];
-
   boot.initrd.availableKernelModules = [ "usbhid" ];
   boot.kernelModules = [ "kvm-intel" ];
 
@@ -63,6 +58,10 @@
   nixpkgs.config = {
     pulseaudio = true;
     chromium.enablePepperFlash = true;
+    # whitelist insecure webkitgtk
+    permittedInsecurePackages = [
+      "webkitgtk-2.4.11"
+    ];
   };
 
   programs.bash.enableCompletion = true;
