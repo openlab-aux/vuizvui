@@ -40,6 +40,7 @@
     #lxappearance
     #sleuthkit
     #texmacs
+    #tribler
     #zotero
     abook
     accountsservice
@@ -249,7 +250,6 @@
     transgui
     transmission_remote_gtk
     tree
-    tribler
     tty-clock
     udevil
     units
