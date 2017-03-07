@@ -1,6 +1,11 @@
 { pkgs, lib, ... }:
 
 {
+  # whitelist insecure webkitgtk
+  nixpkgs.config.permittedInsecurePackages = [
+    "webkitgtk-2.4.11"
+  ];
+
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
   nix.maxJobs = 2;

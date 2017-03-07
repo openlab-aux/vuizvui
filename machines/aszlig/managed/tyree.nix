@@ -1,6 +1,11 @@
 { config, pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 
 {
+  # whitelist insecure webkitgtk
+  nixpkgs.config.permittedInsecurePackages = [
+    "webkitgtk-2.4.11"
+  ];
+
   boot.initrd.availableKernelModules = [ "usbhid" ];
   boot.kernelModules = [ "kvm-intel" ];
 

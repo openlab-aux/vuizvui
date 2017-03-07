@@ -5,6 +5,11 @@ let
   rootUUID = "dbbd5a35-3ac0-4d5a-837d-914457de14a4";
 
 in {
+  # whitelist insecure webkitgtk
+  nixpkgs.config.permittedInsecurePackages = [
+    "webkitgtk-2.4.11"
+  ];
+
   boot = {
     initrd.availableKernelModules = [
       "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "sr_mod"
