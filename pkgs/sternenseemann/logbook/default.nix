@@ -17,4 +17,9 @@ stdenv.mkDerivation rec {
                 ];
 
   inherit (topkg) buildPhase installPhase;
+  meta = with stdenv.lib; {
+    description = "A tool for personal log files";
+    platforms = ocaml.meta.platforms;
+    license = licenses.bsd3
+  };
 }
