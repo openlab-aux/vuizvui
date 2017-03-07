@@ -81,6 +81,7 @@ let
     };
     sternenseemann = pkgs.recurseIntoAttrs {
       spacecookie = pkgs.haskellPackages.callPackage ./sternenseemann/spacecookie {};
+      logbook = pkgs.ocamlPackages_4_02.callPackage ./sternenseemann/logbook {};
     };
   };
 in pkgs // self
