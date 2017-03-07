@@ -20,6 +20,6 @@ stdenv.mkDerivation rec {
   meta = with stdenv.lib; {
     description = "A tool for personal log files";
     platforms = ocaml.meta.platforms;
-    license = licenses.bsd3
+    license = licenses.bsd3;
   };
 }
