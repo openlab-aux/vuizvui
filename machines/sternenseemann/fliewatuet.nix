@@ -196,9 +196,8 @@ in {
       sansSerif = [ "Open Sans" ];
       serif     = [ "Linux Libertine" ];
     };
-    ultimate = {
-      preset = "ultimate1";
-    };
+    ultimate.preset = "ultimate4";
+    ultimate.substitutions = "combi";
   };
 
   fonts.fonts = with pkgs; [
