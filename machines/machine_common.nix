@@ -82,7 +82,6 @@
         autohint = false;
       };
       ultimate = {
-        allowBitmaps = false;
         enable = true;
         preset = "ultimate5";
       };
