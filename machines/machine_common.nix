@@ -83,7 +83,6 @@
       };
       ultimate = {
         enable = true;
-        preset = "ultimate5";
       };
     };
     enableGhostscriptFonts = true;
