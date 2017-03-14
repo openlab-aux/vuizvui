@@ -42,6 +42,7 @@
     #texmacs
     #tribler
     #zotero
+    toxic
     abook
     accountsservice
     antiword
