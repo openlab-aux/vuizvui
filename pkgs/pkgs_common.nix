@@ -42,7 +42,6 @@
     #texmacs
     #tribler
     #zotero
-    toxic
     abook
     accountsservice
     antiword
@@ -154,6 +153,7 @@
     jfsutils
     jwhois
     keepassx
+    keepassx-community
     keepassx2
     keybase
     kpcli
@@ -247,6 +247,7 @@
     tmux
     toilet
     tomahawk
+    toxic
     transcode
     transgui
     transmission_remote_gtk
