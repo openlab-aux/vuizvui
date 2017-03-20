@@ -208,6 +208,13 @@ in {
     tewi-font
     libertine
     google-fonts
+    xorg.fontbitstream100dpi
+    xorg.fontbitstreamtype1
+    freefont_ttf
+    unifont
+    unifont_upper
+    poly
+    junicode
   ];
 
   # to make Ctrl-Shift-t work in termite
