@@ -46,30 +46,32 @@
       #${pkgs.compton}/bin/compton -f &
       ${pkgs.rofi}/bin/rofi &
       ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
-        Xft.dpi:              96
-        Xft.antialias:        true
-        Xft.hinting:          full
-        Xft.hintstyle:        hintslight
-        Xft.rgba:             rgb
-        Xft.lcdfilter:        lcddefault
-        Xft.autohint:         1
-        XTerm.termName:       xterm-256color
-        XTerm*bellIsUrgent:   true
-        XTerm*utf8:           1
-        XTerm*locale:         true
-        XTerm*utf8Title:      true
-        XTerm*utf8Fonts:      1
-        XTerm*utf8Latin1:     true
-        XTerm*dynamicColors:  true
-        XTerm*eightBitInput:  true
-        Xcursor.theme:        Vanilla-DMZ-AA
-        Xcursor.size:         22
+        Xft.dpi:                     96
+        Xft.antialias:               true
+        Xft.hinting:                 full
+        Xft.hintstyle:               hintslight
+        Xft.rgba:                    rgb
+        Xft.lcdfilter:               lcddefault
+        Xft.autohint:                1
+        Xcursor.theme:               Vanilla-DMZ-AA
+        Xcursor.size:                22
         *.charClass:33:48,35:48,37:48,43:48,45-47:48,61:48,63:48,64:48,95:48,126:48,35:48,58:48
-        XTerm*faceName:       xft:DejaVu Sans Mono for Powerline:pixelsize=11:antialias=true:hinting=true
-        XTerm*faceNameDoublesize: xft:Unifont:pixelsize=12:antialias=true:hinting=true
-        XTerm*cursorColor:    #545f65
-        *background:          #121212
-        *foreground:          #babdb6
+        *background:                 #121212
+        *foreground:                 #babdb6
+        ${lib.concatMapStrings (xterm: ''
+            ${xterm}.termName:       xterm-256color
+            ${xterm}*bellIsUrgent:   true
+            ${xterm}*utf8:           1
+            ${xterm}*locale:             true
+            ${xterm}*utf8Title:          true
+            ${xterm}*utf8Fonts:          1
+            ${xterm}*utf8Latin1:         true
+            ${xterm}*dynamicColors:      true
+            ${xterm}*eightBitInput:      true
+            ${xterm}*faceName:           xft:DejaVu Sans Mono for Powerline:pixelsize=9:antialias=true:hinting=true
+            ${xterm}*faceNameDoublesize: xft:Unifont:pixelsize=12:antialias=true:hinting=true
+            ${xterm}*cursorColor:        #545f65
+        '') [ "UXTerm" "XTerm" ]}
         ! ------------------------------------------------------------------------------
         ! ROFI Color theme & Settings
         ! ------------------------------------------------------------------------------
