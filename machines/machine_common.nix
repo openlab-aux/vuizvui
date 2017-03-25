@@ -77,10 +77,6 @@
   fonts = {
     fontconfig = {
       enable = true;
-      hinting = {
-        style = "slight";
-        autohint = false;
-      };
       ultimate = {
         enable = true;
       };
