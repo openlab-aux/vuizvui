@@ -200,8 +200,10 @@ in {
       sansSerif = [ "Open Sans" ];
       serif     = [ "Linux Libertine" ];
     };
-    ultimate.preset = "ultimate4";
-    ultimate.substitutions = "combi";
+    ultimate = {
+      enable = true;
+      substitutions = "combi";
+    };
   };
 
   fonts.fonts = with pkgs; [
