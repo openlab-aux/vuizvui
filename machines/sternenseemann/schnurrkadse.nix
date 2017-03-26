@@ -159,7 +159,7 @@ in {
     displayManager = {
       sessionCommands =
         ''
-            ${urxvt}/bin/urxvtd -q -f -o
+            ${myPkgs.urxvt}/bin/urxvtd -q -f -o
         '';
     };
 
