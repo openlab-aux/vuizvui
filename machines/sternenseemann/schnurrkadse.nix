@@ -1,8 +1,8 @@
 { config, lib, pkgs, ... }:
 
 let
-   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra ifplatform xstring doublestroke csquotes libertine; };
-   urxvt = pkgs.rxvt_unicode-with-plugins.override { plugins = [ pkgs.urxvt_perls ]; };
+  myPkgs = import ./pkgs.nix { inherit pkgs lib; };
+
 in {
   nixpkgs.config.allowUnfree = true;
   nixpkgs.system = "i686-linux";
@@ -79,7 +79,7 @@ in {
     git
     stow
     acpi
-    urxvt
+    myPkgs.urxvt
     xsel
     sudo
     mosh
@@ -90,14 +90,14 @@ in {
     pavucontrol
     unison
 
-    mytexlive
+    myPkgs.texlive
     pythonPackages.pygments
     python
 
     elinks
     torbrowser
     chromium
-    mpv
+    myPkgs.mpv
     htop
     imv
     screen-message

@@ -1,13 +1,17 @@
 { config, lib, pkgs, ... }:
 
 let
-   mytexlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra wrapfig libertine; };
-   mympv = pkgs.mpv.override { scripts = [ pkgs.mpvScripts.convert ]; };
+  myPkgs = import ./pkgs.nix { inherit pkgs lib; };
+
 in {
   nixpkgs.config = {
     allowUnfree = true;
     packageOverides = pkgs: {
       bluez = pkgs.bluez5;
+
+      "2bwm" = pkgs."2bwm".override {
+        patches = [ ./patches/2bwm-config.patch ];
+      };
     };
   };
 
@@ -127,6 +131,7 @@ in {
     psmisc
     bar-xft
     unison
+    ddate
     # aspell
     aspell
     aspellDicts.en
@@ -150,8 +155,9 @@ in {
     isync
     notmuch
     irssi
-    mytexlive
+    myPkgs.texlive
     firefox
+    chromium
     elinks
     termite
     imv
@@ -166,24 +172,22 @@ in {
 
     ## GUI
     # wm etc.
+    xdotool
     xbindkeys
     alock
     dunst
     libnotify
     xorg.xbacklight
     hicolor_icon_theme
-    networkmanagerapplet
-    xclip
     xsel
 
     ## audio / video
-    mympv
+    myPkgs.mpv
     audacity
     lame
     ffmpeg
 
     ## services
-    gutenprint
     acpi
 
     ## games
@@ -208,6 +212,7 @@ in {
     tewi-font
     libertine
     google-fonts
+    shrikhand # because not in google fonts :(
     xorg.fontbitstream100dpi
     xorg.fontbitstreamtype1
     freefont_ttf
@@ -229,7 +234,7 @@ in {
 
   services.printing = {
     enable = true;
-    drivers = [ pkgs.gutenprint pkgs.hplip ];
+    drivers = [ pkgs.gutenprint ];
   };
 
   services.tlp.enable = true;
@@ -246,10 +251,10 @@ in {
     displayManager = {
       sessionCommands =
         ''
-        redshift -c .redshift &
-        xmodmap -e "pointer = 1 25 3 4 5 6 7 8 9"
-        xbindkeys
-        cbatticon &
+        ${pkgs.redshift}/bin/redshift -c .redshift &
+        ${pkgs.xorg.xmodmap}/bin/xmodmap -e "pointer = 1 25 3 4 5 6 7 8 9"
+        ${pkgs.xbindkeys}/bin/xbindkeys
+        ${pkgs.cbatticon}/bin/cbatticon &
         '';
     };
 
