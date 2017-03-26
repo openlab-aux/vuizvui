@@ -123,7 +123,7 @@ in {
       sansSerif = [ "DejaVu Sans" ];
       serif = [ "Vollkorn" ];
     };
-    ultimate.preset = "ultimate4";
+    ultimate.enable = true;
     ultimate.substitutions = "combi";
   };
   fonts.fonts = with pkgs; [
