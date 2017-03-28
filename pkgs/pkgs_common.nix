@@ -217,6 +217,7 @@
     python2
     python3
     python34Packages.hovercraft
+    pythonPackages.jrnl
     pythonPackages.livestreamer
     pythonPackages.rainbowstream
     qemu
