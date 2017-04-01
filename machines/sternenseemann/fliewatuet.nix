@@ -6,7 +6,7 @@ let
 in {
   nixpkgs.config = {
     allowUnfree = true;
-    packageOverides = pkgs: {
+    packageOverrides = pkgs: {
       bluez = pkgs.bluez5;
 
       "2bwm" = pkgs."2bwm".override {
@@ -248,15 +248,17 @@ in {
     xkbVariant = "neo";
 
     desktopManager.xterm.enable = false;
-    windowManager.herbstluftwm.enable = true;
+    windowManager.herbstluftwm.enable = false;
+    windowManager."2bwm".enable = true;
 
     displayManager = {
       sessionCommands =
         ''
-        ${pkgs.redshift}/bin/redshift -c .redshift &
-        ${pkgs.xorg.xmodmap}/bin/xmodmap -e "pointer = 1 25 3 4 5 6 7 8 9"
-        ${pkgs.xbindkeys}/bin/xbindkeys
-        ${pkgs.cbatticon}/bin/cbatticon &
+          ${pkgs.redshift}/bin/redshift -c .redshift &
+          ${pkgs.xorg.xmodmap}/bin/xmodmap -e "pointer = 1 25 3 4 5 6 7 8 9"
+          ${pkgs.xbindkeys}/bin/xbindkeys
+          ${pkgs.cbatticon}/bin/cbatticon &
+          $HOME/bin/sternenpanel &
         '';
     };
 
@@ -277,7 +279,7 @@ in {
     shell = "/run/current-system/sw/bin/fish";
     group = "users";
     passwordFile = "/home/lukas/.config/passwd";
-    extraGroups = [ "audio" "wheel" "networkmanager" "hugetlbfs"];
+    extraGroups = [ "audio" "wheel" "networkmanager" ];
   };
 
   system.stateVersion = "unstable";

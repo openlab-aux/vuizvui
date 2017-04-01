@@ -4,7 +4,8 @@ index ce0d1d4..c2346c1 100644
 +++ b/config.h
 @@ -37,17 +37,11 @@ static const uint8_t borders[] = {3,5,5,4};
  #define LOOK_INTO "WM_NAME"
- static const char *ignore_names[] = {"bar", "xclock"};
+- static const char *ignore_names[] = {"bar", "xclock"};
++ static const char *ignore_names[] = {"lemonbar", "bar", "xclock"};
  ///--Menus and Programs---///
 -static const char *menucmd[]   = { "my_menu.sh", NULL };
 -static const char *gmrun[]     = { "my_menu2.sh",NULL};
