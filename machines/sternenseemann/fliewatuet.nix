@@ -8,10 +8,7 @@ in {
     allowUnfree = true;
     packageOverrides = pkgs: {
       bluez = pkgs.bluez5;
-
-      "2bwm" = pkgs."2bwm".override {
-        patches = [ ./patches/2bwm-config.patch ];
-      };
+      "2bwm" = pkgs."2bwm".override { patches = [ ./patches/2bwm-config.patch ]; };
     };
   };
 
@@ -64,7 +61,7 @@ in {
     daemon.config.flat-volumes = "no";
   };
 
-  hardware.bluetooth.enable = false;
+  hardware.bluetooth.enable = true;
 
   hardware.opengl.driSupport32Bit = true;
   hardware.enableAllFirmware = true;
@@ -186,6 +183,7 @@ in {
     audacity
     lame
     ffmpeg
+    beets
 
     ## services
     acpi

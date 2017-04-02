@@ -1,11 +1,13 @@
 diff --git a/config.h b/config.h
-index ce0d1d4..c2346c1 100644
+index ce0d1d4..1748dfd 100644
 --- a/config.h
 +++ b/config.h
-@@ -37,17 +37,11 @@ static const uint8_t borders[] = {3,5,5,4};
+@@ -35,19 +35,13 @@ static const bool inverted_colors = true;
+ static const uint8_t borders[] = {3,5,5,4};
+ /* Windows that won't have a border.*/
  #define LOOK_INTO "WM_NAME"
-- static const char *ignore_names[] = {"bar", "xclock"};
-+ static const char *ignore_names[] = {"lemonbar", "bar", "xclock"};
+-static const char *ignore_names[] = {"bar", "xclock"};
++static const char *ignore_names[] = {"lemonbar", "bar", "xclock"};
  ///--Menus and Programs---///
 -static const char *menucmd[]   = { "my_menu.sh", NULL };
 -static const char *gmrun[]     = { "my_menu2.sh",NULL};
@@ -23,8 +25,81 @@ index ce0d1d4..c2346c1 100644
  ///--Custom foo---///
  static void halfandcentered(const Arg *arg)
  {
-@@ -186,8 +180,7 @@ static key keys[] = {
-     {  MOD |SHIFT,        XK_Left,       cursor_move,       {.i=TWOBWM_CURSOR_LEFT}},
+@@ -93,26 +87,15 @@ static key keys[] = {
+     // Kill a window
+     {  MOD ,              XK_q,          deletewin,         {}},
+     // Resize a window
+-    {  MOD |SHIFT,        XK_k,          resizestep,        {.i=TWOBWM_RESIZE_UP}},
+-    {  MOD |SHIFT,        XK_j,          resizestep,        {.i=TWOBWM_RESIZE_DOWN}},
+-    {  MOD |SHIFT,        XK_l,          resizestep,        {.i=TWOBWM_RESIZE_RIGHT}},
+-    {  MOD |SHIFT,        XK_h,          resizestep,        {.i=TWOBWM_RESIZE_LEFT}},
+-    // Resize a window slower
+-    {  MOD |SHIFT|CONTROL,XK_k,          resizestep,        {.i=TWOBWM_RESIZE_UP_SLOW}},
+-    {  MOD |SHIFT|CONTROL,XK_j,          resizestep,        {.i=TWOBWM_RESIZE_DOWN_SLOW}},
+-    {  MOD |SHIFT|CONTROL,XK_l,          resizestep,        {.i=TWOBWM_RESIZE_RIGHT_SLOW}},
+-    {  MOD |SHIFT|CONTROL,XK_h,          resizestep,        {.i=TWOBWM_RESIZE_LEFT_SLOW}},
++    {  MOD |SHIFT,        XK_l,          resizestep,        {.i=TWOBWM_RESIZE_UP}},
++    {  MOD |SHIFT,        XK_a,          resizestep,        {.i=TWOBWM_RESIZE_DOWN}},
++    {  MOD |SHIFT,        XK_i,          resizestep,        {.i=TWOBWM_RESIZE_RIGHT}},
++    {  MOD |SHIFT,        XK_e,          resizestep,        {.i=TWOBWM_RESIZE_LEFT}},
+     // Move a window
+-    {  MOD ,              XK_k,          movestep,          {.i=TWOBWM_MOVE_UP}},
+-    {  MOD ,              XK_j,          movestep,          {.i=TWOBWM_MOVE_DOWN}},
+-    {  MOD ,              XK_l,          movestep,          {.i=TWOBWM_MOVE_RIGHT}},
+-    {  MOD ,              XK_h,          movestep,          {.i=TWOBWM_MOVE_LEFT}},
+-    // Move a window slower
+-    {  MOD |CONTROL,      XK_k,          movestep,          {.i=TWOBWM_MOVE_UP_SLOW}},
+-    {  MOD |CONTROL,      XK_j,          movestep,          {.i=TWOBWM_MOVE_DOWN_SLOW}},
+-    {  MOD |CONTROL,      XK_l,          movestep,          {.i=TWOBWM_MOVE_RIGHT_SLOW}},
+-    {  MOD |CONTROL,      XK_h,          movestep,          {.i=TWOBWM_MOVE_LEFT_SLOW}},
+-    // Teleport the window to an area of the screen.
++    {  MOD ,              XK_l,          movestep,          {.i=TWOBWM_MOVE_UP}},
++    {  MOD ,              XK_a,          movestep,          {.i=TWOBWM_MOVE_DOWN}},
++    {  MOD ,              XK_i,          movestep,          {.i=TWOBWM_MOVE_RIGHT}},
++    {  MOD ,              XK_e,          movestep,          {.i=TWOBWM_MOVE_LEFT}},
+     // Center:
+     {  MOD ,              XK_g,          teleport,          {.i=TWOBWM_TELEPORT_CENTER}},
+     // Center y:
+@@ -131,9 +114,9 @@ static key keys[] = {
+     {  MOD ,              XK_Home,       resizestep_aspect, {.i=TWOBWM_RESIZE_KEEP_ASPECT_GROW}},
+     {  MOD ,              XK_End,        resizestep_aspect, {.i=TWOBWM_RESIZE_KEEP_ASPECT_SHRINK}},
+     // Full screen window without borders
+-    {  MOD ,              XK_x,         maximize,          {.i=TWOBWM_FULLSCREEN}},
++    {  MOD ,              XK_f,         maximize,          {.i=TWOBWM_FULLSCREEN}},
+     //Full screen window without borders overiding offsets
+-    {  MOD |SHIFT ,       XK_x,          maximize,          {.i=TWOBWM_FULLSCREEN_OVERRIDE_OFFSETS}},
++    {  MOD |SHIFT ,       XK_f,          maximize,          {.i=TWOBWM_FULLSCREEN_OVERRIDE_OFFSETS}},
+     // Maximize vertically
+     {  MOD ,              XK_m,          maxvert_hor,       {.i=TWOBWM_MAXIMIZE_VERTICALLY}},
+     // Maximize horizontally
+@@ -162,45 +145,22 @@ static key keys[] = {
+     {  MOD ,              XK_r,          raiseorlower,      {}},
+     // Next/Previous workspace
+     {  MOD ,              XK_v,          nextworkspace,     {}},
+-    {  MOD ,              XK_c,          prevworkspace,     {}},
++    {  MOD ,              XK_x,          prevworkspace,     {}},
+     // Move to Next/Previous workspace
+     {  MOD |SHIFT ,       XK_v,          sendtonextworkspace,{}},
+-    {  MOD |SHIFT ,       XK_c,          sendtoprevworkspace,{}},
++    {  MOD |SHIFT ,       XK_x,          sendtoprevworkspace,{}},
+     // Iconify the window
+     //{  MOD ,              XK_i,          hide,              {}},
+     // Make the window unkillable
+     {  MOD ,              XK_a,          unkillable,        {}},
+     // Make the window appear always on top
+     {  MOD,               XK_t,          always_on_top,     {}},
+-    // Make the window stay on all workspaces
+-    {  MOD ,              XK_f,          fix,               {}},
+-    // Move the cursor
+-    {  MOD ,              XK_Up,         cursor_move,       {.i=TWOBWM_CURSOR_UP_SLOW}},
+-    {  MOD ,              XK_Down,       cursor_move,       {.i=TWOBWM_CURSOR_DOWN_SLOW}},
+-    {  MOD ,              XK_Right,      cursor_move,       {.i=TWOBWM_CURSOR_RIGHT_SLOW}},
+-    {  MOD ,              XK_Left,       cursor_move,       {.i=TWOBWM_CURSOR_LEFT_SLOW}},
+-    // Move the cursor faster
+-    {  MOD |SHIFT,        XK_Up,         cursor_move,       {.i=TWOBWM_CURSOR_UP}},
+-    {  MOD |SHIFT,        XK_Down,       cursor_move,       {.i=TWOBWM_CURSOR_DOWN}},
+-    {  MOD |SHIFT,        XK_Right,      cursor_move,       {.i=TWOBWM_CURSOR_RIGHT}},
+-    {  MOD |SHIFT,        XK_Left,       cursor_move,       {.i=TWOBWM_CURSOR_LEFT}},
      // Start programs
      {  MOD ,              XK_Return,     start,             {.com = terminal}},
 -    {  MOD ,              XK_w,          start,             {.com = menucmd}},
@@ -32,18 +107,25 @@ index ce0d1d4..c2346c1 100644
 +    {  MOD ,              XK_d,          start,             {.com = menucmd}},
      // Exit or restart 2bwm
      {  MOD |CONTROL,      XK_q,          twobwm_exit,       {.i=0}},
-     {  MOD |CONTROL,      XK_r,          twobwm_restart,    {.i=0}},
-@@ -195,12 +188,7 @@ static key keys[] = {
-     // Fake clicks using xdotool
-     {  MOD |CONTROL,      XK_Up,         start,             {.com = click1}},
-     {  MOD |CONTROL,      XK_Down,       start,             {.com = click2}},
+-    {  MOD |CONTROL,      XK_r,          twobwm_restart,    {.i=0}},
+     {  MOD ,              XK_space,      halfandcentered,   {.i=0}},
+-    // Fake clicks using xdotool
+-    {  MOD |CONTROL,      XK_Up,         start,             {.com = click1}},
+-    {  MOD |CONTROL,      XK_Down,       start,             {.com = click2}},
 -	{  MOD |CONTROL,      XK_Right,      start,             {.com = click3}},
 -    {  0x000000,          0x1008ff13, start,             {.com = vol_up}},
 -    {  0x000000,          0x1008ff11,  start,             {.com = vol_down}},
 -    {  0x000000,          0x1008ff15, start,             {.com = vol_mute}},
 -    {  0x000000,          0x1008ff02, start,             {.com = bright_up}},
 -    {  0x000000,          0x1008ff03,  start,             {.com = bright_down}},
-+    {  MOD |CONTROL,      XK_Right,      start,             {.com = click3}},
      // Change current workspace
         DESKTOPCHANGE(     XK_1,                             0)
         DESKTOPCHANGE(     XK_2,                             1)
+@@ -216,7 +176,6 @@ static key keys[] = {
+ static Button buttons[] = {
+     {  MOD        ,XCB_BUTTON_INDEX_1,     mousemotion,   {.i=TWOBWM_MOVE}},
+     {  MOD        ,XCB_BUTTON_INDEX_3,     mousemotion,   {.i=TWOBWM_RESIZE}},
+-//    {  MOD|CONTROL,XCB_BUTTON_INDEX_3,     start,         {.com = menucmd}},
+     {  MOD|SHIFT,  XCB_BUTTON_INDEX_1,     changeworkspace, {.i=0}},
+     {  MOD|SHIFT,  XCB_BUTTON_INDEX_3,     changeworkspace, {.i=1}},
+     {  MOD|ALT,    XCB_BUTTON_INDEX_1,     changescreen,    {.i=1}},
