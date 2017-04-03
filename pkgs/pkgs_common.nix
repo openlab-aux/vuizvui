@@ -61,6 +61,7 @@
     beets
     biber
     bind
+    binutils
     brotli
     bup
     cacert
