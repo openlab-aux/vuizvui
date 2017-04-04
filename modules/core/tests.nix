@@ -317,9 +317,10 @@ let
     { check = config.services.pumpio.enable;
       path  = ["nixos" "pumpio"];
     }
-    { check = config.services.quagga.ospf.enable;
-      path  = ["nixos" "quagga"];
-    }
+    # TODO: The upstream service was disabled because it broke
+    # { check = config.services.quagga.ospf.enable;
+    #   path  = ["nixos" "quagga"];
+    # }
     { check = config.hardware.opengl.driSupport
            && config.services.xserver.enable;
       path  = ["nixos" "quake3"];
