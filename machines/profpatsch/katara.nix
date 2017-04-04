@@ -295,8 +295,10 @@ in {
         monospace = [ "Source Code Pro" "DejaVu Sans Mono" ]; # TODO does not work
         sansSerif = [ "Liberation Sans" ];
       };
-      ultimate.preset = "ultimate4";
-      ultimate.substitutions = "combi";
+      ultimate = {
+        enable = true;
+        substitutions = "combi";
+      };
     };
     fonts.fonts = with pkgs; [
       unfreeAndNonDistributablePkgs.corefonts
