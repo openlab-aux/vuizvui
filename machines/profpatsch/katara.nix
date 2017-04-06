@@ -121,6 +121,7 @@ in {
         # jid                          # interactive/incremental JSON digger
         # mercurial                    # the other version control system
         telnet                       # tcp debugging
+        pkgs.vuizvui.profpatsch.nman # open man pages in temporary nix shell
         pkgs.vuizvui.profpatsch.warpspeed # trivial http file server
       ];
       documentation = [

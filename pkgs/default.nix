@@ -57,6 +57,7 @@ let
 
     profpatsch = pkgs.recurseIntoAttrs {
       display-infos = callPackage ./profpatsch/display-infos {};
+      nman = callPackage ./profpatsch/nman {};
       warpspeed = callPackage ./profpatsch/warpspeed {
         inherit (pkgs.haskellPackages) ghcWithPackages;
       };
