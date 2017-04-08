@@ -8,7 +8,6 @@ in {
     allowUnfree = true;
     packageOverrides = pkgs: {
       bluez = pkgs.bluez5;
-      "2bwm" = pkgs."2bwm".override { patches = [ ./patches/2bwm-config.patch ]; };
     };
   };
 
@@ -246,8 +245,7 @@ in {
     xkbVariant = "neo";
 
     desktopManager.xterm.enable = false;
-    windowManager.herbstluftwm.enable = false;
-    windowManager."2bwm".enable = true;
+    windowManager.herbstluftwm.enable = true;
 
     displayManager = {
       sessionCommands =
@@ -256,7 +254,6 @@ in {
           ${pkgs.xorg.xmodmap}/bin/xmodmap -e "pointer = 1 25 3 4 5 6 7 8 9"
           ${pkgs.xbindkeys}/bin/xbindkeys
           ${pkgs.cbatticon}/bin/cbatticon &
-          $HOME/bin/sternenpanel &
         '';
     };
 
