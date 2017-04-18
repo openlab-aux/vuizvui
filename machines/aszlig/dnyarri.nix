@@ -1,28 +1,55 @@
 { pkgs, lib, ... }:
 
-{
+let
+  vaultPath = "/dev/mapper/${vaultDevice.name}";
+
+  mkDevice = category: num: uuid: {
+    name = "dnyarri-${category}-crypt-${toString num}";
+    device = "/dev/disk/by-uuid/${uuid}";
+    keyFile = vaultPath;
+    keyFileSize = 1048576;
+  };
+
+  vaultDevice = {
+    name = "dnyarri-crypt-vault";
+    device = "/dev/disk/by-uuid/61e971d2-be93-4e60-8266-b2c6a71e2dc8";
+  };
+
+  cryptDevices = {
+    root = lib.imap (mkDevice "root") [
+      "b13d257e-b5fd-4f86-82b1-8bfe06335a75"
+      "a607c827-2fd7-49d9-a7d8-05279c8653a4"
+      "de32cb42-2e09-4e6a-84b4-244078d289c8"
+      "12dac5b2-7647-45de-b752-5efee23855d0"
+    ];
+    swap = lib.imap (mkDevice "swap") [
+      "e0a8281d-2c68-48ca-8e00-f0defaf51f38"
+      "d26e61d6-c238-4c01-8c57-b1ba0bdb8c93"
+    ];
+  };
+
+in {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
   nix.maxJobs = 8;
 
   boot = {
-    initrd = {
-      mdadmConf = ''
-        ARRAY /dev/md0 metadata=1.2 UUID=f5e9de04:89efc509:4e184fcc:166b0b67
-        ARRAY /dev/md1 metadata=0.90 UUID=b85aa8be:cea0faf2:7abcbee8:eeae037b
-      '';
-      luks.devices = [
-        { name = "system_crypt";
-          device = "/dev/md1";
-          preLVM = true;
-        }
-      ];
-    };
+    loader.systemd-boot.enable = true;
+    loader.grub.enable = lib.mkForce false;
+    loader.efi.canTouchEfiVariables = true;
 
-    loader.grub.devices = [
-      "/dev/disk/by-id/ata-ST31500541AS_5XW0AMNH"
-      "/dev/disk/by-id/ata-ST31500541AS_6XW0M217"
-    ];
+    initrd = {
+      availableKernelModules = [
+        "aes_x86_64" "af_alg" "algif_skcipher" "cbc" "cryptd" "crypto_simd"
+        "dm_crypt" "ecb" "gf128mul" "glue_helper" "xts"
+      ];
+
+      luks.devices = lib.singleton vaultDevice
+                  ++ lib.concatLists (lib.attrValues cryptDevices);
+      postDeviceCommands = lib.mkAfter ''
+        cryptsetup luksClose ${lib.escapeShellArg vaultPath}
+      '';
+    };
   };
 
   environment.systemPackages = [ pkgs.paperwork ];
@@ -52,12 +79,13 @@
 
   fileSystems = {
     "/boot" = {
-      label = "boot";
-      fsType = "ext2";
+      device = "/dev/disk/by-uuid/9A75-9A6E";
+      fsType = "vfat";
     };
     "/" = {
-      device = "/dev/shofixti/root";
-      fsType = "xfs";
+      label = "dnyarri-root";
+      fsType = "btrfs";
+      options = [ "autodefrag" "space_cache" "compress=lzo" "noatime" ];
     };
   };
 
@@ -66,9 +94,9 @@
     ${pkgs.hdparm}/sbin/hdparm -B 255 /dev/disk/by-id/ata-ST31500541AS_6XW0M217
   '';
 
-  swapDevices = lib.singleton {
-    device = "/dev/shofixti/swap";
-  };
+  swapDevices = map ({ name, ... }: {
+    device = "/dev/mapper/${name}";
+  }) cryptDevices.swap;
 
   users.users.aszlig.extraGroups = [
     "scanner"
@@ -78,19 +106,15 @@
     "audio"
   ];
 
-  services.synergy.client.enable = true;
-  services.synergy.client.serverAddress = "mmrnmhrm";
-
-  services.kmscon.enable = true;
-
-  systemd.services."synergy-client".serviceConfig.CPUSchedulingPolicy = "rr";
-  systemd.services."synergy-client".serviceConfig.CPUSchedulingPriority = 50;
-
   services.xserver.videoDrivers = [ "ati" ];
-  services.xserver.xrandrHeads = [ "HDMI-0" "DVI-0" ];
+  services.xserver.xrandrHeads = [ "DVI-0" "HDMI-0" ];
 
-  vuizvui.user.aszlig.services.i3.reverseHeads = true;
-  vuizvui.user.aszlig.services.i3.workspaces."6" = {
+  vuizvui.user.aszlig.services.i3.workspaces."1" = {
+    label = "XMPP";
+    assign = lib.singleton { class = "^(?:Tkabber|Gajim)\$"; };
+  };
+
+  vuizvui.user.aszlig.services.i3.workspaces."3" = {
     label = "Chromium";
     assign = lib.singleton { class = "^Chromium(?:-browser)?\$"; };
   };
