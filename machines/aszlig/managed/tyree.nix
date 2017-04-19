@@ -58,10 +58,6 @@
   nixpkgs.config = {
     pulseaudio = true;
     chromium.enablePepperFlash = true;
-    # whitelist insecure webkitgtk
-    permittedInsecurePackages = [
-      "webkitgtk-2.4.11"
-    ];
   };
 
   programs.bash.enableCompletion = true;

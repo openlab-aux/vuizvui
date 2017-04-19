@@ -53,10 +53,6 @@ in {
     allowUnfree = true; # XXX: More granularity!
     chromium.enablePepperFlash = true;
     pulseaudio = true;
-    # whitelist insecure webkitgtk
-    permittedInsecurePackages = [
-      "webkitgtk-2.4.11"
-    ];
   };
 
   environment.systemPackages = with pkgs; [

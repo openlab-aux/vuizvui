@@ -6,11 +6,6 @@ let
   storeUUID = "ce1db87b-d717-450d-a212-3685a224f626";
   diskID = "ata-Hitachi_HTS543232A7A384_E2P31243FGB6PJ";
 in {
-  # whitelist insecure webkitgtk
-  nixpkgs.config.permittedInsecurePackages = [
-    "webkitgtk-2.4.11"
-  ];
-
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
   vuizvui.user.aszlig.system.kernel.enable = true;
