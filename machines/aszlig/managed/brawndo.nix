@@ -62,11 +62,11 @@ in {
     gajim
     gimp
     git
+    gpodder
     htop
     kdeApplications.gwenview
     kdeApplications.okular
     libreoffice
-    miro
     mpv
     opentyrian
     pavucontrol
