@@ -1,6 +1,6 @@
 { stdenv, fetchurl, fetchgit, fetchFromBitbucket
 , runCommand, writeScript, writeScriptBin, writeText
-, xvfb_run, xdotool, coreutils, wineMinimal, pipelight, dwb, pcsclite
+, xvfb_run, xdotool, coreutils, wineMinimal, pipelight, dwb-unwrapped, pcsclite
 }:
 
 let
@@ -128,19 +128,25 @@ let
       "$out/lib/pipelight/libpipelight-santander.so"
   '';
 
-  dwbWithPlugin = stdenv.lib.overrideDerivation dwb (wrapperDrv: {
-    plugins = [ "${finalPlugin}/lib/pipelight" ];
-  });
+  # Allow to use dwb for now until we have a better solution.
+  dwb = dwb-unwrapped.override {
+    inherit (import (import ../../nixpkgs-path.nix) {
+      inherit (stdenv) system;
+      config = {
+        permittedInsecurePackages = [ "webkitgtk-2.4.11" ];
+      };
+    }) webkitgtk2;
+  };
+
+  inherit (stdenv.lib) escapeShellArg;
 
 in writeScriptBin "santander" ''
   #!${stdenv.shell}
   if tmpdir="$("${coreutils}/bin/mktemp" -d)"; then
     trap "rm -rf '$tmpdir'" EXIT
-    export XDG_RUNTIME_DIR="$tmpdir"
-    export XDG_CONFIG_HOME="$tmpdir"
-    export XDG_DATA_HOME="$tmpdir"
-    export XDG_CACHE_HOME="$tmpdir"
-    "${dwbWithPlugin}/bin/dwb" -t https://karte.santanderbank.de/
+    export HOME="$tmpdir"
+    export MOZ_PLUGIN_PATH=${escapeShellArg "${finalPlugin}/lib/pipelight"}
+    "${dwb}/bin/dwb" -t https://karte.santanderbank.de/
     exit $?
   else
     echo "Unable to create temporary profile directory." >&2
