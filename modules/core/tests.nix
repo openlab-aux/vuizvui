@@ -69,6 +69,10 @@ let
       path  = ["nixos" "containers-physical_interfaces"];
     }
     { check = config.boot.enableContainers
+           && anyAttrs (i: i.privateNetwork) config.containers;
+      path  = ["nixos" "containers-restart_networking"];
+    }
+    { check = config.boot.enableContainers
            && anyAttrs (i: i.tmpfs != []) config.containers;
       path  = ["nixos" "containers-tmpfs"];
     }
@@ -169,9 +173,6 @@ let
     }
     { check = config.services.jenkins.enable;
       path  = ["nixos" "jenkins"];
-    }
-    { check = config.services.xserver.desktopManager.plasma5.enable;
-      path  = ["nixos" "kde5"];
     }
     { check = config.i18n.consoleKeyMap          == "azerty/fr"
            || config.services.xserver.layout     == "fr";
@@ -292,6 +293,9 @@ let
         ["nixos" "nfs4"]
       ];
     }
+    { check = config.services.nginx.enable;
+      path  = ["nixos" "nginx"];
+    }
     { check = config.services.nsd.enable;
       path  = ["nixos" "nsd"];
     }
@@ -304,8 +308,19 @@ let
     { check = config.services.peerflix.enable;
       path  = ["nixos" "peerflix"];
     }
+    { check = config.services.postgresql.enable
+           && elem pkgs.pgjwt config.services.postgresql.extraPlugins;
+      path  = ["nixos" "pgjwt"];
+    }
+    { check = config.services.xserver.desktopManager.plasma5.enable;
+      path  = ["nixos" "plasma5"];
+    }
     { check = config.services.postgresql.enable;
-      path  = ["nixos" "postgresql"];
+      path  = let
+        filterPg = name: drv: hasPrefix "postgresql" name
+                           && drv == config.services.postgresql.package;
+        pgPackage = head (attrNames (filterAttrs filterPg pkgs));
+      in ["nixos" "postgresql" pgPackage];
     }
     { check = config.services.printing.enable;
       path  = ["nixos" "printing"];
@@ -332,7 +347,10 @@ let
       path  = ["nixos" "samba"];
     }
     { check = config.services.xserver.displayManager.sddm.enable;
-      path  = ["nixos" "sddm"];
+      paths = [
+        ["nixos" "sddm" "default"]
+        ["nixos" "sddm" "autoLogin"]
+      ];
     }
     { check = true;
       path  = ["nixos" "simple"];
@@ -361,6 +379,13 @@ let
     { check = config.virtualisation.virtualbox.host.enable
            && config.virtualisation.virtualbox.headless;
       path  = ["nixos" "virtualbox" "headless"];
+    }
+    { check = let
+        hasWPSubServiceType = any (y: y.serviceType == "wordpress");
+        hasWPSubService = any (x: hasWPSubServiceType x.extraSubservices);
+        hasWordPress = config.services.httpd.virtualHosts;
+      in config.services.httpd.enable && hasWordPress;
+      path  = ["nixos" "wordpress"];
     }
     { check = config.services.xserver.desktopManager.xfce.enable;
       path  = ["nixos" "xfce"];
