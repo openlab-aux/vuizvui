@@ -59,7 +59,7 @@ in {
   nixpkgs.config = {
     allowUnfreePredicate = pkg: let
       inherit (builtins.parseDrvName pkg.name) name;
-    in lib.hasSuffix "-hplip" name && lib.hasPrefix "python" name;
+    in name == "hplip";
     packageOverrides = super: {
       hplip = super.hplip.override { withPlugin = true; };
     };
