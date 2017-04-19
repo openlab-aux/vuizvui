@@ -8,7 +8,7 @@ pkgs: with pkgs; [
   vuizvui.axbo
   bc
   beets
-  chromiumBeta
+  chromium
   dash
   dos2unix
   ffmpeg
