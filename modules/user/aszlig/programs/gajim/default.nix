@@ -38,8 +38,8 @@ let
   '';
 
   gajimPatched = let
-    o = pkgs.gajim.drvAttrs;
-  in pkgs.stdenv.mkDerivation (pkgs.gajim.drvAttrs // {
+    o = pkgs.vuizvui.aszlig.gajim.drvAttrs;
+  in pkgs.stdenv.mkDerivation (pkgs.vuizvui.aszlig.gajim.drvAttrs // {
     patches = (o.patches or []) ++ singleton (pkgs.substituteAll {
       src = ./config.patch;
       nix_config = pkgs.writeText "gajim.config" (import ./config.nix lib);

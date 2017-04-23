@@ -59,7 +59,7 @@ in {
     vuizvui.aszlig.axbo
     chromium
     file
-    gajim
+    vuizvui.aszlig.gajim
     gimp
     git
     gpodder
