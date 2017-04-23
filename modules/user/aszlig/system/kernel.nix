@@ -10,7 +10,7 @@
       kernelPatches = lib.singleton {
         name = "bfq-v8r7";
         patch = ./bfq.patch;
-        extraConfig = (pkgs.vuizvui.kernel.bfqsched.extraConfig or "") + ''
+        extraConfig = ''
           IOSCHED_BFQ y
           DEFAULT_BFQ y
           DEFAULT_CFQ n
