@@ -27,13 +27,6 @@ in {
   swapDevices = [ { device = "/dev/mapper/schnurrkadse-swap"; } ];
 
   nix.maxJobs = 1;
-  nix.binaryCaches = [
-    "https://headcounter.org/hydra/"
-    "https://cache.nixos.org/"
-  ];
-  nix.binaryCachePublicKeys = [
-    "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
-  ];
 
   hardware.pulseaudio.enable = true;
 

@@ -29,13 +29,6 @@ in {
   swapDevices = [ ];
 
   nix.maxJobs = 8;
-  nix.binaryCaches = [
-    "https://headcounter.org/hydra/"
-    "https://cache.nixos.org/"
-  ];
-  nix.binaryCachePublicKeys = [
-    "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
-  ];
   nix.useSandbox = true;
   nix.extraOptions = "gc-keep-derivations = false";
 

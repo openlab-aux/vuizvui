@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, options, pkgs, lib, ... }:
 
 with lib;
 
@@ -48,6 +48,9 @@ with lib;
       }) vuizvui;
     };
 
+    nix.binaryCaches = options.nix.binaryCaches.default ++ [
+      "https://headcounter.org/hydra/"
+    ];
     nix.binaryCachePublicKeys = [
       "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
     ];

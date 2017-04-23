@@ -7,13 +7,9 @@
 
   services.nixosManual.enable = false;
 
-  nix.binaryCaches = [ 
-    "https://headcounter.org/hydra/"
-    "http://nixos-arm.dezgeg.me/channel"
-  ];
+  nix.binaryCaches = [ "http://nixos-arm.dezgeg.me/channel" ];
 
   nix.binaryCachePublicKeys = [
-    "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
     "nixos-arm.dezgeg.me-1:xBaUKS3n17BZPKeyxL4JfbTqECsT+ysbDJz29kLFRW0=%"
   ];
 
