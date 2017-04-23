@@ -355,6 +355,9 @@ let
     { check = true;
       path  = ["nixos" "simple"];
     }
+    { check = config.services.xserver.displayManager.slim.enable;
+      path  = ["nixos" "slim"];
+    }
     { check = config.services.smokeping.enable;
       path  = ["nixos" "smokeping"];
     }
