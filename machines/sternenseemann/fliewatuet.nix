@@ -172,6 +172,7 @@ in {
 
     ## audio / video
     myPkgs.mpv
+    spotify
     audacity
     lame
     ffmpeg
