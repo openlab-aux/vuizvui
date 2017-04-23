@@ -6,6 +6,7 @@
   warpspeed = callPackage ./warpspeed {
     inherit (haskellPackages) ghcWithPackages;
   };
+  show-qr-code = callPackage ./show-qr-code { };
 
   jmtpfs = jmtpfs.override {
     libmtp = libmtp.overrideDerivation (old: {

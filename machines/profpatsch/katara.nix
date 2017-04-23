@@ -160,9 +160,9 @@ in {
         youtube-dl           # download videos
         zathura              # pdf viewer
       ];
-      userScripts = with pkgs.vuizvui; [
-        profpatsch.display-infos  # show time & battery
-        show-qr-code              # display a QR code
+      userScripts = with pkgs.vuizvui.profpatsch; [
+        display-infos  # show time & battery
+        show-qr-code   # display a QR code
       ];
       mailPkgs = [
         elinks               # command line browser

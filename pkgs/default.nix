@@ -34,7 +34,6 @@ let
     mkChannel = callPackage ./build-support/channel.nix { };
 
     list-gamecontrollers = callPackage ./list-gamecontrollers { };
-    show-qr-code = callPackage ./show-qr-code { };
 
     games = import ./games {
       inherit pkgs;
