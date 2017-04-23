@@ -16,7 +16,7 @@ let
     phases = [ "unpackPhase" "patchPhase" "installPhase" ];
 
     postPatch = ''
-      sed -i -re 's!<nixpkgs([^>]*)>!${import ../../nixpkgs-path.nix}\1!g' \
+      sed -i -re 's!<nixpkgs([^>]*)>!${import ../../../nixpkgs-path.nix}\1!g' \
         release.nix doc/manual/default.nix doc/manual/resource.nix
     '';
 

@@ -52,7 +52,7 @@ in {
     preStart = "${pkgs.kbd}/bin/chvt 7";
     serviceConfig = {
       Type = "idle";
-      ExecStart = "${pkgs.vuizvui.grandpa}/bin/grandpa";
+      ExecStart = "${pkgs.vuizvui.aszlig.grandpa}/bin/grandpa";
       ExecStopPost = "${pkgs.systemd}/bin/systemctl poweroff";
       Restart = "on-failure";
       StandardInput = "tty";

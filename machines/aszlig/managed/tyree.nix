@@ -10,7 +10,7 @@
   environment.systemPackages = with pkgs; [
     calibre cdparanoia chromium figlet gajim gimp htop inkscape thunderbird
     kdeApplications.gwenview kdeApplications.okular krita libreoffice mosh mpv
-    pciutils vlc vuizvui.tomahawk wget wine youtubeDL
+    pciutils vlc vuizvui.aszlig.tomahawk wget wine youtubeDL
     unfreeAndNonDistributablePkgs.skype
   ];
 

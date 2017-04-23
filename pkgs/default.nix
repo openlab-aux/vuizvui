@@ -5,23 +5,20 @@ let
   callPackage = callPackageWith (pkgs // self.vuizvui);
   callPackage_i686 = callPackageWith (pkgs.pkgsi686Linux // self.vuizvui);
 
-  self.vuizvui = {
+  callPackageScope = fn: let
+    toplevel = pkgs // self.vuizvui;
+    toplevel_i686 = pkgs.pkgsi686Linux // self.vuizvui;
+    super = callPackageWith toplevel fn {
+      callPackage = callPackageWith (toplevel // super);
+      callPackage_i686 = callPackageWith (toplevel_i686 // super);
+    };
+  in pkgs.recurseIntoAttrs super;
+
+  self.vuizvui = pkgs.recurseIntoAttrs {
     mkChannel = callPackage ./build-support/channel.nix { };
 
-    aacolorize = callPackage ./aacolorize { };
-    axbo = callPackage ./axbo { };
-    git-detach = callPackage ./git-detach { };
-    grandpa = callPackage ./grandpa { };
-    nixops = callPackage ./nixops { };
-    librxtx_java = callPackage ./librxtx-java { };
     list-gamecontrollers = callPackage ./list-gamecontrollers { };
-    lockdev = callPackage ./lockdev { };
-    pvolctrl = callPackage ./pvolctrl { };
-    santander = callPackage_i686 ./santander { };
     show-qr-code = callPackage ./show-qr-code { };
-    tomahawk = callPackage ./tomahawk {
-      boost = pkgs.boost155;
-    };
 
     games = import ./games {
       inherit pkgs;
@@ -32,6 +29,8 @@ let
       gitit = callPackage ./openlab/gitit { hlib = pkgs.haskell.lib; };
       stackenblocken = callPackage ./openlab/stackenblocken {};
     };
+
+    aszlig = callPackageScope ./aszlig;
 
     profpatsch = pkgs.recurseIntoAttrs {
       display-infos = callPackage ./profpatsch/display-infos {};

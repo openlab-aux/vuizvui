@@ -5,7 +5,7 @@ pkgs: with pkgs; [
   ascii
   aspellDicts.de
   aspellDicts.en
-  vuizvui.axbo
+  vuizvui.aszlig.axbo
   bc
   beets
   chromium
@@ -16,7 +16,7 @@ pkgs: with pkgs; [
   flac
   gdb
   ghostscript
-  vuizvui.git-detach
+  vuizvui.aszlig.git-detach
   glxinfo
   gnumake
   gnupg1compat
@@ -37,7 +37,7 @@ pkgs: with pkgs; [
   netrw
   nix-prefetch-scripts
   nix-repl
-  vuizvui.nixops
+  vuizvui.aszlig.nixops
   nmap
   openssh
   openssl
@@ -45,7 +45,7 @@ pkgs: with pkgs; [
   pavucontrol
   posix_man_pages
   pulseaudioLight
-  vuizvui.pvolctrl
+  vuizvui.aszlig.pvolctrl
   pass
   python
   python3

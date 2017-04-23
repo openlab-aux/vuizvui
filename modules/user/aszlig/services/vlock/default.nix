@@ -5,7 +5,7 @@ let
 
   messageFile = pkgs.runCommand "message.cat" {} ''
     echo -en '\e[H\e[2J\e[?25l' > "$out"
-    "${pkgs.vuizvui.aacolorize}/bin/aacolorize" \
+    "${pkgs.vuizvui.aszlig.aacolorize}/bin/aacolorize" \
       "${./message.cat}" "${./message.colmap}" \
       >> "$out"
   '';

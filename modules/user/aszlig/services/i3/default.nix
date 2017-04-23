@@ -115,7 +115,7 @@ in
         src = ./i3.conf;
 
         inherit (pkgs) dmenu xterm;
-        inherit (pkgs.vuizvui) pvolctrl;
+        inherit (pkgs.vuizvui.aszlig) pvolctrl;
         inherit (pkgs.xorg) xsetroot;
         inherit wsConfig barConfig;
 

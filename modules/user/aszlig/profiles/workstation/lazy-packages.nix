@@ -1,5 +1,5 @@
 pkgs: with pkgs; [
-  vuizvui.aacolorize
+  vuizvui.aszlig.aacolorize
   aqbanking
   erlang
   fbida
@@ -24,7 +24,7 @@ pkgs: with pkgs; [
   picard
   rtmpdump
   rtorrent
-  vuizvui.santander
-  vuizvui.tomahawk
+  vuizvui.aszlig.santander
+  vuizvui.aszlig.tomahawk
   uqm
 ]

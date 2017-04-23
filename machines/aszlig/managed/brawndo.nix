@@ -56,7 +56,7 @@ in {
   };
 
   environment.systemPackages = with pkgs; [
-    vuizvui.axbo
+    vuizvui.aszlig.axbo
     chromium
     file
     gajim
@@ -75,7 +75,7 @@ in {
     unfreePkgs.steam
     unfreeAndNonDistributablePkgs.skype
     thunderbird
-    vuizvui.tomahawk
+    vuizvui.aszlig.tomahawk
     wine
     xpdf
     youtubeDL

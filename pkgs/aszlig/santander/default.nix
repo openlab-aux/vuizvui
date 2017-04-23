@@ -130,7 +130,7 @@ let
 
   # Allow to use dwb for now until we have a better solution.
   dwb = dwb-unwrapped.override {
-    inherit (import (import ../../nixpkgs-path.nix) {
+    inherit (import (import ../../../nixpkgs-path.nix) {
       inherit (stdenv) system;
       config = {
         permittedInsecurePackages = [ "webkitgtk-2.4.11" ];
