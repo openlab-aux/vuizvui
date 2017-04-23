@@ -1,8 +1,17 @@
 { config, pkgs, lib, ... }:
 
 let
+  # Make sure we use a Nix version prior to 1.12, because taalo currently uses
+  # the legacy SSH protocol, so we can't use the ssh-ng store backend here.
+  #
+  # Apart from that, even if we would use the new store backend we would break
+  # the taalo-build backend for Nix 1.11.
+  inherit (import (import (../../../../../nixpkgs-path.nix)) {
+    config = {};
+  }) nix;
+
   backend = pkgs.writeScript "taalo-realize-backend" ''
-    #!${pkgs.perl}/bin/perl -I${pkgs.nix}/lib/perl5/site_perl
+    #!${pkgs.perl}/bin/perl -I${nix}/lib/perl5/site_perl
     use strict;
     use Nix::CopyClosure;
     use Nix::SSH;
