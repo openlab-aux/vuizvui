@@ -12,11 +12,6 @@ let
     axbo = callPackage ./axbo { };
     git-detach = callPackage ./git-detach { };
     grandpa = callPackage ./grandpa { };
-    jmtpfs = pkgs.jmtpfs.override {
-      libmtp = pkgs.libmtp.overrideDerivation (old: {
-        patches = old.patches or [] ++ [ ./mtp-jolla.patch ];
-      });
-    };
     nixops = callPackage ./nixops { };
     librxtx_java = callPackage ./librxtx-java { };
     list-gamecontrollers = callPackage ./list-gamecontrollers { };
@@ -43,6 +38,14 @@ let
       nman = callPackage ./profpatsch/nman {};
       warpspeed = callPackage ./profpatsch/warpspeed {
         inherit (pkgs.haskellPackages) ghcWithPackages;
+      };
+
+      jmtpfs = pkgs.jmtpfs.override {
+        libmtp = pkgs.libmtp.overrideDerivation (old: {
+          patches = old.patches or [] ++ [
+            ./profpatsch/patches/mtp-jolla.patch
+          ];
+        });
       };
 
       # patched version of droopy, with javascript user-enhancement
