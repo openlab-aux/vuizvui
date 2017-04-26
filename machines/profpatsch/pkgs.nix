@@ -75,16 +75,16 @@ let
   # A ghci with some sane default packages in scope, & hoogle
   saneGhci = haskellPackages.ghcWithHoogle (h: with h; [ protolude pretty-show ]);
 
-  # not upstream-compatible yet
-  nix-gen = haskellPackages.mkDerivation {
-    pname = "nix-gen";
-    version = "0.0.1";
-    license = lib.licenses.gpl3;
-    isExecutable = true;
-    src = /home/philip/code/nix/nix-gen;
-    buildDepends = with haskellPackages; [ hnix ansi-wl-pprint protolude data-fix ];
-  };
+  # # not upstream-compatible yet
+  # nix-gen = haskellPackages.mkDerivation {
+  #   pname = "nix-gen";
+  #   version = "0.0.1";
+  #   license = lib.licenses.gpl3;
+  #   isExecutable = true;
+  #   src = /home/philip/code/nix/nix-gen;
+  #   buildDepends = with haskellPackages; [ hnix ansi-wl-pprint protolude data-fix ];
+  # };
 
 in
 { inherit taffybar sent mpv beets poezio vim
-          fast-init xmpp-client saneGhci nix-gen searx; }
+          fast-init xmpp-client saneGhci /*nix-gen*/ searx; }

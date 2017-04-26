@@ -185,7 +185,7 @@ in {
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
         # on remove keep pdfjam!
         (texlive.combine { inherit (texlive) scheme-medium latexmk IEEEtran needspace; })
-        myPkgs.nix-gen
+        # myPkgs.nix-gen
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
     ++ programmingTools ++ documentation
