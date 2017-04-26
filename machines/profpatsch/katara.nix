@@ -119,6 +119,8 @@ in {
         cabal2nix                    # convert cabal files to nixexprs
         # myPkgs.fast-init             # fast-init of haskell projects
         gitAndTools.git-annex        # version controlled binary file storage
+        gitAndTools.git-dit          # decentral issue tracking for git
+
         httpie                       # nice http CLI
         # jid                          # interactive/incremental JSON digger
         # mercurial                    # the other version control system
@@ -148,8 +150,8 @@ in {
         gmpc                 # mpd client and best music player interface in the world
         inkscape             # vector graphics
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
-        lilyterm             # terminal emulator, best one around
-        myPkgs.mpv           # you are my sun and my stars. and you play my stuff.
+        lilyterm-git         # terminal emulator, best one around
+        myPkgs.mpv           # you are my sun and my stars, and you play my stuff.
         newsbeuter           # RSS/Atom feed reader
         pass                 # standard unix password manager
         picard               # jean-luc, music tagger
@@ -158,6 +160,7 @@ in {
         remind               # calender & reminder program
         rtorrent             # monster of a bittorrent client
         myPkgs.sent          # suckless presentation tool
+        unfreeAndNonDistributablePkgs.steam # the one gaming platform
         myPkgs.xmpp-client   # CLI XMPP Client
         youtube-dl           # download videos
         zathura              # pdf viewer
@@ -168,7 +171,7 @@ in {
       ];
       mailPkgs = [
         elinks               # command line browser
-        mutt-with-sidebar    # has been sucking less since 1970
+        mutt-with-sidebar    # has been sucking less since 1995
         msmtp                # SMTP client
         notmuch              # mail indexer
         pythonPackages.alot  # the next cool thing!
