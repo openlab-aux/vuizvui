@@ -87,8 +87,6 @@ in {
     ########
     # Users
 
-    # Nobody wants mutable state. :)
-    users.mutableUsers = false;
     users.users = { inherit philip; };
 
   };

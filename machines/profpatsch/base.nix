@@ -33,6 +33,9 @@ in
       myPkgs.vim        # slight improvement over vi
     ];
 
+    # Nobody wants mutable state. :)
+    users.mutableUsers = false;
+
   };
 
 }
