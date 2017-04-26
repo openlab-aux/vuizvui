@@ -11,6 +11,7 @@ let
       inherit (config.humblebundle) email password;
     };
 
+    antichamber = callPackage_i686 ./antichamber.nix { };
     bastion = callPackage ./bastion.nix {};
     brigador = callPackage ./brigador.nix {};
     cavestoryplus = callPackage ./cavestoryplus.nix {};
