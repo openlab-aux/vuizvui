@@ -301,6 +301,7 @@ in {
       ultimate = {
         enable = true;
         substitutions = "combi";
+        preset = "ultimate4";
       };
     };
     fonts.fonts = with pkgs; [
