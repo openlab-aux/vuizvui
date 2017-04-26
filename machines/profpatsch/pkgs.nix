@@ -64,23 +64,27 @@ let
 
   xmpp-client = pkgs.callPackage (import ./xmpp-client.nix myLib.philip.home "irc/xmppOla.wtf") { inherit (pkgs) xmpp-client; };
 
-  pythonPackagesMod = pkgs.pythonPackages.override {
-    overrides = self: super: {
-      searx = super.searx.overrideAttrs (old: {
-        propagatedBuildInputs = old.propagatedBuildInputs ++ [ pythonPackages.pyxdg ];
-        patches = old.patches or [] ++ [
-          ./patches/searx-secret-key.patch
-          ./patches/searx-rm-soundcloud.patch
-        ];
-      });
-    };
-  };
-
+  searx = pkgs.pythonPackages.searx.overrideAttrs (old: {
+    propagatedBuildInputs = old.propagatedBuildInputs ++ [ pythonPackages.pyxdg ];
+    patches = old.patches or [] ++ [
+      ./patches/searx-secret-key.patch
+      ./patches/searx-rm-soundcloud.patch
+    ];
+  });
 
   # A ghci with some sane default packages in scope, & hoogle
   saneGhci = haskellPackages.ghcWithHoogle (h: with h; [ protolude pretty-show ]);
 
+  # not upstream-compatible yet
+  nix-gen = haskellPackages.mkDerivation {
+    pname = "nix-gen";
+    version = "0.0.1";
+    license = lib.licenses.gpl3;
+    isExecutable = true;
+    src = /home/philip/code/nix/nix-gen;
+    buildDepends = with haskellPackages; [ hnix ansi-wl-pprint protolude data-fix ];
+  };
+
 in
 { inherit taffybar sent mpv beets poezio vim
-  fast-init xmpp-client saneGhci;
-  inherit (pythonPackagesMod) searx; }
+          fast-init xmpp-client saneGhci nix-gen searx; }
