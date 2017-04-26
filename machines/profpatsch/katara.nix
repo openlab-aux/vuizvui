@@ -58,24 +58,25 @@ in {
     # Network
 
     networking.hostName = "katara";
-    networking.supplicant.wlp3s0 = {
-      configFile = {
-        path = "/var/wifi-networks";
-        writable = true;
-      };
-      userControlled.enable = true;
-    };
+    # networking.supplicant.wlp3s0 = {
+    #   configFile = {
+    #     path = "/var/wifi-networks";
+    #     writable = true;
+    #   };
+    #   userControlled.enable = true;
+    # };
+    networking.networkmanager.enable = true;
 
-    networking.bonds = {
-      wifiAndEthernet = {
-        interfaces = [ "wlp3s0" "enp0s25" ];
-        driverOptions = {
-          miimon = "100";
-          primary = "enp0s25";
-          mode = "active-backup";
-        };
-      };
-    };
+    # networking.bonds = {
+    #   wifiAndEthernet = {
+    #     interfaces = [ "wlp3s0" "enp0s25" ];
+    #     driverOptions = {
+    #       miimon = "100";
+    #       primary = "enp0s25";
+    #       mode = "active-backup";
+    #     };
+    #   };
+    # };
 
     ###########
     # Packages
@@ -95,6 +96,7 @@ in {
         tarsnap             # encrypting online backup tool
         # TODO move into atool deps
         unzip               # extract zip archives
+        networkmanagerapplet
         wpa_supplicant_gui  # configure wireless connections
       ];
       xPkgs = [
