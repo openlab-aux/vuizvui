@@ -148,7 +148,7 @@ in {
         myPkgs.saneGhci      # <s>Glorious</s>Glasgow Haskell Compiler, mostly for ghci
         gimp                 # graphics
         gmpc                 # mpd client and best music player interface in the world
-        hledger              # plain text accounting
+        haskellPackages.hledger # plain text accounting
         inkscape             # vector graphics
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm-git         # terminal emulator, best one around
