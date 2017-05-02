@@ -43,6 +43,7 @@
     #tribler
     #vimiv
     #zotero
+    texlive.combined.scheme-small
     abook
     accountsservice
     antiword
