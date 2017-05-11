@@ -11,7 +11,6 @@
     #cura
     #openjdk8
     #skype
-    abcde
     aircrackng
     calibre
     cdrtools

@@ -43,7 +43,7 @@
     #tribler
     #vimiv
     #zotero
-    texlive.combined.scheme-small
+    abcde
     abook
     accountsservice
     antiword
@@ -246,6 +246,7 @@
     taskwarrior
     telnet
     testdisk
+    texlive.combined.scheme-small
     tftp-hpa
     tldr
     tmux
