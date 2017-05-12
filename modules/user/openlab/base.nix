@@ -32,7 +32,7 @@ in
     };
     time.timeZone = "Europe/Berlin";
 
-    hardware.enableAllFirmware = true;
+    hardware.enableRedistributableFirmware = true;
 
     # TODO: filesystems 
 

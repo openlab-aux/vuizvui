@@ -16,7 +16,7 @@ in
     environment.systemPackages = [ pkgs.acpi ];
 
     # for wifi
-    hardware.enableAllFirmware = mkDefault true;
+    hardware.enableRedistributableFirmware = mkDefault true;
 
     hardware.trackpoint = mkDefault {
       enable = true;
