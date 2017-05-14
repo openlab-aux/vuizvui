@@ -56,7 +56,7 @@ in {
   hardware.bluetooth.enable = true;
 
   hardware.opengl.driSupport32Bit = true;
-  hardware.enableAllFirmware = true;
+  hardware.enableRedistributableFirmware = true;
 
   hardware.trackpoint = {
     enable = true;
