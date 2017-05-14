@@ -8,6 +8,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    claws-mail
     aircrackng
     horst
     kismet
