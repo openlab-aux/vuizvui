@@ -23,5 +23,6 @@
     wirelesstools
     xbindkeys
     xorg.xbacklight
+    thunderbird
   ];
 }
