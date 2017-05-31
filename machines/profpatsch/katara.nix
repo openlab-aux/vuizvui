@@ -33,6 +33,10 @@ in {
       fsType = "ext3";
     };
 
+    hardware.trackpoint = {
+      speed = 280;
+    };
+
     hardware.pulseaudio = {
       enable = true;
       zeroconf.discovery.enable = true;
@@ -106,7 +110,6 @@ in {
         libnotify         # notification library
         xclip             # clipboard thingy
         xorg.xkill        # X11 application kill
-        # TODO get service to work (requires user dbus)
       ];
       guiPkgs = [
         gnome3.adwaita-icon-theme
@@ -251,10 +254,12 @@ in {
         Option "SuspendTime" "20"
         Option "OffTime" "30"
       '';
+
       synaptics = {
         enable = true;
-        minSpeed = "0.5";
-        accelFactor = "0.01";
+        minSpeed = "0.6";
+        maxSpeed = "1.5";
+        accelFactor = "0.015";
         twoFingerScroll = true;
         vertEdgeScroll = false;
       };
@@ -262,25 +267,10 @@ in {
 
       videoDrivers = [ "intel" ];
 
-      # otherwise xterm is enabled, creating an xterm that spawns the window manager.
-      desktopManager.xterm.enable = false;
-
-      windowManager.xmonad = {
-        enable = true;
-        enableContribAndExtras = true;
-      };
-
-      # autorepeat = {
-      #   enable = true;
-      #   delay = 250;
-      #   rate = 35;
-      # };
-
       displayManager = {
         sessionCommands = with pkgs; ''
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
-            export PATH+=":$HOME/.bin" #add (temporary) executables
             export EDITOR=emacsclient
 
             ${xorg.xset}/bin/xset r rate 250 35

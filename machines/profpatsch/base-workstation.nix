@@ -64,6 +64,17 @@ in {
     # bounded journal size
     services.journald.extraConfig = "SystemMaxUse=50M";
 
+    services.xserver = {
+      # otherwise xterm is enabled, creating an xterm that spawns the window manager.
+      desktopManager.xterm.enable = false;
+
+      windowManager.xmonad = {
+        enable = true;
+        enableContribAndExtras = true;
+      };
+    };
+
+
     # services.xserver = {
       # libinput = {
       #   enable = true;
