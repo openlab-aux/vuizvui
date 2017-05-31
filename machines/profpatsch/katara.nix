@@ -169,6 +169,7 @@ in {
       userScripts = with pkgs.vuizvui.profpatsch; [
         display-infos  # show time & battery
         show-qr-code   # display a QR code
+        backlight      # adjust laptop backlight
       ];
       mailPkgs = [
         elinks               # command line browser

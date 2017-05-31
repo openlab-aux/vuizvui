@@ -1,4 +1,4 @@
-{ callPackage, haskellPackages, jmtpfs, libmtp, droopy, fetchFromGitHub }:
+{ pkgs, callPackage, haskellPackages, jmtpfs, libmtp, droopy, fetchFromGitHub }:
 
 {
   display-infos = callPackage ./display-infos {};
@@ -15,6 +15,8 @@
       ];
     });
   };
+
+  backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
 
   # patched version of droopy, with javascript user-enhancement
   droopy = droopy.overrideDerivation (old: {
