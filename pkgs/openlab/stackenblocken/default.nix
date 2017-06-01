@@ -1,5 +1,6 @@
 { lib, fetchFromGitHub, writeScriptBin, curl, bash, gawk
-, haskellPackages, mpg321 }:
+, haskellPackages, mpg321
+, volumePercent ? 50 }:
 
 let
   repo = fetchFromGitHub {
@@ -75,7 +76,7 @@ let
       echo "starting .labping bot"
       ${lib.getBin bot}/bin/stackenblocken &
       echo "DOING STACKENBLOCKEN"
-      ${lib.getBin mpg321}/bin/mpg321 --gain 40 -q ${jingle}
+      ${lib.getBin mpg321}/bin/mpg321 --gain ${toString volumePercent} -q ${jingle}
     done
   '';
 

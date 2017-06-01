@@ -34,7 +34,10 @@
       tcp.anonymousClients.allowedIpRanges = [ "172.16.0.0/16" "127.0.0.1" ];
     };
 
-    vuizvui.user.openlab.stackenblocken.enable = true;
+    vuizvui.user.openlab.stackenblocken = {
+      enable = true;
+      volume = 30;
+    };
 
     services.logind.extraConfig = "HandleLidSwitch=ignore";
 
