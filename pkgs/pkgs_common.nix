@@ -185,6 +185,7 @@
     mtr
     ncdu
     ncmpcpp
+    neovim
     nethack
     nethogs
     netkittftp
