@@ -8,6 +8,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    terminator
     claws-mail
     aircrackng
     horst
