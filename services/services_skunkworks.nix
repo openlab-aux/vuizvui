@@ -15,7 +15,8 @@
 
   services.xserver = {
     enable = true;
-    layout = "dvorak";
+    layout = "us";
+    xkbVariant = "dvorak";
     videoDrivers = [ "ati" ];
 
     serverLayoutSection = ''
