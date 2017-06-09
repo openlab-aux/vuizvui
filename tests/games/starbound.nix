@@ -79,7 +79,7 @@ in {
     ${clickAt "join-game" 100 560}
     $client->waitForText(qr/select/i);
     ${clickAt "new-character" 460 220}
-    $client->waitForText(qr/species/i);
+    $client->waitForText(qr/randomise/i);
     ${clickAt "create-character" 600 625}
     $client->waitForText(qr/select/i);
     ${clickAt "use-character" 460 220}
@@ -97,6 +97,7 @@ in {
     ${clickAt "join-server" 495 420}
 
     $client->waitForText(qr/graduation/i);
+    $client->sleep(30);
     $client->screenshot("client");
   '';
 }
