@@ -108,6 +108,7 @@
     flac
     foremost
     freerdpUnstable
+    fuse_exfat
     gajim
     gcc
     gdb
