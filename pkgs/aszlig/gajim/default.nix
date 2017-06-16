@@ -22,6 +22,8 @@ gajim.override {
 
       buildInputs = [ gmp ];
 
+      doCheck = false;
+
       preConfigure = ''
         sed -i 's,/usr/include,/no-such-dir,' configure
         sed -i "s!,'/usr/include/'!!" setup.py
