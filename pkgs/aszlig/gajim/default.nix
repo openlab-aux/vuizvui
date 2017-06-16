@@ -2,7 +2,7 @@
 , gajim
 }:
 
-gajim.override {
+(gajim.override {
   pythonPackages = pythonPackages // {
     pycrypto = pythonPackages.buildPythonPackage rec {
       name = "pycrypto-${version}";
@@ -28,4 +28,6 @@ gajim.override {
       '';
     };
   };
+}) // {
+  meta = gajim.meta // { platforms = [ "x86_64-linux" ]; };
 }
