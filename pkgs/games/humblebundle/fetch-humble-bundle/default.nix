@@ -89,7 +89,7 @@
       sha256 = "1kcg42nh7sbjabim1pbqx14468pypznjy7fx2bv7dicy0sqd9b8j";
     };
 
-    propagatedBuildInputs = with pythonPackages; [ requests2 ];
+    propagatedBuildInputs = [ pythonPackages.requests ];
   };
 
   pyStr = str: "'${stdenv.lib.escape ["'" "\\"] str}'";
