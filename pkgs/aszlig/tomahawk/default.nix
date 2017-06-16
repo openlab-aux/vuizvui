@@ -86,5 +86,6 @@ in stdenv.mkDerivation rec {
     license = licenses.gpl3Plus;
     platforms = platforms.all;
     maintainers = [ maintainers.aszlig ];
+    broken = true;
   };
 }
