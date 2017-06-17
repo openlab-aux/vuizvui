@@ -69,7 +69,7 @@ in {
   hardware.sane.extraBackends = [ pkgs.hplip ];
 
   vuizvui.user.aszlig.system.kernel.enable = true;
-  hardware.enableAllFirmware = true;
+  hardware.enableRedistributableFirmware = true;
 
   networking.hostName = "dnyarri";
 
