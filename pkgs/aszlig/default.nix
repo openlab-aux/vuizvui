@@ -11,5 +11,4 @@
   lockdev = callPackage ./lockdev { };
   pvolctrl = callPackage ./pvolctrl { };
   santander = callPackage_i686 ./santander { };
-  tomahawk = callPackage ./tomahawk { boost = boost155; };
 }

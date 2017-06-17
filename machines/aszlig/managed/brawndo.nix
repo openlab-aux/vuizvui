@@ -75,7 +75,6 @@ in {
     unfreePkgs.steam
     unfreeAndNonDistributablePkgs.skype
     thunderbird
-    vuizvui.aszlig.tomahawk
     wine
     xpdf
     youtubeDL
