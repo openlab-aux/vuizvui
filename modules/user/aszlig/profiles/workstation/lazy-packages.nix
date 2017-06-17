@@ -25,6 +25,5 @@ pkgs: with pkgs; [
   rtmpdump
   rtorrent
   vuizvui.aszlig.santander
-  vuizvui.aszlig.tomahawk
   uqm
 ]
