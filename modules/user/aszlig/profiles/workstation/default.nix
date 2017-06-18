@@ -2,7 +2,7 @@
 
 let
   cfg = config.vuizvui.user.aszlig.profiles.workstation;
-  randrHeads = config.services.xserver.xrandrHeads;
+  inherit (config.services.xserver) xrandrHeads;
 
 in {
   options.vuizvui.user.aszlig.profiles.workstation = {
@@ -16,12 +16,13 @@ in {
     boot.cleanTmpDir = true;
 
     environment.systemPackages = with lib; let
-      mkRandrConf = acc: name: acc ++ singleton {
-        inherit name;
-        value = "--output '${name}' --preferred"
+      mkRandrConf = acc: rcfg: acc ++ singleton {
+        name = rcfg.output;
+        value = "--output ${lib.escapeShellArg rcfg.output} --preferred"
+              + optionalString rcfg.primary " --primary"
               + optionalString (acc != []) " --right-of '${(head acc).name}'";
       };
-      randrConf = map (getAttr "value") (foldl mkRandrConf [] randrHeads);
+      randrConf = map (getAttr "value") (foldl mkRandrConf [] xrandrHeads);
     in singleton (pkgs.writeScriptBin "xreset" ''
       #!${pkgs.stdenv.shell}
       ${pkgs.xorg.xrandr}/bin/xrandr ${concatStringsSep " " randrConf}

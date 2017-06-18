@@ -18,7 +18,7 @@ let
   wsPerHead = wsCount / headCount;
   excessWs = wsCount - (headCount * wsPerHead);
   headModifier = if cfg.reverseHeads then reverseList else id;
-  getHeadAt = elemAt (headModifier xrandrHeads);
+  getHeadAt = x: (elemAt (headModifier xrandrHeads) x).output;
 
   mkSwitchTo = number: "$mod+${if number == 10 then "0" else toString number}";
 
@@ -57,7 +57,7 @@ let
   '';
 
   barConfig = let
-    barHeads = headModifier xrandrHeads;
+    barHeads = map (h: h.output) (headModifier xrandrHeads);
     bars = if headCount == 0 then mkBar null conky.single
       else if headCount == 1 then mkBar (head barHeads) conky.single
       else let inner = take (length barHeads - 2) (tail barHeads);
