@@ -24,6 +24,5 @@ pkgs: with pkgs; [
   picard
   rtmpdump
   rtorrent
-  vuizvui.aszlig.santander
   uqm
 ]

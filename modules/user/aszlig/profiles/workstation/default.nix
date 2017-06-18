@@ -28,6 +28,8 @@ in {
       ${pkgs.xorg.xrandr}/bin/xrandr ${concatStringsSep " " randrConf}
     '') ++ import ./packages.nix pkgs;
 
+    environment.pathsToLink = lib.singleton "/share/chromium/extensions";
+
     vuizvui.lazyPackages = import ./lazy-packages.nix pkgs;
 
     hardware = {

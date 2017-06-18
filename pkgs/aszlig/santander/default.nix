@@ -1,19 +1,6 @@
-{ stdenv, fetchurl, fetchgit, fetchFromBitbucket
-, runCommand, writeScript, writeScriptBin, writeText
-, xvfb_run, xdotool, coreutils, wineMinimal, pipelight, dwb-unwrapped, pcsclite
-}:
+{ stdenv, fetchurl, fetchgit, runCommand, p7zip, jq, wineMinimal, pcsclite }:
 
 let
-  name = "SecurityPluginHBCIChipcard";
-  version = "2.9.8.0";
-  dllName = "NP_${name}.dll";
-
-  pluginInstaller = fetchurl {
-    url = "https://service.santanderbank.de/special/banking/files/"
-        + "SecurityPluginHBCIChipcard-${version}-Installer.exe";
-    sha256 = "0xnfb730mwxdx83dnqyplp4bxwx6g01wc87xa4dl1spxia9kjmmh";
-  };
-
   patchedWine = let
     libpcsclite = "${pcsclite}/lib/libpcsclite.so";
   in (wineMinimal.override {
@@ -41,115 +28,62 @@ let
     '';
   });
 
-  installPath = [ "Program Files" "ppi" "SecurityPluginHBCIChipcard" ];
+in stdenv.mkDerivation rec {
+  name = "TRAVIC-Sign-${version}";
+  version = "3.1.3.0";
 
-  scard4wine = stdenv.mkDerivation rec {
-    name = "scard4wine-${version}";
-    version = "1.2.0-2016-06-05";
-
-    src = fetchgit {
-      url = "git://git.code.sf.net/p/scard4wine/code";
-      rev = "c14c02c80bf1f2bb4cedd1f53a3a2ab9c48bed76";
-      sha256 = "0ffmbl9mdnaih4h3ggpnzqbih3kgbwl3wv6j1ag5s4czn8gcpdq3";
-    };
+  src = fetchurl {
+    url = "https://service.santanderbank.de/special/banking/files/"
+        + "${name}-Installer.exe";
+    sha256 = "19a14av3bg6i4iy5q5pa737cwxznqji0lcrapxw0q6qb8rs1rhs7";
   };
 
-  winePrefix = runCommand "santander-wineprefix" {
-    installPath = stdenv.lib.concatStringsSep "/" (installPath ++ [ dllName ]);
+  extensionId = "ilpoejcegjjlgpobjkpjmddkbdkdndaj";
+
+  buildInputs = [ p7zip jq ];
+
+  unpackCmd = "7z x -y -otavic-sign $curSrc";
+
+  phases = [ "unpackPhase" "patchPhase" "installPhase" ];
+
+  postPatch = ''
+    jq '.allowed_origins = [
+      "chrome-extension://'"$extensionId"'/"
+    ] | .path = "'"$out/share/libexec/travic-sign"'"
+      | del(.allowed_extensions)' manifest-firefox.json > host.json
+
+    7z x -y -oextension FirefoxExtension.xpi
+    jq '.content_scripts[].matches = ["https://karte.santanderbank.de/*"] | {
+      # All the object attributes that we want to have (nothing more):
+      background, web_accessible_resources, content_scripts, page_action,
+      permissions, author, version, description, name, manifest_version
+    }' extension/manifest.json > new_manifest.json
+    mv new_manifest.json extension/manifest.json
+    (cd extension && 7z a -tzip ../travic-sign.crx *)
+  '';
+
+  winePrefix = runCommand "empty-wineprefix" {
+    buildInputs = [ patchedWine ];
   } ''
     export WINEPREFIX="$out"
-    export WINEDLLOVERRIDES="mscoree,mshtml="
     mkdir -p "$out"
-    ${patchedWine}/bin/wine wineboot.exe
-    ${xvfb_run}/bin/xvfb-run "${writeScript "install-santander-wine" ''
-      ${patchedWine}/bin/wine "${pluginInstaller}" &
-      while [ "$(jobs -r | wc -l)" -gt 0 ]; do
-        ${xdotool}/bin/xdotool \
-          search --sync --onlyvisible \
-          --name 'Security-Plugin-HBCI-Chipcard ${version}' \
-          key Return &> /dev/null || :
-        sleep 1
-      done
-      wait
-    ''}"
-    if [ ! -e "$out/drive_c/$installPath" ]; then
-      echo "Unable to find plugin in $installPath." >&2
-      exit 1
-    fi
-    ln -sf -T "${builtins.storeDir}" "$WINEPREFIX/dosdevices/z:"
-    echo disable > "$WINEPREFIX/.update-timestamp"
+    wine wineboot.exe
   '';
 
-  pluginConfig = {
-    winePath = "$share/wine";
-    inherit winePrefix dllName;
-    wineArch = "win32";
-    pluginLoaderPath = "$share/pluginloader.exe";
-    dllPath = "c:\\${stdenv.lib.concatStringsSep "\\" installPath}";
-  };
+  installPhase = ''
+    libexec="$out/share/libexec/travic-sign"
 
-  pipelightConfigFile = let
-    mkVal = val: if val == true then "true"
-            else if val == false then "false"
-            else toString val;
-    mkCfgLine = key: val: "# ${key} = ${mkVal val}";
-  in with stdenv.lib; writeText "pipelight-santander.config" ''
-    # ---BEGIN CONFIG---
-    ${concatStringsSep "\n" (mapAttrsToList mkCfgLine pluginConfig)}
-    # ---END CONFIG---
+    install -vD -m 0644 TRAVIC-Sign-Service.exe "$libexec/service.exe"
+    install -vD -m 0644 host.json \
+      "$out/etc/chromium/native-messaging-hosts/travic-sign.json"
+    install -vD -m 0644 travic-sign.crx \
+      "$out/share/chromium/extensions/$extensionId.crx"
+
+    cat > "$libexec/travic-sign" <<EOF
+    #!${stdenv.shell}
+    export WINEPREFIX="$winePrefix"
+    exec ${patchedWine}/bin/wine "$libexec/TRAVIC-Sign-Service.exe"
+    EOF
+    chmod +x "$libexec/travic-sign"
   '';
-
-  finalPlugin = runCommand "santander-plugin" {
-    pipelight = (pipelight.override {
-      wineStaging = patchedWine;
-    }).overrideDerivation (drv: {
-      src = fetchFromBitbucket {
-        repo = "pipelight";
-        owner = "mmueller2012";
-        rev = "181bab804f80b99cb46f63f9ed36e4fdf12ca319";
-        sha256 = "0ydivpxayzs5aklf0x5vl5bl4issz10k7zl3cv76649kxxhxkh1z";
-      };
-
-      patches = [ ./pipelight.patch ];
-
-      postPatch = (drv.postPatch or "") + ''
-        sed -i -e '/static \+bool \+openConfig.*{$/,/}/ {
-          /getConfigNameFromLibrary/a \
-            configFile.open("${pipelightConfigFile}"); \
-            if (configFile.is_open()) return true;
-        }' src/linux/libpipelight/configloader.c
-      '';
-
-      # We don't want or have share/pipelight/install-dependency!
-      preFixup = null;
-    });
-  } ''
-    install -vD "$pipelight/lib/pipelight/libpipelight.so" \
-      "$out/lib/pipelight/libpipelight-santander.so"
-  '';
-
-  # Allow to use dwb for now until we have a better solution.
-  dwb = dwb-unwrapped.override {
-    inherit (import (import ../../../nixpkgs-path.nix) {
-      inherit (stdenv) system;
-      config = {
-        permittedInsecurePackages = [ "webkitgtk-2.4.11" ];
-      };
-    }) webkitgtk2;
-  };
-
-  inherit (stdenv.lib) escapeShellArg;
-
-in writeScriptBin "santander" ''
-  #!${stdenv.shell}
-  if tmpdir="$("${coreutils}/bin/mktemp" -d)"; then
-    trap "rm -rf '$tmpdir'" EXIT
-    export HOME="$tmpdir"
-    export MOZ_PLUGIN_PATH=${escapeShellArg "${finalPlugin}/lib/pipelight"}
-    "${dwb}/bin/dwb" -t https://karte.santanderbank.de/
-    exit $?
-  else
-    echo "Unable to create temporary profile directory." >&2
-    exit 1
-  fi
-''
+}
