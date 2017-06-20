@@ -41,20 +41,6 @@
 
     services.logind.extraConfig = "HandleLidSwitch=ignore";
 
-    services.mpd = {
-      enable = true;
-      musicDirectory = musicDir;
-      network.listenAddress = "any";
-      extraConfig = ''
-        auto_update yes
-        audio_output {
-          type            "pulse"
-          name            "MPD Pulse Output"
-          server          "127.0.0.1"
-        }
-      '';
-    };
-
     fileSystems = {
       "${musicDir}" = {
         device = "ftp.openlab.lan:/data/upload/music";
