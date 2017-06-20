@@ -34,6 +34,13 @@
       tcp.anonymousClients.allowedIpRanges = [ "172.16.0.0/16" "127.0.0.1" ];
     };
 
+    services.saned = {
+      enable = true;
+      extraConfig = ''
+        172.16.0.0/16
+      '';
+    };
+
     vuizvui.user.openlab.stackenblocken = {
       enable = true;
       volume = 30;
