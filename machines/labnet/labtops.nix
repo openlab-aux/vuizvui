@@ -34,6 +34,7 @@
       tcp.anonymousClients.allowedIpRanges = [ "172.16.0.0/16" "127.0.0.1" ];
     };
 
+    hardware.sane.enable = true;
     services.saned = {
       enable = true;
       extraConfig = ''
