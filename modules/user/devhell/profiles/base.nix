@@ -44,6 +44,8 @@ in {
       };
     };
 
+    networking.firewall.enable = false;
+
     programs = {
       ssh = {
         startAgent = false;
