@@ -243,4 +243,27 @@
       DISPLAY=:0.1 ${pkgs.windowmaker}/bin/wmaker &
     '';
   };
+
+  #### Machine-specific packages configuration ####
+
+  vuizvui.user.devhell.profiles.packages.enable = true;
+
+  nixpkgs.config.chromium.enablePepperFlash = true;
+  nixpkgs.config.mpv.bs2bSupport = true;
+
+  environment.systemPackages = with pkgs; [
+    abook
+    canto-curses
+    cli-visualizer
+    cmus
+    #ipfs
+    handbrake
+    hplip
+    mutt-with-sidebar
+    nzbget
+    #scummvm
+    slrn
+    twister
+    urlview
+  ];
 }

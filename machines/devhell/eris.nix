@@ -199,4 +199,30 @@
       #DEVICES_TO_ENABLE_ON_WWAN_DISCONNECT=""
     '';
   };
+
+  #### Machine-specific packages configuration ####
+
+  vuizvui.user.devhell.profiles.packages.enable = true;
+
+  nixpkgs.config.mpv.vaapiSupport = true;
+
+  environment.systemPackages = with pkgs; [
+    terminator
+    claws-mail
+    aircrackng
+    horst
+    kismet
+    minicom
+    networkmanagerapplet
+    pamixer
+    pmtools
+    pmutils
+    reaverwps
+    snort
+    wavemon
+    xbindkeys
+    xorg.xbacklight
+    thunderbird
+    iw
+  ];
 }
