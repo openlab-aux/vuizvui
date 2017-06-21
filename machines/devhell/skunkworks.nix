@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  imports = [ ./machine_common.nix ];
+  vuizvui.user.devhell.profiles.base.enable = true;
 
   boot = {
     loader.grub = {

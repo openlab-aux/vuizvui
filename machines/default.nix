@@ -12,6 +12,11 @@ with import ../lib;
       tyree   = callMachine ./aszlig/managed/tyree.nix {};
     };
   };
+  devhell = {
+    eris       = callMachine devhell/eris.nix {};
+    skunkworks = callMachine devhell/skunkworks.nix {};
+    titan      = callMachine devhell/titan.nix {};
+  };
   labnet = {
     labtops = callNetwork ./labnet/labtops.nix {};
   };
