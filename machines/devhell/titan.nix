@@ -47,6 +47,12 @@
     { device = "/dev/disk/by-uuid/fecde631-8661-4a0e-88e6-5ce5b551847a"; }
   ];
 
+  networking.hostName = "titan";
+  networking.wireless.enable = true;
+  networking.connman.enable = true;
+  networking.wicd.enable = false;
+  networking.networkmanager.enable = false;
+
   nix = {
     maxJobs = 4;
     extraOptions = ''

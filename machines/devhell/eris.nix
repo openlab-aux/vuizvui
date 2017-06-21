@@ -31,6 +31,9 @@
     };
   };
 
+  networking.hostName = "eris";
+  networking.networkmanager.enable = true;
+
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/4788e218-db0f-4fd6-916e-e0c484906eb0";
     fsType = "btrfs";
