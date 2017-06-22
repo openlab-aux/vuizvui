@@ -29,6 +29,9 @@
   ./user/aszlig/services/slim
   ./user/aszlig/services/vlock
   ./user/aszlig/system/kernel.nix
+  ./user/devhell/profiles/base.nix
+  ./user/devhell/profiles/packages.nix
+  ./user/devhell/profiles/services.nix
   ./user/openlab/base.nix
   ./user/openlab/labtops.nix
   ./user/openlab/stackenblocken.nix
