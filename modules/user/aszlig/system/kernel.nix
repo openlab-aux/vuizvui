@@ -9,11 +9,12 @@
     boot = {
       kernelPatches = lib.singleton {
         name = "bfq";
-        patch = pkgs.runCommand "empty.patch" {} "touch \"$out\"";
+        patch = ./add-default-iosched-option-for-bfq.patch;
         extraConfig = ''
           SCSI_MQ_DEFAULT y
           IOSCHED_BFQ y
           BFQ_GROUP_IOSCHED y
+          DEFAULT_BFQ y
           DEFAULT_IOSCHED bfq
         '';
       };
