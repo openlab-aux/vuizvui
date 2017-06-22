@@ -380,7 +380,7 @@ let
       ];
     }
     { check = config.virtualisation.virtualbox.host.enable
-           && config.virtualisation.virtualbox.headless;
+           && config.virtualisation.virtualbox.host.headless;
       path  = ["nixos" "virtualbox" "headless"];
     }
     { check = let
