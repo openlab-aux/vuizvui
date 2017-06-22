@@ -8,12 +8,12 @@
   config = lib.mkIf config.vuizvui.user.aszlig.system.kernel.enable {
     boot = {
       kernelPatches = lib.singleton {
-        name = "bfq-v8r7";
-        patch = ./bfq.patch;
+        name = "bfq";
+        patch = pkgs.runCommand "empty.patch" {} "touch \"$out\"";
         extraConfig = ''
+          SCSI_MQ_DEFAULT y
           IOSCHED_BFQ y
-          DEFAULT_BFQ y
-          DEFAULT_CFQ n
+          BFQ_GROUP_IOSCHED y
           DEFAULT_IOSCHED bfq
         '';
       };
