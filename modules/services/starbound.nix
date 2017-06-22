@@ -289,7 +289,7 @@ in {
       example = "high";
       description = ''
         The fidelity profile to use for this server as defined in
-        <path>worldserver.config</path> inside the packed assets.
+        <filename>worldserver.config</filename> inside the packed assets.
 
         If this is set to <literal>automatic</literal> the server will
         automatically switch between these profiles.
