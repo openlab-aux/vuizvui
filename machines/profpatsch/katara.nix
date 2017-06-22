@@ -93,7 +93,7 @@ in {
         atool               # archive tools
         gnupg gnupg1compat  # PGP encryption
         imagemagick         # image conversion
-        pkgs.vuizvui.profpatsch.jmtpfs # MTP fuse
+        jmtpfs              # MTP fuse
         mosh                # ssh with stable connections
         nfs-utils           # the filesystem of the future for 20 years
         sshfsFuse           # mount ssh machines

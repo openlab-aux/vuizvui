@@ -1,4 +1,4 @@
-{ pkgs, callPackage, haskellPackages, jmtpfs, libmtp, droopy, fetchFromGitHub }:
+{ pkgs, callPackage, haskellPackages, droopy, fetchFromGitHub }:
 
 {
   display-infos = callPackage ./display-infos {};
@@ -7,14 +7,6 @@
     inherit (haskellPackages) ghcWithPackages;
   };
   show-qr-code = callPackage ./show-qr-code { };
-
-  jmtpfs = jmtpfs.override {
-    libmtp = libmtp.overrideDerivation (old: {
-      patches = old.patches or [] ++ [
-        ./patches/mtp-jolla.patch
-      ];
-    });
-  };
 
   backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
 
