@@ -20,23 +20,17 @@ in {
     '');
 
     boot.kernelPatches = [
-      { name = "drm";
-        patch = ./drm.patch;
+      { name = "backlight";
+        patch = ./backlight.patch;
       }
       { name = "meta-keys";
         patch = ./meta-keys.patch;
-      }
-      { name = "sdio";
-        patch = ./sdio.patch;
-      }
-      { name = "sound";
-        patch = ./sound.patch;
       }
     ];
 
     boot.kernelPackages = let
       nixpkgs = import ../../../nixpkgs-path.nix;
-      t100haKernel = pkgs.linux_4_9.override {
+      t100haKernel = pkgs.linux_testing.override {
         # Missing device drivers:
         #
         #   808622B8 -> Intel(R) Imaging Signal Processor 2401
