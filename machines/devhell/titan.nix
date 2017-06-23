@@ -14,7 +14,7 @@
     };
 
     initrd = {
-      availableKernelModules = [ "xhci_hcd" "ehci_pci" "ahci" "usb_storage" ];
+      availableKernelModules = [ "xhci_hcd" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
       kernelModules = [ "fuse" ];
     };
 
@@ -32,29 +32,29 @@
   };
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/09d1155f-e7dd-4754-ae01-44da2517d5f0";
-    fsType = "btrfs";
-    options = [
-      "autodefrag"
-      "space_cache"
-      "compress=lzo"
-      "noatime"
-      "ssd"
-    ];
+    device = "/dev/disk/by-uuid/409cc4ab-a9b9-4301-a377-9a7b1eef20e3";
+    fsType = "f2fs";
   };
 
-  swapDevices = [
-    { device = "/dev/disk/by-uuid/fecde631-8661-4a0e-88e6-5ce5b551847a"; }
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/E15E-D804";
+    fsType = "vfat";
+  };
+
+  swapDevices = [ 
+    { device = "/dev/disk/by-uuid/448d8987-334f-431c-b6be-baf2ddcc48df"; }
   ];
 
   networking.hostName = "titan";
-  networking.wireless.enable = true;
-  networking.connman.enable = true;
+  networking.wireless.enable = false;
+  networking.connman.enable = false;
   networking.wicd.enable = false;
-  networking.networkmanager.enable = false;
+  networking.networkmanager.enable = true;
+
+  powerManagement.cpuFreqGovernor = "powersave";
 
   nix = {
-    maxJobs = 4;
+    maxJobs = lib.mkDefault 4;
     extraOptions = ''
       auto-optimise-store = true
     '';
