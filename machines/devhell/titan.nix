@@ -46,7 +46,7 @@
   ];
 
   networking.hostName = "titan";
-  networking.wireless.enable = true;
+  networking.wireless.enable = false;
   networking.connman.enable = true;
   networking.wicd.enable = false;
   networking.networkmanager.enable = false;
