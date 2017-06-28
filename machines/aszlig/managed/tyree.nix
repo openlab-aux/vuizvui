@@ -65,7 +65,6 @@
     export LANG=en_US.UTF-8
   '';
 
-  services.openssh.enable = true;
   services.tlp.enable = true;
 
   services.xserver.enable = true;
