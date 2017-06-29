@@ -46,6 +46,11 @@
     ];
   };
 
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/BDBC-FC8B";
+    fsType = "vfat";
+  };
+
   swapDevices = [ ];
 
   nix = {
