@@ -94,11 +94,16 @@
     layout = "gb";
     videoDrivers = [ "intel" ];
 
-    synaptics = {
+    libinput = {
       enable = true;
-      twoFingerScroll = true;
-      palmDetect = true;
+      disableWhileTyping = true;
+      middleEmulation = true;
     };
+#    synaptics = {
+#      enable = true;
+#      twoFingerScroll = true;
+#      palmDetect = true;
+#    };
 
     # XXX: Factor out and make DRY, because a lot of the stuff here is
     # duplicated in the other machine configurations.
