@@ -183,6 +183,7 @@
     ipmitool
     ipmiutil
     ipmiview
+    iw
     kismet
     libva
     libvdpau-va-gl
@@ -202,7 +203,6 @@
     vaapiVdpau
     vdpauinfo
     wavemon
-    wirelesstools
     xbindkeys
     xorg.xbacklight
   ];
