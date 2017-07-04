@@ -46,6 +46,7 @@
       enable = true;
       volume = 30;
     };
+    vuizvui.user.openlab.speedtest.enable = true;
 
     services.logind.extraConfig = "HandleLidSwitch=ignore";
 

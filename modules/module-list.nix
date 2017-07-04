@@ -34,6 +34,7 @@
   ./user/devhell/profiles/services.nix
   ./user/openlab/base.nix
   ./user/openlab/labtops.nix
+  ./user/openlab/speedtest.nix
   ./user/openlab/stackenblocken.nix
   ./user/profpatsch/programs/scanning.nix
 ]
