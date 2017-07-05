@@ -14,6 +14,7 @@
   ./services/postfix
   ./services/starbound.nix
   ./system/iso.nix
+  ./system/kernel/bfq
   ./user/aszlig/profiles/base.nix
   ./user/aszlig/profiles/managed.nix
   ./user/aszlig/profiles/workstation

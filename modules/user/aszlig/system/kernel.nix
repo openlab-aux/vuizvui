@@ -6,26 +6,15 @@
   };
 
   config = lib.mkIf config.vuizvui.user.aszlig.system.kernel.enable {
-    boot = {
-      kernelPatches = lib.singleton {
-        name = "bfq";
-        patch = ./bfq-by-default.patch;
-        extraConfig = ''
-          SCSI_MQ_DEFAULT y
-          DM_MQ_DEFAULT y
-          IOSCHED_BFQ y
-          BFQ_GROUP_IOSCHED y
-        '';
-      };
+    vuizvui.system.kernel.bfq.enable = true;
 
-      kernelPackages = let
-        inherit (lib) take splitString replaceStrings;
-        inherit (pkgs) linux_latest linux_testing;
-        dotizeVer = replaceStrings ["-"] ["."];
-        trimVer = ver: take 2 (splitString "." (dotizeVer ver));
-        tooOld = trimVer linux_latest.version == trimVer linux_testing.version;
-        kernel = if tooOld then linux_latest else linux_testing;
-      in pkgs.linuxPackagesFor kernel;
-    };
+    boot.kernelPackages = let
+      inherit (lib) take splitString replaceStrings;
+      inherit (pkgs) linux_latest linux_testing;
+      dotizeVer = replaceStrings ["-"] ["."];
+      trimVer = ver: take 2 (splitString "." (dotizeVer ver));
+      tooOld = trimVer linux_latest.version == trimVer linux_testing.version;
+      kernel = if tooOld then linux_latest else linux_testing;
+    in pkgs.linuxPackagesFor kernel;
   };
 }

@@ -12,6 +12,9 @@ in {
   programs = {
     gnupg = callTest ./programs/gnupg;
   };
+  system = {
+    kernel.bfq = callTest ./system/kernel/bfq.nix;
+  };
   richi235 = {
     # Currently broken
     #multipath-vpn = callTest ./richi235/multipath-vpn.nix;
