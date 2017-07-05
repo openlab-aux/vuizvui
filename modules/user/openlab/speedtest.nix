@@ -25,6 +25,7 @@ in {
     systemd.services.speedtest = {
        description = "openlab network speedtest";
        path = with pkgs; [ curl bind.host ];
+       environment = { "LC_ALL" = "C"; };
        wantedBy = [ "default.target" ];
        after = [ "network.target" ];
        script = "${speedtest}";
