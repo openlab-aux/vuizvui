@@ -9,13 +9,12 @@
     boot = {
       kernelPatches = lib.singleton {
         name = "bfq";
-        patch = ./add-default-iosched-option-for-bfq.patch;
+        patch = ./bfq-by-default.patch;
         extraConfig = ''
           SCSI_MQ_DEFAULT y
+          DM_MQ_DEFAULT y
           IOSCHED_BFQ y
           BFQ_GROUP_IOSCHED y
-          DEFAULT_BFQ y
-          DEFAULT_IOSCHED bfq
         '';
       };
 
