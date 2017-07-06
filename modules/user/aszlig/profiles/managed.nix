@@ -17,6 +17,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    vuizvui.system.kernel.bfq.enable = true;
+
     environment.systemPackages = [ pkgs.simple-scan ];
 
     # Printing for the most common printers among the managed machines.
