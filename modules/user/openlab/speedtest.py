@@ -15,13 +15,14 @@ PING_BIN = "ping"
 
 dns = 0 == sub.run([HOST_BIN, "-W1", DOMAIN], stdout=sub.DEVNULL).returncode
 
-ping = 0 == sub.run([PING_BIN, "-w1", "-W1", "-c1", DOMAIN],
+hostname = DOMAIN if dns else IP
+
+ping = 0 == sub.run([PING_BIN, "-w1", "-W1", "-c1", hostname],
                     stdout=sub.DEVNULL).returncode
 
 bytes_per_sec = 0
 if ping == True:
-    d = DOMAIN if dns else IP
-    res = sub.run(["curl", "--silent", PROTOCOL + "://" + d + FILE,
+    res = sub.run(["curl", "--silent", PROTOCOL + "://" + hostname + FILE,
                    "--write-out", "\n%{speed_download}"],
                   stdout=sub.PIPE, stderr=sub.PIPE)
     if res.returncode != 0:
