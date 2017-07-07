@@ -44,7 +44,7 @@
 
     vuizvui.user.openlab.stackenblocken = {
       enable = true;
-      volume = 30;
+      volume = 40;
     };
     vuizvui.user.openlab.speedtest.enable = true;
 
