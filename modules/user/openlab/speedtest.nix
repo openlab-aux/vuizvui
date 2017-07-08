@@ -14,6 +14,7 @@ let
 
   speedtest = pkgs.writeScript "speedtest" ''
     #!${bin pkgs.bash "bash"}
+    mkdir -p "$(dirname "${cfg.outputPath}")"
     ${bin pkgs.python3 "python3"} ${py} >> "${cfg.outputPath}"
   '';
 
@@ -37,12 +38,6 @@ in {
        after = [ "network.target" ];
        script = "${speedtest}";
        startAt = [ "*-*-* *:00/15:00" ];
-       serviceConfig.User = "speedtest";
-     };
-
-     users.users.speedtest = {
-        createHome = false;
-        home = "/var/lib/speedtest";
      };
 
      assertions = [ {

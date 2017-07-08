@@ -15,7 +15,8 @@
   };
 
   hannswurscht = { pkgs, ... }:
-    let musicDir = "/data/music"; in
+    let musicDir = "/data/music";
+        webserverRootDir = "/var/www"; in
   {
     vuizvui.user.openlab.base.enable = true;
 
@@ -46,8 +47,20 @@
       enable = true;
       volume = 40;
     };
-    vuizvui.user.openlab.speedtest.enable = true;
+    vuizvui.user.openlab.speedtest = {
+      enable = true;
+      outputPath = "${webserverRootDir}/speedtest.yaml";
+    };
 
+    services.nginx = {
+      enable = true;
+      virtualHosts."hannswurscht.openlab.lan" = {
+        default = true;
+        root = webserverRootDir;
+      };
+    };
+
+    # machine mostly runs headless with the screen shut
     services.logind.extraConfig = "HandleLidSwitch=ignore";
 
     fileSystems = {
