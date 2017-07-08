@@ -70,12 +70,17 @@ in
       virtualHosts."haku.profpatsch.de" = {
         forceSSL = true;
         enableACME = true;
-        locations."/pub/" = {
-          proxyPass = "http://localhost:${toString warpspeedPort}/";
-        };
         locations."/".root = pkgs.writeTextDir "index.html" ''hello world'';
         serverAliases = [ "lojbanistan.de" ];
       };
+      virtualHosts."pub.profpatsch.de" = {
+        forceSSL = false;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://localhost:${toString warpspeedPort}/";
+        };
+      };
+
     };
 
     services.mlmmj = {
