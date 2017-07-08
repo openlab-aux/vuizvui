@@ -16,6 +16,8 @@ in
   ];
 
   config = {
+    vuizvui.user.profpatsch.server.sshPort = 7001;
+
     boot.loader.grub.device = "/dev/sda";
     fileSystems = {
       "/" = {
