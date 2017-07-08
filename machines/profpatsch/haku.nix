@@ -60,8 +60,8 @@ in
       in {
         description = "internally served public files (see nginx)";
         wantedBy = [ "default.target" ];
-        environment = { PORT = toString warpspeedPort; };
-        script = "${pkgs.vuizvui.profpatsch.warpspeed}/bin/warpspeed ${user.home}/public";
+        serviceConfig.WorkingDirectory = "${user.home}/public";
+        script = "${pkgs.vuizvui.profpatsch.warpspeed}/bin/warpspeed ${toString warpspeedPort}";
         serviceConfig.User = config.users.users.rtorrent.name;
       };
 
