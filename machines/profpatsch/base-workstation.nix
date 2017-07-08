@@ -26,7 +26,6 @@ in {
     i18n = {
       consoleFont = "lat9w-16";
       consoleKeyMap = "neo";
-      defaultLocale = "en_US.UTF-8";
     };
 
     programs.ssh.startAgent = false;
