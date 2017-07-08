@@ -14,12 +14,19 @@ let
 
   speedtest = pkgs.writeScript "speedtest" ''
     #!${bin pkgs.bash "bash"}
-    ${bin pkgs.python3 "python3"} ${py} >> $HOME/data.yaml
+    ${bin pkgs.python3 "python3"} ${py} >> "${cfg.outputPath}"
   '';
 
 in {
-  options.vuizvui.user.openlab.speedtest.enable =
-    mkEnableOption "openlab speedtest";
+  options.vuizvui.user.openlab.speedtest = {
+    enable = mkEnableOption "openlab speedtest";
+    outputPath = mkOption {
+      description = "File to which the results are appended.";
+      type = types.path;
+      default = "/dev/null";
+    };
+  };
+
 
   config = mkIf cfg.enable {
     systemd.services.speedtest = {
@@ -34,8 +41,13 @@ in {
      };
 
      users.users.speedtest = {
-        createHome = true;
+        createHome = false;
         home = "/var/lib/speedtest";
      };
+
+     assertions = [ {
+       assertion = cfg.outputPath != "/dev/null";
+       message = "You should set `vuizvui.user.openlab.speedtest.outputPath`.";
+     } ];
   };
 }
