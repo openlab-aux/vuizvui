@@ -14,7 +14,7 @@ in
 
     programs.bash = {
       loginShellInit = ''
-        alias c='vim /etc/nixos/configuration.nix'
+        alias c='vim /root/vuizvui/machines/profpatsch'
         alias nsp='nix-shell -p'
         alias nrs='nixos-rebuild switch'
         alias tad='tmux attach -d'
@@ -32,6 +32,14 @@ in
       wget              # the other URL file fetcher
       myPkgs.vim        # slight improvement over vi
     ];
+
+    i18n = {
+      defaultLocale = "en_US.UTF-8";
+      # TODO
+      # extraLocales = {
+      #   LC_TIME = "de_DE.UTF-8"; #"en_DK.UTF-8";
+      # };
+    };
 
     # Nobody wants mutable state. :)
     users.mutableUsers = false;

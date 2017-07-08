@@ -4,6 +4,8 @@ let
   myLib  = import ./lib.nix  { inherit pkgs lib; };
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
 
+  warpspeedPort = 1338;
+
   myKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNMQvmOfon956Z0ZVdp186YhPHtSBrXsBwaCt0JAbkf/U/P+4fG0OROA++fHDiFM4RrRHH6plsGY3W6L26mSsCM2LtlHJINFZtVILkI26MDEIKWEsfBatDW+XNAvkfYEahy16P5CBtTVNKEGsTcPD+VDistHseFNKiVlSLDCvJ0vMwOykHhq+rdJmjJ8tkUWC2bNqTIH26bU0UbhMAtJstWqaTUGnB0WVutKmkZbnylLMICAvnFoZLoMPmbvx8efgLYY2vD1pRd8Uwnq9MFV1EPbkJoinTf1XSo8VUo7WCjL79aYSIvHmXG+5qKB9ed2GWbBLolAoXkZ00E4WsVp9H philip@nyx";
 
 in
@@ -14,7 +16,6 @@ in
   ];
 
   config = {
-
     boot.loader.grub.device = "/dev/sda";
     fileSystems = {
       "/" = {
@@ -29,6 +30,7 @@ in
 
     environment.systemPackages = with pkgs; [
       rtorrent                          # bittorrent client
+      mktorrent                         # torrent file creator
       pkgs.vuizvui.profpatsch.warpspeed # trivial http file server
     ];
 
@@ -51,6 +53,15 @@ in
       };
     };
 
+    systemd.services.warpspeed = 
+      let user = config.users.users.rtorrent;
+      in {
+        description = "internally served public files (see nginx)";
+        wantedBy = [ "default.target" ];
+        environment = { PORT = toString warpspeedPort; };
+        script = "${pkgs.vuizvui.profpatsch.warpspeed}/bin/warpspeed ${user.home}/public";
+        serviceConfig.User = config.users.users.rtorrent.name;
+      };
 
     services.nginx = {
       enable = true;
@@ -58,13 +69,23 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/pub/" = {
-          proxyPass = "http://localhost:1338/";
+          proxyPass = "http://localhost:${toString warpspeedPort}/";
         };
         locations."/".root = pkgs.writeTextDir "index.html" ''hello world'';
         serverAliases = [ "lojbanistan.de" ];
       };
     };
 
+    services.mlmmj = {
+      enable = true;
+      listDomain = "cz.profpatsch.de";
+      mailLists = [ "worship" ];
+    };
+    services.postfix = {
+      # mostly configured by mlmmj
+      hostname = "cz.profpatsch.de";
+      postmasterAlias = "mail@profpatsch.de";
+    };
 
     networking = {
       hostName = "haku";

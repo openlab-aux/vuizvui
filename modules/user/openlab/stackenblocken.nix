@@ -16,6 +16,7 @@ in
     volume = mkOption {
       description = "Volume in percent";
       default = 50;
+      # TODO: replace with types.intBetween https://github.com/NixOS/nixpkgs/pull/27239
       type = types.addCheck types.int (x: x >= 0 && x <= 100);
     };
   };
