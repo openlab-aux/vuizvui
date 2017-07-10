@@ -98,7 +98,9 @@ in
       hostName = "haku";
       firewall = {
         allowedTCPPorts =
-          [ 80 443 ];
+          [ 80 443
+            8888 # tmp searx port
+          ];
         allowedTCPPortRanges =
           # rtorrent
           [{ from = 6881; to = 6889; }];
