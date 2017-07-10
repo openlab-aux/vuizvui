@@ -330,7 +330,12 @@ in {
     # build derivation on taalo
     vuizvui.user.aszlig.programs.taalo-build.enable = true;
 
-    vuizvui.user.profpatsch.programs.scanning.enable = true;
+    vuizvui.user.profpatsch.programs.scanning = {
+      enable = true;
+      remoteScanners = ''
+        hannswurscht.openlab.lan
+      '';
+    };
 
     #######
     # Misc
