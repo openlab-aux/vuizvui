@@ -136,7 +136,7 @@ in {
       ];
       userPrograms = [
         abcde                # high-level cd-ripper with tag support
-        anki                 # spaced repetition system
+        anki mecab kakasi    # spaced repetition system & japanese analyzer
         # TODO integrate lame into audacity
         audacity lame.lib    # audio editor and mp3 codec
         myPkgs.beets         # audio file metadata tagger
