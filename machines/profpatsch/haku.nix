@@ -89,6 +89,11 @@ in
       postmasterAlias = "mail@profpatsch.de";
     };
 
+    services.searx = {
+      enable = true;
+      package = myPkgs.searx;
+    };
+
     networking = {
       hostName = "haku";
       firewall = {

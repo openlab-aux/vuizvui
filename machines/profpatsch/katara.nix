@@ -219,11 +219,6 @@ in {
     ###########
     # Services
 
-    services.searx = {
-      enable = true;
-      package = myPkgs.searx;
-    };
-
     services.printing = {
       enable = true;
       gutenprint = true;
