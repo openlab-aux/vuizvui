@@ -62,14 +62,14 @@ in {
     # Network
 
     networking.hostName = "katara";
-    # networking.supplicant.wlp3s0 = {
-    #   configFile = {
-    #     path = "/var/wifi-networks";
-    #     writable = true;
-    #   };
-    #   userControlled.enable = true;
-    # };
-    networking.networkmanager.enable = true;
+    networking.supplicant.wlp3s0 = {
+      configFile = {
+        path = "/var/wifi-networks";
+        writable = true;
+      };
+      userControlled.enable = true;
+    };
+    # networking.networkmanager.enable = true;
 
     # networking.bonds = {
     #   wifiAndEthernet = {
