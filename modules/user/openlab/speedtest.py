@@ -8,8 +8,8 @@ import datetime
 IP = "163.172.44.192"
 DOMAIN = "haku.profpatsch.de"
 PROTOCOL = "https"
-FILE = "/pub/well-known/speedtest-50M.rng"
-SIZE = 52428800
+FILE = "/pub/well-known/speedtest-5M.rng"
+SIZE = 5242880
 
 HOST_BIN = "host"
 PING_BIN = "ping"
