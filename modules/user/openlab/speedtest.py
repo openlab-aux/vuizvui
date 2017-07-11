@@ -13,6 +13,7 @@ SIZE = 5242880
 
 HOST_BIN = "host"
 PING_BIN = "ping"
+CURL_TIMEOUT_SEC = 30
 
 v4 = 0 == sub.run([HOST_BIN, "-4", "-W1", DOMAIN], stdout=sub.DEVNULL).returncode
 v6 = 0 == sub.run([HOST_BIN, "-6", "-W1", DOMAIN], stdout=sub.DEVNULL).returncode
@@ -22,11 +23,15 @@ ping = 0 == sub.run([PING_BIN, "-w1", "-W1", "-c1", DOMAIN if dns else IP],
                     stdout=sub.DEVNULL).returncode
 
 bytes_per_sec = 0
+error = None
 if dns:
-    res = sub.run(["curl", PROTOCOL + "://" + DOMAIN + FILE,
+    res = sub.run(["curl", "--silent", PROTOCOL + "://" + DOMAIN + FILE,
+                   "--max-time", str(CURL_TIMEOUT_SEC),
                    "--write-out", "\n%{size_download} %{speed_download}"],
                   stdout=sub.PIPE, stderr=sub.PIPE)
-    if res.returncode != 0:
+    if res.returncode == 28:
+        error = "curl timed out after {} seconds".format(CURL_TIMEOUT_SEC)
+    elif res.returncode != 0:
         sys.exit("download failed unexpectedly. curl outputs:\n{}".format(res.stderr))
     else:
         # the last line is the download speed
@@ -44,11 +49,20 @@ if dns:
 # some yaml-like output
 def bool_(b):
     return "true" if b else "false"
+def may_(v):
+    return "null" if None else v
 
 print("---")
-print("version: 0.2")
+print("version: 0.3")
 print("date: " + str(datetime.datetime.now()))
 print("ping-v4: " + bool_(v4))
 print("ping-v6: " + bool_(v6))
 print("dns: " + bool_(dns))
 print("download_speed: {}".format(int(bytes_per_sec)))
+# null or string
+print("error: " + repr(may_(error)))
+
+# version 0.2
+# + ping-v4 and ping-v6 fields
+# version 0.3
+# + error field (I want tagged unions …)
