@@ -49,8 +49,6 @@ if dns:
 # some yaml-like output
 def bool_(b):
     return "true" if b else "false"
-def may_(v):
-    return "null" if None else v
 
 print("---")
 print("version: 0.3")
@@ -60,7 +58,7 @@ print("ping-v6: " + bool_(v6))
 print("dns: " + bool_(dns))
 print("download_speed: {}".format(int(bytes_per_sec)))
 # null or string
-print("error: " + repr(may_(error)))
+print("error: " + repr(error))
 
 # version 0.2
 # + ping-v4 and ping-v6 fields
