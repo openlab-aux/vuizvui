@@ -268,6 +268,7 @@ in {
       surfraw
       taskwarrior
       telnet
+      termite
       testdisk
       texlive.combined.scheme-small
       tftp-hpa
