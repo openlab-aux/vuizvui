@@ -26,6 +26,10 @@ in {
     i18n = {
       consoleFont = "lat9w-16";
       consoleKeyMap = "neo";
+      inputMethod = {
+        enabled = "fcitx";
+        fcitx.engines = with pkgs.fcitx-engines; [ mozc ];
+      };
     };
 
     programs.ssh.startAgent = false;
