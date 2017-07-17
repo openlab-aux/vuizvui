@@ -4,12 +4,7 @@ let
   myPkgs = import ./pkgs.nix { inherit pkgs lib; };
 
 in {
-  nixpkgs.config = {
-    allowUnfree = true;
-    packageOverrides = pkgs: {
-      bluez = pkgs.bluez5;
-    };
-  };
+  nixpkgs.config.allowUnfree = true;
 
   # hardware
   boot.blacklistedKernelModules = [ "nouveau" "nvidia" ];
