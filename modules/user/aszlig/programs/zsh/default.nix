@@ -28,13 +28,13 @@ in {
       export EMAIL="aszlig@redmoonstudios.org"
     '';
 
-    nixpkgs.config.packageOverrides = pkgs: {
-      zsh = overrideDerivation pkgs.zsh (o: {
+    nixpkgs.overlays = singleton (lib.const (super: {
+      zsh = overrideDerivation super.zsh (o: {
         postConfigure = (o.postConfigure or "") + ''
           sed -i -e '/^name=zsh\/newuser/d' config.modules
         '';
       });
-    };
+    }));
 
     programs.zsh.enable = true;
 

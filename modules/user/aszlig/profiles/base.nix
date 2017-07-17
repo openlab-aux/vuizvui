@@ -66,29 +66,28 @@ in {
     nixpkgs.config = {
       pulseaudio = true;
       firefox.icedtea = true;
-
       allowBroken = true;
-
-      packageOverrides = pkgs: {
-        beets = pkgs.beets.override {
-          enableAlternatives = true;
-        };
-        miro = pkgs.miro.override {
-          enableBonjour = true;
-        };
-        netrw = pkgs.netrw.override {
-          checksumType = "mhash";
-        };
-        nix = pkgs.nixUnstable;
-        uqm = pkgs.uqm.override {
-          use3DOVideos = true;
-          useRemixPacks = true;
-        };
-        w3m = pkgs.w3m.override {
-          graphicsSupport = true;
-        };
-      };
     };
+
+    nixpkgs.overlays = lib.singleton (lib.const (super: {
+      beets = super.beets.override {
+        enableAlternatives = true;
+      };
+      miro = super.miro.override {
+        enableBonjour = true;
+      };
+      netrw = super.netrw.override {
+        checksumType = "mhash";
+      };
+      nix = super.nixUnstable;
+      uqm = super.uqm.override {
+        use3DOVideos = true;
+        useRemixPacks = true;
+      };
+      w3m = super.w3m.override {
+        graphicsSupport = true;
+      };
+    }));
 
     system.fsPackages = with pkgs; [ sshfsFuse ];
     time.timeZone = "Europe/Berlin";

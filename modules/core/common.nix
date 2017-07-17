@@ -40,13 +40,10 @@ with lib;
     system = config.nixpkgs.system;
 
   in {
-    nixpkgs.config.packageOverrides = pkgs: {
-      inherit (import ../../pkgs {
-        # We need to make sure to incorporate other package overrides,
-        # otherwise we are unable to override packages in vuizvui.*.
-        pkgs = pkgs // config.nixpkgs.config.packageOverrides pkgs;
-      }) vuizvui;
-    };
+    # Expose all packages in ../../pkgs as pkgs.vuizvui in modules.
+    nixpkgs.overlays = singleton (self: const {
+      inherit (import ../../pkgs { pkgs = self; }) vuizvui;
+    });
 
     nix.binaryCaches = options.nix.binaryCaches.default ++ [
       "https://headcounter.org/hydra/"
