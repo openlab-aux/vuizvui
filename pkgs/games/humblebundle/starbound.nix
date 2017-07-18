@@ -269,18 +269,17 @@ let
 
 in stdenv.mkDerivation rec {
   name = "starbound-${version}";
-  version = "1.3.1";
+  version = "1.3.2";
 
   src = fetchHumbleBundle {
     name = "starbound-linux-${version}.zip";
     machineName = "starbound_linux";
-    md5 = "a6dfbb17feac9d54fbcb917d8ba179b4";
+    md5 = "90691e5f5051ba28ccbbe0f331755280";
   };
 
   outputs = [ "out" "lib" "assets" ];
 
   nativeBuildInputs = [ unzip ];
-  unpackCmd = "unzip -qq \"$curSrc\" starbound_client_linux/\\*";
 
   buildPhase = with stdenv.lib; ''
     cc -Werror -shared "${preloaderSource}" -o preload.so -ldl -fPIC \
