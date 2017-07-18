@@ -213,7 +213,6 @@
   nixpkgs.config.mpv.vaapiSupport = true;
 
   environment.systemPackages = with pkgs; [
-    terminator
     claws-mail
     aircrackng
     horst
