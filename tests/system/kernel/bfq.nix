@@ -3,7 +3,7 @@
 
   machine = { pkgs, ... }: {
     vuizvui.system.kernel.bfq.enable = true;
-    boot.kernelPackages = pkgs.linuxPackages_latest;
+    vuizvui.system.kernel.useBleedingEdge = true;
   };
 
   testScript = ''
