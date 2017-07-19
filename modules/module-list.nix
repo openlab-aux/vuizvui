@@ -13,6 +13,7 @@
   ./services/starbound.nix
   ./system/iso.nix
   ./system/kernel/bfq
+  ./system/kernel/rckernel.nix
   ./user/aszlig/profiles/base.nix
   ./user/aszlig/profiles/managed.nix
   ./user/aszlig/profiles/workstation
@@ -27,7 +28,6 @@
   ./user/aszlig/services/i3
   ./user/aszlig/services/slim
   ./user/aszlig/services/vlock
-  ./user/aszlig/system/kernel.nix
   ./user/devhell/profiles/base.nix
   ./user/devhell/profiles/packages.nix
   ./user/devhell/profiles/services.nix

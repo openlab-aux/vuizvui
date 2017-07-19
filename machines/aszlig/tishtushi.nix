@@ -8,7 +8,8 @@ let
 in {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
-  vuizvui.user.aszlig.system.kernel.enable = true;
+  vuizvui.system.kernel.bfq.enable = true;
+  vuizvui.system.kernel.useBleedingEdge = true;
 
   boot = {
     initrd.kernelModules = [ "fbcon" "usb_storage" ];

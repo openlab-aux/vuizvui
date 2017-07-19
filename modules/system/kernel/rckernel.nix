@@ -1,13 +1,16 @@
 { config, pkgs, lib, ... }:
 
 {
-  options.vuizvui.user.aszlig.system.kernel = {
-    enable = lib.mkEnableOption "aszlig's custom kernel";
+  options.vuizvui.system.kernel.useBleedingEdge = lib.mkOption {
+    type = lib.types.bool;
+    default = false;
+    description = ''
+      Whether to always use the latest kernel, even if it's still a release
+      canidate version.
+    '';
   };
 
-  config = lib.mkIf config.vuizvui.user.aszlig.system.kernel.enable {
-    vuizvui.system.kernel.bfq.enable = true;
-
+  config = lib.mkIf config.vuizvui.system.kernel.useBleedingEdge {
     boot.kernelPackages = let
       inherit (lib) take splitString replaceStrings;
       inherit (pkgs) linux_latest linux_testing;

@@ -66,7 +66,8 @@ in {
   hardware.sane.enable = true;
   hardware.sane.extraBackends = [ pkgs.hplip ];
 
-  vuizvui.user.aszlig.system.kernel.enable = true;
+  vuizvui.system.kernel.bfq.enable = true;
+  vuizvui.system.kernel.useBleedingEdge = true;
   hardware.enableRedistributableFirmware = true;
 
   networking.hostName = "dnyarri";
