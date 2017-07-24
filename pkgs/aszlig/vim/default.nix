@@ -99,13 +99,6 @@ let
       sha256 = "0ablzl5clgfzhzwvzzbaj0cda0b4cyrj3pbv02f26hx7rfnssaqm";
     };
 
-    vimHaxeSyntax = fetchFromGitHub {
-      owner = "MarcWeber";
-      repo = "vim-haxe-syntax";
-      rev = "500acc2f2ab92d77ff6cd04fdc7868800c033dfa";
-      sha256 = "1ipm0igplplfmscm3bk95qpf9rw71h133l9shmw54mxr4h0ymnmj";
-    };
-
     tlib = fetchFromGitHub {
       owner = "tomtom";
       repo = "tlib_vim";
@@ -134,11 +127,15 @@ let
       sha256 = "0sybkx8iy8qhr6nlwn52j7zd5v99rn0b8wbg43d112z2px4yq5x3";
     };
 
-    vimHaxe = fetchFromGitHub {
-      owner = "MarcWeber";
-      repo = "vim-haxe";
-      rev = "8efc705db41a01713d67d437f29866a1ff831e8a";
-      sha256 = "15kv13gvpgf23p0566qrlw7gmpir2z7g5dnkfs1knmcwzw45am5d";
+    vaxe = fetchFromGitHub {
+      owner = "jdonaldson";
+      repo = "vaxe";
+      rev = "d5f905f806c7c90bb116d4b06a78924341840021";
+      sha256 = "0axvavzxbi3m4shva1m0cm6finl1i2rwqgn6lnklxnr2g9sfi4j7";
+      extraPostFetch = ''
+        # Do not highlight ',' and ';'.
+        sed -i -e '/\<haxeOperator2\>/d' "$out/syntax/haxe.vim"
+      '';
     };
 
     factor = extractSubdir "misc/vim" (fetchFromGitHub {
