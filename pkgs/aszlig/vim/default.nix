@@ -289,7 +289,7 @@ let
     set tabstop=4
     set softtabstop=4
     set shiftwidth=4
-    set textwidth=80
+    set textwidth=79
     set termencoding=ascii
     set backspace=indent,eol,start
     set background=dark
@@ -337,8 +337,8 @@ let
     " prevent colorscheme from overriding these highlights
     au ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
 
-    " highlight everything exceeding 80 characters
-    au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+    " highlight everything exceeding 79 characters
+    au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>79v.\+', -1)
   '';
 
   misc = ''
@@ -346,7 +346,7 @@ let
     fun! AAMode()
       highlight clear ExtraWhitespace
       for m in getmatches()
-        if m.group == 'ErrorMsg' && m.pattern == '\%>80v.\+'
+        if m.group == 'ErrorMsg' && m.pattern == '\%>79v.\+'
           call matchdelete(m.id)
         endif
       endfor
