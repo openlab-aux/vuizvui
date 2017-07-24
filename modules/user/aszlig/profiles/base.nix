@@ -39,7 +39,6 @@ in {
       ServerAliveInterval 60
     '';
 
-    vuizvui.user.aszlig.programs.vim.enable = true;
     vuizvui.user.aszlig.programs.zsh.enable = true;
     vuizvui.enableGlobalNixpkgsConfig = true;
 
@@ -59,6 +58,7 @@ in {
       unfreePkgs.unrar
       unzip
       vlock
+      vuizvui.aszlig.vim
       wget
       xz
     ];

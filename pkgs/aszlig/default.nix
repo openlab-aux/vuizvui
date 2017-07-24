@@ -1,4 +1,4 @@
-{ callPackage, callPackage_i686, boost155, gajim }:
+{ callPackage, callPackage_i686, boost155, gajim, vim_configurable }:
 
 {
   aacolorize = callPackage ./aacolorize { };
@@ -11,4 +11,5 @@
   lockdev = callPackage ./lockdev { };
   pvolctrl = callPackage ./pvolctrl { };
   santander = callPackage_i686 ./santander { };
+  vim = callPackage ./vim { vim = vim_configurable; };
 }

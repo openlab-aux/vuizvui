@@ -75,6 +75,7 @@ in {
     unfreePkgs.steam
     unfreeAndNonDistributablePkgs.skype
     thunderbird
+    vuizvui.aszlig.vim
     wine
     xpdf
     youtubeDL
@@ -111,6 +112,5 @@ in {
   vuizvui.user.aszlig.profiles.managed.enable = true;
   vuizvui.user.aszlig.profiles.managed.mainUser = "dwenola";
 
-  vuizvui.user.aszlig.programs.vim.enable = true;
   vuizvui.enableGlobalNixpkgsConfig = true;
 }
