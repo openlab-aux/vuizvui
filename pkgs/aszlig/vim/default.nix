@@ -359,6 +359,7 @@ let
   '';
 
   vimrc = writeText "vimrc" ''
+    let g:skip_defaults_vim = 1
     ${generic}
     ${plugin}
 
