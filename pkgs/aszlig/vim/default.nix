@@ -294,6 +294,7 @@ let
     set backspace=indent,eol,start
     set background=dark
     set mouse=
+    set history=500
   '';
 
   plugin = ''
