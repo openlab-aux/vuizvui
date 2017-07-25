@@ -263,6 +263,13 @@ let
       rev = "ad2c752435baba9e7544d0046f0277c3573439bd";
       sha256 = "0yvnah4lxk5w5qidc3y5nvl6lpi8rcv26907b3w7vjskqc935b8f";
     };
+
+    multipleCursors = fetchFromGitHub {
+      owner = "terryma";
+      repo = "vim-multiple-cursors";
+      rev = "3afc475cc64479a406ce73d3333df1f67db3c73f";
+      sha256 = "04dijb4hgidypppphcy83bacmfrd9ikyjc761hqq6bl4kc49f5kc";
+    };
   });
 
   generic = ''
