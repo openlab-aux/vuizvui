@@ -82,7 +82,7 @@ in
     services.mlmmj = {
       enable = true;
       listDomain = "cz.profpatsch.de";
-      mailLists = [ "worship" ];
+      mailLists = [ "worship" "test" ];
     };
     services.postfix = {
       # mostly configured by mlmmj
