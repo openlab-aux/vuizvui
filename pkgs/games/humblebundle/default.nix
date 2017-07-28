@@ -14,9 +14,11 @@ let
     bastion = callPackage ./bastion.nix {};
     brigador = callPackage ./brigador.nix {};
     cavestoryplus = callPackage ./cavestoryplus.nix {};
+    dott = callPackage_i686 ./dott.nix {};
     fez = callPackage ./fez.nix {};
     ftl = callPackage ./ftl.nix {};
     guacamelee = callPackage_i686 ./guacamelee.nix {};
+    grim-fandango = callPackage_i686 ./grim-fandango.nix {};
     hammerwatch = callPackage ./hammerwatch.nix {};
     jamestown = callPackage ./jamestown.nix {};
     liads = callPackage ./liads.nix {};
