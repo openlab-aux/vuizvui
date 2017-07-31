@@ -80,14 +80,6 @@ in {
         checksumType = "mhash";
       };
       nix = super.nixUnstable;
-      # https://github.com/NixOS/systemd/pull/12
-      systemd = super.systemd.overrideDerivation (drv: {
-        patches = (drv.patches or []) ++ lib.singleton (pkgs.fetchpatch {
-          url = "https://github.com/NixOS/systemd/commit/"
-              + "6554550f35a7976f9110aff94743d3576d5f02dd.patch";
-          sha256 = "07l6wx0pb7pvjx8n9j0rwv5n260crbrfg5rh56l5nfan6biv81cl";
-        });
-      }) // { inherit (super.systemd) udev; };
       uqm = super.uqm.override {
         use3DOVideos = true;
         useRemixPacks = true;
