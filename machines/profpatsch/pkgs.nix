@@ -64,7 +64,7 @@ let
 
   xmpp-client = pkgs.callPackage (import ./xmpp-client.nix myLib.philip.home "irc/xmppOla.wtf") { inherit (pkgs) xmpp-client; };
 
-  searx = pkgs.pythonPackages.searx.overrideAttrs (old: {
+  searx = pkgs.searx.overrideAttrs (old: {
     propagatedBuildInputs = old.propagatedBuildInputs ++ [ pythonPackages.pyxdg ];
     patches = old.patches or [] ++ [
       ./patches/searx-secret-key.patch
