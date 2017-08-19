@@ -31,6 +31,9 @@ let
     { check = config.services.cjdns.enable;
       path  = ["nixos" "cjdns"];
     }
+    { check = config.services.cloud-init.enable;
+      path  = ["nixos" "cloud-init"];
+    }
     { check = config.boot.enableContainers
            && config.containers != {};
       path  = ["nixos" "containers"];
@@ -112,8 +115,10 @@ let
     { check = config.services.gocd-server.enable;
       path  = ["nixos" "gocd-server"];
     }
-    { check = config.boot.kernelPackages.kernel.features.grsecurity or false;
-      path  = ["nixos" "grsecurity"];
+    { check = config.security.lockKernelModules
+           || config.security.hideProcessInformation
+           || config.boot.kernel.sysctl."user.max_user_namespaces" == 0;
+      path  = ["nixos" "hardened"];
     }
     { check = true;
       path  = ["nixos" "hibernate"];
@@ -154,7 +159,7 @@ let
       path  = ["nixos" "installer" "simple"];
     }
     { check = config.boot.loader.systemd-boot.enable;
-      path  = ["nixos" "installer" "simpleUefiGummiboot"];
+      path  = ["nixos" "installer" "simpleUefiSystemdBoot"];
     }
     { check = config.boot.loader.grub.fsIdentifier == "label";
       path  = ["nixos" "installer" "simpleLabels"];
@@ -209,6 +214,9 @@ let
     { check = config.boot.kernelPackages.kernel.version
            == pkgs.linuxPackages_latest.kernel.version;
       path  = ["nixos" "latestKernel" "login"];
+    }
+    { check = config.services.openldap.enable;
+      path  = ["nixos" "ldap"];
     }
     { check = config.services.leaps.enable;
       path  = ["nixos" "leaps"];
@@ -357,6 +365,9 @@ let
     }
     { check = config.services.xserver.displayManager.slim.enable;
       path  = ["nixos" "slim"];
+    }
+    { check = config.services.snapper.configs != {};
+      path  = ["nixos" "snapper"];
     }
     { check = config.services.smokeping.enable;
       path  = ["nixos" "smokeping"];
