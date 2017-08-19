@@ -69,6 +69,7 @@ in
       enable = true;
       virtualHosts."haku.profpatsch.de" = {
         forceSSL = true;
+        addSSL = true;
         enableACME = true;
         locations."/pub/" = {
           proxyPass = "http://localhost:${toString warpspeedPort}/";
