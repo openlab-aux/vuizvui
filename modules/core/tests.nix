@@ -117,7 +117,7 @@ let
     }
     { check = config.security.lockKernelModules
            || config.security.hideProcessInformation
-           || config.boot.kernel.sysctl."user.max_user_namespaces" == 0;
+           || config.boot.kernel.sysctl."user.max_user_namespaces" or 1 == 0;
       path  = ["nixos" "hardened"];
     }
     { check = true;
