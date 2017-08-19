@@ -66,7 +66,7 @@ in {
       user.email = "aszlig@redmoonstudios.org";
       user.name = "aszlig";
       user.signingkey = "4DFD43EC834B6901BDA2BAAC1DE8E48E57DB5436";
-      gpg.program = "${pkgs.gnupg}/bin/gpg2";
+      gpg.program = "${pkgs.gnupg}/bin/gpg";
       push.default = "current";
       tar."tar.xz".command = "${pkgs.xz}/bin/xz -c";
       rebase.autosquash = true;

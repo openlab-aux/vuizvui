@@ -63,7 +63,7 @@ in {
 
     $machine->nest("import snakeoil key", sub {
       $machine->succeed(ssh "${cliTestWithPassphrase ''
-        gpg2 --import ${./snakeoil.asc}
+        gpg --import ${./snakeoil.asc}
       ''}");
       $machine->succeed(ssh "${mkExpect ''
         expect gpg>
@@ -74,7 +74,7 @@ in {
         send y\r
         expect gpg>
         send save\r
-      '' "gpg2 --edit-key ECC15FE1"}");
+      '' "gpg --edit-key ECC15FE1"}");
     });
 
     subtest "test SSH agent support", sub {
@@ -112,25 +112,25 @@ in {
       $machine->execute(ssh "systemctl --user reload gpg-agent");
       $machine->succeed(ssh "${cliTestWithPassphrase ''
         echo encrypt me > to_encrypt
-        gpg2 -sea -r ECC15FE1 to_encrypt
+        gpg -sea -r ECC15FE1 to_encrypt
         rm to_encrypt
       ''}");
       $machine->succeed(ssh "${cliTest ''
-        [ "$(gpg2 -d to_encrypt.asc)" = "encrypt me" ]
+        [ "$(gpg -d to_encrypt.asc)" = "encrypt me" ]
       ''}");
     };
 
     subtest "test from X", sub {
       $machine->execute(ssh "systemctl --user reload gpg-agent");
       my $pid = $machine->succeed(xsu
-        'echo encrypt me | gpg2 -sea -r ECC15FE1 > encrypted_x.asc & echo $!'
+        'echo encrypt me | gpg -sea -r ECC15FE1 > encrypted_x.asc & echo $!'
       );
       chomp $pid;
       $machine->waitForText(qr/Passphrase/);
       $machine->screenshot("passphrase_dialog");
       $machine->sendChars("supersecret\n");
       $machine->waitUntilFails("kill -0 $pid");
-      $machine->succeed(xsu '[ "$(gpg2 -d encrypted_x.asc)" = "encrypt me" ]');
+      $machine->succeed(xsu '[ "$(gpg -d encrypted_x.asc)" = "encrypt me" ]');
     };
   '';
 }
