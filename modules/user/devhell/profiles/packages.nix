@@ -293,7 +293,6 @@ in {
       virtinst
       virtmanager
       vit
-      vivaldi
       vlc
       vlock
       vnstat
