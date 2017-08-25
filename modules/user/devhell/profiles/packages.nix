@@ -9,6 +9,17 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    nixpkgs.overlays = lib.singleton (lib.const (super: {
+      ncmpcpp = super.ncmpcpp.override {
+        visualizerSupport = true;
+        clockSupport = true;
+      };
+
+      sox = super.sox.override {
+        enableLame = true;
+      };
+    }));
+
     nixpkgs.config = {
       pulseaudio = true;
 
@@ -36,19 +47,6 @@ in {
 
       mpv = {
         youtubeSupport = true;
-      };
-
-      nixpkgs.config.packageOverrides = super: {
-        gnupg = super.gnupg21;
-
-        ncmpcpp = super.ncmpcpp.override {
-          visualizerSupport = true;
-          clockSupport = true;
-        };
-
-        sox = super.sox.override {
-          enableLame = true;
-        };
       };
     };
 
