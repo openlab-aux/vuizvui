@@ -20,7 +20,7 @@ let
 in (pkgs.lib.evalModules {
   modules = [
     (if config == null then configFilePath else config)
-    ./base-module.nix ./humblebundle ./steam
+    ./base-module.nix ./humblebundle ./steam ./itch
     { config._module.args.pkgs = pkgs; }
   ];
 }).config.packages
