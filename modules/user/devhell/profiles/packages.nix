@@ -51,6 +51,7 @@ in {
     };
 
     environment.systemPackages = with pkgs; [
+      #arc-theme
       #attic
       #emacs
       #gitAndTools.git-annex
@@ -68,7 +69,6 @@ in {
       antiword
       apg
       arandr
-      arc-theme
       ascii
       aspell
       aspellDicts.de
