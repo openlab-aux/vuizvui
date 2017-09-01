@@ -95,6 +95,14 @@ in
       package = myPkgs.searx;
     };
 
+    services.openvpn.servers.hakuserver = {
+      config = ''
+        dev tun
+        ifconfig 10.20.30.40 10.20.30.41
+        secret /root/static-vpn.key
+      '';
+    };
+
     networking = {
       hostName = "haku";
       firewall = {
