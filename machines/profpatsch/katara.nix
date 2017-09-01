@@ -219,6 +219,17 @@ in {
     ###########
     # Services
 
+    services.openvpn.servers.hakuclient = {
+      config = ''
+        client
+        remote haku.profpatsch.de
+        dev tun
+        proto tcp-client
+        ifconfig 10.20.30.41 10.20.30.40
+        secret /root/static-vpn.key
+      '';
+    };
+
     services.printing = {
       enable = true;
       gutenprint = true;
