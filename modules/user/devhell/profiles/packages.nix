@@ -174,6 +174,7 @@ in {
       iptraf-ng
       ipv6calc
       jfsutils
+      jrnl
       jwhois
       keepassx
       keepassx-community
@@ -241,7 +242,6 @@ in {
       python2
       python3
       python34Packages.hovercraft
-      pythonPackages.jrnl
       pythonPackages.livestreamer
       pythonPackages.rainbowstream
       qemu
