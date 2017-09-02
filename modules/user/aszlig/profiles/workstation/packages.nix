@@ -72,6 +72,7 @@ pkgs: with pkgs; [
   w3m
   wireshark
   xorg.xhost
+  xpdf
   youtubeDL
   zathura
 ]

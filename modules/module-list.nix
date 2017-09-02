@@ -22,7 +22,6 @@
   ./user/aszlig/programs/mpv
   ./user/aszlig/programs/taalo-build
   ./user/aszlig/programs/taskwarrior
-  ./user/aszlig/programs/xpdf
   ./user/aszlig/programs/zsh
   ./user/aszlig/services/i3
   ./user/aszlig/services/slim
