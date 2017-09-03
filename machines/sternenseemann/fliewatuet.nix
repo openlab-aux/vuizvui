@@ -142,6 +142,7 @@ in {
     myPkgs.texlive
     firefox
     chromium
+    surf
     elinks
     termite
     imv
