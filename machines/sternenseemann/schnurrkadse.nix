@@ -29,6 +29,8 @@ in {
   nix.maxJobs = 1;
 
   hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.package = pkgs.pulseaudioFull;
+  hardware.pulseaudio.zeroconf.discovery.enable = true;
 
   hardware.trackpoint = {
     enable = true;
