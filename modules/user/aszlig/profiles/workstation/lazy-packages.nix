@@ -25,4 +25,5 @@ pkgs: with pkgs; [
   rtmpdump
   rtorrent
   uqm
+  vuizvui.aszlig.xournal
 ]
