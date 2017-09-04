@@ -1,0 +1,83 @@
+commit 4b95a904d81753b73c6ed24f65b5ff2ee84e97e2
+Author: David Barton <db9052@sourceforge.net>
+Date:   Mon Sep 4 06:27:12 2017 +0200
+
+    Preserve aspect ratio when resizing
+
+    To make the image patch even more useful, I've written this patch to
+    allow the aspect ratio to be preserved when resizing selections. (It
+    doesn't just apply to images.) Simply resize using the right mouse
+    button (button-3) rather than the left mouse button.
+
+    This patch should be applied after the enhanced image patch. (Though
+    it'd be easy enough to make the changes to the raw 0.4.5 source directly
+    since it doesn't change any of the image patch related areas.)
+
+diff --git a/src/xo-selection.c b/src/xo-selection.c
+index 7359bd8..05132b4 100644
+--- a/src/xo-selection.c
++++ b/src/xo-selection.c
+@@ -347,6 +347,12 @@ gboolean start_resizesel(GdkEvent *event)
+     ui.selection->new_x2 = ui.selection->bbox.right;
+     gnome_canvas_item_set(ui.selection->canvas_item, "dash", NULL, NULL);
+     update_cursor_for_resize(pt);
++
++    // Check whether we should preserve the aspect ratio
++    if (event->button.button == 3)
++        ui.cur_brush->tool_options |= TOOLOPT_SELECT_PRESERVE;
++    else
++        ui.cur_brush->tool_options &= ~TOOLOPT_SELECT_PRESERVE;
+     return TRUE;
+   }
+   return FALSE;
+@@ -498,6 +504,38 @@ void continue_resizesel(GdkEvent *event)
+   if (ui.selection->resizing_left) ui.selection->new_x1 = pt[0];
+   if (ui.selection->resizing_right) ui.selection->new_x2 = pt[0];
+ 
++  if (ui.cur_brush->tool_options & TOOLOPT_SELECT_PRESERVE) {
++	  double aspectratio = (ui.selection->bbox.top - ui.selection->bbox.bottom)/(ui.selection->bbox.right - ui.selection->bbox.left);
++	  double newheight = ui.selection->new_y1 - ui.selection->new_y2;
++	  double newwidth = ui.selection->new_x2 - ui.selection->new_x1;
++	  gboolean boundheight;
++
++	  // Resizing from top or bottom only
++	  if ((ui.selection->resizing_top || ui.selection->resizing_bottom) && !(ui.selection->resizing_left || ui.selection->resizing_right))
++		  boundheight = 0;
++	  // Resizing from right or left only
++	  else if (!(ui.selection->resizing_top || ui.selection->resizing_bottom) && (ui.selection->resizing_left || ui.selection->resizing_right))
++		  boundheight = 1;
++	  // Resizing from a corner
++	  else if (newheight/aspectratio > newwidth)
++		  boundheight = 0;
++	  else
++		  boundheight = 1;
++
++	  if (boundheight) {
++		  // Bound the height
++		  newheight = newwidth*aspectratio;
++		  if (ui.selection->resizing_top) ui.selection->new_y1 = ui.selection->new_y2 + newheight;
++		  else ui.selection->new_y2 = ui.selection->new_y1 - newheight;
++	  }
++	  else {
++		  // Bound the width
++		  newwidth = newheight/aspectratio;
++		  if (ui.selection->resizing_left) ui.selection->new_x1 = ui.selection->new_x2 - newwidth;
++		  else ui.selection->new_x2 = ui.selection->new_x1 + newwidth;
++	  }
++  }
++
+   gnome_canvas_item_set(ui.selection->canvas_item, 
+     "x1", ui.selection->new_x1, "x2", ui.selection->new_x2,
+     "y1", ui.selection->new_y1, "y2", ui.selection->new_y2, NULL);
+diff --git a/src/xournal.h b/src/xournal.h
+index 3599e77..e8ad4ed 100644
+--- a/src/xournal.h
++++ b/src/xournal.h
+@@ -160,6 +160,7 @@ extern guint predef_bgcolors_rgba[COLOR_MAX];
+ #define TOOLOPT_ERASER_STANDARD     0
+ #define TOOLOPT_ERASER_WHITEOUT     1
+ #define TOOLOPT_ERASER_STROKES      2
++#define TOOLOPT_SELECT_PRESERVE     1 // Preserve the aspect ratio of the selection when resizing
+ 
+ extern double predef_thickness[NUM_STROKE_TOOLS][THICKNESS_MAX];
+ 
