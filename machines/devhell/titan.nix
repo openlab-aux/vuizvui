@@ -191,6 +191,7 @@
     minicom
     msmtp
     mutt
+    netalyzr
     networkmanagerapplet
     notmuch
     offlineimap
