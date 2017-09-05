@@ -273,6 +273,13 @@ let
           "$out/ftplugin/csv.vim" "$out/syntax/csv.vim"
       '';
     };
+
+    sleuth = fetchFromGitHub {
+      owner = "tpope";
+      repo = "vim-sleuth";
+      rev = "dfe0a33253c61dd8fac455baea4ec492e6cf0fe3";
+      sha256 = "0576k4l2wbzy9frvv268vdix4k6iz9pw6n6626ifvg8hk6gbc5g9";
+    };
   };
 
   generic = ''
