@@ -327,12 +327,12 @@ let
                    \ exe "normal! g'\"zz" | endif
 
     " filetype defaults
-    au BufNewFile,BufRead *.as set ft=actionscript
-    au BufNewFile,BufRead *.tt set ft=tt2html ts=2 sw=2 sts=2 et
-    au BufNewFile,BufRead *.html set ts=2 sw=2 sts=2 et
-    au FileType python set textwidth=79
-    au FileType gitcommit set textwidth=72
-    au FileType docbk set tabstop=2 shiftwidth=2 expandtab
+    au BufNewFile,BufRead *.as setlocal ft=actionscript
+    au BufNewFile,BufRead *.tt setlocal ft=tt2html ts=2 sw=2 sts=2 et
+    au BufNewFile,BufRead *.html setlocal ts=2 sw=2 sts=2 et
+    au FileType python setlocal textwidth=79
+    au FileType gitcommit setlocal textwidth=72
+    au FileType docbk setlocal tabstop=2 shiftwidth=2 expandtab
 
     " highlight unnecessary whitespace
     highlight ExtraWhitespace ctermbg=red guibg=red
@@ -346,14 +346,17 @@ let
     au BufWinEnter * if &ft !=# 'csv'
       \ | let w:m2=matchadd('ErrorMsg', '\%>79v.\+', -1)
       \ | endif
+
+    " flake everything that has been *detected* as python (not just by suffix)
+    au BufWritePost * if &ft ==# 'python' | call Flake8() | endif
   '';
 
-  misc = ''
+  functions = ''
     " ASCII art mode
     fun! AAMode()
       highlight clear ExtraWhitespace
       for m in getmatches()
-        if m.group == 'ErrorMsg' && m.pattern == '\%>79v.\+'
+        if m.group ==# 'ErrorMsg' && m.pattern ==# '\%>79v.\+'
           call matchdelete(m.id)
         endif
       endfor
@@ -361,9 +364,6 @@ let
 
     command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
       \ | wincmd p | diffthis
-
-    " flake everything that has been *detected* as python (not just by suffix).
-    autocmd BufWritePost * if &ft ==# 'python' | call Flake8() | endif
   '';
 
   vimrc = writeText "vimrc" ''
@@ -376,11 +376,11 @@ let
     syntax on
     colorscheme elflord
 
+    ${functions}
+
     if has("autocmd")
       ${autocmd}
     endif
-
-    ${misc}
   '';
 
 
