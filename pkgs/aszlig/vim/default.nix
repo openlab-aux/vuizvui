@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, fetchFromGitHub, writeText, writeTextFile, buildEnv
+{ stdenv, lib, fetchurl, fetchFromGitHub, writeText, writeTextFile, writeScript
 , pythonPackages, vim
 }:
 
@@ -23,15 +23,6 @@ let
     inherit src;
     installPhase = ''
       cp -Rd "${subdir}" "$out"
-    '';
-  };
-
-  mkVimPlugins = plugins: buildEnv {
-    name = "vim-plugins";
-    paths = with stdenv.lib; mapAttrsToList (const id) plugins;
-    ignoreCollisions = true;
-    postBuild = ''
-      find -L "$out" -mindepth 1 -maxdepth 1 -type f -delete
     '';
   };
 
@@ -119,7 +110,7 @@ let
     };
   };
 
-  plugins = mkVimPlugins (pluginDeps // {
+  plugins = pluginDeps // {
     vimErl = fetchFromGitHub {
       owner = "jimenezrick";
       repo = "vimerl";
@@ -270,12 +261,9 @@ let
       rev = "3afc475cc64479a406ce73d3333df1f67db3c73f";
       sha256 = "04dijb4hgidypppphcy83bacmfrd9ikyjc761hqq6bl4kc49f5kc";
     };
-  });
+  };
 
   generic = ''
-    syntax on
-    colorscheme elflord
-
     " boolean
     set nocompatible
     set showcmd
@@ -312,11 +300,6 @@ let
     let python_highlight_builtins = 1
     let python_highlight_exceptions = 1
     let g:flake8_cmd = '${pythonPackages.flake8}/bin/flake8'
-
-    " all plugins
-    set runtimepath^=${plugins}
-    set runtimepath+=${plugins}/after
-    runtime! ftdetect/*.vim
   '';
 
   autocmd = ''
@@ -325,7 +308,6 @@ let
                    \ exe "normal! g'\"zz" | endif
 
     " filetype defaults
-    filetype plugin indent on
     au BufNewFile,BufRead *.as set ft=actionscript
     au BufNewFile,BufRead *.tt set ft=tt2html ts=2 sw=2 sts=2 et
     au BufNewFile,BufRead *.html set ts=2 sw=2 sts=2 et
@@ -368,6 +350,11 @@ let
     ${generic}
     ${plugin}
 
+    " has to be after the generic block and before the autocmd block
+    filetype plugin indent on
+    syntax on
+    colorscheme elflord
+
     if has("autocmd")
       ${autocmd}
     endif
@@ -375,8 +362,32 @@ let
     ${misc}
   '';
 
-in stdenv.lib.overrideDerivation vim (o: {
+
+  installPlugin = name: plugin: let
+    mkInst = targetDir: writeScript "install-plugin-file" ''
+      #!${stdenv.shell}
+      exec install -m 0644 -vD "$1" "${targetDir}/$1"
+    '';
+
+    afterPath = "$out/share/vim/vimfiles";
+
+    findCmd = [
+      "find" "-L" "." "-mindepth" "2" "-type" "f"
+      "("  "-path" "*/after/*" "-exec" (mkInst afterPath) "{}" ";"
+      "-o" "-exec" (mkInst "$vimdir") "{}" ";"
+      ")"
+    ];
+
+  in ''
+    ( cd ${lib.escapeShellArg plugin}
+      ${lib.concatMapStringsSep " " lib.escapeShellArg findCmd}
+    )
+  '';
+
+in lib.overrideDerivation vim (o: {
   postInstall = (o.postInstall or "") + ''
+    export vimdir="$(echo "$out/share/vim/vim"[0-9]*)"
+    ${lib.concatStrings (lib.mapAttrsToList installPlugin plugins)}
     ln -sf "${vimrc}" "$out/share/vim/vimrc"
   '';
 })
