@@ -261,6 +261,18 @@ let
       rev = "3afc475cc64479a406ce73d3333df1f67db3c73f";
       sha256 = "04dijb4hgidypppphcy83bacmfrd9ikyjc761hqq6bl4kc49f5kc";
     };
+
+    csv = fetchFromGitHub {
+      owner = "chrisbra";
+      repo = "csv.vim";
+      rev = "443fa8bd2a1a017b26cc421a9494e1a1e33f4acf";
+      sha256 = "1pbgl9f00kqxr2dpxmxg9jnk5q41sxzgan7hn16hc2b4as3zbihd";
+      extraPostFetch = ''
+        # Use sane (non-UTF8) settings for separators
+        sed -i -e 's/(&enc *[=~#]\+ *.utf-8. *?[^:]*: *\([^)]*\))/\1/g' \
+          "$out/ftplugin/csv.vim" "$out/syntax/csv.vim"
+      '';
+    };
   };
 
   generic = ''
@@ -323,8 +335,10 @@ let
     " prevent colorscheme from overriding these highlights
     au ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
 
-    " highlight everything exceeding 79 characters
-    au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>79v.\+', -1)
+    " highlight everything exceeding 79 characters (except for CSV)
+    au BufWinEnter * if &ft !=# 'csv'
+      \ | let w:m2=matchadd('ErrorMsg', '\%>79v.\+', -1)
+      \ | endif
   '';
 
   misc = ''
