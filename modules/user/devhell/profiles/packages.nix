@@ -143,6 +143,7 @@ in {
       gitAndTools.gitflow
       gitAndTools.svn2git
       gitAndTools.tig
+      glances
       glxinfo
       gnome3.dconf
       gnome3.defaultIconTheme
