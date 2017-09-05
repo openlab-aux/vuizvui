@@ -46,6 +46,7 @@ pkgs: with pkgs; [
   pulseaudioLight
   vuizvui.aszlig.pvolctrl
   pass
+  pv
   python
   python3
   pythonPackages.hetzner
