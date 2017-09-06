@@ -13,7 +13,7 @@ in {
       name = "bfq";
       patch = ./bfq-by-default.patch;
       extraConfig = ''
-        ${optionalString (versionOlder version "4.13") "SCSI_MQ_DEFAULT y"}
+        SCSI_MQ_DEFAULT y
         DM_MQ_DEFAULT y
         IOSCHED_BFQ y
         BFQ_GROUP_IOSCHED y
