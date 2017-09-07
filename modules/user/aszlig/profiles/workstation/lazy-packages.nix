@@ -5,7 +5,6 @@ pkgs: with pkgs; [
   fbida
   gimp
   gwenhywfar
-  gpodder
   graphviz
   haskellPackages.cabal2nix
   haskellPackages.cabal-install

@@ -52,7 +52,7 @@ in {
     };
   };
 
-  environment.systemPackages = [ pkgs.paperwork ];
+  environment.systemPackages = [ pkgs.gpodder pkgs.paperwork ];
 
   # This is very ugly and I really want to avoid non-free packages on all
   # of my workstations. But right now I need to get rid of useless paper.
