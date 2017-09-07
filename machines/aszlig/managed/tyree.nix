@@ -9,10 +9,17 @@
 
   environment.systemPackages = with pkgs; [
     calibre cdparanoia chromium figlet vuizvui.aszlig.gajim gimp htop inkscape
-    thunderbird kdeApplications.kate kdeApplications.gwenview
-    kdeApplications.okular krita libreoffice mosh mpv pciutils
-    vuizvui.aszlig.vim vlc wget wine youtubeDL
-    unfreeAndNonDistributablePkgs.skype
+    thunderbird krita libreoffice mosh mpv pciutils vuizvui.aszlig.vim vlc wget
+    wine youtubeDL unfreeAndNonDistributablePkgs.skype
+
+    kdeApplications.gwenview
+    kdeApplications.kaddressbook
+    kdeApplications.kate
+    kdeApplications.kleopatra
+    kdeApplications.kmail
+    kdeApplications.kmix
+    kdeApplications.korganizer
+    kdeApplications.okular
   ];
 
   fileSystems."/boot".device = "/dev/disk/by-uuid/A0D5-269D";
