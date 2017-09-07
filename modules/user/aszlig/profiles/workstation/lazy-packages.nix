@@ -3,7 +3,6 @@ pkgs: with pkgs; [
   aqbanking
   erlang
   fbida
-  firefox
   gimp
   gwenhywfar
   gpodder

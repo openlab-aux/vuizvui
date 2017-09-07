@@ -13,6 +13,7 @@ pkgs: with pkgs; [
   dos2unix
   ffmpeg
   figlet
+  firefox
   flac
   gdb
   ghostscript
