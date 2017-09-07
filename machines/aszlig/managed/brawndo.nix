@@ -1,4 +1,4 @@
-{ config, pkgs, unfreePkgs, unfreeAndNonDistributablePkgs, lib, ... }:
+{ config, pkgs, unfreePkgs, lib, ... }:
 
 let
   mainDisk = "ata-WDC_WD5000LPVX-22V0TT0_WD-WXG1E2559AYH";
@@ -13,8 +13,6 @@ in {
     kernelModules = [ "kvm-intel" "wl" ];
     kernelPackages = pkgs.linuxPackages_latest;
     extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
-    loader.systemd-boot.enable = true;
-    loader.efi.canTouchEfiVariables = true;
   };
 
   fileSystems."/" = {
@@ -28,89 +26,30 @@ in {
     fsType = "vfat";
   };
 
-  hardware = {
-    cpu.intel.updateMicrocode = true;
-    enableAllFirmware = true;
-    opengl.s3tcSupport = true;
-    opengl.driSupport32Bit = true;
-    pulseaudio.enable = true;
-  };
+  hardware.enableAllFirmware = true;
 
-  networking = {
-    firewall.enable = false;
-    hostName = "brawndo";
-    networkmanager.enable = true;
-  };
+  networking.hostName = "brawndo";
 
-  nix = {
-    maxJobs = 4;
-    useSandbox = true;
-    readOnlyStore = true;
-    buildCores = 0;
-  };
+  nix.maxJobs = 4;
 
-  nixpkgs.config = {
-    allowUnfree = true; # XXX: More granularity!
-    chromium.enablePepperFlash = true;
-    pulseaudio = true;
-  };
+  nixpkgs.config.allowUnfree = true; # XXX: More granularity!
 
   environment.systemPackages = with pkgs; [
-    vuizvui.aszlig.axbo
-    chromium
-    file
-    vuizvui.aszlig.gajim
-    gimp
-    git
-    gpodder
-    htop
-    kdeApplications.gwenview
-    kdeApplications.okular
-    libreoffice
-    mpv
-    opentyrian
-    pavucontrol
-    pulseaudioFull
-    samba
-    unfreePkgs.steam
-    unfreeAndNonDistributablePkgs.skype
-    thunderbird
-    vuizvui.aszlig.vim
-    wine
-    xpdf
-    youtubeDL
+    vuizvui.aszlig.axbo gpodder opentyrian unfreePkgs.steam
   ];
 
-  i18n = {
-    consoleFont = "lat9w-16";
-    consoleKeyMap = "de";
-    defaultLocale = "en_US.UTF-8";
-  };
+  i18n.defaultLocale = "en_US.UTF-8";
 
   services = {
     deluge.enable = true;
     printing.drivers = [ pkgs.cups-bjnp ];
-    tlp.enable = true;
 
-    xserver = {
-      enable = true;
-      layout = "de";
-      xkbOptions = "eurosign:e";
-
-      synaptics.enable = true;
-      synaptics.twoFingerScroll = true;
-
-      displayManager.sddm.enable = true;
-      desktopManager.plasma5.enable = true;
-    };
+    xserver.synaptics.enable = true;
+    xserver.synaptics.twoFingerScroll = true;
   };
 
   swapDevices = lib.singleton { label = "swap"; };
 
-  time.timeZone = "Europe/Berlin";
-
   vuizvui.user.aszlig.profiles.managed.enable = true;
   vuizvui.user.aszlig.profiles.managed.mainUser = "dwenola";
-
-  vuizvui.enableGlobalNixpkgsConfig = true;
 }

@@ -1,26 +1,10 @@
-{ config, pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
+{ pkgs, lib, ... }:
 
 {
   boot.initrd.availableKernelModules = [ "usbhid" ];
   boot.kernelModules = [ "kvm-intel" ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  environment.systemPackages = with pkgs; [
-    calibre cdparanoia chromium figlet vuizvui.aszlig.gajim gimp htop inkscape
-    thunderbird krita libreoffice mosh mpv pciutils vuizvui.aszlig.vim vlc wget
-    wine youtubeDL unfreeAndNonDistributablePkgs.skype
-
-    kdeApplications.gwenview
-    kdeApplications.kaddressbook
-    kdeApplications.kate
-    kdeApplications.kleopatra
-    kdeApplications.kmail
-    kdeApplications.kmix
-    kdeApplications.korganizer
-    kdeApplications.okular
-  ];
+  environment.systemPackages = with pkgs; [ krita mosh wget ];
 
   fileSystems."/boot".device = "/dev/disk/by-uuid/A0D5-269D";
   fileSystems."/boot".fsType = "vfat";
@@ -39,51 +23,20 @@
     label = "tyree-swap";
   };
 
-  hardware.cpu.intel.updateMicrocode = true;
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio.package = pkgs.pulseaudioFull;
-
-  i18n.consoleUseXkbConfig = true;
   i18n.defaultLocale = "de_DE.UTF-8";
 
   networking.hostName = "tyree";
-  networking.firewall.enable = false;
-  networking.wireless.enable = false;
-  networking.networkmanager.enable = true;
   networking.useNetworkd = true;
 
-  # Temporary, seems to be a bug in NetworkManager:
-  networking.usePredictableInterfaceNames = false;
-
   nix.maxJobs = 4;
-  nix.useSandbox = true;
-  nix.readOnlyStore = true;
-  nix.buildCores = 0;
-  nix.extraOptions = ''
-    auto-optimise-store = true
-  '';
 
-  nixpkgs.config = {
-    pulseaudio = true;
-    chromium.enablePepperFlash = true;
-  };
-
-  programs.bash.enableCompletion = true;
+  # English within the shell, German otherwise (like in KDE).
   programs.bash.interactiveShellInit = lib.mkBefore ''
     export LANG=en_US.UTF-8
   '';
 
-  services.tlp.enable = true;
-
-  services.xserver.enable = true;
-  services.xserver.layout = "de";
   services.xserver.xkbOptions = "eurosign:e,caps:none";
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
-  services.xserver.desktopManager.xterm.enable = false;
   services.xserver.wacom.enable = true;
-
-  time.timeZone = "Europe/Berlin";
 
   vuizvui.user.aszlig.profiles.managed.enable = true;
   vuizvui.user.aszlig.profiles.managed.mainUser = "bla";
