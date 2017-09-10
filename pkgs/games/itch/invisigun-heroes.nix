@@ -4,13 +4,14 @@
 
 stdenv.mkDerivation rec {
   name = "invisigun-heroes-${version}";
-  version = "1.5.1";
+  version = "1.5.30";
 
   src = fetchItch {
     name = "${name}.zip";
     gameId = 25561;
     uploadId = 208583;
-    sha256 = "0k92xj3q7yv3pgsb992y0lxp59f1gkl12vw18qipsm1vby6b7j2s";
+    version = "v${version}";
+    sha256 = "07iskccdmygnx70naaa3fcac1ayrhmq82cypddsnihc3gkw7rwrd";
   };
 
   unpackCmd = ''
