@@ -1,4 +1,4 @@
-{ stdenv, mesa, xorg, libpulseaudio, libudev }:
+{ stdenv, makeWrapper, mesa, xorg, libpulseaudio, libudev }:
 
 { name, version, fullName, buildPhase ? "", rpath ? [], ... }@attrs:
 
@@ -11,6 +11,8 @@ in stdenv.mkDerivation ({
   name = "${name}-${version}";
   inherit version arch executable dataDir;
   slugName = name;
+
+  nativeBuildInputs = [ makeWrapper ];
 
   buildPhase = let
     mainRpath = stdenv.lib.makeLibraryPath ([
@@ -36,7 +38,7 @@ in stdenv.mkDerivation ({
     ln -s "$out/share/$slugName" "$out/libexec/$slugName/Data"
 
     mkdir -p "$out/bin"
-    ln -s "$out/libexec/$slugName/$slugName" "$out/bin/$slugName"
+    makeWrapper "$out/libexec/$slugName/$slugName" "$out/bin/$slugName"
 
     mkdir -p "$out/share"
     cp -vRd "$dataDir" "$out/share/$slugName"
