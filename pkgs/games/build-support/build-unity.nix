@@ -9,7 +9,7 @@ let
 
 in stdenv.mkDerivation ({
   name = "${name}-${version}";
-  inherit version arch executable dataDir;
+  inherit fullName version arch executable dataDir;
   slugName = name;
 
   nativeBuildInputs = [ makeWrapper ];
@@ -40,8 +40,25 @@ in stdenv.mkDerivation ({
     mkdir -p "$out/bin"
     makeWrapper "$out/libexec/$slugName/$slugName" "$out/bin/$slugName"
 
-    mkdir -p "$out/share"
+    iconpath="$out/share/$slugName/Resources/UnityPlayer.png"
+    mkdir -p "$out/share/applications"
+    cat > "$out/share/applications/$slugName.desktop" <<EOF
+    [Desktop Entry]
+    Name=$fullName
+    Type=Application
+    Version=1.1
+    Exec=$out/bin/$slugName
+    Icon=$iconpath
+    Categories=Game
+    StartupNotify=true
+    EOF
+
     cp -vRd "$dataDir" "$out/share/$slugName"
+
+    if [ ! -e "$iconpath" ]; then
+      echo "Desktop icon not found at $iconpath." >&2
+      exit 1
+    fi
 
     runHook postInstall
   '';
