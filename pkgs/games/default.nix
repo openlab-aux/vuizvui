@@ -17,10 +17,20 @@ let
     }
   '' else configFilePath;
 
+  baseModule = { lib, ... }: {
+    options = {
+      packages = lib.mkOption {
+        type = lib.types.attrsOf lib.types.unspecified;
+        default = {};
+        description = "Available collections of games.";
+      };
+    };
+  };
+
 in (pkgs.lib.evalModules {
   modules = [
     (if config == null then configFilePath else config)
-    ./base-module.nix ./humblebundle ./steam ./itch
+    baseModule ./humblebundle ./steam ./itch
     { config._module.args.pkgs = pkgs; }
   ];
 }).config.packages
