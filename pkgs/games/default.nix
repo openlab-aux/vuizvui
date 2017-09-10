@@ -25,12 +25,17 @@ let
         description = "Available collections of games.";
       };
     };
+
+    config._module.args.pkgs = let
+      buildSupport = import ./build-support {
+        callPackage = lib.callPackageWith (pkgs // buildSupport);
+      };
+    in buildSupport // pkgs;
   };
 
 in (pkgs.lib.evalModules {
   modules = [
     (if config == null then configFilePath else config)
     baseModule ./humblebundle ./steam ./itch
-    { config._module.args.pkgs = pkgs; }
   ];
 }).config.packages
