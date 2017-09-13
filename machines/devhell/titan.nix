@@ -191,6 +191,7 @@
     minicom
     msmtp
     mutt
+    neomutt
     netalyzr
     networkmanagerapplet
     notmuch
