@@ -1,4 +1,4 @@
-{ stdenv, lib, file, withPulseAudio ? true, libpulseaudio ? null }:
+{ stdenv, lib, file, unzip, withPulseAudio ? true, libpulseaudio ? null }:
 
 assert withPulseAudio -> libpulseaudio != null;
 
@@ -15,7 +15,7 @@ stdenv.mkDerivation ({
   buildInputs = [ stdenv.cc.cc ] ++ buildInputs;
 
   nativeBuildInputs = [
-    file ./setup-hooks/auto-patchelf.sh
+    unzip file ./setup-hooks/auto-patchelf.sh
   ] ++ nativeBuildInputs;
 
   preUnpack = preUnpack + ''

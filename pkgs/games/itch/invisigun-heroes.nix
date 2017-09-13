@@ -1,4 +1,4 @@
-{ buildUnity, fetchItch, unzip }:
+{ buildUnity, fetchItch }:
 
 buildUnity rec {
   name = "invisigun-heroes";
@@ -12,8 +12,4 @@ buildUnity rec {
     version = "v${version}";
     sha256 = "07iskccdmygnx70naaa3fcac1ayrhmq82cypddsnihc3gkw7rwrd";
   };
-
-  unpackCmd = ''
-    ${unzip}/bin/unzip -qq -d invisigun-heroes "$src" || :
-  '';
 }
