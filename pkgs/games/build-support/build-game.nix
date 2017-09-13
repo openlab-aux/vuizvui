@@ -1,4 +1,8 @@
-{ stdenv, lib, file, unzip, withPulseAudio ? true, libpulseaudio ? null }:
+{ stdenv, lib, file, unzip
+
+, withPulseAudio ? true, libpulseaudio ? null
+, alsaLib
+}:
 
 assert withPulseAudio -> libpulseaudio != null;
 
@@ -36,7 +40,9 @@ stdenv.mkDerivation ({
   '';
 
   runtimeDependencies = let
-    deps = lib.optional withPulseAudio libpulseaudio ++ runtimeDependencies;
+    deps = lib.singleton alsaLib
+        ++ lib.optional withPulseAudio libpulseaudio
+        ++ runtimeDependencies;
   in map (dep: dep.lib or dep) deps;
 
   doInstallCheck = true;
