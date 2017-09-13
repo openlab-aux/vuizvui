@@ -1,4 +1,4 @@
-{ stdenv, lib, buildUnity, fetchItch, unzip, gtk2-x11, gdk_pixbuf, glib }:
+{ buildUnity, fetchItch, unzip }:
 
 buildUnity rec {
   name = "invisigun-heroes";
@@ -15,12 +15,5 @@ buildUnity rec {
 
   unpackCmd = ''
     ${unzip}/bin/unzip -qq -d invisigun-heroes "$src" || :
-  '';
-
-  buildPhase = let
-    rpath = lib.makeLibraryPath [ stdenv.cc.cc gtk2-x11 gdk_pixbuf glib ];
-  in ''
-    patchelf --set-rpath ${lib.escapeShellArg rpath} \
-      "Invisigun Heroes_Data/Plugins/x86_64/ScreenSelector.so"
   '';
 }

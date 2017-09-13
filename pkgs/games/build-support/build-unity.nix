@@ -1,35 +1,31 @@
-{ stdenv, makeWrapper, mesa, xorg, libpulseaudio, libudev }:
+{ stdenv, buildGame, makeWrapper, gtk2-x11, gdk_pixbuf, glib
+, mesa, xorg, libpulseaudio, libudev, zlib
+}:
 
-{ name, version, fullName, buildPhase ? "", rpath ? [], ... }@attrs:
+{ name, version, fullName
+, nativeBuildInputs ? []
+, buildInputs ? []
+, runtimeDependencies ? []
+, ...
+}@attrs:
 
 let
   arch = if stdenv.system == "x86_64-linux" then "x86_64" else "x86";
   executable = "${fullName}.${arch}";
   dataDir = "${fullName}_Data";
 
-in stdenv.mkDerivation ({
+in buildGame ({
   name = "${name}-${version}";
   inherit fullName version arch executable dataDir;
   slugName = name;
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [ makeWrapper ] ++ nativeBuildInputs;
 
-  buildPhase = let
-    mainRpath = stdenv.lib.makeLibraryPath ([
-      stdenv.cc.cc mesa xorg.libX11 xorg.libXcursor xorg.libXrandr
-      libpulseaudio libudev
-    ] ++ rpath);
-  in ''
-    runHook preBuild
+  buildInputs = [ gtk2-x11 gdk_pixbuf glib ];
 
-    patchelf \
-      --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-      --set-rpath ${stdenv.lib.escapeShellArg mainRpath} "$executable"
-
-    ${buildPhase}
-
-    runHook postBuild
-  '';
+  runtimeDependencies = [
+    mesa xorg.libX11 xorg.libXcursor xorg.libXrandr libudev zlib
+  ];
 
   installPhase = ''
     runHook preInstall
@@ -62,7 +58,7 @@ in stdenv.mkDerivation ({
 
     runHook postInstall
   '';
-
-  dontStrip = true;
-  dontPatchELF = true;
-} // removeAttrs attrs [ "name" "version" "fullName" "buildPhase" "rpath" ])
+} // removeAttrs attrs [
+  "name" "version" "fullName" "nativeBuildInputs" "buildInputs"
+  "runtimeDependencies"
+])
