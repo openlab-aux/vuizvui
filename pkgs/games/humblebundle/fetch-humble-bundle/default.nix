@@ -89,6 +89,10 @@
       sha256 = "1kcg42nh7sbjabim1pbqx14468pypznjy7fx2bv7dicy0sqd9b8j";
     };
 
+    postPatch = ''
+      sed -i -e '/^LOGIN_URL *=/s,/login,/processlogin,' humblebundle/client.py
+    '';
+
     propagatedBuildInputs = [ pythonPackages.requests ];
   };
 
