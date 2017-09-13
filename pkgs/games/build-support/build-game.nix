@@ -4,6 +4,8 @@ assert withPulseAudio -> libpulseaudio != null;
 
 { buildInputs ? []
 , nativeBuildInputs ? []
+, preUnpack ? ""
+, setSourceRoot ? ""
 , installCheckPhase ? ""
 , runtimeDependencies ? []
 , ...
@@ -15,6 +17,23 @@ stdenv.mkDerivation ({
   nativeBuildInputs = [
     file ./setup-hooks/auto-patchelf.sh
   ] ++ nativeBuildInputs;
+
+  preUnpack = preUnpack + ''
+    mkdir "$name"
+    pushd "$name" &> /dev/null
+  '';
+
+  # Try to evade tarbombs
+  setSourceRoot = ''
+    popd &> /dev/null
+  '' + lib.optionalString (setSourceRoot == "") ''
+    unpackedFiles="$(find "$name" -mindepth 1 -maxdepth 1 -print)"
+    if [ $(echo "$unpackedFiles" | wc -l) -gt 1 ]; then
+      sourceRoot="$name"
+    else
+      sourceRoot="$name/''${unpackedFiles##*/}"
+    fi
+  '';
 
   runtimeDependencies = let
     deps = lib.optional withPulseAudio libpulseaudio ++ runtimeDependencies;
@@ -45,5 +64,6 @@ stdenv.mkDerivation ({
   dontStrip = true;
   dontPatchELF = true;
 } // removeAttrs attrs [
-  "buildInputs" "nativeBuildInputs" "installCheckPhase" "runtimeDependencies"
+  "buildInputs" "nativeBuildInputs" "preUnpack" "setSourceRoot"
+  "installCheckPhase" "runtimeDependencies"
 ])
