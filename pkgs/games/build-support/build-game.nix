@@ -1,8 +1,11 @@
-{ stdenv, lib, file }:
+{ stdenv, lib, file, withPulseAudio ? true, libpulseaudio ? null }:
+
+assert withPulseAudio -> libpulseaudio != null;
 
 { buildInputs ? []
 , nativeBuildInputs ? []
 , installCheckPhase ? ""
+, runtimeDependencies ? []
 , ...
 }@attrs:
 
@@ -12,6 +15,10 @@ stdenv.mkDerivation ({
   nativeBuildInputs = [
     file ./setup-hooks/auto-patchelf.sh
   ] ++ nativeBuildInputs;
+
+  runtimeDependencies = let
+    deps = lib.optional withPulseAudio libpulseaudio ++ runtimeDependencies;
+  in map (dep: dep.lib or dep) deps;
 
   doInstallCheck = true;
 
@@ -38,5 +45,5 @@ stdenv.mkDerivation ({
   dontStrip = true;
   dontPatchELF = true;
 } // removeAttrs attrs [
-  "buildInputs" "nativeBuildInputs" "installCheckPhase"
+  "buildInputs" "nativeBuildInputs" "installCheckPhase" "runtimeDependencies"
 ])

@@ -51,7 +51,6 @@ checkElfDep() {
 populateCacheWithRecursiveDeps() {
     local so found foundso
     for so in "${cachedDependencies[@]}"; do
-        local IFS=$'\n'
         for found in $(getDepsFromSo "$so"); do
             local libdir="${found%/*}"
             local base="${found##*/}"
@@ -91,21 +90,23 @@ findDependency() {
 }
 
 autoPatchelfFile() {
-    local toPatch="$1"
-    local dep
+    local dep rpath="" toPatch="$1"
 
     local interpreter="$(cat $NIX_CC/nix-support/dynamic-linker)"
     if isExecutable "$toPatch"; then
         patchelf --set-interpreter "$interpreter" "$toPatch"
+        if [ -n "$runtimeDependencies" ]; then
+            for dep in $runtimeDependencies; do
+                rpath="$rpath${rpath:+:}$dep/lib"
+            done
+        fi
     fi
 
     patchelf --remove-rpath "$toPatch"
 
-    local rpath=""
     local missing="$(
         ldd "$toPatch" | sed -n -e 's/^[\t ]*\([^ ]\+\) => not found.*/\1/p'
     )"
-    local IFS=$'\n'
     for dep in $missing; do
         echo -n "searching for dependency $dep..." >&2
         if findDependency "$dep"; then
@@ -125,11 +126,13 @@ autoPatchelfFile() {
 autoPatchelf() {
     echo "automatically fixing dependencies for ELF files" >&2
 
-    local i IFS=$'\n'
     cachedDependencies+=(
         $(find "$out" \! -type d \( -name '*.so' -o -name '*.so.*' \))
     )
-    for i in $(findElfs "$prefix"); do autoPatchelfFile "$i"; done
+    local elffile
+    findElfs "$prefix" | while read -r elffile; do
+        autoPatchelfFile "$elffile"
+    done
 }
 
 postInstallHooks+=(autoPatchelf)

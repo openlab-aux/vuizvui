@@ -28,6 +28,7 @@ let
 
     config._module.args.pkgs = let
       buildSupport = import ./build-support {
+        inherit (pkgs) config;
         callPackage = lib.callPackageWith (pkgs // buildSupport);
       };
     in buildSupport // pkgs;
