@@ -23,7 +23,7 @@ let
     hammerwatch = callPackage ./hammerwatch.nix {};
     jamestown = callPackage ./jamestown.nix {};
     liads = callPackage ./liads.nix {};
-    megabytepunch = callPackage ./megabytepunch.nix {};
+    megabytepunch = callPackage_i686 ./megabytepunch.nix {};
     pico-8 = callPackage ./pico-8.nix {};
     rocketbirds = callPackage ./rocketbirds.nix {};
     spaz = callPackage ./spaz.nix {};
