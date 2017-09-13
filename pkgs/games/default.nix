@@ -27,11 +27,16 @@ let
     };
 
     config._module.args.pkgs = let
-      buildSupport = import ./build-support {
-        inherit (pkgs) config;
-        callPackage = lib.callPackageWith (pkgs // buildSupport);
-      };
-    in buildSupport // pkgs;
+      mkBuildSupport = super: let
+        self = import ./build-support {
+          inherit (super) config;
+          callPackage = lib.callPackageWith (super // self);
+        };
+      in self;
+    in pkgs // (mkBuildSupport pkgs) // {
+      pkgsi686Linux = pkgs.pkgsi686Linux
+                   // (mkBuildSupport pkgs.pkgsi686Linux);
+    };
   };
 
 in (pkgs.lib.evalModules {
