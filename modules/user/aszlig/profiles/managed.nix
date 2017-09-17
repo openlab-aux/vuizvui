@@ -41,7 +41,7 @@ in {
       pkgs.kdeApplications.okular
       pkgs.libreoffice
       pkgs.mpv
-      pkgs.simple-scan
+      pkgs.skanlite
       pkgs.thunderbird
       pkgs.vuizvui.aszlig.gajim
       pkgs.vuizvui.aszlig.vim
