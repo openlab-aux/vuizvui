@@ -143,20 +143,14 @@
             ${xterm}*cursorColor:        #545f65
         '') [ "UXTerm" "XTerm" ]}
         ! ------------------------------------------------------------------------------
-        ! ROFI Color theme & Settings
+        ! ROFI Color theme
+        ! Copyright: 2017 leofa
         ! ------------------------------------------------------------------------------
-        rofi.modi: run
-        rofi.opacity: 85
-        rofi.width: 100
-        rofi.lines: 3
-        rofi.padding: 300
-        rofi.bw: 0
-        rofi.eh: 2
-        rofi.color-enabled: true
-        rofi.color-window: #393939, #393939, #268bd2
-        rofi.color-normal: #393939, #ffffff, #393939, #268bd2, #ffffff
-        rofi.color-active: #393939, #268bd2, #393939, #268bd2, #205171
-        rofi.color-urgent: #393939, #f3843d, #393939, #268bd2, #ffc39c
+        rofi.color-normal:                   argb:0383c4a, #c4cbd4, argb:96404552, #4084d6, #f9f9f9
+        rofi.color-urgent:                   argb:02d303b, #cc6666, argb:e52d303b, #a54242, #f9f9f9
+        rofi.color-active:                   argb:02d303b, #b5bd68, argb:e42d303b, #8c9440, #f9f9f9
+        rofi.color-window:                   argb:f22d303b, #7c8389, #1d1f21
+        rofi.separator-style:                solid
       ''}"
     '';
   };
