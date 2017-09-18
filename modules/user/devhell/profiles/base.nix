@@ -78,7 +78,6 @@ in {
 
     environment = {
       shells = [ "/run/current-system/sw/bin/zsh" ];
-      sessionVariables.TERM = "xterm-256color";
     };
 
     fonts = {
