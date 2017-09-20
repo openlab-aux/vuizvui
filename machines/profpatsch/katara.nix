@@ -279,7 +279,6 @@ in {
             export PATH+=":$HOME/scripts" #add utility scripts
             export EDITOR=emacsclient
             export TERMINAL=${lilyterm}/bin/lilyterm
-            export TERM="$TERMINAL"
 
             ${xorg.xset}/bin/xset r rate 250 35
 
