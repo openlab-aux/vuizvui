@@ -36,7 +36,6 @@ in {
       pkgs.kdeApplications.kate
       pkgs.kdeApplications.kleopatra
       pkgs.kdeApplications.kmail
-      pkgs.kdeApplications.kmix
       pkgs.kdeApplications.korganizer
       pkgs.kdeApplications.okular
       pkgs.libreoffice
