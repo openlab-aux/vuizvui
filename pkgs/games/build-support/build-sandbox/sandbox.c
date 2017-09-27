@@ -112,7 +112,7 @@ static bool makedirs(const char *path)
 static bool bind_mount(const char *path, bool restricted)
 {
     int mflags = MS_BIND | MS_REC;
-    size_t srclen;
+    size_t srclen, rootdir_len = strlen(FS_ROOT_DIR);
     char src[PATH_MAX], target[PATH_MAX];
 
     if (restricted)
@@ -123,13 +123,13 @@ static bool bind_mount(const char *path, bool restricted)
         return false;
     }
 
-    if ((srclen = strlen(src)) > PATH_MAX - 4) {
-        fprintf(stderr, "`/tmp/%s' does not fit in PATH_MAX.\n", src);
+    if ((srclen = strlen(src)) > PATH_MAX - rootdir_len) {
+        fprintf(stderr, "`" FS_ROOT_DIR "%s' doesn't fit in PATH_MAX.\n", src);
         return false;
     }
 
-    memcpy(target, "/tmp", 4);
-    memcpy(target + 4, src, srclen + 1);
+    memcpy(target, FS_ROOT_DIR, rootdir_len);
+    memcpy(target + rootdir_len, src, srclen + 1);
 
     if (!makedirs(target))
         return false;
@@ -405,7 +405,7 @@ static bool setup_chroot(void)
 
     mflags = MS_NOEXEC | MS_NOSUID | MS_NODEV | MS_NOATIME;
 
-    if (mount("none", "/tmp", "tmpfs", mflags, NULL) == -1) {
+    if (mount("none", FS_ROOT_DIR, "tmpfs", mflags, NULL) == -1) {
         perror("mount rootfs");
         return false;
     }
@@ -419,15 +419,13 @@ static bool setup_chroot(void)
     if (!bind_mount("/sys", false))
         return false;
 
-    if (mkdir("/tmp/tmp", 0700) == -1) {
-        perror("mkdir private tmp");
+    if (!bind_mount("/tmp", true, false))
         return false;
-    }
 
     if (!setup_app_paths())
         return false;
 
-    if (chroot("/tmp") == -1) {
+    if (chroot(FS_ROOT_DIR) == -1) {
         perror("chroot");
         return false;
     }

@@ -53,6 +53,7 @@ stdenv.mkDerivation ({
         -DWRAPPED_PATH=\""$bin"\" \
         -DWRAPPED_PROGNAME=\""$progname"\" \
         -DPARAMS_FILE=\""$(pwd)/params.c"\" \
+        -DFS_ROOT_DIR=\""$out"\" \
         -o "$out/bin/$progname" ${./sandbox.c}
     done
   '';
