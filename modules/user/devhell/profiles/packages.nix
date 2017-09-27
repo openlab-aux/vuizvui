@@ -143,7 +143,6 @@ in {
       gitAndTools.gitflow
       gitAndTools.svn2git
       gitAndTools.tig
-      pythonPackages.glances
       glxinfo
       gnome3.dconf
       gnome3.defaultIconTheme
@@ -165,6 +164,7 @@ in {
       hplipWithPlugin
       htop
       i3lock
+      i3lock-color
       i3status
       icedtea_web
       iftop
@@ -243,6 +243,7 @@ in {
       python2
       python3
       python34Packages.hovercraft
+      pythonPackages.glances
       pythonPackages.livestreamer
       pythonPackages.rainbowstream
       qemu
