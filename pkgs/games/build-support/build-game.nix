@@ -1,4 +1,4 @@
-{ stdenv, lib, file, unzip, gcc, makeSetupHook
+{ stdenv, lib, file, unzip
 
 , withPulseAudio ? true, libpulseaudio ? null
 , alsaLib
@@ -16,15 +16,7 @@ assert withPulseAudio -> libpulseaudio != null;
 , ...
 }@attrs:
 
-let
-  sandboxHook = makeSetupHook {
-    substitutions = {
-      inherit gcc;
-      sandbox_main = ./sandbox.c;
-    };
-  } ./setup-hooks/make-sandbox.sh;
-
-in stdenv.mkDerivation ({
+stdenv.mkDerivation ({
   buildInputs = [ stdenv.cc.cc ] ++ buildInputs;
 
   nativeBuildInputs = [
@@ -47,11 +39,6 @@ in stdenv.mkDerivation ({
       sourceRoot="$name/''${unpackedFiles##*/}"
     fi
   '';
-
-  # Use ":!*!:" as delimiter as we can consider this highly unlikely to
-  # be part of a real path component and we're out of Nix territory, so
-  # the path components could contain almost anything.
-  extraSandboxPaths = lib.concatStringsSep ":!*!:" extraSandboxPaths;
 
   runtimeDependencies = let
     deps = lib.singleton alsaLib
