@@ -109,33 +109,86 @@ static bool makedirs(const char *path)
     return true;
 }
 
-static bool bind_mount(const char *path, bool restricted)
+static char *get_mount_target(const char *path)
+{
+    size_t pathlen = strlen(path), rootdir_len = strlen(FS_ROOT_DIR);
+    char *target;
+
+    if ((target = malloc(rootdir_len + pathlen + 1)) == NULL) {
+        perror("malloc mount target");
+        return NULL;
+    }
+
+    memcpy(target, FS_ROOT_DIR, rootdir_len);
+    memcpy(target + rootdir_len, path, pathlen + 1);
+    return target;
+}
+
+static bool bind_mount(const char *path, bool restricted, bool resolve)
 {
     int mflags = MS_BIND | MS_REC;
-    size_t srclen, rootdir_len = strlen(FS_ROOT_DIR);
-    char src[PATH_MAX], target[PATH_MAX];
+    char src[PATH_MAX], *target;
 
     if (restricted)
         mflags |= MS_NOSUID | MS_NODEV | MS_NOATIME;
 
-    if (realpath(path, src) == NULL) {
-        fprintf(stderr, "realpath of %s: %s\n", path, strerror(errno));
+    if (resolve) {
+        if (realpath(path, src) == NULL) {
+            fprintf(stderr, "realpath of %s: %s\n", path, strerror(errno));
+            return false;
+        }
+    }
+
+    if ((target = get_mount_target(resolve ? src : path)) == NULL)
+        return false;
+
+    if (!makedirs(target)) {
+        free(target);
         return false;
     }
 
-    if ((srclen = strlen(src)) > PATH_MAX - rootdir_len) {
-        fprintf(stderr, "`" FS_ROOT_DIR "%s' doesn't fit in PATH_MAX.\n", src);
+    if (mount(resolve ? src : path, target, "", mflags, NULL) == -1) {
+        fprintf(stderr, "mount %s to %s: %s\n",
+                resolve ? src : path, target, strerror(errno));
+        free(target);
         return false;
     }
 
-    memcpy(target, FS_ROOT_DIR, rootdir_len);
-    memcpy(target + rootdir_len, src, srclen + 1);
+    free(target);
+    return true;
+}
 
-    if (!makedirs(target))
+static bool bind_file(const char *path)
+{
+    char *target, *tmp;
+
+    if ((target = get_mount_target(path)) == NULL)
         return false;
 
-    if (mount(src, target, "", mflags, NULL) == -1) {
-        fprintf(stderr, "mount %s to %s: %s\n", src, target, strerror(errno));
+    if ((tmp = strdup(target)) == NULL) {
+        perror("strdup bind file target path");
+        free(target);
+        return false;
+    }
+
+    if (!makedirs(dirname(tmp))) {
+        free(target);
+        free(tmp);
+        return false;
+    }
+
+    free(tmp);
+
+    if (creat(target, 0666) == -1) {
+        fprintf(stderr, "unable to create %s: %s\n", target, strerror(errno));
+        free(target);
+        return false;
+    }
+
+    if (mount(path, target, "", MS_BIND, NULL) == -1) {
+        fprintf(stderr, "mount file %s to %s: %s\n",
+                path, target, strerror(errno));
+        free(target);
         return false;
     }
 
@@ -388,13 +441,42 @@ static bool extra_mount(const char *path)
     if ((expanded = replace_env(path)) == NULL)
         return false;
 
-    if (!bind_mount(expanded, true)) {
+    if (!bind_mount(expanded, true, true)) {
         free(expanded);
         return false;
     }
 
     free(expanded);
     return true;
+}
+
+static bool setup_xauthority(void)
+{
+    char *xauth, *home;
+    bool result;
+    size_t homelen;
+
+    if ((xauth = getenv("XAUTHORITY")) != NULL)
+        return bind_file(xauth);
+
+    if ((home = getenv("HOME")) == NULL) {
+        fputs("Unable find $HOME.\n", stderr);
+        return false;
+    }
+
+    homelen = strlen(home);
+
+    if ((xauth = malloc(homelen + 13)) == NULL) {
+        perror("malloc xauth file path");
+        return false;
+    }
+
+    memcpy(xauth, home, homelen);
+    memcpy(xauth + homelen, "/.Xauthority", 13);
+
+    result = bind_file(xauth);
+    free(xauth);
+    return result;
 }
 
 #include PARAMS_FILE
@@ -410,19 +492,31 @@ static bool setup_chroot(void)
         return false;
     }
 
-    if (!bind_mount("/dev", false))
+    if (!bind_mount("/etc", true, false))
         return false;
 
-    if (!bind_mount("/proc", false))
+    if (!bind_mount("/dev", false, false))
         return false;
 
-    if (!bind_mount("/sys", false))
+    if (!bind_mount("/proc", false, false))
+        return false;
+
+    if (!bind_mount("/sys", false, false))
+        return false;
+
+    if (!bind_mount("/run", false, false))
+        return false;
+
+    if (!bind_mount("/var/run", false, false))
         return false;
 
     if (!bind_mount("/tmp", true, false))
         return false;
 
     if (!setup_app_paths())
+        return false;
+
+    if (!setup_xauthority())
         return false;
 
     if (chroot(FS_ROOT_DIR) == -1) {

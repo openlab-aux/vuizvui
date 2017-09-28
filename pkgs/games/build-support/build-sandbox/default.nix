@@ -33,10 +33,10 @@ stdenv.mkDerivation ({
     echo 'static bool setup_app_paths(void) {' > params.c
 
     for dep in $runtimeDeps; do
-      echo 'if (!bind_mount("'"$dep"'", true)) return false;' >> params.c
+      echo 'if (!bind_mount("'"$dep"'", true, true)) return false;' >> params.c
     done
 
-    ${lib.concatMapStrings (extra: let
+    ${lib.concatMapStringsSep "\n" (extra: let
       escaped = lib.escapeShellArg (lib.escape ["\\" "\""] extra);
       result = "echo 'if (!extra_mount(\"'${escaped}'\")) return false;'";
     in "${result} >> params.c") extraSandboxPaths}
