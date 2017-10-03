@@ -56,11 +56,12 @@ static Path get_ancestor(query_state *qs, Path path)
         }
     }
 
-    return path;
+    return get_store_path(qs, path);
 }
 
 extern "C" {
-    struct query_state *new_query(void) {
+    struct query_state *new_query(void)
+    {
         query_state *initial = new query_state();
 #if NIX_VERSION >= 112
         initial->store = openStore();
@@ -72,7 +73,8 @@ extern "C" {
         return initial;
     }
 
-    void free_query(query_state *qs) {
+    void free_query(query_state *qs)
+    {
         delete qs;
     }
 

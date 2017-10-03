@@ -496,6 +496,17 @@ static bool setup_xauthority(void)
     return result;
 }
 
+static bool is_dir(const char *path)
+{
+    struct stat sb;
+    if (stat(path, &sb) == -1) {
+        fprintf(stderr, "stat %s: %s\n", path, strerror(errno));
+        // Default to directory for mounting
+        return true;
+    }
+    return S_ISDIR(sb.st_mode);
+}
+
 static bool mount_requisites(struct query_state *qs, const char *path)
 {
     const char *requisite;
@@ -506,8 +517,13 @@ static bool mount_requisites(struct query_state *qs, const char *path)
     }
 
     while ((requisite = next_query_result(qs)) != NULL) {
-        if (!bind_mount(requisite, true, false))
-            return false;
+        if (is_dir(requisite)) {
+            if (!bind_mount(requisite, true, false))
+                return false;
+        } else {
+            if (!bind_file(requisite))
+                return false;
+        }
     }
 
     return true;
@@ -539,12 +555,34 @@ bool mount_from_path_var(struct query_state *qs, const char *name)
     return true;
 }
 
+static bool setup_static_etc(struct query_state *qs)
+{
+    char dest[PATH_MAX];
+    ssize_t destlen;
+
+    if ((destlen = readlink("/etc/static", dest, PATH_MAX)) == -1)
+        return true;
+
+    if (destlen >= PATH_MAX) {
+        fputs("readlink of /etc/static larger than PATH_MAX.\n", stderr);
+        return false;
+    }
+
+    dest[destlen] = '\0';
+    return mount_requisites(qs, dest);
+}
+
 static bool setup_runtime_paths(void)
 {
     struct query_state *qs;
 
     if ((qs = new_query()) == NULL) {
         fputs("Unable to allocate Nix query state.\n", stderr);
+        return false;
+    }
+
+    if (!setup_static_etc(qs)) {
+        free_query(qs);
         return false;
     }
 
