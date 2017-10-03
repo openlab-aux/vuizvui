@@ -30,7 +30,8 @@ stdenv.mkDerivation ({
       bcdown
     ' ../sandbox-closure | sort -u)"
 
-    echo 'static bool setup_app_paths(void) {' > params.c
+    echo '#include "setup.h"' > params.c
+    echo 'bool setup_app_paths(void) {' >> params.c
 
     for dep in $runtimeDeps; do
       echo 'if (!bind_mount("'"$dep"'", true, true)) return false;' >> params.c
