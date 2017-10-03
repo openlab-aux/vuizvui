@@ -18,6 +18,7 @@
 #include <unistd.h>
 
 #include "params.h"
+#include "nix-query.h"
 
 static bool write_proc(int proc_pid_fd, const char *fname, const char *buf,
                        size_t buflen, bool ignore_errors)
@@ -193,6 +194,7 @@ static bool bind_file(const char *path)
         return false;
     }
 
+    free(target);
     return true;
 }
 
@@ -480,6 +482,67 @@ static bool setup_xauthority(void)
     return result;
 }
 
+static bool mount_requisites(struct query_state *qs, const char *path)
+{
+    const char *requisite;
+
+    if (!query_requisites(qs, path)) {
+        fprintf(stderr, "Unable to get requisites for %s.\n", path);
+        return false;
+    }
+
+    while ((requisite = next_query_result(qs)) != NULL) {
+        if (!bind_mount(requisite, true, false))
+            return false;
+    }
+
+    return true;
+}
+
+bool mount_from_path_var(struct query_state *qs, const char *name)
+{
+    char *buf, *ptr, *value = getenv(name);
+
+    if (value == NULL)
+        return true;
+
+    if ((buf = strdup(value)) == NULL) {
+        fprintf(stderr, "strdup %s: %s\n", value, strerror(errno));
+        return false;
+    }
+
+    ptr = strtok(buf, ":");
+
+    while (ptr != NULL) {
+        if (!mount_requisites(qs, ptr)) {
+            free(buf);
+            return false;
+        }
+        ptr = strtok(NULL, ":");
+    }
+
+    free(buf);
+    return true;
+}
+
+static bool setup_runtime_paths(void)
+{
+    struct query_state *qs;
+
+    if ((qs = new_query()) == NULL) {
+        fputs("Unable to allocate Nix query state.\n", stderr);
+        return false;
+    }
+
+    if (!mount_runtime_path_vars(qs)) {
+        free_query(qs);
+        return false;
+    }
+
+    free_query(qs);
+    return true;
+}
+
 static bool setup_chroot(void)
 {
     int mflags;
@@ -510,6 +573,9 @@ static bool setup_chroot(void)
         return false;
 
     if (!bind_mount("/tmp", true, false))
+        return false;
+
+    if (!setup_runtime_paths())
         return false;
 
     if (!setup_app_paths())

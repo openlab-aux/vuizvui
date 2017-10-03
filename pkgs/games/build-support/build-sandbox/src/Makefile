@@ -1,10 +1,14 @@
 BINARIES = $(wildcard $(BINDIR)/*)
 WRAPPERS = $(subst $(BINDIR),$(out)/bin,$(BINARIES))
 
-OBJECTS = get-closure.o params.o setup.o
+NIX_VERSION = `pkg-config --modversion nix-main | \
+               sed -e 's/^\([0-9]\+\)\.\([0-9]\+\).*/\1\2/'`
 
-CFLAGS = -Wall -std=gnu11 -DFS_ROOT_DIR=\"$(out)\"
-CXXFLAGS = -Wall -std=c++14 `pkg-config --cflags nix-main`
+OBJECTS = nix-query.o params.o setup.o
+
+CFLAGS = -g -Wall -std=gnu11 -DFS_ROOT_DIR=\"$(out)\"
+CXXFLAGS = -g -Wall -std=c++14 `pkg-config --cflags nix-main`
+CXXFLAGS += -DNIX_VERSION=$(NIX_VERSION)
 LDFLAGS = `pkg-config --libs nix-main`
 
 all: $(OBJECTS)
