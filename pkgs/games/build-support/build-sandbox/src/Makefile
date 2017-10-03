@@ -4,7 +4,7 @@ WRAPPERS = $(subst $(BINDIR),$(out)/bin,$(BINARIES))
 NIX_VERSION = `pkg-config --modversion nix-main | \
                sed -e 's/^\([0-9]\+\)\.\([0-9]\+\).*/\1\2/'`
 
-OBJECTS = nix-query.o params.o setup.o
+OBJECTS = nix-query.o path-cache.o params.o setup.o
 
 CFLAGS = -g -Wall -std=gnu11 -DFS_ROOT_DIR=\"$(out)\"
 CXXFLAGS = -g -Wall -std=c++14 `pkg-config --cflags nix-main`

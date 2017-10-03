@@ -19,6 +19,9 @@
 
 #include "params.h"
 #include "nix-query.h"
+#include "path-cache.h"
+
+static path_cache cached_paths = NULL;
 
 static bool write_proc(int proc_pid_fd, const char *fname, const char *buf,
                        size_t buflen, bool ignore_errors)
@@ -106,7 +109,8 @@ static bool makedirs(const char *path)
         }
     }
 
-    (void)mkdir(path, 0755);
+    if (cache_path(cached_paths, path))
+        (void)mkdir(path, 0755);
     free(tmp);
     return true;
 }
@@ -149,6 +153,11 @@ bool bind_mount(const char *path, bool restricted, bool resolve)
         return false;
     }
 
+    if (!cache_path(cached_paths, resolve ? src : path)) {
+        free(target);
+        return true;
+    }
+
     if (mount(resolve ? src : path, target, "", mflags, NULL) == -1) {
         fprintf(stderr, "mount %s to %s: %s\n",
                 resolve ? src : path, target, strerror(errno));
@@ -180,6 +189,11 @@ static bool bind_file(const char *path)
     }
 
     free(tmp);
+
+    if (!cache_path(cached_paths, path)) {
+        free(target);
+        return true;
+    }
 
     if (creat(target, 0666) == -1) {
         fprintf(stderr, "unable to create %s: %s\n", target, strerror(errno));
@@ -640,8 +654,13 @@ bool setup_sandbox(void)
             return false;
     }
 
-    if (!setup_chroot())
-        return false;
+    cached_paths = new_path_cache();
 
+    if (!setup_chroot()) {
+        free_path_cache(cached_paths);
+        return false;
+    }
+
+    free_path_cache(cached_paths);
     return true;
 }
