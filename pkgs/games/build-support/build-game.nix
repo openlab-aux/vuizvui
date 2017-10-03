@@ -1,4 +1,4 @@
-{ stdenv, lib, file, unzip
+{ stdenv, lib, file, unzip, buildSandbox
 
 , withPulseAudio ? true, libpulseaudio ? null
 , alsaLib
@@ -13,10 +13,11 @@ assert withPulseAudio -> libpulseaudio != null;
 , installCheckPhase ? ""
 , runtimeDependencies ? []
 , extraSandboxPaths ? [ "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" ]
+, extraRuntimePathVars ? []
 , ...
 }@attrs:
 
-stdenv.mkDerivation ({
+buildSandbox (stdenv.mkDerivation ({
   buildInputs = [ stdenv.cc.cc ] ++ buildInputs;
 
   nativeBuildInputs = [
@@ -73,4 +74,8 @@ stdenv.mkDerivation ({
 } // removeAttrs attrs [
   "buildInputs" "nativeBuildInputs" "preUnpack" "setSourceRoot"
   "installCheckPhase" "runtimeDependencies" "extraSandboxPaths"
-])
+  "extraRuntimePathVars"
+])) {
+  inherit extraSandboxPaths;
+  runtimePathVars = lib.singleton "LD_LIBRARY_PATH" ++ extraRuntimePathVars;
+}

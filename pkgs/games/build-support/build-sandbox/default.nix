@@ -1,6 +1,6 @@
 { stdenv, lib, pkgconfig, nix }:
 
-drv: { extraSandboxPaths ? [], runtimePathVariables ? [], ... }@attrs:
+drv: { extraSandboxPaths ? [], runtimePathVars ? [], ... }@attrs:
 
 stdenv.mkDerivation ({
   name = "${drv.name}-sandboxed";
@@ -50,7 +50,7 @@ stdenv.mkDerivation ({
       escaped = lib.escapeShellArg (lib.escape ["\\" "\""] pathvar);
       fun = "mount_from_path_var";
       result = "echo 'if (!${fun}(qs, \"'${escaped}'\")) return false;'";
-    in "${result} >> params.c") runtimePathVariables}
+    in "${result} >> params.c") runtimePathVars}
 
     echo 'return true; }' >> params.c
   '';
@@ -59,4 +59,4 @@ stdenv.mkDerivation ({
   buildInputs = [ nix ];
   makeFlags = [ "BINDIR=${drv}/bin" ];
 
-} // removeAttrs attrs [ "extraSandboxPaths" "runtimePathVariables" ])
+} // removeAttrs attrs [ "extraSandboxPaths" "runtimePathVars" ])

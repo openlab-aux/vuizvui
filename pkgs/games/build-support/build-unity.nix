@@ -27,6 +27,8 @@ in buildGame ({
     mesa xorg.libX11 xorg.libXcursor xorg.libXrandr libudev zlib
   ];
 
+  extraSandboxPaths = [ "$XDG_CONFIG_HOME/unity3d" ];
+
   installPhase = ''
     runHook preInstall
 
