@@ -479,7 +479,7 @@ static bool setup_xauthority(void)
     return result;
 }
 
-#include PARAMS_FILE
+#include "params.c"
 
 static bool setup_chroot(void)
 {

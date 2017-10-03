@@ -1,17 +1,17 @@
-{ stdenv, lib }:
+{ stdenv, lib, pkgconfig, nix }:
 
 drv: { extraSandboxPaths ? [], ... }@attrs:
 
 stdenv.mkDerivation ({
   name = "${drv.name}-sandboxed";
 
-  src = drv;
+  src = ./src;
 
-  phases = [ "buildPhase" "installPhase" ];
+  inherit drv;
 
   exportReferencesGraph = [ "sandbox-closure" drv ];
 
-  buildPhase = ''
+  configurePhase = ''
     runtimeDeps="$(sed -ne '
       p; n; n
 
@@ -28,7 +28,7 @@ stdenv.mkDerivation ({
       y/X/9/
       x; n; p; x
       bcdown
-    ' sandbox-closure | sort -u)"
+    ' ../sandbox-closure | sort -u)"
 
     echo 'static bool setup_app_paths(void) {' > params.c
 
@@ -45,17 +45,8 @@ stdenv.mkDerivation ({
     cat params.c
   '';
 
-  installPhase = ''
-    mkdir -p "$out/bin"
-    for bin in "$src"/bin/*; do
-      progname="$(basename "$bin")"
-      gcc -g -std=gnu11 -Wall \
-        -DWRAPPED_PATH=\""$bin"\" \
-        -DWRAPPED_PROGNAME=\""$progname"\" \
-        -DPARAMS_FILE=\""$(pwd)/params.c"\" \
-        -DFS_ROOT_DIR=\""$out"\" \
-        -o "$out/bin/$progname" ${./sandbox.c}
-    done
-  '';
+  nativeBuildInputs = [ pkgconfig ];
+  buildInputs = [ nix ];
+  makeFlags = [ "BINDIR=${drv}/bin" ];
 
 } // removeAttrs attrs [ "extraSandboxPaths" ])
