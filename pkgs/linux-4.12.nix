@@ -18,4 +18,6 @@ in import generic (args // rec {
     pkgs.kernelPatches.cpu-cgroup-v2."4.11"
     pkgs.kernelPatches.modinst_arg_list_too_long
   ];
+
+  extraMeta.hydraPlatforms = [];
 } // (args.argsOverride or {}))
