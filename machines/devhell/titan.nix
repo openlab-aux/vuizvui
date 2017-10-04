@@ -21,8 +21,6 @@
 
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
-
-    kernelParams = [ "elevator=noop" ];
   };
 
   hardware = {
@@ -33,17 +31,17 @@
   };
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/409cc4ab-a9b9-4301-a377-9a7b1eef20e3";
-    fsType = "f2fs";
+    device = "/dev/disk/by-uuid/3099f245-51cf-4ca8-b89c-269dbc0ad730";
+    fsType = "btrfs";
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/E15E-D804";
+    device = "/dev/disk/by-uuid/9344-E6FE";
     fsType = "vfat";
   };
 
   swapDevices = [ 
-    { device = "/dev/disk/by-uuid/448d8987-334f-431c-b6be-baf2ddcc48df"; }
+    { device = "/dev/disk/by-uuid/ff7255995-b9a1-453f-9e6d-ba9bd6579db6"; }
   ];
 
   networking.hostName = "titan";
