@@ -24,5 +24,7 @@ let
     openlab = callPackageScope ./openlab;
     profpatsch = callPackageScope ./profpatsch;
     sternenseemann = callPackageScope ./sternenseemann;
+
+    linux_4_12 = callPackage ./linux-4.12.nix {};
   };
 in pkgs // self
