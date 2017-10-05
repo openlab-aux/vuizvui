@@ -46,7 +46,7 @@
 
   networking.hostName = "titan";
   networking.wireless.enable = true;
-  networking.connman.enable = true;
+  networking.connman.enable = false;
   networking.wicd.enable = false;
   networking.networkmanager.enable = false;
 
@@ -110,7 +110,7 @@
       ${pkgs.xbindkeys}/bin/xbindkeys &
       ${pkgs.nitrogen}/bin/nitrogen --restore &
       #${pkgs.networkmanagerapplet}/bin/nm-applet &
-      ${pkgs.connmanui}/bin/connman-ui-gtk &
+      #${pkgs.connmanui}/bin/connman-ui-gtk &
       ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
       ${pkgs.pasystray}/bin/pasystray &
       ${pkgs.compton}/bin/compton -f &
