@@ -49,6 +49,7 @@
   networking.connman.enable = false;
   networking.wicd.enable = false;
   networking.networkmanager.enable = false;
+  networking.useNetworkd.enable = true;
 
   powerManagement.cpuFreqGovernor = "powersave";
 
