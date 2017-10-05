@@ -19,18 +19,9 @@ in {
       $install "$params" "$out/lib/firmware/brcm/brcmfmac43340-sdio.txt"
     '');
 
-    boot.kernelPatches = [
-      { name = "backlight";
-        patch = ./backlight.patch;
-      }
-      { name = "meta-keys";
-        patch = ./meta-keys.patch;
-      }
-    ];
-
     boot.kernelPackages = let
       nixpkgs = import ../../../nixpkgs-path.nix;
-      t100haKernel = pkgs.vuizvui.linux_4_12.override {
+      t100haKernel = pkgs.linux_testing.override {
         # Missing device drivers:
         #
         #   808622B8 -> Intel(R) Imaging Signal Processor 2401
@@ -55,14 +46,20 @@ in {
           MFD_AXP20X y
           MFD_AXP20X_I2C y
 
+          # Backlight
+          PWM y
+          PWM_SYSFS y
+          PWM_CRC y
+          GPIO_CRYSTAL_COVE y
+
           # GPU
           AGP n
           DRM y
-          DRM_I915 y
+          DRM_I915 m
 
           # Thermal
-          INT3406_THERMAL y
-          INT340X_THERMAL y
+          INT3406_THERMAL m
+          INT340X_THERMAL m
 
           # GPIO
           PINCTRL_CHERRYVIEW y
