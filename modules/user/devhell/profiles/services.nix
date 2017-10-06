@@ -49,6 +49,7 @@ in {
     services.syncthing = {
       enable = true;
       user = "dev";
+      dataDir = "/home/dev/syncthing/";
     };
 
     services.journald.extraConfig = ''
