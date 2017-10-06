@@ -280,6 +280,18 @@ let
       rev = "dfe0a33253c61dd8fac455baea4ec492e6cf0fe3";
       sha256 = "0576k4l2wbzy9frvv268vdix4k6iz9pw6n6626ifvg8hk6gbc5g9";
     };
+
+    ats = fetchFromGitHub {
+      owner = "alex-ren";
+      repo = "org.ats-lang.toolats";
+      rev = "e0c5499dfa5c65b4aa3bf031247c768f826f3de8";
+      sha256 = "1wf8pr4pj660bxq00l9fhr07qm7mpy1jglmsyxzi9qq9pgb2avzy";
+      extraPostFetch = ''
+        mv -t "$out" "$out/org.ats-lang.toolats.vim/ftdetect" \
+                     "$out/org.ats-lang.toolats.vim/syntax"
+        rm -rf "$out/org.ats-lang.toolats.vim"
+      '';
+    };
   };
 
   generic = ''
