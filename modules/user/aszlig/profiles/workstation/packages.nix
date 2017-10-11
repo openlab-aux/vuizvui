@@ -11,6 +11,7 @@ pkgs: with pkgs; [
   chromium
   dash
   dos2unix
+  fd
   ffmpeg
   figlet
   firefox
