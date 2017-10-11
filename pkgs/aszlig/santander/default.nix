@@ -82,7 +82,7 @@ in stdenv.mkDerivation rec {
     cat > "$libexec/travic-sign" <<EOF
     #!${stdenv.shell}
     export WINEPREFIX="$winePrefix"
-    exec ${patchedWine}/bin/wine "$libexec/TRAVIC-Sign-Service.exe"
+    exec ${patchedWine}/bin/wine "$libexec/service.exe"
     EOF
     chmod +x "$libexec/travic-sign"
   '';
