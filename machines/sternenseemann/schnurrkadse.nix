@@ -32,6 +32,8 @@ in {
   hardware.pulseaudio.package = pkgs.pulseaudioFull;
   hardware.pulseaudio.zeroconf.discovery.enable = true;
 
+  hardware.enableRedistributableFirmware = true;
+
   hardware.trackpoint = {
     enable = true;
     emulateWheel = true;
@@ -44,7 +46,6 @@ in {
   boot.loader.grub.device = "/dev/sda";
 
   networking.hostName = "schnurrkadse";
-  networking.enableIntel2200BGFirmware = true;
   networking.supplicant = {
     wlp4s2 = {
       configFile.path = "/etc/wpa_supplicant.conf";
