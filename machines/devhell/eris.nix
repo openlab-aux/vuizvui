@@ -142,15 +142,6 @@
             ${xterm}*faceNameDoublesize: xft:Unifont:pixelsize=12:antialias=true:hinting=true
             ${xterm}*cursorColor:        #545f65
         '') [ "UXTerm" "XTerm" ]}
-        ! ------------------------------------------------------------------------------
-        ! ROFI Color theme
-        ! Copyright: 2017 leofa
-        ! ------------------------------------------------------------------------------
-        rofi.color-normal:                   argb:0383c4a, #c4cbd4, argb:96404552, #4084d6, #f9f9f9
-        rofi.color-urgent:                   argb:02d303b, #cc6666, argb:e52d303b, #a54242, #f9f9f9
-        rofi.color-active:                   argb:02d303b, #b5bd68, argb:e42d303b, #8c9440, #f9f9f9
-        rofi.color-window:                   argb:f22d303b, #7c8389, #1d1f21
-        rofi.separator-style:                solid
       ''}"
     '';
   };
