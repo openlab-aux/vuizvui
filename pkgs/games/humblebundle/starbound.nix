@@ -269,12 +269,12 @@ let
 
 in stdenv.mkDerivation rec {
   name = "starbound-${version}";
-  version = "1.3.2";
+  version = "1.3.3";
 
   src = fetchHumbleBundle {
     name = "starbound-linux-${version}.zip";
     machineName = "starbound_linux";
-    md5 = "90691e5f5051ba28ccbbe0f331755280";
+    md5 = "91decc3a8fa9cd0be08952422f5adb39";
   };
 
   outputs = [ "out" "lib" "assets" ];
