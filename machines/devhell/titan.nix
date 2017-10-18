@@ -50,6 +50,7 @@
   networking.wicd.enable = false;
   networking.networkmanager.enable = false;
   networking.useNetworkd= true;
+  networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
 
   powerManagement.cpuFreqGovernor = "powersave";
 
