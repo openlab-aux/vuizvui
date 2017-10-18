@@ -4,7 +4,9 @@
   boot.initrd.availableKernelModules = [ "usbhid" ];
   boot.kernelModules = [ "kvm-intel" ];
 
-  environment.systemPackages = with pkgs; [ krita mosh wget ];
+  environment.systemPackages = with pkgs; [
+    mosh wget krita rawtherapee darktable gphoto2 digikam
+  ];
 
   fileSystems."/boot".device = "/dev/disk/by-uuid/A0D5-269D";
   fileSystems."/boot".fsType = "vfat";
