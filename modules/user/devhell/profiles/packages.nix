@@ -233,6 +233,7 @@ in {
       pavucontrol
       pciutils
       picard
+      polybar
       posix_man_pages
       powertop
       profanity
