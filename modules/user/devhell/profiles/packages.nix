@@ -60,7 +60,6 @@ in {
       #lxappearance
       #sleuthkit
       #texmacs
-      #tribler
       #vimiv
       #zotero
       abcde
@@ -282,6 +281,7 @@ in {
       transgui
       transmission_remote_gtk
       tree
+      tribler
       tty-clock
       udevil
       units
