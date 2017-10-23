@@ -267,6 +267,7 @@ in {
       strace
       surfraw
       taskwarrior
+      tectonic
       telnet
       termite
       testdisk
