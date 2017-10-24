@@ -389,7 +389,7 @@ in mkConfig {
       is_zeroconf = false;
       keep_alive_every_foo_secs = "55";
       keep_alives_enabled = true;
-      keyid = "4DFD43EC834B6901BDA2BAAC1DE8E48E57DB5436";
+      keyid = "DD526BC7767DBA2816C095E5684089CE67EBB691";
       keyname = ''aszlig <"^[0-9]+$"@regexmail.net>'';
       last_archiving_time = "1970-01-01T00:00:00Z";
       last_status_msg = "";

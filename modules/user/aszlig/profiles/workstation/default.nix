@@ -64,7 +64,7 @@ in {
       merge.tool = "vimdiff3";
       user.email = "aszlig@redmoonstudios.org";
       user.name = "aszlig";
-      user.signingkey = "4DFD43EC834B6901BDA2BAAC1DE8E48E57DB5436";
+      user.signingkey = "DD526BC7767DBA2816C095E5684089CE67EBB691";
       gpg.program = "${pkgs.gnupg}/bin/gpg";
       push.default = "current";
       tar."tar.xz".command = "${pkgs.xz}/bin/xz -c";
