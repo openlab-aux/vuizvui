@@ -100,6 +100,7 @@ in {
         inconsolata
         powerline-fonts
         proggyfonts
+        siji
         source-code-pro
         source-sans-pro
         source-serif-pro
