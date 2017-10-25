@@ -42,8 +42,11 @@ in {
     };
 
     services.xserver.windowManager = {
-      i3.enable = true;
       default = "i3";
+      i3 = {
+        enable = true;
+        package = pkgs.i3-gaps;
+      };
     };
 
     services.syncthing = {
