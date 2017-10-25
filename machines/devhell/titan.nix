@@ -114,8 +114,8 @@
       #${pkgs.networkmanagerapplet}/bin/nm-applet &
       #${pkgs.connmanui}/bin/connman-ui-gtk &
       ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
-      ${pkgs.pasystray}/bin/pasystray &
-      ${pkgs.compton}/bin/compton -f &
+      #${pkgs.pasystray}/bin/pasystray &
+      ${pkgs.compton}/bin/compton -f -c &
       ${pkgs.rofi}/bin/rofi &
       ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
         Xft.dpi:                     96
