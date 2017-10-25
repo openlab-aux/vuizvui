@@ -243,6 +243,7 @@ in {
       profanity
       profile-cleaner
       profile-sync-daemon
+      pulsemixer
       pv
       python
       python2
@@ -255,6 +256,7 @@ in {
       qrencode
       recode
       reiserfsprogs
+      ripgrep
       rofi
       rsync
       ruby
@@ -290,6 +292,7 @@ in {
       tribler
       tty-clock
       udevil
+      udiskie
       units
       unrar
       unzip
@@ -307,6 +310,7 @@ in {
       vorbisgain
       w3m
       wavpack
+      weather
       weechat
       wget
       which
