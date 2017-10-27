@@ -25,7 +25,7 @@ in {
   config = mkIf cfg.enable {
     environment.shellInit = ''
       export EDITOR="vim"
-      export EMAIL="aszlig@redmoonstudios.org"
+      export EMAIL="aszlig@nix.build"
     '';
 
     nixpkgs.overlays = singleton (lib.const (super: {

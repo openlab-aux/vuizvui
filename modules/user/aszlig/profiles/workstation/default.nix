@@ -62,7 +62,7 @@ in {
     vuizvui.user.aszlig.programs.git.config = {
       color.ui = "auto";
       merge.tool = "vimdiff3";
-      user.email = "aszlig@redmoonstudios.org";
+      user.email = "aszlig@nix.build";
       user.name = "aszlig";
       user.signingkey = "DD526BC7767DBA2816C095E5684089CE67EBB691";
       gpg.program = "${pkgs.gnupg}/bin/gpg";
