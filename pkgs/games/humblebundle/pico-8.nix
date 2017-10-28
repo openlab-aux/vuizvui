@@ -3,7 +3,7 @@
 
 stdenv.mkDerivation rec {
   name = "pico-8-${version}";
-  version = "0.1.9";
+  version = "0.1.10";
 
   src = fetchHumbleBundle {
     name = "pico8_linux";
