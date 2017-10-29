@@ -62,7 +62,6 @@ in {
       #gitAndTools.git-annex
       #ipfs
       #john
-      #lxappearance
       #sleuthkit
       #texmacs
       #vimiv
@@ -120,8 +119,8 @@ in {
       electrum
       enhanced-ctorrent
       ethtool
-      evince
       fbida
+      fd
       fdupes
       feh
       ffmpeg-full
@@ -132,6 +131,7 @@ in {
       foremost
       freerdpUnstable
       fuse_exfat
+      fzf
       gajim
       gcc
       gdb
@@ -153,11 +153,9 @@ in {
       gnome3.gnome_themes_standard
       gnufdisk
       gnupg
-      gnupg1compat
       gource
       gparted
       gpgme
-      gpicview
       gptfdisk
       graphviz
       gstreamer
@@ -181,9 +179,7 @@ in {
       jfsutils
       jrnl
       jwhois
-      keepassx
       keepassx-community
-      keepassx2
       keybase
       kpcli
       lftp
@@ -236,7 +232,6 @@ in {
       pasystray
       pavucontrol
       pciutils
-      picard
       polybar
       posix_man_pages
       powertop
@@ -264,7 +259,6 @@ in {
       screen
       scrot
       shntool
-      silver-searcher
       smartmontools
       sox
       speedtest-cli
@@ -287,7 +281,6 @@ in {
       toxic
       transcode
       transgui
-      transmission_remote_gtk
       tree
       tribler
       tty-clock
@@ -319,7 +312,6 @@ in {
       xfsprogs
       xlibs.xev
       xmpp-client
-      xpdf
       xpra
       xscreensaver
       youtube-dl
