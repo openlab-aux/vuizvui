@@ -36,9 +36,6 @@ in {
     device = "/dev/disk/by-uuid/${swapUUID}";
   };
 
-  services.synergy.client.enable = true;
-  services.synergy.client.serverAddress = "mmrnmhrm";
-
   services.tlp.enable = true;
 
   services.xserver.videoDrivers = [ "intel" ];
