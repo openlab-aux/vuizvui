@@ -35,6 +35,14 @@
       tcp.anonymousClients.allowedIpRanges = [ "172.16.0.0/16" "127.0.0.1" ];
     };
 
+    hardware.bluetooth = {
+      enable = true;
+      extraConfig = ''
+        [General]
+        Enable=Source,Sink,Media,Socket
+      '';
+    };
+
     hardware.sane.enable = true;
     services.saned = {
       enable = true;
@@ -45,7 +53,7 @@
 
     vuizvui.user.openlab.stackenblocken = {
       enable = true;
-      volume = 40;
+      volume = 35;
     };
     vuizvui.user.openlab.speedtest = {
       enable = true;

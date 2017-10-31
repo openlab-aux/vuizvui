@@ -19,6 +19,8 @@ in {
       grub.version = 2;
     };
 
+    hardware.cpu.intel.updateMicrocode = true;
+
     networking = {
       firewall.enable = false;
     };
