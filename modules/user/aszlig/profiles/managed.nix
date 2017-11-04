@@ -63,6 +63,7 @@ in {
     services.xserver.layout = "de";
     services.xserver.xkbOptions = lib.mkOverride 900 "eurosign:e";
     services.xserver.displayManager.sddm.enable = true;
+    services.xserver.desktopManager.default = "plasma5";
     services.xserver.desktopManager.plasma5.enable = true;
     services.xserver.desktopManager.xterm.enable = false;
 
