@@ -31,6 +31,7 @@ in {
       pkgs.git
       pkgs.htop
       pkgs.inkscape
+      pkgs.kdeApplications.ark
       pkgs.kdeApplications.gwenview
       pkgs.kdeApplications.kaddressbook
       pkgs.kdeApplications.kate
