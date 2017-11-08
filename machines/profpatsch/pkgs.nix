@@ -37,8 +37,6 @@ let
     }).ghcWithPackages;
   };
 
-  sent = pkgs.sent.override { patches = [ ./patches/sent-bg.patch ]; };
-
   mpv = pkgs.mpv.override { scripts = [ pkgs.mpvScripts.convert ]; };
 
   beets = pkgs.beets.override { enableAlternatives = true; };
@@ -86,5 +84,5 @@ let
   # };
 
 in
-{ inherit taffybar sent mpv beets poezio vim
+{ inherit taffybar mpv beets poezio vim
           fast-init xmpp-client saneGhci /*nix-gen*/ searx; }

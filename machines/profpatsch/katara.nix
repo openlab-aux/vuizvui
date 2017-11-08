@@ -163,7 +163,6 @@ in {
         ranger               # CLI file browser
         remind               # calender & reminder program
         rtorrent             # monster of a bittorrent client
-        myPkgs.sent          # suckless presentation tool
         unfreeAndNonDistributablePkgs.steam # the one gaming platform
         myPkgs.xmpp-client   # CLI XMPP Client
         youtube-dl           # download videos
