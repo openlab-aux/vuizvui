@@ -33,6 +33,11 @@
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/3099f245-51cf-4ca8-b89c-269dbc0ad730";
     fsType = "btrfs";
+    options = [
+      "space_cache"
+      "compress=lzo"
+      "noatime"
+    ];
   };
 
   fileSystems."/boot" = {
