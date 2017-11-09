@@ -171,7 +171,6 @@ in {
       icedtea_web
       iftop
       imagemagick
-      impressive
       inkscape
       iotop
       iptraf-ng
