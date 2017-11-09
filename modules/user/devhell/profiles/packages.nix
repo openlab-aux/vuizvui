@@ -179,7 +179,7 @@ in {
       jfsutils
       jrnl
       jwhois
-      keepassx-community
+      keepassxc
       keybase
       kpcli
       lftp
