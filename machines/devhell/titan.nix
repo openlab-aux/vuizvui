@@ -37,6 +37,7 @@
       "space_cache"
       "compress=lzo"
       "noatime"
+      "autodefrag"
     ];
   };
 
