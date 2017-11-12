@@ -47,7 +47,7 @@
   };
 
   swapDevices = [ 
-    { device = "/dev/disk/by-uuid/ff7255995-b9a1-453f-9e6d-ba9bd6579db6"; }
+    { device = "/dev/disk/by-uuid/ff725995-b9a1-453f-9e6d-ba9bd6579db6"; }
   ];
 
   # FIXME Check if this is still necessary in the future
