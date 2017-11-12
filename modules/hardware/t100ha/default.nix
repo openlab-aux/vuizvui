@@ -20,7 +20,6 @@ in {
     '');
 
     boot.kernelPackages = let
-      nixpkgs = import ../../../nixpkgs-path.nix;
       t100haKernel = pkgs.linux_testing.override {
         # Missing device drivers:
         #
