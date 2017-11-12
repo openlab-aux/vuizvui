@@ -35,14 +35,10 @@ with lib;
     };
   };
 
-  config = let
-    nixpkgs = import ../../nixpkgs-path.nix;
-    system = config.nixpkgs.system;
-
-  in {
+  config = {
     # Expose all packages in ../../pkgs as pkgs.vuizvui in modules.
-    nixpkgs.overlays = singleton (self: const {
-      inherit (import ../../pkgs { pkgs = self; }) vuizvui;
+    nixpkgs.overlays = singleton (pkgs: const {
+      vuizvui = import ../../pkgs { inherit pkgs; };
     });
 
     nix.binaryCaches = options.nix.binaryCaches.default ++ [
@@ -65,7 +61,7 @@ with lib;
       channelPath = "${rootChannelsPath}/${config.vuizvui.channelName}";
       nixosConfig = "/etc/nixos/configuration.nix";
       nixpkgsConfig = "nixpkgs-config=${pkgs.writeText "nixpkgs-config.nix" ''
-        (import ${nixpkgs}/nixos/lib/eval-config.nix {
+        (import ${pkgs.path}/nixos/lib/eval-config.nix {
           modules = [ ${nixosConfig} ];
         }).config.nixpkgs.config
       ''}";

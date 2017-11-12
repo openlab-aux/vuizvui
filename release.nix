@@ -51,7 +51,7 @@ let
     noGames = flip removeAttrs [ "games" ];
     releaseLib = import "${nixpkgs}/pkgs/top-level/release-lib.nix" {
       inherit supportedSystems;
-      packageSet = attrs: noGames (import vuizvui attrs).pkgs.vuizvui;
+      packageSet = attrs: noGames (import vuizvui attrs).pkgs;
     };
 
     packagePlatforms = mapAttrs (name: value: let
@@ -111,7 +111,7 @@ in with pkgsUpstream.lib; with builtins; {
   inherit pkgs;
 
   channels = let
-    mkChannel = attrs: root.pkgs.vuizvui.mkChannel (rec {
+    mkChannel = attrs: root.pkgs.mkChannel (rec {
       name = "vuizvui-channel-${attrs.name or "generic"}-${vuizvuiVersion}";
       src = vuizvui;
       patchPhase = ''

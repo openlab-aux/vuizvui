@@ -25,4 +25,4 @@ let
     profpatsch = callPackageScope ./profpatsch;
     sternenseemann = callPackageScope ./sternenseemann;
   };
-in pkgs // self
+in self.vuizvui
