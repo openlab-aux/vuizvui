@@ -111,8 +111,6 @@ in {
     vuizvui.programs.gnupg.agent.sshSupport = true;
     vuizvui.programs.gnupg.agent.scdaemon.enable = true;
 
-    vuizvui.user.aszlig.programs.taalo-build.enable = true;
-
     services = {
       openssh = {
         enable = true;

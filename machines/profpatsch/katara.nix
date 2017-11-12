@@ -183,6 +183,7 @@ in {
       nixPkgs = [
         nix-repl                  # nix REPL
         nix-prefetch-scripts      # prefetch store paths from various destinations
+        vuizvui.taalo-build       # build derivation on taalo
       ];
       tmpPkgs = [
         # TODO needs user service
@@ -332,9 +333,6 @@ in {
 
     # TODO: base config?
     vuizvui.programs.fish.fasd.enable = true;
-
-    # build derivation on taalo
-    vuizvui.user.aszlig.programs.taalo-build.enable = true;
 
     vuizvui.user.profpatsch.programs.scanning = {
       enable = true;

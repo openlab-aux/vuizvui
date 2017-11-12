@@ -20,6 +20,8 @@ let
       config = pkgs.config.vuizvui.games or null;
     };
 
+    taalo-build = callPackage ./taalo-build { };
+
     aszlig = callPackageScope ./aszlig;
     openlab = callPackageScope ./openlab;
     profpatsch = callPackageScope ./profpatsch;

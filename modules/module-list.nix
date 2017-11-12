@@ -20,7 +20,6 @@
   ./user/aszlig/programs/gajim
   ./user/aszlig/programs/git
   ./user/aszlig/programs/mpv
-  ./user/aszlig/programs/taalo-build
   ./user/aszlig/programs/taskwarrior
   ./user/aszlig/programs/zsh
   ./user/aszlig/services/i3

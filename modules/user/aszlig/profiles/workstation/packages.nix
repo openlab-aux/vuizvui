@@ -67,6 +67,7 @@ pkgs: with pkgs; [
   stdmanpages
   strace
   surfraw
+  vuizvui.taalo-build
   telnet
   unzip
   valgrind
