@@ -183,7 +183,7 @@ in {
       nixPkgs = [
         nix-repl                  # nix REPL
         nix-prefetch-scripts      # prefetch store paths from various destinations
-        vuizvui.taalo-build       # build derivation on taalo
+        pkgs.vuizvui.taalo-build  # build derivation on taalo
       ];
       tmpPkgs = [
         # TODO needs user service
