@@ -41,9 +41,8 @@
     options = [
       "autodefrag"
       "space_cache"
-      "compress=lzo"
+      "compress=zstd"
       "noatime"
-      "ssd"
     ];
   };
 

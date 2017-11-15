@@ -35,7 +35,7 @@
     fsType = "btrfs";
     options = [
       "space_cache"
-      "compress=lzo"
+      "compress=zstd"
       "noatime"
       "autodefrag"
     ];
