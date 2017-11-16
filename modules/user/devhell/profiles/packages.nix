@@ -65,7 +65,6 @@ in {
       #sleuthkit
       #texmacs
       #vimiv
-      #zotero
       abcde
       abook
       accountsservice
@@ -317,6 +316,7 @@ in {
       zathura
       zbar
       zip
+      zotero
       zsync
     ];
   };
