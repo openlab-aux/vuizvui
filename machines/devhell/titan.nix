@@ -164,39 +164,39 @@
   nixpkgs.config.mpv.vaapiSupport = true;
 
   environment.systemPackages = with pkgs; [
+    #connmanui
     #cura
+    #ipmitool
+    #ipmiutil
+    #ipmiview
+    #msmtp
+    #networkmanagerapplet
+    #offlineimap
     #openjdk8
+    #pamixer
     #skype
+    #thunderbird
     aircrackng
     calibre
     cdrtools
     claws-mail
-    connmanui
     dvdplusrwtools
     glxinfo
     horst
-    ipmitool
-    ipmiutil
-    ipmiview
     iw
     kismet
     libva
     libvdpau-va-gl
     minicom
-    msmtp
     mutt
     neomutt
     netalyzr
-    networkmanagerapplet
     notmuch
-    offlineimap
-    pamixer
     pmtools
     pmutils
     pythonPackages.alot
     reaverwps
     snort
-    thunderbird
     vaapiVdpau
     vdpauinfo
     wavemon
