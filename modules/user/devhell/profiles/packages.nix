@@ -56,45 +56,75 @@ in {
     };
 
     environment.systemPackages = with pkgs; [
+      #arandr
       #arc-theme
+      #atftp
+      #atom
       #attic
+      #audacity
+      #biber
+      #bind
+      #brotli
+      #bup
+      #cacert
+      #cava
+      #cmake
+      #docker
       #emacs
+      #gimp
       #gitAndTools.git-annex
+      #gitAndTools.git-extras
+      #gitAndTools.git-remote-hg
+      #gitAndTools.git2cl
+      #gitAndTools.gitFastExport
+      #gitAndTools.gitFull
+      #gitAndTools.gitRemoteGcrypt
+      #gitAndTools.gitSVN
+      #gitAndTools.gitflow
+      #gitAndTools.svn2git
+      #gitAndTools.tig
+      #gnome3.dconf
+      #gnome3.defaultIconTheme
+      #gnome3.gnome_themes_standard
+      #heimdall
+      #inkscape
       #ipfs
       #john
+      #kpcli
+      #mc
+      #netkittftp
+      #numix-icon-theme
+      #pasystray
+      #pavucontrol
+      #python34Packages.hovercraft
+      #ruby
       #sleuthkit
+      #surfraw
+      #texlive.combined.scheme-small
       #texmacs
+      #tftp-hpa
+      #tomahawk
+      #toxic
       #vimiv
       abcde
       abook
       accountsservice
       antiword
       apg
-      arandr
       ascii
       aspell
       aspellDicts.de
       aspellDicts.en
-      atftp
-      atom
-      audacity
       axel
       bc
       beets
-      biber
-      bind
       binutils
-      brotli
-      bup
-      cacert
       cataclysm-dda
-      cava
       ccrypt
       chromaprint
       chromium
       cifs_utils
       cipherscan
-      cmake
       cmatrix
       colordiff
       compton
@@ -108,11 +138,9 @@ in {
       dhcping
       dmenu
       dmidecode
-      docker
       dos2unix
       dosbox
       duff
-      dynamic-colors
       e2fsprogs
       easytag
       electrum
@@ -135,21 +163,8 @@ in {
       gcc
       gdb
       ghostscript
-      gimp
-      gitAndTools.git-extras
-      gitAndTools.git-remote-hg
-      gitAndTools.git2cl
-      gitAndTools.gitFastExport
-      gitAndTools.gitFull
-      gitAndTools.gitRemoteGcrypt
-      gitAndTools.gitSVN
-      gitAndTools.gitflow
-      gitAndTools.svn2git
-      gitAndTools.tig
+      git
       glxinfo
-      gnome3.dconf
-      gnome3.defaultIconTheme
-      gnome3.gnome_themes_standard
       gnufdisk
       gnupg
       gource
@@ -160,7 +175,6 @@ in {
       gstreamer
       handbrake
       hdparm
-      heimdall
       hexedit
       hplipWithPlugin
       htop
@@ -170,7 +184,6 @@ in {
       icedtea_web
       iftop
       imagemagick
-      inkscape
       iotop
       iptraf-ng
       ipv6calc
@@ -179,7 +192,6 @@ in {
       jwhois
       keepassxc
       keybase
-      kpcli
       lftp
       libarchive
       libreoffice
@@ -189,7 +201,6 @@ in {
       lynx
       macchanger
       manpages
-      mc
       mcabber
       mdp
       mediainfo
@@ -208,7 +219,6 @@ in {
       neovim
       nethack
       nethogs
-      netkittftp
       netrw
       netsniff-ng
       nitrogen
@@ -220,15 +230,12 @@ in {
       ntfs3g
       ntfsprogs
       ntopng
-      numix-icon-theme
       obnam
       openssl
       p7zip
       pandoc
       paperkey
       pass
-      pasystray
-      pavucontrol
       pciutils
       polybar
       posix_man_pages
@@ -241,7 +248,6 @@ in {
       python
       python2
       python3
-      python34Packages.hovercraft
       pythonPackages.glances
       pythonPackages.livestreamer
       pythonPackages.rainbowstream
@@ -252,7 +258,6 @@ in {
       ripgrep
       rofi
       rsync
-      ruby
       safecopy
       screen
       scrot
@@ -264,19 +269,14 @@ in {
       ssdeep
       stow
       strace
-      surfraw
       taskwarrior
       tectonic
       telnet
       termite
       testdisk
-      texlive.combined.scheme-small
-      tftp-hpa
       tldr
       tmux
       toilet
-      tomahawk
-      toxic
       transcode
       transgui
       tree
