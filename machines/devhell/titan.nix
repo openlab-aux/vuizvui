@@ -173,7 +173,6 @@
     #networkmanagerapplet
     #offlineimap
     #openjdk8
-    #pamixer
     #skype
     #thunderbird
     aircrackng
@@ -192,6 +191,7 @@
     neomutt
     netalyzr
     notmuch
+    pamixer
     pmtools
     pmutils
     pythonPackages.alot
