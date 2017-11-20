@@ -17,6 +17,13 @@ let
     }
   '' else configFilePath;
 
+  mkBuildSupport = super: let
+    self = import ./build-support {
+      inherit (super) config;
+      callPackage = pkgs.lib.callPackageWith (super // self);
+    };
+  in self;
+
   baseModule = { lib, ... }: {
     options = {
       packages = lib.mkOption {
@@ -26,22 +33,17 @@ let
       };
     };
 
-    config._module.args.pkgs = let
-      mkBuildSupport = super: let
-        self = import ./build-support {
-          inherit (super) config;
-          callPackage = lib.callPackageWith (super // self);
-        };
-      in self;
-    in pkgs // (mkBuildSupport pkgs) // {
+    config._module.args.pkgs = pkgs // (mkBuildSupport pkgs) // {
       pkgsi686Linux = pkgs.pkgsi686Linux
                    // (mkBuildSupport pkgs.pkgsi686Linux);
     };
   };
 
-in (pkgs.lib.evalModules {
-  modules = [
-    (if config == null then configFilePath else config)
-    baseModule ./humblebundle ./steam ./itch
-  ];
-}).config.packages
+  packages = (pkgs.lib.evalModules {
+    modules = [
+      (if config == null then configFilePath else config)
+      baseModule ./humblebundle ./steam ./itch
+    ];
+  }).config.packages;
+
+in packages // mkBuildSupport pkgs
