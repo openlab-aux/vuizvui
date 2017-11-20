@@ -9,7 +9,7 @@ let
 
   configFile = if !builtins.pathExists configFilePath then throw ''
     The config file "${configFilePath}" doesn't exist! Be sure to create it and
-    put your HumbleBundle email address and password in it, like this:
+    put your credentials in it, for example to use HumbleBundle games:
 
     {
       humblebundle.email = "fancyuser@example.com";
@@ -41,7 +41,7 @@ let
 
   packages = (pkgs.lib.evalModules {
     modules = [
-      (if config == null then configFilePath else config)
+      (if config == null then configFile else config)
       baseModule ./humblebundle ./steam ./itch
     ];
   }).config.packages;
