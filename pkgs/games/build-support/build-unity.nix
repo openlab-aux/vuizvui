@@ -2,7 +2,7 @@
 , mesa, xorg, libpulseaudio, libudev, zlib
 }:
 
-{ name, version, fullName
+{ name, version, fullName, saveDir
 , nativeBuildInputs ? []
 , buildInputs ? []
 , runtimeDependencies ? []
@@ -31,7 +31,7 @@ in buildGame ({
   sandbox = sandbox // {
     paths = (sandbox.paths or {}) // {
       required = (sandbox.paths.required or []) ++ [
-        "$XDG_CONFIG_HOME/unity3d"
+        "$XDG_CONFIG_HOME/unity3d/${saveDir}"
       ];
     };
   };

@@ -3,6 +3,7 @@
 buildUnity {
   name = "liads";
   fullName = "LoversInADangerousSpacetime";
+  saveDir = "AsteroidBase/LoversInADangerousSpacetime";
   version = "20160121";
 
   src = fetchHumbleBundle {

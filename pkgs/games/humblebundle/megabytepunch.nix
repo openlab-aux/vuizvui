@@ -3,6 +3,7 @@
 buildUnity {
   name = "megabytepunch";
   fullName = "MegabytePunch";
+  saveDir = "Reptile/Megabyte Punch";
   version = "1.12";
 
   src = fetchHumbleBundle {

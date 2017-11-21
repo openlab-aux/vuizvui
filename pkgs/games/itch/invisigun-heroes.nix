@@ -3,6 +3,7 @@
 buildUnity rec {
   name = "invisigun-heroes";
   fullName = "Invisigun Heroes";
+  saveDir = "Sombr Studio/Invisigun Heroes";
   version = "1.5.70";
 
   src = fetchItch {
