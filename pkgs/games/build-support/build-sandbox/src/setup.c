@@ -91,7 +91,7 @@ bool write_maps(pid_t parent_pid)
     return true;
 }
 
-static bool makedirs(const char *path)
+static bool makedirs(const char *path, bool do_cache)
 {
     char *tmp, *segment;
 
@@ -103,13 +103,13 @@ static bool makedirs(const char *path)
     segment = dirname(tmp);
 
     if (!(segment[0] == '/' && segment[1] == '\0')) {
-        if (!makedirs(segment)) {
+        if (!makedirs(segment, do_cache)) {
             free(tmp);
             return false;
         }
     }
 
-    if (cache_path(cached_paths, path))
+    if (!do_cache || cache_path(cached_paths, path))
         (void)mkdir(path, 0755);
     free(tmp);
     return true;
@@ -138,17 +138,14 @@ bool bind_mount(const char *path, bool restricted, bool resolve)
     if (restricted)
         mflags |= MS_NOSUID | MS_NODEV | MS_NOATIME;
 
-    if (resolve) {
-        if (realpath(path, src) == NULL) {
-            fprintf(stderr, "realpath of %s: %s\n", path, strerror(errno));
-            return false;
-        }
-    }
+    if (resolve ? realpath(path, src) == NULL : access(path, F_OK) == -1)
+        // Skip missing mount source
+        return true;
 
     if ((target = get_mount_target(resolve ? src : path)) == NULL)
         return false;
 
-    if (!makedirs(target)) {
+    if (!makedirs(target, false)) {
         free(target);
         return false;
     }
@@ -173,6 +170,10 @@ static bool bind_file(const char *path)
 {
     char *target, *tmp;
 
+    if (access(path, R_OK) == -1)
+        // Skip missing mount source
+        return true;
+
     if ((target = get_mount_target(path)) == NULL)
         return false;
 
@@ -182,7 +183,7 @@ static bool bind_file(const char *path)
         return false;
     }
 
-    if (!makedirs(dirname(tmp))) {
+    if (!makedirs(dirname(tmp), true)) {
         free(target);
         free(tmp);
         return false;
@@ -452,10 +453,14 @@ static char *replace_env(const char *path)
     return replace_env_offset_free(path, base);
 }
 
-bool extra_mount(const char *path)
+bool extra_mount(const char *path, bool is_required)
 {
     char *expanded;
+
     if ((expanded = replace_env(path)) == NULL)
+        return false;
+
+    if (is_required && !makedirs(expanded, false))
         return false;
 
     if (!bind_mount(expanded, true, true)) {

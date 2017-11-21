@@ -1,8 +1,23 @@
 { stdenv, lib, pkgconfig, nix }:
 
-drv: { extraSandboxPaths ? [], runtimePathVars ? [], ... }@attrs:
+drv: { paths ? {}, ... }@attrs:
 
-stdenv.mkDerivation ({
+let
+  # Extra paths that are required so they are created prior to bind-mounting.
+  pathsRequired    = paths.required    or [];
+  # Extra paths that are skipped if they don't exist.
+  pathsWanted      = paths.wanted      or [];
+  # Paths extracted from PATH-like environment variables, eg. LD_LIBRARY_PATH.
+  pathsRuntimeVars = paths.runtimeVars or [];
+
+  # Create code snippets for params.c to add extra_mount() calls.
+  mkExtraMountParams = isRequired: lib.concatMapStringsSep "\n" (extra: let
+    escaped = lib.escape ["\\" "\""] extra;
+    reqBool = if isRequired then "true" else "false";
+    code = "if (!extra_mount(\"${escaped}\", ${reqBool})) return false;";
+  in "echo ${lib.escapeShellArg code} >> params.c");
+
+in stdenv.mkDerivation ({
   name = "${drv.name}-sandboxed";
 
   src = ./src;
@@ -37,10 +52,8 @@ stdenv.mkDerivation ({
       echo 'if (!bind_mount("'"$dep"'", true, true)) return false;' >> params.c
     done
 
-    ${lib.concatMapStringsSep "\n" (extra: let
-      escaped = lib.escapeShellArg (lib.escape ["\\" "\""] extra);
-      result = "echo 'if (!extra_mount(\"'${escaped}'\")) return false;'";
-    in "${result} >> params.c") extraSandboxPaths}
+    ${mkExtraMountParams true  pathsRequired}
+    ${mkExtraMountParams false pathsWanted}
 
     echo 'return true; }' >> params.c
 
@@ -50,7 +63,7 @@ stdenv.mkDerivation ({
       escaped = lib.escapeShellArg (lib.escape ["\\" "\""] pathvar);
       fun = "mount_from_path_var";
       result = "echo 'if (!${fun}(qs, \"'${escaped}'\")) return false;'";
-    in "${result} >> params.c") runtimePathVars}
+    in "${result} >> params.c") pathsRuntimeVars}
 
     echo 'return true; }' >> params.c
   '';
@@ -59,4 +72,4 @@ stdenv.mkDerivation ({
   buildInputs = [ nix ];
   makeFlags = [ "BINDIR=${drv}/bin" ];
 
-} // removeAttrs attrs [ "extraSandboxPaths" "runtimePathVars" ])
+} // removeAttrs attrs [ "paths" ])

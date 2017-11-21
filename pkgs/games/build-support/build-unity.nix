@@ -6,6 +6,7 @@
 , nativeBuildInputs ? []
 , buildInputs ? []
 , runtimeDependencies ? []
+, sandbox ? {}
 , ...
 }@attrs:
 
@@ -27,7 +28,13 @@ in buildGame ({
     mesa xorg.libX11 xorg.libXcursor xorg.libXrandr libudev zlib
   ];
 
-  extraSandboxPaths = [ "$XDG_CONFIG_HOME/unity3d" ];
+  sandbox = sandbox // {
+    paths = (sandbox.paths or {}) // {
+      required = (sandbox.paths.required or []) ++ [
+        "$XDG_CONFIG_HOME/unity3d"
+      ];
+    };
+  };
 
   installPhase = ''
     runHook preInstall
@@ -62,5 +69,5 @@ in buildGame ({
   '';
 } // removeAttrs attrs [
   "name" "version" "fullName" "nativeBuildInputs" "buildInputs"
-  "runtimeDependencies"
+  "runtimeDependencies" "sandbox"
 ])

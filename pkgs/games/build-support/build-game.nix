@@ -12,8 +12,7 @@ assert withPulseAudio -> libpulseaudio != null;
 , setSourceRoot ? ""
 , installCheckPhase ? ""
 , runtimeDependencies ? []
-, extraSandboxPaths ? [ "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" ]
-, extraRuntimePathVars ? []
+, sandbox ? {}
 , ...
 }@attrs:
 
@@ -73,9 +72,12 @@ buildSandbox (stdenv.mkDerivation ({
   dontPatchELF = true;
 } // removeAttrs attrs [
   "buildInputs" "nativeBuildInputs" "preUnpack" "setSourceRoot"
-  "installCheckPhase" "runtimeDependencies" "extraSandboxPaths"
-  "extraRuntimePathVars"
-])) {
-  inherit extraSandboxPaths;
-  runtimePathVars = lib.singleton "LD_LIBRARY_PATH" ++ extraRuntimePathVars;
-}
+  "installCheckPhase" "runtimeDependencies" "sandbox"
+])) (sandbox // {
+  paths = let
+    paths = sandbox.paths or {};
+  in paths // {
+    required = paths.required or [ "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" ];
+    runtimeVars = [ "LD_LIBRARY_PATH" ] ++ paths.runtimeVars or [];
+  };
+})
