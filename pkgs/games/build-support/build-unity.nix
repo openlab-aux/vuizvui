@@ -1,8 +1,9 @@
-{ stdenv, buildGame, makeWrapper, gtk2-x11, gdk_pixbuf, glib
+{ stdenv, lib, buildGame, makeWrapper, gtk2-x11, gdk_pixbuf, glib
 , mesa, xorg, libpulseaudio, libudev, zlib
 }:
 
-{ name, version, fullName, saveDir
+{ name, version, fullName
+, saveDir ? null
 , nativeBuildInputs ? []
 , buildInputs ? []
 , runtimeDependencies ? []
@@ -14,6 +15,7 @@ let
   arch = if stdenv.system == "x86_64-linux" then "x86_64" else "x86";
   executable = "${fullName}.${arch}";
   dataDir = "${fullName}_Data";
+  maybeSavedir = lib.optionalString (saveDir != null) "/${saveDir}";
 
 in buildGame ({
   name = "${name}-${version}";
@@ -31,7 +33,7 @@ in buildGame ({
   sandbox = sandbox // {
     paths = (sandbox.paths or {}) // {
       required = (sandbox.paths.required or []) ++ [
-        "$XDG_CONFIG_HOME/unity3d/${saveDir}"
+        "$XDG_CONFIG_HOME/unity3d${maybeSavedir}"
       ];
     };
   };
