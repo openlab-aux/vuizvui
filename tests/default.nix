@@ -7,6 +7,7 @@ let
 
 in {
   games = {
+    sandbox = callTest ./games/sandbox.nix;
     starbound = callTest ./games/starbound.nix;
   };
   programs = {
