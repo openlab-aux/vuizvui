@@ -7,12 +7,12 @@ let
 
 in {
   games = {
-    sandbox = callTest ./games/sandbox.nix;
     starbound = callTest ./games/starbound.nix;
   };
   programs = {
     gnupg = callTest ./programs/gnupg;
   };
+  sandbox = callTest ./sandbox.nix;
   system = {
     kernel.bfq = callTest ./system/kernel/bfq.nix;
   };
