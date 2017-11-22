@@ -12,6 +12,9 @@ in
     # correctness before speed
     nix.useSandbox = true;
 
+    # /tmp should never be depended on
+    boot.cleanTmpDir = true;
+
     programs.bash = {
       loginShellInit = ''
         alias c='vim /root/vuizvui/machines/profpatsch'

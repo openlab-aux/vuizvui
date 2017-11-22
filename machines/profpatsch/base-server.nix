@@ -18,8 +18,6 @@ in
 
   config = {
 
-    boot.cleanTmpDir = true;
-
     programs.mosh.enable = true;
 
     services.openssh = {
