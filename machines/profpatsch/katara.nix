@@ -10,7 +10,7 @@ in {
     ./base-workstation.nix
   ];
 
-  config = rec {
+  config = {
 
     #########
     # Kernel
