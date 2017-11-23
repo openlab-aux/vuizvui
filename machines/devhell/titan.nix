@@ -166,7 +166,6 @@
   environment.systemPackages = with pkgs; [
     #connmanui
     #cura
-    #ipmitool
     #ipmiutil
     #ipmiview
     #msmtp
@@ -182,6 +181,7 @@
     dvdplusrwtools
     glxinfo
     horst
+    ipmitool
     iw
     kismet
     libva
