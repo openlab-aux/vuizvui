@@ -55,11 +55,8 @@
 
   networking.hostName = "titan";
   networking.wireless.enable = true;
-  networking.connman.enable = false;
-  networking.wicd.enable = false;
-  networking.networkmanager.enable = false;
   networking.useNetworkd= true;
-  networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
+  networking.nameservers = [ "127.0.0.1" "8.8.8.8" "8.8.4.4" ];
 
   powerManagement.cpuFreqGovernor = "powersave";
 
@@ -80,10 +77,12 @@
 
   vuizvui.user.devhell.profiles.services.enable = true;
 
+
   services = {
     tftpd.enable = false;
     gnome3.gnome-keyring.enable = true;
     printing.enable = false;
+    dnscrypt-proxy.enable = true;
   };
 
   services.acpid = {
