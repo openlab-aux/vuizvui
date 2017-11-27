@@ -1,12 +1,12 @@
-{ lib, runCommandCC }:
+{ lib, runCommandNoCC, go }:
 
-runCommandCC "nman" {
+runCommandNoCC "nman" {
   meta = with lib; {
     description = "Invoke manpage in temporary nix-shell";
     license = licenses.gpl3;
   };
 } ''
-    cc -o nman ${./nman.c}
+    ${lib.getBin go}/bin/go build -o nman ${./nman.go}
     install -D nman $out/bin/nman
 ''
 
