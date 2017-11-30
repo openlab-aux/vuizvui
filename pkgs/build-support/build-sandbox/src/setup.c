@@ -268,6 +268,18 @@ static void free_offsets(struct envar_offset *base)
         free_offsets(next);
 }
 
+#define MK_XDG_EXPAND(varname, fallback) \
+    if (strcmp(xdg_var, varname) == 0) { \
+        result = malloc(homelen + sizeof fallback); \
+        if (result == NULL) { \
+            perror("malloc " varname); \
+            return NULL; \
+        } \
+        memcpy(result, home, homelen); \
+        memcpy(result + homelen, fallback, sizeof fallback); \
+        return result; \
+    }
+
 static char *expand_xdg_fallback(const char *xdg_var)
 {
     static char *home = NULL;
@@ -282,25 +294,9 @@ static char *expand_xdg_fallback(const char *xdg_var)
         homelen = strlen(home);
     }
 
-    if (strcmp(xdg_var, "XDG_DATA_HOME") == 0) {
-        result = malloc(homelen + 14);
-        if (result == NULL) {
-            perror("malloc XDG_DATA_HOME");
-            return NULL;
-        }
-        memcpy(result, home, homelen);
-        memcpy(result + homelen, "/.local/share", 14);
-        return result;
-    } else if (strcmp(xdg_var, "XDG_CONFIG_HOME") == 0) {
-        result = malloc(homelen + 9);
-        if (result == NULL) {
-            perror("malloc XDG_CONFIG_HOME");
-            return NULL;
-        }
-        memcpy(result, home, homelen);
-        memcpy(result + homelen, "/.config", 9);
-        return result;
-    }
+    MK_XDG_EXPAND("XDG_DATA_HOME", "/.local/share");
+    MK_XDG_EXPAND("XDG_CONFIG_HOME", "/.config");
+    MK_XDG_EXPAND("XDG_CACHE_HOME", "/.cache");
 
     return NULL;
 }
