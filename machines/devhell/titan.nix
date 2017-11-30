@@ -53,6 +53,9 @@
   # FIXME Check if this is still necessary in the future
   systemd.services.systemd-networkd-wait-online.enable = false;
 
+  # XXX Kind of a hack to work around the issue of networkd not honoring networking.nameservers
+  systemd.network.networks."99-main".dhcpConfig.UseDNS = false;
+
   networking.hostName = "titan";
   networking.wireless.enable = true;
   networking.useNetworkd= true;
