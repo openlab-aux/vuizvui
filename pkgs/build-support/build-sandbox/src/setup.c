@@ -130,40 +130,11 @@ static char *get_mount_target(const char *path)
     return target;
 }
 
-bool bind_mount(const char *path, bool restricted, bool resolve)
+static bool is_regular_file(const char *path)
 {
-    int mflags = MS_BIND | MS_REC;
-    char src[PATH_MAX], *target;
-
-    if (restricted)
-        mflags |= MS_NOSUID | MS_NODEV | MS_NOATIME;
-
-    if (resolve ? realpath(path, src) == NULL : access(path, F_OK) == -1)
-        // Skip missing mount source
-        return true;
-
-    if ((target = get_mount_target(resolve ? src : path)) == NULL)
-        return false;
-
-    if (!makedirs(target, false)) {
-        free(target);
-        return false;
-    }
-
-    if (!cache_path(cached_paths, resolve ? src : path)) {
-        free(target);
-        return true;
-    }
-
-    if (mount(resolve ? src : path, target, "", mflags, NULL) == -1) {
-        fprintf(stderr, "mount %s to %s: %s\n",
-                resolve ? src : path, target, strerror(errno));
-        free(target);
-        return false;
-    }
-
-    free(target);
-    return true;
+    struct stat st;
+    stat(path, &st);
+    return S_ISREG(st.st_mode);
 }
 
 static bool bind_file(const char *path)
@@ -205,6 +176,45 @@ static bool bind_file(const char *path)
     if (mount(path, target, "", MS_BIND, NULL) == -1) {
         fprintf(stderr, "mount file %s to %s: %s\n",
                 path, target, strerror(errno));
+        free(target);
+        return false;
+    }
+
+    free(target);
+    return true;
+}
+
+bool bind_mount(const char *path, bool restricted, bool resolve)
+{
+    int mflags = MS_BIND | MS_REC;
+    char src[PATH_MAX], *target;
+
+    if (restricted)
+        mflags |= MS_NOSUID | MS_NODEV | MS_NOATIME;
+
+    if (resolve ? realpath(path, src) == NULL : access(path, F_OK) == -1)
+        // Skip missing mount source
+        return true;
+
+    if (is_regular_file(resolve ? src : path))
+        return bind_file(resolve ? src : path);
+
+    if ((target = get_mount_target(resolve ? src : path)) == NULL)
+        return false;
+
+    if (!makedirs(target, false)) {
+        free(target);
+        return false;
+    }
+
+    if (!cache_path(cached_paths, resolve ? src : path)) {
+        free(target);
+        return true;
+    }
+
+    if (mount(resolve ? src : path, target, "", mflags, NULL) == -1) {
+        fprintf(stderr, "mount %s to %s: %s\n",
+                resolve ? src : path, target, strerror(errno));
         free(target);
         return false;
     }
