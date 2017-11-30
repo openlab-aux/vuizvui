@@ -11,7 +11,9 @@ in {
   config = lib.mkIf config.vuizvui.system.kernel.bfq.enable {
     boot.kernelPatches = lib.singleton {
       name = "bfq";
-      patch = ./bfq-by-default.patch;
+      patch = if versionAtLeast version "4.15"
+              then ./bfq-by-default-4.15.patch
+              else ./bfq-by-default.patch;
       extraConfig = ''
         SCSI_MQ_DEFAULT y
         DM_MQ_DEFAULT y
