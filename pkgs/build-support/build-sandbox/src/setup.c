@@ -95,6 +95,11 @@ static bool makedirs(const char *path, bool do_cache)
 {
     char *tmp, *segment;
 
+    if (*path != '/') {
+        fprintf(stderr, "fatal: Path '%s' is not absolute.\n", path);
+        return false;
+    }
+
     if ((tmp = strdup(path)) == NULL) {
         fprintf(stderr, "strdup of %s: %s\n", path, strerror(errno));
         return false;
