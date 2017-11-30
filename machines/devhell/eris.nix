@@ -111,8 +111,8 @@
     displayManager.sessionCommands = ''
       ${pkgs.xorg.xsetroot}/bin/xsetroot -solid black
       ${pkgs.networkmanagerapplet}/bin/nm-applet &
-      ${pkgs.pasystray}/bin/pasystray &
-      #${pkgs.compton}/bin/compton -f &
+      #${pkgs.pasystray}/bin/pasystray &
+      ${pkgs.compton}/bin/compton -f &
       ${pkgs.rofi}/bin/rofi &
       ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
         Xft.dpi:                     96
