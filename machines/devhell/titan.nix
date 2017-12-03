@@ -63,6 +63,8 @@
 
   powerManagement.cpuFreqGovernor = "powersave";
 
+  virtualisation.docker.enable = true;
+
   nix = {
     maxJobs = lib.mkDefault 4;
     extraOptions = ''
@@ -176,6 +178,7 @@
     #openjdk8
     #skype
     #thunderbird
+    docker
     aircrackng
     calibre
     cdrtools
