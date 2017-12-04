@@ -61,7 +61,10 @@
   networking.useNetworkd= true;
   networking.nameservers = [ "127.0.0.1" ];
 
-  powerManagement.cpuFreqGovernor = "powersave";
+  powerManagement = {
+    powertop.enable = true;
+    cpuFreqGovernor = "powersave";
+  };
 
   virtualisation.docker.enable = true;
 
