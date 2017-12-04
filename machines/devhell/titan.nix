@@ -56,10 +56,12 @@
   # XXX Kind of a hack to work around the issue of networkd not honoring networking.nameservers
   systemd.network.networks."99-main".dhcpConfig.UseDNS = false;
 
-  networking.hostName = "titan";
-  networking.wireless.enable = true;
-  networking.useNetworkd= true;
-  networking.nameservers = [ "127.0.0.1" ];
+  networking = {
+    hostName = "titan";
+    wireless.enable = true;
+    useNetworkd= true;
+    nameservers = [ "127.0.0.1" ];
+  };
 
   powerManagement = {
     powertop.enable = true;
