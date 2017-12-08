@@ -37,7 +37,7 @@ let
           storepath="$(echo "$encoded" | ${decoder})"
           program="$storepath/$binpath"
           if [ ! -e "$storepath" ]; then
-            ${fetchSubstitute} "$storepath" || exit $?
+            ${fetchSubstitute} "$storepath" > /dev/null || exit $?
           fi
           exec "$program" "$@"
         ''}
