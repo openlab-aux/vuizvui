@@ -110,7 +110,7 @@ in {
   };
 
   vuizvui.user.aszlig.services.i3.workspaces."3" = {
-    label = "Chromium";
-    assign = lib.singleton { class = "^Chromium(?:-browser)?\$"; };
+    label = "Browser";
+    assign = lib.singleton { class = "^Firefox\$"; };
   };
 }
