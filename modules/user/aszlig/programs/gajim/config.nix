@@ -68,7 +68,7 @@ in mkConfig {
   conversation_font = "Liberation Mono 10";
   ctrl_tab_go_to_next_composing = true;
   custom_file_manager = "";
-  custombrowser = "chromium";
+  custombrowser = "firefox";
   custommailapp = "";
   dictionary_url = "WIKTIONARY";
   displayed_chat_state_notifications = "all";
