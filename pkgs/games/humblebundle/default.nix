@@ -24,6 +24,7 @@ let
     jamestown = callPackage ./jamestown.nix {};
     liads = callPackage ./liads.nix {};
     megabytepunch = callPackage_i686 ./megabytepunch.nix {};
+    opus-magnum = callPackage ./opus-magnum.nix {};
     pico-8 = callPackage ./pico-8.nix {};
     rocketbirds = callPackage ./rocketbirds.nix {};
     spaz = callPackage ./spaz.nix {};
