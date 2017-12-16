@@ -100,9 +100,6 @@ let
     { check = config.services.fleet.enable;
       path  = ["nixos" "fleet"];
     }
-    { check = config.virtualisation.openstack.glance.enable;
-      path  = ["nixos" "glance"];
-    }
     { check = config.services.xserver.desktopManager.gnome3.enable;
       path  = ["nixos" "gnome3"];
     }
@@ -202,9 +199,6 @@ let
     { check = config.i18n.consoleKeyMap          == "de"
            || config.services.xserver.layout     == "de";
       path  = ["nixos" "keymap" "qwertz"];
-    }
-    { check = config.virtualisation.openstack.keystone.enable;
-      path  = ["nixos" "keystone"];
     }
     { check = with config.services.kubernetes; apiserver.enable
            || scheduler.enable || controllerManager.enable || kubelet.enable
