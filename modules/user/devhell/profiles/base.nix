@@ -48,7 +48,7 @@ in {
 
     users.users.dev = {
       isNormalUser = true;
-      extraGroups = [ "docker" "vboxusers" "wheel" "mpd" "networkmanager" "libvirtd" ];
+      extraGroups = [ "plugdev" "docker" "vboxusers" "wheel" "mpd" "networkmanager" "libvirtd" ];
       uid = 1000;
       shell = "${pkgs.zsh}/bin/zsh";
     };
