@@ -18,7 +18,7 @@ in {
       };
       libvirtd = {
         enable = true;
-        enableKVM = true;
+        qemuPackage = pkgs.qemu_kvm;
       };
     };
 
