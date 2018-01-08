@@ -49,13 +49,9 @@ in
           "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtfWeIH7YZpWUUOZ3oC5FB2/J+P3scxm29gUQdVij/K0TuxW1yN/HtcvrO1mwSshS6sNZ2N6/Kb6+kuGyx1mEnaFt87K5ucxC7TNqiURh4eeZE1xX7B5Ob8TVegrBxoe+vcfaoyxn7sUzgF719H0aYC7PP6p3AIbhq3hRLcvY26u9/gZ39H79A71wCunauvpcnpb+rqyJMN6m2YoeOcoloe7wUDI8Xw5dUetHpNKn9k1vzS16CdwP4pAKI8aBtdNK7ZojVMe9LfBG8HHPr9K+cwcaxQuXkFBJzrfrtBCfQwrgWppsu/W/kGBs1ybku2bOFI5UXJBnsraXQqr1NLIfL phj@phj-X220"
         ];
       };
-      stallmanbot = {
-        isSystemUser = true;
-        useDefaultShell = true;
-      };
     };
 
-    systemd.services.warpspeed = 
+    systemd.services.warpspeed =
       let user = config.users.users.rtorrent;
       in {
         description = "internally served public files (see nginx)";
@@ -78,36 +74,22 @@ in
       };
     };
 
-    services.mlmmj = {
-      enable = true;
-      listDomain = "cz.profpatsch.de";
-      mailLists = [ "worship" "test" ];
-    };
-    services.postfix = {
-      # mostly configured by mlmmj
-      hostname = "cz.profpatsch.de";
-      postmasterAlias = "mail@profpatsch.de";
-    };
-
-    services.searx = {
-      enable = true;
-      package = myPkgs.searx;
-    };
-
-    services.openvpn.servers.hakuserver = {
-      config = ''
-        dev tun
-        ifconfig 10.20.30.40 10.20.30.41
-        secret /root/static-vpn.key
-      '';
-    };
+    # services.mlmmj = {
+    #   enable = true;
+    #   listDomain = "cz.profpatsch.de";
+    #   mailLists = [ "worship" "test" ];
+    # };
+    # services.postfix = {
+    #   # mostly configured by mlmmj
+    #   hostname = "cz.profpatsch.de";
+    #   postmasterAlias = "mail@profpatsch.de";
+    # };
 
     networking = {
       hostName = "haku";
       firewall = {
         allowedTCPPorts =
           [ 80 443
-            8888 # tmp searx port
           ];
         allowedTCPPortRanges =
           # rtorrent
