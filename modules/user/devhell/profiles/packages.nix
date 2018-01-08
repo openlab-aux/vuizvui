@@ -105,7 +105,6 @@ in {
       #tftp-hpa
       #tomahawk
       #toxic
-      #vimiv
       abcde
       abook
       accountsservice
@@ -269,6 +268,7 @@ in {
       ssdeep
       stow
       strace
+      sxiv
       taskwarrior
       tectonic
       telnet
