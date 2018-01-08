@@ -16,6 +16,12 @@ in
   ];
 
   config = {
+
+    system.autoUpgrade = {
+      enable = true;
+      channel = "https://headcounter.org/hydra/channel/custom/openlab/vuizvui/channels.machines.profpatsch.haku";
+    };
+
     vuizvui.user.profpatsch.server.sshPort = 7001;
 
     boot.loader.grub.device = "/dev/sda";
