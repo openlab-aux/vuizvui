@@ -111,13 +111,6 @@ let
   };
 
   plugins = pluginDeps // {
-    vimErl = fetchFromGitHub {
-      owner = "jimenezrick";
-      repo = "vimerl";
-      rev = "823bf8cb515bb10396c705cdc017aa9121cc4d12";
-      sha256 = "0sybkx8iy8qhr6nlwn52j7zd5v99rn0b8wbg43d112z2px4yq5x3";
-    };
-
     vaxe = fetchFromGitHub {
       owner = "jdonaldson";
       repo = "vaxe";
