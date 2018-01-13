@@ -269,6 +269,7 @@ in {
       stow
       strace
       sxiv
+      tasksh
       taskwarrior
       tectonic
       telnet
