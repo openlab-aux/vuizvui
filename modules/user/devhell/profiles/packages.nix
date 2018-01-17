@@ -269,6 +269,7 @@ in {
       stow
       strace
       sxiv
+      taskdown
       tasksh
       taskwarrior
       tectonic
