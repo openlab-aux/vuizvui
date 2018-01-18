@@ -269,11 +269,11 @@ in {
       stow
       strace
       sxiv
-      taskdown
       tasksh
       taskwarrior
       tectonic
       telnet
+      termdown
       termite
       testdisk
       tldr
