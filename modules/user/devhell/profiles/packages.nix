@@ -276,6 +276,7 @@ in {
       termdown
       termite
       testdisk
+      timewarrior
       tldr
       tmux
       toilet
