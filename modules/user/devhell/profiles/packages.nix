@@ -126,7 +126,7 @@ in {
       cipherscan
       cmatrix
       colordiff
-      compton
+#compton
       conky
       cryptsetup
       ctodo
