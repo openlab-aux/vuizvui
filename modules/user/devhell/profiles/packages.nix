@@ -126,7 +126,6 @@ in {
       cipherscan
       cmatrix
       colordiff
-#compton
       conky
       cryptsetup
       ctodo
@@ -235,7 +234,9 @@ in {
       pandoc
       paperkey
       pass
+      pbzip2
       pciutils
+      pigz
       polybar
       posix_man_pages
       powertop
@@ -244,6 +245,7 @@ in {
       profile-sync-daemon
       pulsemixer
       pv
+      pxz
       python
       python2
       python3
@@ -321,6 +323,7 @@ in {
       zip
       zotero
       zsync
+#compton
     ];
   };
 }
