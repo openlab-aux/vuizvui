@@ -69,6 +69,7 @@ in {
       #cacert
       #cava
       #cmake
+      #compton
       #docker
       #emacs
       #gimp
@@ -108,6 +109,7 @@ in {
       abcde
       abook
       accountsservice
+      ag
       antiword
       apg
       ascii
@@ -323,7 +325,6 @@ in {
       zip
       zotero
       zsync
-#compton
     ];
   };
 }
