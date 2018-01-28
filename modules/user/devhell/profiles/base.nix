@@ -92,6 +92,7 @@ in {
       fonts = with pkgs; [
         clearlyU
         cm_unicode
+        corefonts
         dejavu_fonts
         dosemu_fonts
         font-awesome-ttf
