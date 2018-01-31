@@ -4,14 +4,14 @@ buildUnity rec {
   name = "invisigun-heroes";
   fullName = "Invisigun Heroes";
   saveDir = "Sombr Studio/Invisigun Heroes";
-  version = "1.5.70";
+  version = "1.6.1";
 
   src = fetchItch {
     name = "${name}-${version}.zip";
     gameId = 25561;
     uploadId = 208583;
     version = "v${version}";
-    sha256 = "149g3bsgyqal3m1h2rh5h0m3dc39ky5n81y8plx3xg9r2b1sfhsn";
+    sha256 = "1jvdqrr7rysvgmyn3zyjyydwl8hwrdisis4wznpjhl02nplmhnqx";
   };
 
   sandbox.paths.required = [ "$HOME/Invisigun Heroes" ];
