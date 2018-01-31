@@ -1,4 +1,6 @@
-{ stdenv, fetchurl, fetchgit, runCommand, p7zip, jq, wineMinimal, pcsclite }:
+{ stdenv, fetchurl, fetchgit, fetchpatch, runCommand, p7zip, jq, wineMinimal
+, pcsclite
+}:
 
 let
   patchedWine = let
@@ -19,12 +21,20 @@ let
         dlls/winscard/winscard.c
     '';
 
-    patches = (drv.patches or []) ++ [ ./winscard.patch ];
+    patches = (drv.patches or []) ++ [
+      ./winscard.patch
+      (fetchpatch {
+        url = "http://achurch.org/patch-pile/wine/3.0/disable-unixfs.diff";
+        sha256 = "1yj3walwalya9g9aajcp4iygh348npp9dmks66r9dvwbd3fa8wcb";
+      })
+    ];
 
-    postPatch = (drv.postPatch or "") + ''
-      sed -i -e '/not owned by you/d' libs/wine/config.c
-      # Modified patch from https://bugs.winehq.org/show_bug.cgi?id=22450
-      patch -p1 < "${./wine-no-unixfs.patch}"
+    configureFlags = (drv.configureFlags or []) ++ [ "--disable-unixfs" ];
+
+    postConfigure = (drv.postConfigure or "") + ''
+      # The wineprefix is within the Nix store, so let's ensure wine doesn't
+      # check the owner of the files:
+      sed -i -e '/HAVE_GETUID/d' include/config.h
     '';
   });
 
