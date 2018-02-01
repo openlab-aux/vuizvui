@@ -239,6 +239,7 @@ in {
       pbzip2
       pciutils
       pigz
+      pixz
       polybar
       posix_man_pages
       powertop
