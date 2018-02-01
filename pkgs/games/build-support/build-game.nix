@@ -1,4 +1,4 @@
-{ stdenv, lib, file, unzip, buildSandbox
+{ stdenv, lib, file, unzip, buildSandbox, autoPatchelfHook
 
 , withPulseAudio ? true, libpulseaudio ? null
 , alsaLib
@@ -19,9 +19,7 @@ assert withPulseAudio -> libpulseaudio != null;
 buildSandbox (stdenv.mkDerivation ({
   buildInputs = [ stdenv.cc.cc ] ++ buildInputs;
 
-  nativeBuildInputs = [
-    unzip file ./setup-hooks/auto-patchelf.sh
-  ] ++ nativeBuildInputs;
+  nativeBuildInputs = [ unzip autoPatchelfHook ] ++ nativeBuildInputs;
 
   preUnpack = preUnpack + ''
     mkdir "$name"

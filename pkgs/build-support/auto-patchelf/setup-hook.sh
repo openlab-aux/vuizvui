@@ -7,13 +7,13 @@ gatherLibraries() {
 addEnvHooks "$targetOffset" gatherLibraries
 
 isExecutable() {
-    [ "$(file -b -N --mime-type "$1")" = application/x-executable ]
+    [ "$(@file@ -b -N --mime-type "$1")" = application/x-executable ]
 }
 
 findElfs() {
-    find "$1" -type f -exec "$SHELL" -c '
+    @find@ "$1" -type f -exec @shell@ -c '
         while [ -n "$1" ]; do
-            mimeType="$(file -b -N --mime-type "$1")"
+            mimeType="$(@file@ -b -N --mime-type "$1")"
             if [ "$mimeType" = application/x-executable \
               -o "$mimeType" = application/x-sharedlib ]; then
                 echo "$1"
@@ -38,12 +38,12 @@ declare -gi doneRecursiveSearch=0
 declare -g foundDependency
 
 getDepsFromSo() {
-    ldd "$1" 2> /dev/null | sed -n -e 's/[^=]*=> *\(.\+\) \+([^)]*)$/\1/p'
+    @ldd@ "$1" 2> /dev/null | @sed@ -n -e 's/[^=]*=> *\(.\+\) \+([^)]*)$/\1/p'
 }
 
 checkElfDep() {
-    local errors ldout="$(ldd "$1" 2> /dev/null)"
-    if errors="$(echo "$ldout" | grep -F "not found")"; then
+    local errors ldout="$(@ldd@ "$1" 2> /dev/null)"
+    if errors="$(echo "$ldout" | @grep@ -F "not found")"; then
         echo -e "Library dependencies missing for $1:\n$errors"
     fi
 }
@@ -63,7 +63,7 @@ populateCacheWithRecursiveDeps() {
 }
 
 getSoArch() {
-    objdump -f "$1" | sed -ne 's/^architecture: *\([^,]\+\).*/\1/p'
+    @objdump@ -f "$1" | @sed@ -ne 's/^architecture: *\([^,]\+\).*/\1/p'
 }
 
 findDependency() {
@@ -101,7 +101,7 @@ autoPatchelfFile() {
 
     local interpreter="$(< "$NIX_CC/nix-support/dynamic-linker")"
     if isExecutable "$toPatch"; then
-        patchelf --set-interpreter "$interpreter" "$toPatch"
+        @patchelf@ --set-interpreter "$interpreter" "$toPatch"
         if [ -n "$runtimeDependencies" ]; then
             for dep in $runtimeDependencies; do
                 rpath="$rpath${rpath:+:}$dep/lib"
@@ -111,11 +111,11 @@ autoPatchelfFile() {
 
     echo "searching for dependencies of $toPatch:" >&2
 
-    patchelf --remove-rpath "$toPatch"
+    @patchelf@ --remove-rpath "$toPatch"
 
     local missing="$(
-        ldd "$toPatch" 2> /dev/null | \
-            sed -n -e 's/^[\t ]*\([^ ]\+\) => not found.*/\1/p'
+        @ldd@ "$toPatch" 2> /dev/null | \
+            @sed@ -n -e 's/^[\t ]*\([^ ]\+\) => not found.*/\1/p'
     )"
 
     for dep in $missing; do
@@ -130,7 +130,7 @@ autoPatchelfFile() {
 
     if [ -n "$rpath" ]; then
         echo "setting RPATH to: $rpath" >&2
-        patchelf --set-rpath "$rpath" "$toPatch"
+        @patchelf@ --set-rpath "$rpath" "$toPatch"
     fi
 }
 
