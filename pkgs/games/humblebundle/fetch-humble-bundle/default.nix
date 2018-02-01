@@ -29,11 +29,14 @@
       #include <QApplication>
       #include <QWebEngineView>
       #include <QTcpServer>
+      #include <QQuickWebEngineProfile>
 
       int main(int argc, char **argv) {
         QApplication *app = new QApplication(argc, argv);
         QTcpServer *server = new QTcpServer();
         QWebEngineView *browser = new QWebEngineView();
+
+        QQuickWebEngineProfile::defaultProfile()->setOffTheRecord(true);
 
         if (!server->listen(QHostAddress::LocalHost, 18123)) {
           qCritical() << "Unable to listen on port 18123!";
@@ -74,7 +77,7 @@
     nativeBuildInputs = [ pkgconfig ];
     buildInputs = [ qt5.qtbase qt5.qtwebengine ];
   } ''
-    g++ $(pkg-config --libs --cflags Qt5WebEngineWidgets) \
+    g++ $(pkg-config --libs --cflags Qt5WebEngineWidgets Qt5WebEngine) \
       -Wall -std=c++11 -o "$out" ${application}
   '';
 
