@@ -8,7 +8,6 @@ substituteAll {
   inherit (stdenv) shell;
   file = "${file}/bin/file";
   find = "${findutils}/bin/find";
-  grep = "${gnugrep}/bin/grep";
   ldd = "${glibc.bin}/bin/ldd";
   objdump = "${binutils-unwrapped}/bin/objdump";
   patchelf = "${patchelf}/bin/patchelf";

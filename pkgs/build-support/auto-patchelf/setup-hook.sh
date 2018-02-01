@@ -41,13 +41,6 @@ getDepsFromSo() {
     @ldd@ "$1" 2> /dev/null | @sed@ -n -e 's/[^=]*=> *\(.\+\) \+([^)]*)$/\1/p'
 }
 
-checkElfDep() {
-    local errors ldout="$(@ldd@ "$1" 2> /dev/null)"
-    if errors="$(echo "$ldout" | @grep@ -F "not found")"; then
-        echo -e "Library dependencies missing for $1:\n$errors"
-    fi
-}
-
 populateCacheWithRecursiveDeps() {
     local so found foundso
     for so in "${cachedDependencies[@]}"; do

@@ -51,6 +51,13 @@ buildSandbox (stdenv.mkDerivation ({
 
     echo "checking dependencies for libraries and executables" >&2
 
+    checkElfDep() {
+        local errors ldout="$(ldd "$1" 2> /dev/null)"
+        if errors="$(echo "$ldout" | grep -F "not found")"; then
+            echo -e "Library dependencies missing for $1:\n$errors"
+        fi
+    }
+
     local errors="$(
         IFS=$'\n'
         for elf in $(findElfs "$prefix"); do checkElfDep "$elf"; done
