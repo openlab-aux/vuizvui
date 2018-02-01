@@ -4,7 +4,7 @@ gatherLibraries() {
     autoPatchelfLibs+=("$1/lib")
 }
 
-envHooks+=(gatherLibraries)
+addEnvHooks "$targetOffset" gatherLibraries
 
 isExecutable() {
     [ "$(file -b -N --mime-type "$1")" = application/x-executable ]
