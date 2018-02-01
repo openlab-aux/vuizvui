@@ -111,6 +111,8 @@ autoPatchelfFile() {
             @sed@ -n -e 's/^[\t ]*\([^ ]\+\) => not found.*/\1/p'
     )"
 
+    local -i depNotFound=0
+
     for dep in $missing; do
         echo -n "  $dep -> " >&2
         if findDependency "$dep" "$(getSoArch "$toPatch")"; then
@@ -118,8 +120,11 @@ autoPatchelfFile() {
             echo "found: $foundDependency" >&2
         else
             echo "not found!" >&2
+            depNotFound=1
         fi
     done
+
+    [ $depNotFound -eq 0 ]
 
     if [ -n "$rpath" ]; then
         echo "setting RPATH to: $rpath" >&2
