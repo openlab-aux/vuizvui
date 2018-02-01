@@ -60,7 +60,7 @@
     hostName = "titan";
     wireless.enable = true;
     useNetworkd= true;
-    nameservers = [ "127.0.0.1" "8.8.8.8" "8.8.4.4" ];
+    nameservers = [ "8.8.8.8" "8.8.4.4" ];
   };
 
   powerManagement = {
@@ -92,7 +92,7 @@
     tftpd.enable = false;
     gnome3.gnome-keyring.enable = true;
     printing.enable = false;
-    dnscrypt-proxy.enable = true;
+    dnscrypt-proxy.enable = false;
   };
 
   services.acpid = {
