@@ -42,7 +42,7 @@ getDepsFromSo() {
 }
 
 checkElfDep() {
-    local errors ldout="$(ldd "$1")"
+    local errors ldout="$(ldd "$1" 2> /dev/null)"
     if errors="$(echo "$ldout" | grep -F "not found")"; then
         echo -e "Library dependencies missing for $1:\n$errors"
     fi
@@ -92,7 +92,7 @@ findDependency() {
 autoPatchelfFile() {
     local dep rpath="" toPatch="$1"
 
-    local interpreter="$(cat $NIX_CC/nix-support/dynamic-linker)"
+    local interpreter="$(< "$NIX_CC/nix-support/dynamic-linker")"
     if isExecutable "$toPatch"; then
         patchelf --set-interpreter "$interpreter" "$toPatch"
         if [ -n "$runtimeDependencies" ]; then
@@ -102,23 +102,27 @@ autoPatchelfFile() {
         fi
     fi
 
+    echo "searching for dependencies of $toPatch:" >&2
+
     patchelf --remove-rpath "$toPatch"
 
     local missing="$(
-        ldd "$toPatch" | sed -n -e 's/^[\t ]*\([^ ]\+\) => not found.*/\1/p'
+        ldd "$toPatch" 2> /dev/null | \
+            sed -n -e 's/^[\t ]*\([^ ]\+\) => not found.*/\1/p'
     )"
+
     for dep in $missing; do
-        echo -n "searching for dependency $dep..." >&2
+        echo -n "  $dep -> " >&2
         if findDependency "$dep"; then
             rpath="$rpath${rpath:+:}${foundDependency%/*}"
-            echo " found: $foundDependency" >&2
+            echo "found: $foundDependency" >&2
         else
-            echo " not found" >&2
+            echo "not found!" >&2
         fi
     done
 
     if [ -n "$rpath" ]; then
-        echo "setting RPATH of $toPatch to $rpath" >&2
+        echo "setting RPATH to: $rpath" >&2
         patchelf --set-rpath "$rpath" "$toPatch"
     fi
 }
