@@ -62,8 +62,13 @@ populateCacheWithRecursiveDeps() {
     done
 }
 
+getSoArch() {
+    objdump -f "$1" | sed -ne 's/^architecture: *\([^,]\+\).*/\1/p'
+}
+
 findDependency() {
     local filename="$1"
+    local arch="$2"
     local lib dep
 
     if [ $depCacheInitialised -eq 0 ]; then
@@ -75,15 +80,17 @@ findDependency() {
 
     for dep in "${cachedDependencies[@]}"; do
         if [ "$filename" = "${dep##*/}" ]; then
-            foundDependency="$dep"
-            return 0
+            if [ "$(getSoArch "$dep")" = "$arch" ]; then
+                foundDependency="$dep"
+                return 0
+            fi
         fi
     done
 
     if [ $doneRecursiveSearch -eq 0 ]; then
         populateCacheWithRecursiveDeps
         doneRecursiveSearch=1
-        findDependency "$filename" || return 1
+        findDependency "$filename" "$arch" || return 1
         return 0
     fi
     return 1
@@ -113,7 +120,7 @@ autoPatchelfFile() {
 
     for dep in $missing; do
         echo -n "  $dep -> " >&2
-        if findDependency "$dep"; then
+        if findDependency "$dep" "$(getSoArch "$toPatch")"; then
             rpath="$rpath${rpath:+:}${foundDependency%/*}"
             echo "found: $foundDependency" >&2
         else
