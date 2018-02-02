@@ -2,7 +2,8 @@ BINARIES = $(wildcard $(BINDIR)/*)
 WRAPPERS = $(subst $(BINDIR),$(out)/bin,$(BINARIES))
 
 NIX_VERSION = `pkg-config --modversion nix-main | \
-               sed -e 's/^\([0-9]\+\)\.\([0-9]\+\).*/\1\2/'`
+               sed -e 's/^\([0-9]\+\)\.\([0-9][0-9]\).*/\1\2/' \
+                   -e 's/^\([0-9]\+\)\.\([0-9]\).*/\10\2/'`
 
 OBJECTS = nix-query.o path-cache.o params.o setup.o
 
