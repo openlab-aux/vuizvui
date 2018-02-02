@@ -52,7 +52,17 @@ in {
     };
   };
 
-  environment.systemPackages = [ pkgs.gpodder pkgs.paperwork ];
+  environment.systemPackages = [
+    (pkgs.gpodder.overrideAttrs (drv: {
+      src = assert drv.version == "3.10.0"; pkgs.fetchFromGitHub {
+        owner = "gpodder";
+        repo = "gpodder";
+        rev = "1aec01778e70be3fef5f1acbdf8f4cf67964464d";
+        sha256 = "14wlxqfrsidijgzrfx7227hf2fcng3j0psb0sgmkcpdl765gpgpv";
+      };
+    }))
+    pkgs.paperwork
+  ];
 
   # This is very ugly and I really want to avoid non-free packages on all
   # of my workstations. But right now I need to get rid of useless paper.
