@@ -9,6 +9,7 @@ with import ../lib;
     tishtushi = callMachine ./aszlig/tishtushi.nix {};
     managed = {
       brawndo = callMachine ./aszlig/managed/brawndo.nix {};
+      tyree   = callMachine ./aszlig/managed/tyree.nix {};
     };
   };
   devhell = {
