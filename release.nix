@@ -52,6 +52,11 @@ let
     releaseLib = import "${nixpkgs}/pkgs/top-level/release-lib.nix" {
       inherit supportedSystems;
       packageSet = attrs: noGames (import vuizvui attrs).pkgs;
+      nixpkgsArgs.config = {
+        allowUnfree = false;
+        inHydra = true;
+        allowBroken = true;
+      };
     };
 
     packagePlatforms = mapAttrs (name: value: let
