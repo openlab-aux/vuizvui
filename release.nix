@@ -60,7 +60,7 @@ let
     };
 
     packagePlatforms = mapAttrs (name: value: let
-      brokenOr = if value.meta.broken or false then [] else id;
+      brokenOr = if value.meta.broken or false then const [] else id;
       platforms = value.meta.hydraPlatforms or (value.meta.platforms or []);
       isRecursive = value.recurseForDerivations or false
                  || value.recurseForRelease or false;
