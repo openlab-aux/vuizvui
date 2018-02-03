@@ -10,8 +10,17 @@ let
   anyAttrs = pred: cfg: any id (mapAttrsToList (const pred) cfg);
 
   upstreamTests = concatMap mkTest [
+    { check = config.security.acme.certs != {};
+      path  = ["nixos" "acme"];
+    }
+    { check = config.services.atd.enable;
+      path  = ["nixos" "atd"];
+    }
     { check = config.services.avahi.enable;
       path  = ["nixos" "avahi"];
+    }
+    { check = config.services.beegfsEnable;
+      path  = ["nixos" "beegfs"];
     }
     { check = config.vuizvui.createISO;
       paths = [
@@ -79,14 +88,23 @@ let
            && anyAttrs (i: i.tmpfs != []) config.containers;
       path  = ["nixos" "containers-tmpfs"];
     }
+    { check = config.services.couchdb.enable;
+      path  = ["nixos" "couchdb"];
+    }
     { check = config.services.dnscrypt-proxy.enable;
       path  = ["nixos" "dnscrypt-proxy"];
     }
     { check = config.virtualisation.docker.enable;
       path  = ["nixos" "docker"];
     }
+    { check = config.services.dovecot2.enable;
+      path  = ["nixos" "dovecot"];
+    }
     { check = config.security.pam.enableEcryptfs;
       path  = ["nixos" "ecryptfs"];
+    }
+    { check = true;
+      path  = ["nixos" "env"];
     }
     { check = config.services.etcd.enable;
       path  = ["nixos" "etcd"];
@@ -100,6 +118,9 @@ let
     { check = config.services.fleet.enable;
       path  = ["nixos" "fleet"];
     }
+    { check = config.services.gitolite.enable;
+      path  = ["nixos" "gitolite"];
+    }
     { check = config.services.xserver.desktopManager.gnome3.enable;
       path  = ["nixos" "gnome3"];
     }
@@ -112,6 +133,15 @@ let
     { check = config.services.gocd-server.enable;
       path  = ["nixos" "gocd-server"];
     }
+    { check = config.services.grafana.enable;
+      path  = ["nixos" "grafana"];
+    }
+    { check = with config.services.graphite; carbon.enableCache
+           || carbon.enableAggregator || carbon.enableRelay
+           || web.enable || api.enable || seyren.enable || pager.enable
+           || beacon.enable;
+      path  = ["nixos" "graphite"];
+    }
     { check = config.security.lockKernelModules
            || config.security.hideProcessInformation
            || config.boot.kernel.sysctl."user.max_user_namespaces" or 1 == 0;
@@ -119,6 +149,9 @@ let
     }
     { check = true;
       path  = ["nixos" "hibernate"];
+    }
+    { check = config.services.home-assistant.enable;
+      path  = ["nixos" "home-assistant"];
     }
     { check = config.services.hound.enable;
       path  = ["nixos" "hound"];
@@ -128,6 +161,9 @@ let
     }
     { check = config.boot.initrd.network.enable;
       path  = ["nixos" "initrdNetwork"];
+    }
+    { check = config.boot.initrd.network.ssh.enable;
+      path  = ["nixos" "initrd-network-ssh"];
     }
     { check = elem "btrfs" config.boot.supportedFilesystems;
       paths = [
@@ -200,6 +236,18 @@ let
            || config.services.xserver.layout     == "de";
       path  = ["nixos" "keymap" "qwertz"];
     }
+    { check = config.boot.kernelPackages.kernel.version
+           == pkgs.linuxPackages_hardened_copperhead.kernel.version;
+      path  = ["nixos" "kernel-copperhead"];
+    }
+    { check = config.boot.kernelPackages.kernel.version
+           == pkgs.linuxPackages_latest.kernel.version;
+      path  = ["nixos" "kernel-latest"];
+    }
+    { check = config.boot.kernelPackages.kernel.version
+           == pkgs.linuxPackages.kernel.version;
+      path  = ["nixos" "kernel-lts"];
+    }
     { check = with config.services.kubernetes; apiserver.enable
            || scheduler.enable || controllerManager.enable || kubelet.enable
            || proxy.enable;
@@ -221,6 +269,10 @@ let
     { check = config.services.mathics.enable;
       path  = ["nixos" "mathics"];
     }
+    { check = config.services.mesos.master.enable
+           || config.services.mesos.slave.enable;
+      path  = ["nixos" "mesos"];
+    }
     { check = true;
       path  = ["nixos" "misc"];
     }
@@ -234,8 +286,14 @@ let
            || config.services.munin-cron.enable;
       path  = ["nixos" "munin"];
     }
+    { check = true;
+      path  = ["nixos" "mutableUsers"];
+    }
     { check = config.services.mysql.enable;
       path  = ["nixos" "mysql"];
+    }
+    { check = config.services.mysqlBackup.enable;
+      path  = ["nixos" "mysqlBackup"];
     }
     { check = config.services.mysql.enable
            && config.services.mysql.replication.role != "none";
@@ -255,6 +313,9 @@ let
     { check = config.networking.nat.enable
            && !config.networking.firewall.enable;
       path  = ["nixos" "nat" "standalone"];
+    }
+    { check = config.services.netdata.enable;
+      path  = ["nixos" "netdata"];
     }
     { check = config.networking.bonds != {};
       path  = ["nixos" "networking" whichNet "bond"];
@@ -295,6 +356,9 @@ let
         ["nixos" "nfs4"]
       ];
     }
+    { check = config.services.nghttpx.enable;
+      path  = ["nixos" "nghttpx"];
+    }
     { check = config.services.nginx.enable;
       path  = ["nixos" "nginx"];
     }
@@ -304,15 +368,18 @@ let
     { check = config.services.openssh.enable;
       path  = ["nixos" "openssh"];
     }
+    { check = let
+        hasOCSubServiceType = any (y: y.serviceType == "owncloud");
+        hasOCSubService = any (x: hasOCSubServiceType x.extraSubservices);
+        hasOwnCloud = config.services.httpd.virtualHosts;
+      in config.services.httpd.enable && hasOwnCloud;
+      path  = ["nixos" "owncloud"];
+    }
     { check = config.security.pam.oath.enable;
       path  = ["nixos" "pam-oath-login"];
     }
     { check = config.services.peerflix.enable;
       path  = ["nixos" "peerflix"];
-    }
-    { check = config.services.postgresql.enable
-           && elem pkgs.pgjwt config.services.postgresql.extraPlugins;
-      path  = ["nixos" "pgjwt"];
     }
     { check = config.services.xserver.desktopManager.plasma5.enable;
       path  = ["nixos" "plasma5"];
@@ -327,6 +394,9 @@ let
     { check = config.services.printing.enable;
       path  = ["nixos" "printing"];
     }
+    { check = config.services.prometheus.enable;
+      path  = ["nixos" "prometheus"];
+    }
     { check = config.services.httpd.enable
            && elem "proxy_balancer" config.services.httpd.extraModules;
       path  = ["nixos" "proxy"];
@@ -334,13 +404,12 @@ let
     { check = config.services.pumpio.enable;
       path  = ["nixos" "pumpio"];
     }
-    # TODO: The upstream service was disabled because it broke
-    # { check = config.services.quagga.ospf.enable;
-    #   path  = ["nixos" "quagga"];
-    # }
     { check = config.hardware.opengl.driSupport
            && config.services.xserver.enable;
       path  = ["nixos" "quake3"];
+    }
+    { check = config.services.radicale.enable;
+      path  = ["nixos" "radicale"];
     }
     { check = true;
       path  = ["nixos" "runInMachine"];
@@ -366,6 +435,15 @@ let
     { check = config.services.smokeping.enable;
       path  = ["nixos" "smokeping"];
     }
+    { check = config.services.statsd.enable;
+      path  = ["nixos" "statsd"];
+    }
+    { check = config.security.sudo.enable;
+      path  = ["nixos" "sudo"];
+    }
+    { check = true;
+      path  = ["nixos" "switchTest"];
+    }
     { check = config.services.taskserver.enable;
       path  = ["nixos" "taskserver"];
     }
@@ -374,6 +452,9 @@ let
     }
     { check = config.services.udisks2.enable;
       path  = ["nixos" "udisks2"];
+    }
+    { check = config.services.vault.enable;
+      path  = ["nixos" "vault"];
     }
     { check = config.virtualisation.virtualbox.host.enable;
       paths = [
@@ -397,6 +478,12 @@ let
     }
     { check = config.services.xserver.desktopManager.xfce.enable;
       path  = ["nixos" "xfce"];
+    }
+    { check = config.services.xserver.windowManager.xmonad.enable;
+      path  = ["nixos" "xmonad"];
+    }
+    { check = config.services.zookeeper.enable;
+      path  = ["nixos" "zookeeper"];
     }
   ];
 
