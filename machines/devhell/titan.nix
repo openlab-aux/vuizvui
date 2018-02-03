@@ -111,7 +111,7 @@
   services.compton = {
     enable = true;
     extraOptions = ''
-      inactive-dim = 0.3;
+      inactive-dim = 0.2;
     '';
   };
 
