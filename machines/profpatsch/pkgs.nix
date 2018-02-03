@@ -68,6 +68,11 @@ let
       ./patches/searx-secret-key.patch
       ./patches/searx-rm-soundcloud.patch
     ];
+    # xdg.BaseDirectory.save_cache_path() will try to create leading dirs, but
+    # within the builder we don't have a writable home directory.
+    preCheck = (old.preCheck or "") + ''
+      export XDG_CACHE_HOME="$TMPDIR/cache"
+    '';
   });
 
   # A ghci with some sane default packages in scope, & hoogle
