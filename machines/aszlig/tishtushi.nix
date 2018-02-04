@@ -23,13 +23,13 @@ in {
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/${rootUUID}";
     fsType = "btrfs";
-    options = [ "space_cache" "compress=zlib" "noatime" ];
+    options = [ "space_cache" "compress=zstd" "noatime" ];
   };
 
   fileSystems."/nix/store" = {
     device = "/dev/disk/by-uuid/${storeUUID}";
     fsType = "btrfs";
-    options = [ "ssd" "compress-force=zlib" "noatime" ];
+    options = [ "ssd" "discard" "compress=zstd" "noatime" ];
   };
 
   swapDevices = lib.singleton {

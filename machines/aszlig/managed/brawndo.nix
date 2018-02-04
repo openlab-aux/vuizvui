@@ -18,7 +18,7 @@ in {
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/${rootUUID}";
     fsType = "btrfs";
-    options = [ "compress=zlib" "space_cache" "noatime" ];
+    options = [ "compress=zstd" "space_cache" "noatime" ];
   };
 
   fileSystems."/boot" = {

@@ -14,7 +14,7 @@
   fileSystems."/".label = "tyree-root";
   fileSystems."/".fsType = "btrfs";
   fileSystems."/".options = [
-    "compress=lzo"
+    "compress=zstd"
     "discard"
     "noatime"
     "space_cache"
