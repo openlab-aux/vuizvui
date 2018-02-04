@@ -165,7 +165,7 @@
       DISK_DEVICES="sda sdb"
       DISK_APM_LEVEL_ON_AC="254 254"
       DISK_APM_LEVEL_ON_BAT="254 127"
-      DISK_IOSCHED="noop cfq"
+      DISK_IOSCHED="bfq bfq"
       SATA_LINKPWR_ON_AC=max_performance
       SATA_LINKPWR_ON_BAT=min_power
       PCIE_ASPM_ON_AC=performance
