@@ -90,7 +90,6 @@ in {
       #heimdall
       #inkscape
       #ipfs
-      #john
       #kpcli
       #mc
       #netkittftp
@@ -188,6 +187,7 @@ in {
       iptraf-ng
       ipv6calc
       jfsutils
+      john
       jrnl
       jwhois
       keepassxc
