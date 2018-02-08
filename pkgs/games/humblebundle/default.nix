@@ -25,6 +25,7 @@ let
     liads = callPackage ./liads.nix {};
     megabytepunch = callPackage_i686 ./megabytepunch.nix {};
     opus-magnum = callPackage ./opus-magnum.nix {};
+    owlboy = callPackage ./owlboy.nix {};
     pico-8 = callPackage ./pico-8.nix {};
     rocketbirds = callPackage ./rocketbirds.nix {};
     spaz = callPackage ./spaz.nix {};
