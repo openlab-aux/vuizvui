@@ -184,6 +184,7 @@ in {
       iftop
       imagemagick
       iotop
+      ipcalc
       iptraf-ng
       ipv6calc
       jfsutils
