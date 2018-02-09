@@ -24,11 +24,11 @@ in buildGame ({
 
   nativeBuildInputs = [ makeWrapper ] ++ nativeBuildInputs;
 
-  buildInputs = [ gtk2-x11 gdk_pixbuf glib ];
+  buildInputs = [ gtk2-x11 gdk_pixbuf glib ] ++ buildInputs;
 
   runtimeDependencies = [
     mesa xorg.libX11 xorg.libXcursor xorg.libXrandr libudev zlib
-  ];
+  ] ++ runtimeDependencies;
 
   sandbox = sandbox // {
     paths = (sandbox.paths or {}) // {
