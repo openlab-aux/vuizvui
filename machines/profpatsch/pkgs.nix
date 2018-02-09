@@ -62,18 +62,18 @@ let
 
   xmpp-client = pkgs.callPackage (import ./xmpp-client.nix myLib.philip.home "irc/xmppOla.wtf") { inherit (pkgs) xmpp-client; };
 
-  searx = pkgs.searx.overrideAttrs (old: {
-    propagatedBuildInputs = old.propagatedBuildInputs ++ [ pythonPackages.pyxdg ];
-    patches = old.patches or [] ++ [
-      ./patches/searx-secret-key.patch
-      ./patches/searx-rm-soundcloud.patch
-    ];
-    # xdg.BaseDirectory.save_cache_path() will try to create leading dirs, but
-    # within the builder we don't have a writable home directory.
-    preCheck = (old.preCheck or "") + ''
-      export XDG_CACHE_HOME="$TMPDIR/cache"
-    '';
-  });
+  # searx = pkgs.searx.overrideAttrs (old: {
+  #   propagatedBuildInputs = old.propagatedBuildInputs ++ [ pythonPackages.pyxdg ];
+  #   patches = old.patches or [] ++ [
+  #     ./patches/searx-secret-key.patch
+  #     ./patches/searx-rm-soundcloud.patch
+  #   ];
+  #   # xdg.BaseDirectory.save_cache_path() will try to create leading dirs, but
+  #   # within the builder we don't have a writable home directory.
+  #   preCheck = (old.preCheck or "") + ''
+  #     export XDG_CACHE_HOME="$TMPDIR/cache"
+  #   '';
+  # });
 
   # A ghci with some sane default packages in scope, & hoogle
   saneGhci = haskellPackages.ghcWithHoogle (h: with h; [ protolude pretty-show ]);
@@ -89,5 +89,15 @@ let
   # };
 
 in
-{ inherit taffybar mpv beets poezio vim
-          fast-init xmpp-client saneGhci /*nix-gen*/ searx; }
+{ inherit
+    taffybar
+    mpv
+    beets
+    poezio
+    vim
+    fast-init
+    xmpp-client
+    saneGhci
+    /*nix-gen*/
+    /*searx*/;
+}
