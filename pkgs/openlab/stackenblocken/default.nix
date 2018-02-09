@@ -6,8 +6,8 @@ let
   repo = fetchFromGitHub {
     owner = "openlab-aux";
     repo = "stackenblocken";
-    rev = "labpingbot";
-    sha256 = "1x319sbkk8hl3lad2zapkdv6ihqqsl8f5l0a2n9fvppcm5c7pz0d";
+    rev = "2fee7083f243a33d800f13afa2edc432220e3c77";
+    sha256 = "1qri0m16pxbq4rzp38l3my2yiisl2699zmq5vdz7cqfi4vpbwl91";
  };
 
  bot = haskellPackages.callPackage "${repo}/stackenblocken.nix" {};
