@@ -75,7 +75,7 @@ in
         locations."/pub/" = {
           proxyPass = "http://localhost:${toString warpspeedPort}/";
         };
-        locations."/".root = pkgs.writeTextDir "index.html" ''hello world'';
+        locations."/".root = pkgs.writeTextDir "index.html" ''coi do'';
         serverAliases = [ "lojbanistan.de" ];
       };
     };
