@@ -237,7 +237,7 @@ let
       path  = ["nixos" "keymap" "qwertz"];
     }
     { check = config.boot.kernelPackages.kernel.version
-           == pkgs.linuxPackages_hardened_copperhead.kernel.version;
+           == pkgs.linuxPackages_copperhead_hardened.kernel.version;
       path  = ["nixos" "kernel-copperhead"];
     }
     { check = config.boot.kernelPackages.kernel.version
