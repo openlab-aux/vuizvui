@@ -1,14 +1,15 @@
 { pkgs, callPackage, haskellPackages, droopy, fetchFromGitHub }:
 
 {
+  backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
   display-infos = callPackage ./display-infos {};
+  nix-http-serve = callPackage ./nix-http-serve {};
   nman = callPackage ./nman {};
+  show-qr-code = callPackage ./show-qr-code {};
   warpspeed = callPackage ./warpspeed {
     inherit (haskellPackages) ghcWithPackages;
   };
-  show-qr-code = callPackage ./show-qr-code { };
 
-  backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
 
   # patched version of droopy, with javascript user-enhancement
   droopy = droopy.overrideDerivation (old: {
