@@ -49,6 +49,7 @@ in {
         dos2unix          # text file conversion
         manpages          # system manpages (not included by default)
         mkpasswd          # UNIX password creator
+        ncdu              # disk size checker
         smartmontools     # check disk state
         stow              # dotfile management
         traceroute        # trace ip routes

@@ -124,6 +124,8 @@ in {
         gitAndTools.git-annex        # version controlled binary file storage
         gitAndTools.git-dit          # decentral issue tracking for git
 
+        # TODO: move to user config
+        go
         httpie                       # nice http CLI
         jq                           # json filter
         # jid                          # interactive/incremental JSON digger
@@ -141,7 +143,7 @@ in {
         anki mecab kakasi    # spaced repetition system & japanese analyzer
         # TODO integrate lame into audacity
         audacity lame.lib    # audio editor and mp3 codec
-        myPkgs.beets         # audio file metadata tagger
+        # myPkgs.beets         # audio file metadata tagger
         # chromium             # browser
         (chromium.override { enablePepperFlash = true; })
         pkgs.vuizvui.profpatsch.droopy # simple HTML upload server
