@@ -146,6 +146,7 @@ in {
         # myPkgs.beets         # audio file metadata tagger
         # chromium             # browser
         (chromium.override { enablePepperFlash = true; })
+        cups
         pkgs.vuizvui.profpatsch.droopy # simple HTML upload server
         unfreeAndNonDistributablePkgs.dropbox-cli # dropbox.com client
         electrum             # bitcoin client
@@ -234,15 +235,6 @@ in {
     #   '';
     # };
 
-    services.printing = {
-      enable = true;
-      drivers = [ pkgs.gutenprint ];
-      # TODO
-      # drivers = [ pkgs.cups-pdf ];
-      # TODO
-      # drivers = [ pkgs.foomatic_filters pkgs.foomatic-db-engine ];
-    };
-
     # Automount
     services.udisks2.enable = true;
 
@@ -323,6 +315,7 @@ in {
       league-of-moveable-type
       symbola # emoji
     ];
+
 
     ###########
     # Programs
