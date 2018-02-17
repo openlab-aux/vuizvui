@@ -73,7 +73,7 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/pub/" = {
-          proxyPass = "http://localhost:${toString warpspeedPort}/";
+          proxyPass = "http://127.0.0.1:${toString warpspeedPort}/";
         };
         locations."/".root = pkgs.writeTextDir "index.html" ''coi do'';
         serverAliases = [ "lojbanistan.de" ];
