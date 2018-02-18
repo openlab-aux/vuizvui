@@ -60,6 +60,9 @@ in {
         rev = "4cbf62372def27d501acbe24b68297ba584b689d";
         sha256 = "16r9p126z4vrpqxpq0chlmjhx75npf9j7zb2174m3c4z02c85k7q";
       };
+      propagatedBuildInputs = (drv.propagatedBuildInputs or []) ++ [
+        pkgs.hicolor_icon_theme
+      ];
     })).override {
       python3Packages = (pkgs.python3.override {
         packageOverrides = lib.const (super: {
