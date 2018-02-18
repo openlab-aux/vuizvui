@@ -1,8 +1,8 @@
 { stdenv, fetchFromGitHub, fetchpatch, git }:
 
 let
-  rev = "d1907cb1a4defa1d01cd7c2d18e09c9276e716e5";
-  sha256 = "0842qdq1497x0pk4ifhmrg3m5icxan6y51zqw6by5qiy3pyc379c";
+  rev = "eb6d25688a35de5560c91a3d0698ede509367349";
+  sha256 = "1x1wi6x8lp2rpxmgf8jx0v9g6p39r8j9xpzwkqbmpbbrrjkaha49";
 
   master = stdenv.mkDerivation rec {
     name = "nixops-upstream-patched";
