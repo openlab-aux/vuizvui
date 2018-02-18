@@ -53,14 +53,30 @@ in {
   };
 
   environment.systemPackages = [
-    (pkgs.gpodder.overrideAttrs (drv: {
+    ((pkgs.gpodder.overrideAttrs (drv: {
       src = assert drv.version == "3.10.0"; pkgs.fetchFromGitHub {
         owner = "gpodder";
         repo = "gpodder";
-        rev = "1aec01778e70be3fef5f1acbdf8f4cf67964464d";
-        sha256 = "14wlxqfrsidijgzrfx7227hf2fcng3j0psb0sgmkcpdl765gpgpv";
+        rev = "4cbf62372def27d501acbe24b68297ba584b689d";
+        sha256 = "16r9p126z4vrpqxpq0chlmjhx75npf9j7zb2174m3c4z02c85k7q";
       };
-    }))
+    })).override {
+      python3Packages = (pkgs.python3.override {
+        packageOverrides = lib.const (super: {
+          podcastparser = super.podcastparser.overridePythonAttrs (drv: let
+            assertVer = assert lib.versionOlder drv.version "0.6.4"; lib.id;
+          in {
+            version = "0.6.3";
+            src = assertVer (pkgs.fetchFromGitHub {
+              owner = "gpodder";
+              repo = "podcastparser";
+              rev = "ca8849f25e08b1aa7fa806c7a27dac200f7a2e8d";
+              sha256 = "105hlkm5h8lzj6dr2jvpc3zqdy7ayaxh9g99mv1m0f7l8mljz26a";
+            });
+          });
+        });
+      }).pkgs;
+    })
     pkgs.paperwork
   ];
 
