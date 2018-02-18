@@ -42,7 +42,7 @@ let
   packages = (pkgs.lib.evalModules {
     modules = [
       (if config == null then configFile else config)
-      baseModule ./humblebundle ./steam ./itch
+      baseModule ./humblebundle ./steam ./itch ./gog
     ];
   }).config.packages;
 
