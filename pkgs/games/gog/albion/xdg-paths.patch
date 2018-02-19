@@ -1,0 +1,259 @@
+diff --git a/games/Albion/SR-Main/virtualfs.c b/games/Albion/SR-Main/virtualfs.c
+index 34e0544..7d3acec 100644
+--- a/games/Albion/SR-Main/virtualfs.c
++++ b/games/Albion/SR-Main/virtualfs.c
+@@ -22,7 +22,9 @@
+  *
+  */
+ 
++#define _GNU_SOURCE
+ #define _FILE_OFFSET_BITS 64
++#include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <malloc.h>
+@@ -283,6 +285,177 @@ void vfs_visit_dir(file_entry *vdir)
+     vdir->dir_visited = 1;
+ }
+ 
++#define CONCAT_ENV(path) \
++    if (asprintf(&result, "%s/%s", env, path) == -1) { \
++        perror("asprintf"); \
++        exit(1); \
++    }
++
++#define DEFINE_XDG_GETTER(fun_name, envar, fallback) \
++    static char *fun_name(void) { \
++        const char *env; \
++        static char *result = NULL; \
++        if (result == NULL) { \
++            if ((env = getenv(envar)) != NULL) { \
++                CONCAT_ENV("albion"); \
++            } else if ((env = getenv("HOME")) != NULL) { \
++                CONCAT_ENV(fallback "/albion"); \
++            } else { \
++                fputs("Unable to determine " envar " or HOME.\n", stderr); \
++                exit(1); \
++            } \
++        } \
++        return result; \
++    }
++
++DEFINE_XDG_GETTER(getDataDir, "XDG_DATA_HOME", ".local/share");
++DEFINE_XDG_GETTER(getConfigDir, "XDG_CONFIG_HOME", ".config");
++
++static int makeDirs(const char *path)
++{
++    char *buf, *p;
++
++    if (*path == '\0')
++        return 1;
++
++    if ((buf = strdup(path)) == NULL)
++        return 1;
++
++    for (p = buf + 1; *p != '\0'; p++) {
++        if (*p != '/') continue;
++        *p = '\0';
++        mkdir(buf, 0777);
++        *p = '/';
++    }
++
++    mkdir(buf, 0777);
++
++    free(buf);
++    return 0;
++}
++
++typedef struct {
++    file_entry *dir;
++    const char *root;
++} unix_dir_cache_t;
++
++unix_dir_cache_t *unixDirCache[100];
++
++static void setUnixDir(const char *root, file_entry **dir)
++{
++    int i;
++    file_entry *newdir;
++
++    if (dir == NULL)
++        return;
++
++    for (i = 0; unixDirCache[i] != NULL; ++i) {
++        if (strcmp(unixDirCache[i]->root, root) == 0) {
++            *dir = unixDirCache[i]->dir;
++            return;
++        }
++    }
++
++    if ((newdir = (file_entry *)malloc(sizeof(file_entry))) == NULL)
++        return;
++
++    memset(newdir, 0, sizeof(file_entry));
++
++    newdir->dos_name[0] = 'X';
++    newdir->dos_name[1] = ':';
++    newdir->dos_name[2] = '\0';
++
++    newdir->real_name[0] = '.';
++    newdir->real_name[1] = '\0';
++
++    newdir->dos_fullname = strdup(newdir->dos_name);
++    newdir->real_fullname = strdup(root);
++
++    newdir->attributes = 1;
++    newdir->dir_visited = 0;
++
++    newdir->parent = newdir;
++    newdir->next = NULL;
++    newdir->prev = NULL;
++    newdir->first_child = NULL;
++    *dir = newdir;
++
++    unixDirCache[i] = (unix_dir_cache_t*)malloc(sizeof(unix_dir_cache_t));
++    if (unixDirCache[i] != NULL) {
++        makeDirs(root);
++        unixDirCache[i]->root = strdup(root);
++        unixDirCache[i]->dir = newdir;
++    }
++}
++
++static const char *manglePath(const char *xdg_path, const char *subdir,
++                              const char *path, file_entry **dir)
++{
++    char *buf;
++
++    if (*path == '/' || *path == '\\')
++        path++;
++
++    if (subdir == NULL) {
++        setUnixDir(xdg_path, dir);
++        return path;
++    }
++
++    if (asprintf(&buf, "%s/%s", xdg_path, subdir) == -1)
++        return NULL;
++
++    setUnixDir(buf, dir);
++    free(buf);
++    return path;
++}
++
++#define MANGLE_PATH(xdgpath, subdir, off) \
++    origdosname = manglePath(xdgpath, subdir, origdosname + off, &parse_dir)
++
++static void maybeCreateSetupIni()
++{
++    char *buf;
++    int fd_in, fd_out;
++    static int done = 0;
++
++    if (done) return;
++
++    if (asprintf(&buf, "%s/%s", getConfigDir(), "setup.ini") == -1) {
++        return;
++    }
++
++    if (access(buf, F_OK) == 0) {
++        done = 1;
++        free(buf);
++        return;
++    }
++
++    makeDirs(getConfigDir());
++
++    fd_out = open(buf, O_WRONLY | O_CREAT, 0666);
++    free(buf);
++
++    if (fd_out == -1)
++        return;
++
++    if ((fd_in = open("@SETUP_INI_PATH@", O_RDONLY)) == -1) {
++        close(fd_out);
++        return;
++    }
++
++    buf = malloc(8192);
++
++    while (1) {
++        ssize_t result = read(fd_in, buf, 8192);
++        if (result == -1 || result == 0) break;
++        if (write(fd_out, buf, result) != result) break;
++    }
++
++    close(fd_in);
++    close(fd_out);
++    done = 1;
++}
++
+ /*
+ return value:
+ 0 - dos path found (realdir = found entry)
+@@ -292,9 +465,20 @@ return value:
+ int vfs_get_real_name(const char *origdosname, char *buf, file_entry **realdir)
+ {
+     char upperdosname[MAX_PATH], *dosname, *backslash;
+-    file_entry *parse_dir, *new_parse_dir;
++    file_entry *parse_dir = NULL, *new_parse_dir;
+     int ret;
+ 
++    if (strncasecmp(origdosname, "xldlibs\\current", 15) == 0) {
++        MANGLE_PATH(getDataDir(), "chars", 15);
++    } else if (strncasecmp(origdosname, "saves", 5) == 0) {
++        MANGLE_PATH(getDataDir(), "saves", 5);
++    } else if (strncasecmp(origdosname, "setup.ini", 10) == 0) {
++        maybeCreateSetupIni();
++        MANGLE_PATH(getConfigDir(), NULL, 0);
++    } else if (strncasecmp(origdosname, "setup.tmp", 10) == 0) {
++        MANGLE_PATH(getConfigDir(), NULL, 0);
++    }
++
+     // convert dos name to uppercase
+     {
+         int i;
+@@ -316,28 +500,30 @@ int vfs_get_real_name(const char *origdosname, char *buf, file_entry **realdir)
+ 
+ 
+     // find initial directory for parsing
+-    if (dosname[0] == '\\')
+-    {
+-        parse_dir = &Game_CDir;
+-        dosname++;
+-    }
+-    else if (dosname[0] == 'C' && dosname[1] == ':')
+-    {
+-        if (dosname[2] == '\\')
++    if (parse_dir == NULL) {
++        if (dosname[0] == '\\')
+         {
+             parse_dir = &Game_CDir;
+-            dosname+=3;
++            dosname++;
++        }
++        else if (dosname[0] == 'C' && dosname[1] == ':')
++        {
++            if (dosname[2] == '\\')
++            {
++                parse_dir = &Game_CDir;
++                dosname+=3;
++            }
++            else
++            {
++                parse_dir = Game_Current_Dir;
++                dosname+=2;
++            }
+         }
+         else
+         {
+             parse_dir = Game_Current_Dir;
+-            dosname+=2;
+         }
+     }
+-    else
+-    {
+-        parse_dir = Game_Current_Dir;
+-    }
+ 
+     // find directory
+     for (backslash = strchr(dosname, '\\'); backslash != NULL; backslash = strchr(dosname, '\\'))

@@ -1,0 +1,74 @@
+diff --git a/SR/SConstruct b/SR/SConstruct
+index 2fb2874..f2fb527 100644
+--- a/SR/SConstruct
++++ b/SR/SConstruct
+@@ -20,6 +20,8 @@
+ #  SOFTWARE.
+ #
+ 
++import os
++
+ udis86_path = './udis86-1.6/'
+ 
+ # set help text
+@@ -30,7 +32,8 @@ Help(vars.GenerateHelpText(env))
+ debug = env['debug']
+ 
+ # default settings
+-env = Environment(CCFLAGS      = '-O2',
++env = Environment(ENV          = os.environ,
++                  CCFLAGS      = '-O2',
+                   CPPPATH      = '.',
+                   INCPREFIX    = '-I' + udis86_path,
+                   LIBPATH      = 'libudis86',
+diff --git a/games/Albion/SR-Main/SConstruct b/games/Albion/SR-Main/SConstruct
+index 96bbefb..6743470 100644
+--- a/games/Albion/SR-Main/SConstruct
++++ b/games/Albion/SR-Main/SConstruct
+@@ -50,12 +50,14 @@ Help(vars.GenerateHelpText(env))
+ if device == 'pc-linux':
+     # default settings
+     if sdl2 > 0:
+-        env = Environment(CCFLAGS      = '-m32 -O2 -DUSE_SDL2',
++        env = Environment(ENV          = os.environ,
++                          CCFLAGS      = '-m32 -O2 -DUSE_SDL2',
+                           LINKFLAGS    = '-m32',
+                           LIBS         = ['SDL2_mixer', 'SDL2', 'pthread', 'm', 'dl']
+                          )
+     else:
+-        env = Environment(CCFLAGS      = '-m32 -O2 -DALLOW_OPENGL',
++        env = Environment(ENV          = os.environ,
++                          CCFLAGS      = '-m32 -O2 -DALLOW_OPENGL',
+                           LINKFLAGS    = '-m32',
+                           LIBS         = ['SDL_mixer', 'SDL', 'pthread', 'm', 'dl', 'GL']
+                          )
+diff --git a/games/Albion/SR-Main/x86/SConscript b/games/Albion/SR-Main/x86/SConscript
+index c88c7e9..848efa8 100644
+--- a/games/Albion/SR-Main/x86/SConscript
++++ b/games/Albion/SR-Main/x86/SConscript
+@@ -20,6 +20,7 @@
+ #  SOFTWARE.
+ #
+ 
++import os
+ import re
+ 
+ Import('device')
+@@ -38,13 +39,13 @@ nasmscan = Scanner(function = nasmfile_scan,
+ SourceFileScanner.add_scanner('.asm', nasmscan)
+ 
+ if device == 'pc-linux':
+-    env = Environment(tools=['nasm'], ASFLAGS = ' -felf -dELF -Ox -w+orphan-labels -w-number-overflow -ix86/')
+-    env2 = Environment(tools=['nasm'], ASFLAGS = ' -felf -dELF -O1 -w+orphan-labels -w-number-overflow -ix86/')
++    env = Environment(ENV=os.environ, tools=['nasm'], ASFLAGS = ' -felf -dELF -Ox -w+orphan-labels -w-number-overflow -ix86/')
++    env2 = Environment(ENV=os.environ, tools=['nasm'], ASFLAGS = ' -felf -dELF -O1 -w+orphan-labels -w-number-overflow -ix86/')
+ 
+     obj = env2.Object('Albion-main_linux.asm')
+ else:
+-    env = Environment(tools=['nasm'], ASFLAGS = ' -fwin32 -Ox -w+orphan-labels -w-number-overflow -ix86/')
+-    env2 = Environment(tools=['nasm'], ASFLAGS = ' -fwin32 -O1 -w+orphan-labels -w-number-overflow -ix86/')
++    env = Environment(ENV=os.environ, tools=['nasm'], ASFLAGS = ' -fwin32 -Ox -w+orphan-labels -w-number-overflow -ix86/')
++    env2 = Environment(ENV=os.environ, tools=['nasm'], ASFLAGS = ' -fwin32 -O1 -w+orphan-labels -w-number-overflow -ix86/')
+ 
+     obj = env2.Object('Albion-main.asm')
+ 

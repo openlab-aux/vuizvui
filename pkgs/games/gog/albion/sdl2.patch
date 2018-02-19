@@ -1,0 +1,60 @@
+diff --git a/games/Albion/SR-Main/Albion-proc-events.c b/games/Albion/SR-Main/Albion-proc-events.c
+index c323530..97eedd1 100644
+--- a/games/Albion/SR-Main/Albion-proc-events.c
++++ b/games/Albion/SR-Main/Albion-proc-events.c
+@@ -893,19 +893,19 @@ void Game_ProcessKEvents(void)
+                     else goto _after_switch1;
+             #endif
+                 }
+-                else if ((cevent->key.keysym.unicode > 0) && (cevent->key.keysym.unicode < 128))
++                else if ((cevent->key.keysym.sym > 0) && (cevent->key.keysym.sym < 128))
+                 {
+-                    scancode = scancode_table[cevent->key.keysym.unicode];
+-                    ascii_code = cevent->key.keysym.unicode;
++                    scancode = scancode_table[cevent->key.keysym.sym];
++                    ascii_code = cevent->key.keysym.sym;
+                 }
+-                else if (cevent->key.keysym.unicode != 0)
++                else if (cevent->key.keysym.sym != 0)
+                 {
+                     scancode = 0;
+                     ascii_code = 0;
+ 
+                     if ((ascii_code == 0) && (Albion_Font_Lang != AL_UNKNOWN))
+                     {
+-                        switch (cevent->key.keysym.unicode)
++                        switch (cevent->key.keysym.sym)
+                         {
+                             case 0x00E4: // ä
+                                 ascii_code = 0x84;
+@@ -935,7 +935,7 @@ void Game_ProcessKEvents(void)
+ 
+                     if ((ascii_code == 0) && (Albion_Font_Lang == AL_ENG_FRE))
+                     {
+-                        switch (cevent->key.keysym.unicode)
++                        switch (cevent->key.keysym.sym)
+                         {
+                             case 0x00E9: // é
+                                 ascii_code = 0x82;
+@@ -998,7 +998,7 @@ void Game_ProcessKEvents(void)
+ 
+                     if ((ascii_code == 0) && (Albion_Font_Lang == AL_CZE))
+                     {
+-                        switch (cevent->key.keysym.unicode)
++                        switch (cevent->key.keysym.sym)
+                         {
+                             case 0x00E9: // é
+                                 ascii_code = 0x82;
+diff --git a/games/Albion/SR-Main/main.c b/games/Albion/SR-Main/main.c
+index c9c3125..0d32bcb 100644
+--- a/games/Albion/SR-Main/main.c
++++ b/games/Albion/SR-Main/main.c
+@@ -930,8 +930,6 @@ static void Game_Initialize2(void)
+     Init_Audio2();
+     Init_Input2();
+ 
+-    SDL_EnableUNICODE(1);
+-
+     Game_VideoAspectX = (360 << 16) / Picture_Width;
+     Game_VideoAspectY = (240 << 16) / Picture_Height;
+ 

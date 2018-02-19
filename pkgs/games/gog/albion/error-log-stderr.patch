@@ -1,0 +1,100 @@
+diff --git a/games/Albion/SR-Main/Albion-proc-vfs.c b/games/Albion/SR-Main/Albion-proc-vfs.c
+index c3d2d4f..faa90e7 100644
+--- a/games/Albion/SR-Main/Albion-proc-vfs.c
++++ b/games/Albion/SR-Main/Albion-proc-vfs.c
+@@ -232,6 +232,8 @@ FILE *Game_fopen(const char *filename, const char *mode)
+     fprintf(stderr, "fopen: original name: %s\n", filename);
+ #endif
+ 
++    if (strcasecmp(filename, "error.log") == 0) return stderr;
++
+     vfs_err = vfs_get_real_name(filename, (char *) &temp_str, &realdir);
+ 
+ #if defined(__DEBUG__)
+@@ -260,6 +262,8 @@ int Game_open(const char *pathname, int flags, mode_t mode)
+     fprintf(stderr, "open: original name: %s\n", pathname);
+ #endif
+ 
++    if (strcasecmp(pathname, "error.log") == 0) return STDERR_FILENO;
++
+     vfs_err = vfs_get_real_name(pathname, (char *) &temp_str, &realdir);
+ 
+ #if defined(__DEBUG__)
+@@ -726,6 +730,16 @@ int Game_closedir(struct watcom_dirent *dirp)
+     return 0;
+ }
+ 
++int Game_close(int fd)
++{
++    return fd == STDERR_FILENO ? 0 : close(fd);
++}
++
++int Game_fclose(FILE *stream)
++{
++    return stream == stderr ? 0 : fclose(stream);
++}
++
+ static void Conv_find(struct watcom_find_t *buffer, struct watcom_dirent *direntp)
+ {
+     // file attributes
+diff --git a/games/Albion/SR-Main/Albion-proc-vfs.h b/games/Albion/SR-Main/Albion-proc-vfs.h
+index 0cf4491..2e16671 100644
+--- a/games/Albion/SR-Main/Albion-proc-vfs.h
++++ b/games/Albion/SR-Main/Albion-proc-vfs.h
+@@ -110,6 +110,8 @@ extern int Game_rename(const char *oldpath, const char *newpath);
+ extern struct watcom_dirent *Game_opendir(const char *dirname);
+ extern struct watcom_dirent *Game_readdir(struct watcom_dirent *dirp);
+ extern int Game_closedir(struct watcom_dirent *dirp);
++extern int Game_close(int fd);
++extern int Game_fclose(FILE *stream);
+ extern uint32_t Game_dos_findfirst(const char *path, const uint32_t attributes, struct watcom_find_t *buffer);
+ extern uint32_t Game_dos_findnext(struct watcom_find_t *buffer);
+ extern uint32_t Game_dos_findclose(struct watcom_find_t *buffer);
+diff --git a/games/Albion/SR-Main/x86/SR-asm-calls.asm b/games/Albion/SR-Main/x86/SR-asm-calls.asm
+index 3cb2cc8..e1741dc 100644
+--- a/games/Albion/SR-Main/x86/SR-asm-calls.asm
++++ b/games/Albion/SR-Main/x86/SR-asm-calls.asm
+@@ -71,6 +71,8 @@
+     %define Game_chdir _Game_chdir
+     %define close _close
+     %define Game_closedir _Game_closedir
++    %define Game_close _Game_close
++    %define Game_fclose _Game_fclose
+     %define ctime _ctime
+     %define Game_dos_findclose _Game_dos_findclose
+     %define Game_dos_findnext _Game_dos_findnext
+@@ -171,14 +173,14 @@ extern Game_WaitFor2ndVerticalRetrace
+ ; 1 param
+ extern asctime
+ extern Game_chdir
+-extern close
++extern Game_close
+ extern Game_closedir
+ extern ctime
+ extern Game_dos_findclose
+ extern Game_dos_findnext
+ extern Game_dos_getvect
+ extern Game_ExitMain_Asm
+-extern fclose
++extern Game_fclose
+ extern Game_filelength
+ extern free
+ extern ftime
+@@ -798,7 +800,7 @@ SR_j___close:
+ 
+ ; eax = int handle
+ 
+-        Game_Call_Asm_Reg1 close,'get_errno_val'
++        Game_Call_Asm_Reg1 Game_close,'get_errno_val'
+ 
+ ; end procedure SR___close
+ 
+@@ -875,7 +877,7 @@ SR_fclose:
+ 
+ ; eax = FILE *fp
+ 
+-        Game_Call_Asm_Reg1 fclose,'get_errno_val'
++        Game_Call_Asm_Reg1 Game_fclose,'get_errno_val'
+ 
+ ; end procedure SR_fclose
+ 

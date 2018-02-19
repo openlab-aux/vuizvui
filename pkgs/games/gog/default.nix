@@ -10,6 +10,8 @@ let
     fetchGog = callPackage ./fetch-gog {
       inherit (config.gog) email password;
     };
+
+    albion = callPackage_i686 ./albion { inherit (pkgs) buildSandbox; };
   };
 in {
   options.gog = {

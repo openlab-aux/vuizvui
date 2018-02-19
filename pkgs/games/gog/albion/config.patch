@@ -1,0 +1,19 @@
+diff --git a/games/Albion/release/linux/Albion.cfg b/games/Albion/release/linux/Albion.cfg
+index 50d4327..8c901f1 100644
+--- a/games/Albion/release/linux/Albion.cfg
++++ b/games/Albion/release/linux/Albion.cfg
+@@ -50,11 +50,11 @@ Audio_MIDI_Device=
+ #     - this setting renders the 3d part of the game in the native resolution instead of rendering it in the original resolution and then scaling it
+ #     - there are some minor issues, read the readme for more information
+ # Display_MouseCursor=normal/minimal/none - shape of SDL mouse cursor in window mode
+-Display_ScaledWidth=720
+-Display_ScaledHeight=480
++Display_ScaledWidth=1280
++Display_ScaledHeight=960
+ Display_Fullscreen=no
+ Display_Enhanced_3D_Rendering=on
+-Display_MouseCursor=normal
++Display_MouseCursor=none
+ 
+ 
+ # Screenshot settings
