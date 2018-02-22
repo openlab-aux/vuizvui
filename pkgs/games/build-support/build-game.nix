@@ -30,12 +30,11 @@ buildSandbox (stdenv.mkDerivation ({
   setSourceRoot = ''
     popd &> /dev/null
   '' + lib.optionalString (setSourceRoot == "") ''
-    unpackedFiles="$(find "$name" -mindepth 1 -maxdepth 1 -print)"
-    if [ $(echo "$unpackedFiles" | wc -l) -gt 1 ]; then
-      sourceRoot="$name"
-    else
-      sourceRoot="$name/''${unpackedFiles##*/}"
-    fi
+    sourceRoot="$(find "$name" -type d -exec sh -c '
+      ndirs="$(find "$1" -mindepth 1 -maxdepth 1 -type d -printf x | wc -m)"
+      nelse="$(find "$1" -mindepth 1 -maxdepth 1 ! -type d -printf x | wc -m)"
+      ! [ "$ndirs" -eq 1 -a "$nelse" -eq 0 ]
+    ' -- {} \; -print -quit)"
   '';
 
   runtimeDependencies = let
