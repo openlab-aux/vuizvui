@@ -9,6 +9,33 @@
 }:
 
 let
+  # Taken from lgogdownloader (https://github.com/Sude-/lgogdownloader):
+  clientId = "46899977096215655";
+  clientSecret = "9d85c43b1482497dbbce61f6e4aa173a"
+               + "433796eeae2ca8c5f6129f2dc4de46d9";
+  redirectUri = "https://embed.gog.com/on_login_success?origin=client";
+
+  urlencode = url: query: let
+    urlquote = isQstring: val: let
+      extraSafeChars = lib.optionalString (!isQstring) "/:";
+      safeChars = lib.lowerChars ++ lib.upperChars
+               ++ lib.stringToCharacters ("0123456789_.-" + extraSafeChars);
+      charList = lib.stringToCharacters val;
+      hexify = chr: "%${import ./hexify-char.nix chr}";
+      quoteChar = chr: if lib.elem chr safeChars then chr else hexify chr;
+    in lib.concatMapStrings quoteChar charList;
+    mkKeyVal = key: val: "${urlquote true key}=${urlquote true val}";
+    qstring = lib.concatStringsSep "&" (lib.mapAttrsToList mkKeyVal query);
+  in urlquote false url + lib.optionalString (query != {}) "?${qstring}";
+
+  authURL = urlencode "https://auth.gog.com/auth" {
+    client_id = clientId;
+    redirect_uri = redirectUri;
+    response_type = "code";
+    layout = "default";
+    brand = "gog";
+  };
+
   getCaptcha = let
     mkCString = val: let
       escaped = lib.replaceStrings ["\"" "\\" "\n"] ["\\\"" "\\\\" "\\n"] val;
@@ -44,12 +71,9 @@ let
       #include <QQuickWebEngineProfile>
       #include <QUrlQuery>
 
-      // Taken from lgogdownloader (https://github.com/Sude-/lgogdownloader):
-      static QString clientId = "46899977096215655";
-      static QString clientSecret =
-        "9d85c43b1482497dbbce61f6e4aa173a433796eeae2ca8c5f6129f2dc4de46d9";
-      static QString redirectUri =
-        "https://embed.gog.com/on_login_success?origin=client";
+      static QString clientId = ${mkCString clientId};
+      static QString clientSecret = ${mkCString clientSecret};
+      static QString redirectUri = ${mkCString redirectUri};
 
       static QUrl getAuthUrl() {
         QUrl url("https://auth.gog.com/auth");
@@ -136,13 +160,48 @@ let
   fetcher = writeText "fetch-gog.py" ''
     import sys, socket, time
     from urllib.request import urlopen, Request
+    from urllib.parse import urlsplit, urlencode, parse_qs
     from urllib.error import HTTPError
     from json import loads
 
+    import mechanicalsoup
     from tabulate import tabulate
 
     class GogFetcher:
       def __init__(self, product_id, download_type, download_name):
+        self.product_id = product_id
+        self.download_type = download_type
+        self.download_name = download_name
+        self.login()
+
+      def login(self):
+        browser = mechanicalsoup.StatefulBrowser()
+        response = browser.open(${mkPyStr authURL})
+        if "google.com/recaptcha" in response.text:
+          token_url = self.login_with_captcha()
+        else:
+          browser.select_form('form[name="login"]')
+          browser['login[username]'] = ${mkPyStr email}
+          browser['login[password]'] = ${mkPyStr password}
+          browser.submit_selected()
+
+          auth_code = parse_qs(urlsplit(browser.get_url()).query)['code']
+
+          token_url = "https://auth.gog.com/token?" + urlencode({
+            'client_id': ${mkPyStr clientId},
+            'client_secret': ${mkPyStr clientSecret},
+            'grant_type': 'authorization_code',
+            'code': auth_code,
+            'redirect_uri': ${mkPyStr redirectUri}
+          })
+
+        response = urlopen(
+          token_url, cafile=${mkPyStr "${cacert}/etc/ssl/certs/ca-bundle.crt"}
+        )
+
+        self.access_token = loads(response.read())['access_token']
+
+      def login_with_captcha(self):
         sys.stderr.write("Solving a captcha is required to log in.\n")
         sys.stderr.write("Please run " ${mkPyStr getCaptcha} " now.\n")
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -159,15 +218,7 @@ let
         token_url = sock.recv(4096)
         sock.close()
         sys.stderr.write("Captcha solved correctly, logging in.\n")
-        response = urlopen(
-          token_url.decode(),
-          cafile=${mkPyStr "${cacert}/etc/ssl/certs/ca-bundle.crt"}
-        )
-
-        self.product_id = product_id
-        self.download_type = download_type
-        self.download_name = download_name
-        self.access_token = loads(response.read())['access_token']
+        return token_url.decode()
 
       def request(self, url):
         headers = {"Authorization": "Bearer " + self.access_token}
@@ -227,7 +278,9 @@ in stdenv.mkDerivation {
   outputHashAlgo = "sha256";
   outputHash = sha256;
 
-  nativeBuildInputs = [ curl python3Packages.tabulate ];
+  nativeBuildInputs = [
+    curl python3Packages.tabulate python3Packages.MechanicalSoup
+  ];
 
   buildCommand = ''
     url="$(${python3Packages.python.interpreter} ${fetcher} \
