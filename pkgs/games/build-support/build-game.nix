@@ -10,7 +10,6 @@ assert withPulseAudio -> libpulseaudio != null;
 , nativeBuildInputs ? []
 , preUnpack ? ""
 , setSourceRoot ? ""
-, installCheckPhase ? ""
 , runtimeDependencies ? []
 , sandbox ? {}
 , ...
@@ -43,40 +42,11 @@ buildSandbox (stdenv.mkDerivation ({
         ++ runtimeDependencies;
   in map (dep: dep.lib or dep) deps;
 
-  doInstallCheck = true;
-
-  installCheckPhase = ''
-    runHook preInstallCheck
-
-    echo "checking dependencies for libraries and executables" >&2
-
-    checkElfDep() {
-        local errors ldout="$(ldd "$1" 2> /dev/null)"
-        if errors="$(echo "$ldout" | grep -F "not found")"; then
-            echo -e "Library dependencies missing for $1:\n$errors"
-        fi
-    }
-
-    local errors="$(
-        IFS=$'\n'
-        for elf in $(findElfs "$prefix"); do checkElfDep "$elf"; done
-    )"
-
-    if [ -n "$errors" ]; then
-        echo "$errors" >&2
-        exit 1
-    fi
-
-    ${installCheckPhase}
-
-    runHook postInstallCheck
-  '';
-
   dontStrip = true;
   dontPatchELF = true;
 } // removeAttrs attrs [
   "buildInputs" "nativeBuildInputs" "preUnpack" "setSourceRoot"
-  "installCheckPhase" "runtimeDependencies" "sandbox"
+  "runtimeDependencies" "sandbox"
 ])) (sandbox // {
   paths = let
     paths = sandbox.paths or {};
