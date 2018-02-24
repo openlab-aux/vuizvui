@@ -87,7 +87,6 @@ in {
   environment.systemPackages = with pkgs; [
     ## tools
     remind
-    attic
     pass
     wget
     curl
