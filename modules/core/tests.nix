@@ -338,7 +338,8 @@ let
     { check = config.networking.sits != {};
       path  = ["nixos" "networking" whichNet "sit"];
     }
-    { check = anyAttrs (i: i.ip4 != []) config.networking.interfaces;
+    { check = anyAttrs (i: i.ipv4.addresses != [])
+              config.networking.interfaces;
       path  = ["nixos" "networking" whichNet "static"];
     }
     { check = config.networking.vlans != {};
