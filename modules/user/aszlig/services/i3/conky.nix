@@ -50,16 +50,9 @@ let
   mkConky = args: let
     time = cexpr "time" [ "%a %b %d %T %Z %Y" ];
     text = concatStringsSep " | " (args ++ singleton time);
-    conky = (pkgs.conky.override {
+    conky = pkgs.conky.override {
       weatherMetarSupport = true;
-    }).overrideAttrs (drv: {
-      # This patch fixes a segfault when using "out_to_x = false":
-      patches = (drv.patches or []) ++ singleton (pkgs.fetchpatch {
-        url = "https://github.com/brndnmtthws/conky/commit/"
-            + "562c7375883445acb58388ff16d9eb126b7e12a1.patch";
-        sha256 = "0gjb6pw0c2va0z6p0fn6nxprkwq0kp5plfdv0la8mv91ds72mmi6";
-      });
-    });
+    };
   in pkgs.writeScript "conky-run.sh" ''
     #!${pkgs.stdenv.shell}
     PATH="${pkgs.coreutils}/bin"
