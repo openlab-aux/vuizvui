@@ -53,17 +53,7 @@ in {
   };
 
   environment.systemPackages = [
-    ((pkgs.gpodder.overrideAttrs (drv: {
-      src = assert drv.version == "3.10.0"; pkgs.fetchFromGitHub {
-        owner = "gpodder";
-        repo = "gpodder";
-        rev = "4cbf62372def27d501acbe24b68297ba584b689d";
-        sha256 = "16r9p126z4vrpqxpq0chlmjhx75npf9j7zb2174m3c4z02c85k7q";
-      };
-      propagatedBuildInputs = (drv.propagatedBuildInputs or []) ++ [
-        pkgs.hicolor_icon_theme
-      ];
-    })).override {
+    (pkgs.gpodder.override {
       python3Packages = (pkgs.python3.override {
         packageOverrides = lib.const (super: {
           podcastparser = super.podcastparser.overridePythonAttrs (drv: let
