@@ -1,6 +1,6 @@
-{ haskellPackages, ocamlPackages_4_02 }:
+{ haskellPackages, ocamlPackages }:
 
 {
   spacecookie = haskellPackages.callPackage ./spacecookie {};
-  logbook = ocamlPackages_4_02.callPackage ./logbook {};
+  logbook = ocamlPackages.callPackage ./logbook {};
 }

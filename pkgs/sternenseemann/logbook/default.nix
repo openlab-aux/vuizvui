@@ -8,8 +8,8 @@ stdenv.mkDerivation rec {
 
   src = fetchgit {
     url    = "https://github.com/sternenseemann/logbook";
-    rev    = "518771882f3216f99570a5e4711a4870bb064366";
-    sha256 = "1h40xfzx61nyj1r2x7r35mj66fhjgfq1pvvbbr4hmi1mmyi38xsz";
+    rev    = "1834ced22e4faf1e3afb3519febc176209099526";
+    sha256 = "1jq43n28s5k59hnl5xawzqvgmnknccanyvf6s8zwyfw3m60qsnd2";
   };
 
   buildInputs = [ ocaml findlib ocamlbuild topkg opam cow
