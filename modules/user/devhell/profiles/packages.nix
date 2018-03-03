@@ -142,6 +142,7 @@ in {
       duff
       e2fsprogs
       easytag
+      electricsheep
       electrum
       enhanced-ctorrent
       ethtool
