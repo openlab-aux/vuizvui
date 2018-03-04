@@ -402,9 +402,6 @@ let
            && elem "proxy_balancer" config.services.httpd.extraModules;
       path  = ["nixos" "proxy"];
     }
-    { check = config.services.pumpio.enable;
-      path  = ["nixos" "pumpio"];
-    }
     { check = config.hardware.opengl.driSupport
            && config.services.xserver.enable;
       path  = ["nixos" "quake3"];
