@@ -1,0 +1,25 @@
+diff --git a/src/wildmidi.c b/src/wildmidi.c
+index 87a8861..6401b9b 100644
+--- a/src/wildmidi.c
++++ b/src/wildmidi.c
+@@ -786,7 +786,7 @@ main (int argc, char **argv) {
+ 
+ #ifndef _WIN32
+ 	int my_tty;
+-	struct termios _tty;
++	struct termios _tty = {0};
+ 	tcflag_t _res_oflg = _tty.c_oflag;
+ 	tcflag_t _res_lflg = _tty.c_lflag;
+ 
+diff --git a/src/wildmidi_lib.c b/src/wildmidi_lib.c
+index 61df0cd..d527c94 100644
+--- a/src/wildmidi_lib.c
++++ b/src/wildmidi_lib.c
+@@ -1852,6 +1852,7 @@ midi_setup_control (struct _mdi *mdi, unsigned char channel, unsigned char contr
+         case 98:
+         case 99:
+             tmp_event = *do_control_non_registered_param;
++	    break;
+         case 100:
+             tmp_event = *do_control_registered_param_fine;
+             break;

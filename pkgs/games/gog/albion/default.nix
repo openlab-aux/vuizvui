@@ -22,6 +22,7 @@ let
     src = "${staticRecompilerSource}/midi-libs/${variant}-0.2.3.5svn";
     nativeBuildInputs = [ autoreconfHook ];
     buildInputs = [ alsaLib ];
+    patches = [ ./wildmidi-build-fixes.patch ];
     postPatch = "sed -i -e '/^CFLAGS/s/-pedantic//' configure.ac";
   };
 
