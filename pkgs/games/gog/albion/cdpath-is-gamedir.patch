@@ -1,0 +1,66 @@
+diff --git a/games/Albion/SR-Main/main.c b/games/Albion/SR-Main/main.c
+index c9c3125..ad4c367 100644
+--- a/games/Albion/SR-Main/main.c
++++ b/games/Albion/SR-Main/main.c
+@@ -529,44 +529,6 @@ static void Game_BuildRTable(void)
+     }
+ }
+ 
+-static void Game_ReadCDPath(void)
+-{
+-    char str[8192];
+-    int len;
+-    FILE *f;
+-
+-    f = Game_fopen("SETUP.INI", "rt");
+-
+-    if (f != NULL)
+-    {
+-        while (!feof(f))
+-        {
+-            str[0] = 0;
+-            fscanf(f, "%8192[^\n]\n", str);
+-            if (strncasecmp(str, "SOURCE_PATH=", 12) == 0)
+-            {
+-                strcpy(Albion_CDPath, &(str[12]));
+-                len = strlen(Albion_CDPath);
+-                if ((len != 0) && (Albion_CDPath[len - 1] == '\r'))
+-                {
+-                    Albion_CDPath[len - 1] = 0;
+-                    len--;
+-                }
+-                if (len != 0)
+-                {
+-                    if (Albion_CDPath[len - 1] != '\\')
+-                    {
+-                        Albion_CDPath[len] = '\\';
+-                        Albion_CDPath[len + 1] = 0;
+-                    }
+-                    break;
+-                }
+-            }
+-        }
+-        fclose(f);
+-    }
+-}
+-
+ static uint32_t calculate_crc(uint8_t *buf, unsigned int size)
+ {
+ #define POLYNOMIAL ((uint32_t)0xEDB88320)
+@@ -730,7 +692,7 @@ static int Game_Initialize(void)
+     }
+ 
+ 
+-    Albion_CDPath[0] = 0;
++    strcpy(Albion_CDPath, Game_Directory);
+     Albion_Font = NULL;
+     Albion_Font_Lang = AL_UNKNOWN;
+     Temp_Font_Data = NULL;
+@@ -1385,7 +1347,6 @@ int main (int argc, char *argv[])
+     }
+ 
+     Game_ReadConfig();
+-    Game_ReadCDPath();
+     Game_ReadFontData();
+ 
+     Game_Initialize2();

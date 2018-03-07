@@ -1,0 +1,15 @@
+diff --git a/games/Albion/SR-Main/main.c b/games/Albion/SR-Main/main.c
+index c9c3125..b186235 100644
+--- a/games/Albion/SR-Main/main.c
++++ b/games/Albion/SR-Main/main.c
+@@ -1335,8 +1335,8 @@ static void Game_Event_Loop(void)
+ 
+ int main (int argc, char *argv[])
+ {
+-    Game_ConfigFilename[0] = 0;
+-    Game_Directory[0] = 0;
++    strcpy(Game_ConfigFilename, "@GAME_CONFIG_FILE@");
++    strcpy(Game_Directory, "@GAME_DATA_PATH@");
+ 
+     //senquack - can now specify config file on command line
+     // read parameters
