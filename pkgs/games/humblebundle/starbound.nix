@@ -118,7 +118,7 @@ let
             if (*str >= 0 && *str <= 31) {
               *out++ = '\\';
               *out++ = 'u';
-              snprintf(out, 4, "%04x", *str);
+              snprintf(out, 5, "%04x", *str);
               out += 4;
             } else {
               *out++ = *str;
