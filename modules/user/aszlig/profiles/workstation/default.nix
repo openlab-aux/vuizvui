@@ -33,6 +33,7 @@ in {
     vuizvui.lazyPackages = import ./lazy-packages.nix pkgs;
 
     hardware = {
+      sound.enable = true;
       pulseaudio.enable = true;
       pulseaudio.package = pkgs.pulseaudioFull;
       opengl = {
