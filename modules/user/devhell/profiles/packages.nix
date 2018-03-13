@@ -92,6 +92,8 @@ in {
       #ipfs
       #kpcli
       #mc
+      #mono
+      #monodevelop
       #netkittftp
       #numix-icon-theme
       #pasystray
@@ -209,8 +211,6 @@ in {
       mkvtoolnix
       mmv
       monkeysAudio
-      mono
-      monodevelop
       mosh
       mp3gain
       mpc_cli
