@@ -158,6 +158,7 @@ in {
       firefox
       flac
       foremost
+      fortune
       freerdpUnstable
       fuse_exfat
       fzf
