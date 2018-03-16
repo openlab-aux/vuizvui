@@ -95,8 +95,9 @@ in {
         corefonts
         dejavu_fonts
         dosemu_fonts
-        font-awesome-ttf
+        font-awesome_4
         freefont_ttf
+        google-fonts
         hack-font
         inconsolata
         powerline-fonts
