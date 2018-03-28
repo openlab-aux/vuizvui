@@ -1,0 +1,39 @@
+From 15f0781e728700d8c752a4f0d2e8aaffd8c5ae7c Mon Sep 17 00:00:00 2001
+From: Profpatsch <mail@profpatsch.de>
+Date: Wed, 28 Mar 2018 06:35:27 +0200
+Subject: [PATCH] tools/notify-send.c: return error if message show fails
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+If for example the dbus session can’t be reached, `notify_notification_show`
+will fail and return an error.
+---
+ tools/notify-send.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/tools/notify-send.c b/tools/notify-send.c
+index abfffe6..04fad7f 100644
+--- a/tools/notify-send.c
++++ b/tools/notify-send.c
+@@ -274,8 +274,15 @@ main (int argc, char *argv[])
+                 }
+         }
+ 
+-        if (!hint_error)
+-                notify_notification_show (notify, NULL);
++        if (!hint_error) {
++                retval = notify_notification_show (notify, &error);
++                if (!retval) {
++                        fprintf (stderr, "notify-send: error showing notification libnotify says: %s\n",
++                                 error->message);
++                        g_error_free (error);
++                        exit (1);
++                }
++        }
+ 
+         g_object_unref (G_OBJECT (notify));
+ 
+-- 
+2.16.2
+

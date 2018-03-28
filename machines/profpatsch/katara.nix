@@ -400,6 +400,36 @@ in {
         };
       }
 
+      ({
+        services.pyrnotify-ssh-connection = {
+          description = "ssh connection to make pyrnotify work";
+          serviceConfig = {
+            Environment = ''"SSH_AUTH_SOCK=%t/gnupg/S.gpg-agent.ssh"'';
+            # forwards the remote socket over ssh, restarts every 5 minutes
+            ExecStart = pkgs.writeScript "pyrnotify-start-ssh" ''
+              #!${pkgs.stdenv.shell}
+              ${lib.getBin pkgs.openssh}/bin/ssh \
+                bigmac \
+                "rm /home/bigmac/.weechat/pyrnotify.socket"
+              ${lib.getBin pkgs.openssh}/bin/ssh \
+                -R /home/bigmac/.weechat/pyrnotify.socket:localhost:8099 \
+                bigmac \
+                "sleep 300"
+            '';
+            Restart = "on-failure";
+          };
+        };
+        services.pyrnotify-listen = rec {
+          description = "get notified about weechat messages";
+          serviceConfig = {
+            ExecStart = "${lib.getBin pkgs.python
+              }/bin/python ${myPkgs.pyrnotify} 8099";
+          };
+          requires = [ "pyrnotify-ssh-connection.service" ];
+          after = requires;
+        };
+      })
+
     ];
 
   };

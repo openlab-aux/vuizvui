@@ -88,6 +88,22 @@ let
   #   buildDepends = with haskellPackages; [ hnix ansi-wl-pprint protolude data-fix ];
   # };
 
+  pyrnotify =
+    let src = pkgs.fetchFromGitHub {
+          owner = "arnottcr";
+          repo = "weechat-pyrnotify";
+          rev = "5063ba19b5ba7ba3d4ecb2a76ad9e4b7bf89964b";
+          sha256 = "0r07glz7hkmcnp2vl4dy24i9vfsa9shm7k4q0jb47881z0y2dm2p";
+        };
+        notify-send = "${pkgs.libnotify.overrideAttrs (old: {
+          patches = old.patches or [] ++ [ ./patches/libnotify.patch ];
+        })}/bin/notify-send";
+    in pkgs.runCommand "pyrnotify.py" {} ''
+      substitute "${src}/pyrnotify.py" $out \
+        --replace 'notify-send' '${notify-send}'
+    '';
+
+
 in
 { inherit
     taffybar
@@ -99,5 +115,7 @@ in
     xmpp-client
     saneGhci
     /*nix-gen*/
-    /*searx*/;
+    /*searx*/
+    pyrnotify
+    ;
 }
