@@ -23,6 +23,7 @@ in {
     };
 
     services = {
+      pcscd.enable = true;
       gpm.enable = true;
       openssh.enable = true;
       haveged.enable = true;
