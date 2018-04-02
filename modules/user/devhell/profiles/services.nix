@@ -31,8 +31,7 @@ in {
       udisks2.enable = true;
       redshift = {
         enable = true;
-        latitude = "51.2750";
-        longitude = "1.0870";
+        provider = "geoclue2";
       };
     };
 
