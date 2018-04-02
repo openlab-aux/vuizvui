@@ -39,7 +39,7 @@ pkgs: with pkgs; [
   ncdu
   netrw
   nix-prefetch-scripts
-  vuizvui.aszlig.nixops
+  nixops
   nmap
   openssh
   openssl

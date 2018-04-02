@@ -6,7 +6,6 @@
   gajim = callPackage ./gajim { inherit gajim; };
   git-detach = callPackage ./git-detach { };
   grandpa = callPackage ./grandpa { };
-  nixops = callPackage ./nixops { };
   librxtx_java = callPackage ./librxtx-java { };
   lockdev = callPackage ./lockdev { };
   pvolctrl = callPackage ./pvolctrl { };
