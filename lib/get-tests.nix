@@ -19,5 +19,6 @@ with import "${nixpkgs}/lib";
 
   vuizvui = removeAttrs (import vuizvuiTests {
     inherit system;
+    nixpkgsPath = nixpkgs;
   }) (optional excludeVuizvuiGames "games");
 }

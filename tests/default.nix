@@ -1,8 +1,11 @@
-{ system ? builtins.currentSystem, ... }:
+{ system ? builtins.currentSystem
+, nixpkgsPath ? import ../nixpkgs-path.nix
+, ...
+}:
 
 let
   callTest = path: import ./make-test.nix (import path) {
-    inherit system;
+    inherit system nixpkgsPath;
   };
 
 in {

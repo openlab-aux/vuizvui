@@ -1,5 +1,9 @@
-f: { system ? builtins.currentSystem, ... } @ args: let
-  nixpkgsPath = import ../nixpkgs-path.nix;
+testFun:
+
+{ system ? builtins.currentSystem
+, nixpkgsPath ? import ../nixpkgs-path.nix
+, ...
+}@args: let
 
   lib = import "${nixpkgsPath}/lib";
 
@@ -9,11 +13,11 @@ f: { system ? builtins.currentSystem, ... } @ args: let
 
   pkgs = import nixpkgsPath { inherit system; };
 
-  testArgs = if builtins.isFunction f then f (args // {
+  testArgs = if builtins.isFunction testFun then testFun (args // {
     pkgs = pkgs // {
       vuizvui = import ../pkgs { inherit pkgs; };
     };
-  }) else f;
+  }) else testFun;
 
   nodes = testArgs.nodes or (if testArgs ? machine then {
     inherit (testArgs) machine;
