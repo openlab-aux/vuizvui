@@ -1,7 +1,7 @@
 path: cfg:
 
 let
-  withPkgsPath = nixpkgs: rec {
+  __withPkgsPath = nixpkgs: rec {
     eval = import "${nixpkgs}/nixos/lib/eval-config.nix" {
       modules = [ path cfg ] ++ import ../modules/module-list.nix;
     };
@@ -63,11 +63,11 @@ let
   };
 
 in rec {
-  inherit (withPkgsPath (import ../nixpkgs-path.nix))
+  inherit (__withPkgsPath (import ../nixpkgs-path.nix))
     build config eval iso installerIso vm;
 
   # This is internal only and for use with restricted evaluation mode in Hydra
   # to get the path to nixpkgs from the jobset input args instead of
   # ../nixpkgs-path.nix.
-  inherit withPkgsPath;
+  inherit __withPkgsPath;
 }
