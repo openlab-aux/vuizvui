@@ -24,7 +24,6 @@ in {
     boot.loader.efi.canTouchEfiVariables = true;
 
     environment.systemPackages = [
-      pkgs.bomi
       pkgs.chromium
       pkgs.file
       pkgs.gimp
