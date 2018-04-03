@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, nixpkgsPath, ... }:
 
 let
   mkExpect = expectScript: script: pkgs.writeScript "test-gnupg-cli" ''
@@ -27,7 +27,7 @@ in {
 
   machine = { lib, ... }: {
     imports = map (what:
-      "${import ../../../nixpkgs-path.nix}/nixos/tests/common/${what}.nix"
+      "${nixpkgsPath}/nixos/tests/common/${what}.nix"
     ) [ "user-account" "x11" ];
 
     services.openssh.enable = true;

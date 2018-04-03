@@ -17,6 +17,7 @@ testFun:
     pkgs = pkgs // {
       vuizvui = import ../pkgs { inherit pkgs; };
     };
+    inherit nixpkgsPath;
   }) else testFun;
 
   nodes = testArgs.nodes or (if testArgs ? machine then {

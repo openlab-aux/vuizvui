@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, nixpkgsPath, ... }:
 
 let
   xdo = { name, description, xdoScript }: let
@@ -55,7 +55,7 @@ in {
 
     client = { pkgs, ... }: {
       imports = [
-        "${import ../../nixpkgs-path.nix}/nixos/tests/common/x11.nix"
+        "${nixpkgsPath.nix}/nixos/tests/common/x11.nix"
       ];
       virtualisation.memorySize = 2047;
       environment.systemPackages = [
