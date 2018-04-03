@@ -38,7 +38,10 @@ let
   root = import vuizvui { inherit system; };
 
   mpath = if vuizvuiSrc == null then ./machines else "${vuizvui}/machines";
-  allMachines = import mpath;
+
+  allMachines = with pkgsUpstream.lib; let
+    wrapPkgs = machine: machine.withPkgsPath nixpkgs;
+  in mapAttrsRecursiveCond (m: !(m ? eval)) (const wrapPkgs) (import mpath);
 
   allTests = with import ./lib; getVuizvuiTests ({
     inherit system nixpkgs;
