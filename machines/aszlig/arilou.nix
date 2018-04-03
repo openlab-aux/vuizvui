@@ -1,11 +1,9 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, modulesPath, ... }:
 
 let
   rootUUID = "e9c95c74-e4cf-41f6-bb45-baf8dd579217";
   swapUUID = "4d172959-5cfd-4164-a46e-fa7be0dfd03a";
   diskID = "usb-Lexar_USB_Flash_Drive_201303211246293590E4-0:0";
-
-  modulesPath = "${import ../../nixpkgs-path.nix}/nixos/modules";
 in {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
   imports = [ "${modulesPath}/profiles/all-hardware.nix" ];
