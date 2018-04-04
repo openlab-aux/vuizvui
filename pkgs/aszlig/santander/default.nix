@@ -58,7 +58,7 @@ in stdenv.mkDerivation rec {
   postPatch = ''
     jq '.allowed_origins = [
       "chrome-extension://'"$extensionId"'/"
-    ] | .path = "'"$out/share/libexec/travic-sign"'"
+    ] | .path = "'"$out/share/libexec/travic-sign/travic-sign"'"
       | del(.allowed_extensions)' manifest-firefox.json > host.json
 
     7z x -y -oextension FirefoxExtension.xpi
