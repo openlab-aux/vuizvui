@@ -298,6 +298,7 @@ in {
       units
       unrar
       unzip
+      usbutils
       valgrind
       vanilla-dmz
       vim_configurable
