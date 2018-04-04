@@ -1,14 +1,11 @@
-{ stdenv, fetchurl, fetchgit, fetchpatch, runCommand, p7zip, jq, wineMinimal
-, pcsclite
+{ stdenv, lib, fetchurl, fetchgit, fetchpatch, runCommand, p7zip, jq
+, winePackages, pcsclite
 }:
 
 let
   patchedWine = let
     libpcsclite = "${pcsclite}/lib/libpcsclite.so";
-  in (wineMinimal.override {
-    wineBuild = "wine32";
-    wineRelease = "staging";
-  }).overrideDerivation (drv: {
+  in winePackages.minimal.overrideAttrs (drv: {
     scard4wine = fetchgit {
       url = "git://git.code.sf.net/p/scard4wine/code";
       rev = "c14c02c80bf1f2bb4cedd1f53a3a2ab9c48bed76";
@@ -29,7 +26,9 @@ let
       })
     ];
 
-    configureFlags = (drv.configureFlags or []) ++ [ "--disable-unixfs" ];
+    configureFlags = lib.toList (drv.configureFlags or []) ++ [
+      "--disable-unixfs"
+    ];
 
     postConfigure = (drv.postConfigure or "") + ''
       # The wineprefix is within the Nix store, so let's ensure wine doesn't
