@@ -55,8 +55,15 @@ in {
     # Nix
 
     nix.maxJobs = 4;
-    # what was this activated for?!
-    # vuizvui.enableGlobalNixpkgsConfig = true;
+    vuizvui.modifyNixPath = false;
+    nix.nixPath = [
+      "vuizvui=${myLib.philip.home}/vuizvui"
+      "nixpkgs=${myLib.philip.home}/nixpkgs"
+      # TODO: nicer?
+      "nixos-config=${pkgs.writeText "katara-configuration.nix" ''
+        (import <vuizvui/machines>).profpatsch.katara.config
+      ''}"
+    ];
 
     ##########
     # Network
