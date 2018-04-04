@@ -26,6 +26,7 @@ in {
     environment.systemPackages = [
       pkgs.chromium
       pkgs.file
+      pkgs.gajim
       pkgs.gimp
       pkgs.git
       pkgs.htop
@@ -42,7 +43,6 @@ in {
       pkgs.mpv
       pkgs.skanlite
       pkgs.thunderbird
-      pkgs.vuizvui.aszlig.gajim
       pkgs.vuizvui.aszlig.vim
       pkgs.wine
       pkgs.youtubeDL

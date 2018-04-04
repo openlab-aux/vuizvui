@@ -1,9 +1,8 @@
-{ callPackage, callPackage_i686, boost155, gajim, vim_configurable, xournal }:
+{ callPackage, callPackage_i686, vim_configurable, xournal }:
 
 {
   aacolorize = callPackage ./aacolorize { };
   axbo = callPackage ./axbo { };
-  gajim = callPackage ./gajim { inherit gajim; };
   git-detach = callPackage ./git-detach { };
   grandpa = callPackage ./grandpa { };
   librxtx_java = callPackage ./librxtx-java { };
