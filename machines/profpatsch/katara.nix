@@ -287,11 +287,8 @@ in {
             set-background &
             # TODO xbindkeys user service file
             ${lib.getBin xbindkeys}/bin/xbindkeys
-            nice -n19 dropbox-cli start &
-            nm-applet &
             # synchronize clipboards
             ${lib.getBin autocutsel}/bin/autocutsel -s PRIMARY &
-            ${lib.getBin twmn}/bin/twmnd &
           '';
       };
 
@@ -406,6 +403,22 @@ in {
             };
         };
       }
+
+      ({
+        services.dunst = {
+          description = "dunst libnotify daemon";
+          serviceConfig = {
+            Type = "dbus";
+            BusName = "org.freedesktop.Notifications";
+            ExecStart =
+              let config = pkgs.writeText "dunst.conf" (lib.generators.toINI {} {});
+              in "${lib.getBin pkgs.dunst}/bin/dunst -config ${config}";
+            Restart = "on-failure";
+          };
+          partOf = [ "graphical-session.target" ];
+          wantedBy = [ "graphical-session.target" ];
+        };
+      })
 
       ({
         services.pyrnotify-ssh-connection = {
