@@ -9,7 +9,6 @@ pkgs: with pkgs; [
   haskellPackages.cabal2nix
   haskellPackages.cabal-install
   haskellPackages.hlint
-  haskellPackages.yesod-bin
   haxe
   lastwatch
   libchipcard
