@@ -3,6 +3,14 @@
 with pkgs;
 let
 
+  nix = pkgs.nix.overrideAttrs (old: {
+    patches = old.patches or [] ++ [
+      (pkgs.fetchpatch {
+        url = "https://github.com/NixOS/nix/commit/486872150638d56483c2bc429ba9e137d9974ee8.patch";
+        sha256 = "0g0bp7gw6aqrscxkfmg6ykw91vm7b602h2dwbl53ycsa92bqfayq";
+      }) ];
+  });
+
   addPythonRuntimeDeps = drv: deps: drv.overrideDerivation (old: {
     propagatedNativeBuildInputs = old.propagatedNativeBuildInputs ++ deps;
   });
@@ -106,6 +114,7 @@ let
 
 in
 { inherit
+    nix
     taffybar
     mpv
     beets
