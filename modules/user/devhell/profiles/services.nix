@@ -23,6 +23,7 @@ in {
     };
 
     services = {
+      keybase.enable = true;
       pcscd.enable = true;
       gpm.enable = true;
       openssh.enable = true;
