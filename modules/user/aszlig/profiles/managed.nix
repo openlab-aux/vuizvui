@@ -78,6 +78,7 @@ in {
     hardware.opengl.driSupport32Bit = true;
     hardware.pulseaudio.enable = true;
     hardware.pulseaudio.package = pkgs.pulseaudioFull;
+    sound.enable = true;
 
     networking.firewall.enable = false;
     networking.networkmanager.enable = true;
