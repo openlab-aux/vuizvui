@@ -36,6 +36,12 @@ in {
       };
     };
 
+    services.offlineimap = {
+      enable = true;
+      install = true;
+      path = [ pkgs.notmuch ];
+    };
+
     services.xserver = {
       displayManager.lightdm.enable = true;
       desktopManager.xterm.enable = false;
