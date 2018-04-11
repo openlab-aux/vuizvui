@@ -216,9 +216,11 @@ in {
       mp3gain
       mpc_cli
       mpv
+      msmtp
       mtr
       ncdu
       ncmpcpp
+      neomutt
       neovim
       nethack
       nethogs
@@ -230,6 +232,7 @@ in {
       nixops
       nload
       nmap
+      notmuch
       ntfs3g
       ntfsprogs
       ntopng
