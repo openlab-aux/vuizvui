@@ -184,7 +184,6 @@
     #cura
     #ipmiutil
     #ipmiview
-    #msmtp
     #networkmanagerapplet
     #offlineimap
     #openjdk8
@@ -204,10 +203,7 @@
     libva
     libvdpau-va-gl
     minicom
-    mutt
-    neomutt
     netalyzr
-    notmuch
     pamixer
     pmtools
     pmutils

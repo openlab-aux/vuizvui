@@ -252,16 +252,15 @@
   nixpkgs.config.mpv.bs2bSupport = true;
 
   environment.systemPackages = with pkgs; [
+    #ipfs
+    #scummvm
     abook
     canto-curses
     cli-visualizer
     cmus
-    #ipfs
     handbrake
     hplip
-    mutt-with-sidebar
     nzbget
-    #scummvm
     slrn
     twister
     urlview
