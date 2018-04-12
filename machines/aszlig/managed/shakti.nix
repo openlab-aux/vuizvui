@@ -7,6 +7,7 @@
 
   environment.systemPackages = with pkgs; [
     mosh wget krita gphoto2 digikam unfreeAndNonDistributablePkgs.dropbox
+    firefox
   ];
 
   # TODO: fileSystems."/boot".device = "/dev/disk/by-uuid/XXX";
