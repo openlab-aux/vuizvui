@@ -1,4 +1,4 @@
-{ pkgs, unfreeAndNonDistributablePkgs, config, lib, ... }:
+{ pkgs, unfreePkgs, unfreeAndNonDistributablePkgs, config, lib, ... }:
 
 let
   inherit (lib) mkIf mkEnableOption mkOption;
@@ -31,7 +31,10 @@ in {
       pkgs.git
       pkgs.htop
       pkgs.inkscape
-      pkgs.kdeApplications.ark
+      (unfreeAndNonDistributablePkgs.kdeApplications.ark.override {
+        unfreeEnableUnrar = true;
+        inherit (unfreePkgs) unrar;
+      })
       pkgs.kdeApplications.gwenview
       pkgs.kdeApplications.kaddressbook
       pkgs.kdeApplications.kate
