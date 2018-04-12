@@ -58,7 +58,10 @@ in {
       unfreeAndNonDistributablePkgs.hplipWithPlugin
     ];
 
-    # Plasma desktop with German keyboard layout
+    # For MTP and other stuff.
+    services.gnome3.gvfs.enable = true;
+
+    # Plasma desktop with German keyboard layout.
     services.xserver.enable = true;
     services.xserver.layout = "de";
     services.xserver.xkbOptions = lib.mkOverride 900 "eurosign:e";
