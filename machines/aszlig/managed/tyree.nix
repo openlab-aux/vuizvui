@@ -30,6 +30,8 @@
   networking.hostName = "tyree";
   networking.useNetworkd = true;
 
+  hardware.cpu.intel.updateMicrocode = true;
+
   nix.maxJobs = 4;
 
   # English within the shell, German otherwise (like in KDE).

@@ -73,7 +73,6 @@ in {
       unfreeAndNonDistributablePkgs.hplipWithPlugin
     ];
 
-    hardware.cpu.intel.updateMicrocode = true;
     hardware.opengl.s3tcSupport = true;
     hardware.opengl.driSupport32Bit = true;
     hardware.pulseaudio.enable = true;

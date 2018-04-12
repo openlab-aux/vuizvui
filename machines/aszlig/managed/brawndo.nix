@@ -27,6 +27,7 @@ in {
   };
 
   hardware.enableAllFirmware = true;
+  hardware.cpu.intel.updateMicrocode = true;
 
   networking.hostName = "brawndo";
 
