@@ -36,7 +36,7 @@ in {
   nixpkgs.config.allowUnfree = true; # XXX: More granularity!
 
   environment.systemPackages = with pkgs; [
-    vuizvui.aszlig.axbo gpodder opentyrian unfreePkgs.steam
+    vuizvui.aszlig.axbo chromium gpodder opentyrian unfreePkgs.steam
   ];
 
   i18n.defaultLocale = "en_US.UTF-8";
