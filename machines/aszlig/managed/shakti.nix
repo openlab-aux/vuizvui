@@ -1,12 +1,12 @@
 # FIXME: Currently just a placeholder to get Hydra builds.
-{ pkgs, lib, ... }:
+{ pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 
 {
   boot.initrd.availableKernelModules = [ "usbhid" ];
   boot.kernelModules = [ "kvm-amd" ];
 
   environment.systemPackages = with pkgs; [
-    mosh wget krita gphoto2 digikam
+    mosh wget krita gphoto2 digikam unfreeAndNonDistributablePkgs.dropbox
   ];
 
   # TODO: fileSystems."/boot".device = "/dev/disk/by-uuid/XXX";
