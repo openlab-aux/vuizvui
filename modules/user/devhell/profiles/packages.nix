@@ -301,6 +301,7 @@ in {
       units
       unrar
       unzip
+      urlview
       usbutils
       valgrind
       vanilla-dmz

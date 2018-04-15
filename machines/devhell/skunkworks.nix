@@ -263,6 +263,5 @@
     nzbget
     slrn
     twister
-    urlview
   ];
 }
