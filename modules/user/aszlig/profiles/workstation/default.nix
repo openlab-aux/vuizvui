@@ -113,10 +113,7 @@ in {
     vuizvui.programs.gnupg.agent.scdaemon.enable = true;
 
     services = {
-      openssh = {
-        enable = true;
-        permitRootLogin = "without-password";
-      };
+      openssh.enable = true;
 
       xfs.enable = false;
 

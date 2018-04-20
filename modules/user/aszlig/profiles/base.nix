@@ -48,6 +48,10 @@ in {
       MaxRetentionSec=3month
     '';
 
+    services.openssh.passwordAuthentication = false;
+    services.openssh.permitRootLogin = "no";
+    services.openssh.challengeResponseAuthentication = false;
+
     environment.systemPackages = with pkgs; [
       binutils
       cacert
