@@ -48,9 +48,9 @@ in {
       MaxRetentionSec=3month
     '';
 
-    services.openssh.passwordAuthentication = false;
-    services.openssh.permitRootLogin = "no";
-    services.openssh.challengeResponseAuthentication = false;
+    services.openssh.passwordAuthentication = lib.mkDefault false;
+    services.openssh.permitRootLogin = lib.mkDefault "no";
+    services.openssh.challengeResponseAuthentication = lib.mkDefault false;
 
     environment.systemPackages = with pkgs; [
       binutils
