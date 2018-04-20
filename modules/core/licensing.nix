@@ -2,7 +2,7 @@
 
 let
   overrideConfig = newConfig: import (import ../../nixpkgs-path.nix) {
-    inherit (config.nixpkgs) system;
+    inherit (config.nixpkgs) localSystem;
     config = config.nixpkgs.config // newConfig;
   };
 
