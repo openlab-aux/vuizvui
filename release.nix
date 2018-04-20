@@ -172,18 +172,32 @@ in with pkgsUpstream.lib; with builtins; {
     filterDoc = filter (opt: isVuizvui opt && opt.visible && !opt.internal);
     optionsXML = toXML (filterDoc (optionAttrSetToDocList modules.options));
     optionsFile = toFile "options.xml" (unsafeDiscardStringContext optionsXML);
+
+    mkXsltFlags = flags: let
+      mkParam = flag: valFun: opt: val: [ "--${flag}" opt (valFun val) ];
+      mkStrParam = mkParam "stringparam" id;
+      mkBoolParam = mkParam "param" (b: if b then "1" else "0");
+      mkFlag = path: value: let
+        opt = concatStringsSep "." path;
+      in if isString value then mkStrParam opt value
+         else if isBool value then mkBoolParam opt value
+         else throw "Invalid value for '${opt}': ${toString value}";
+      result = collect isList (mapAttrsRecursive mkFlag flags);
+    in concatMapStringsSep " " escapeShellArg (concatLists result);
+
+    xsltFlags = mkXsltFlags {
+      section.autolabel = true;
+      section.label.includes.component.label = true;
+      html.stylesheet = "style.css overrides.css highlightjs/mono-blue.css";
+      html.script = "highlightjs/highlight.pack.js highlightjs/loader.js";
+      xref."with".number.and.title = true;
+      admon.style = "";
+    };
+
   in pkgsUpstream.stdenv.mkDerivation {
     name = "vuizvui-options";
 
-    buildInputs = singleton pkgsUpstream.libxslt;
-
-    xsltFlags = ''
-      --param section.autolabel 1
-      --param section.label.includes.component.label 1
-      --param html.stylesheet 'style.css'
-      --param xref.with.number.and.title 1
-      --param admon.style '''
-    '';
+    nativeBuildInputs = singleton pkgsUpstream.libxslt;
 
     buildCommand = ''
       cp -r "${./doc}" doc
@@ -195,11 +209,13 @@ in with pkgsUpstream.lib; with builtins; {
       dest="$out/share/doc/vuizvui"
       mkdir -p "$dest"
 
-      xsltproc -o "$dest/" $xsltFlags -nonet -xinclude \
+      xsltproc -o "$dest/" ${xsltFlags} -nonet -xinclude \
         ${patchedDocbookXSL}/xml/xsl/docbook/xhtml/chunk.xsl \
         doc/index.xml
 
-      cp "${nixpkgs}/nixos/doc/manual/style.css" "$dest/style.css"
+      cp "${nixpkgs}/doc/style.css" "$dest/style.css"
+      cp "${nixpkgs}/doc/overrides.css" "$dest/overrides.css"
+      cp -r ${pkgsUpstream.documentation-highlighter} "$dest/highlightjs"
 
       mkdir -p "$out/nix-support"
       echo "doc manual $dest" > "$out/nix-support/hydra-build-products"
