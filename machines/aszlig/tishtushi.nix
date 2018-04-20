@@ -56,7 +56,7 @@
   fileSystems."/nix" = {
     device = "/dev/mapper/tishtushi-nix";
     fsType = "btrfs";
-    options = [ "ssd" "discard" "compress=zstd" "noatime" ];
+    options = [ "ssd" "compress=zstd" "noatime" ];
   };
 
   swapDevices = lib.singleton {
