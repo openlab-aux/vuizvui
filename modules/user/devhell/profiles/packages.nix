@@ -119,6 +119,7 @@ in {
       aspellDicts.en
       axel
       bc
+      bcal
       beets
       binutils
       cataclysm-dda
