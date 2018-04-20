@@ -1,10 +1,11 @@
-{ lib, ... }:
+{ pkgs, lib, ... }:
 
 {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
   vuizvui.system.kernel.bfq.enable = true;
-  vuizvui.system.kernel.useBleedingEdge = true;
+
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.loader = {
     grub.device = "/dev/disk/by-id/ata-Hitachi_HTS543232A7A384_E2P31243FGB6PJ";
