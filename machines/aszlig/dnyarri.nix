@@ -39,11 +39,6 @@ in {
     loader.efi.canTouchEfiVariables = true;
 
     initrd = {
-      availableKernelModules = [
-        "aes_x86_64" "af_alg" "algif_skcipher" "cbc" "cryptd" "crypto_simd"
-        "dm_crypt" "ecb" "gf128mul" "glue_helper" "xts"
-      ];
-
       luks.devices = lib.singleton vaultDevice
                   ++ lib.concatLists (lib.attrValues cryptDevices);
       postDeviceCommands = lib.mkAfter ''

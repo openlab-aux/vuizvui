@@ -14,10 +14,6 @@
 
   boot.initrd = {
     kernelModules = [ "fbcon" "usb_storage" ];
-    availableKernelModules = [
-      "aes_x86_64" "af_alg" "algif_skcipher" "cbc" "cryptd" "crypto_simd"
-      "dm_crypt" "ecb" "gf128mul" "glue_helper" "xts"
-    ];
     luks.devices = [
       { name = "00vault";
         device = "/dev/disk/by-uuid/812f19f1-9096-4367-b2e4-0c9537c52a67";

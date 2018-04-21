@@ -3,10 +3,6 @@
 {
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.initrd.availableKernelModules = [
-    "aes_x86_64" "af_alg" "algif_skcipher" "cbc" "cryptd" "crypto_simd"
-    "dm_crypt" "ecb" "gf128mul" "glue_helper" "xts"
-  ];
   boot.initrd.luks.devices = [
     { name = "00vault";
       device = "/dev/disk/by-uuid/a70f4ff8-e463-42fa-8148-6783dd352f96";
