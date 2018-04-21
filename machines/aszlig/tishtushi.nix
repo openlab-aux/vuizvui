@@ -13,7 +13,6 @@
   };
 
   boot.initrd = {
-    kernelModules = [ "fbcon" "usb_storage" ];
     luks.devices = [
       { name = "00vault";
         device = "/dev/disk/by-uuid/812f19f1-9096-4367-b2e4-0c9537c52a67";
