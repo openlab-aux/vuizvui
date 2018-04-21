@@ -1,5 +1,5 @@
 { stdenv, lib, buildGame, makeWrapper, gtk2-x11, gdk_pixbuf, glib
-, mesa, xorg, libpulseaudio, libudev, zlib
+, libGL, xorg, libpulseaudio, libudev, zlib
 }:
 
 { name, version, fullName
@@ -27,7 +27,7 @@ in buildGame ({
   buildInputs = [ gtk2-x11 gdk_pixbuf glib ] ++ buildInputs;
 
   runtimeDependencies = [
-    mesa xorg.libX11 xorg.libXcursor xorg.libXrandr libudev zlib
+    libGL xorg.libX11 xorg.libXcursor xorg.libXrandr libudev zlib
   ] ++ runtimeDependencies;
 
   sandbox = sandbox // {

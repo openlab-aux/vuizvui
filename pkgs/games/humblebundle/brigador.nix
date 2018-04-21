@@ -1,5 +1,5 @@
 { stdenv, fetchurl, makeWrapper, fetchHumbleBundle, writeText
-, SDL2, mesa, glew, freeimage
+, SDL2, libGL, glew, freeimage
 }:
 
 let
@@ -64,7 +64,7 @@ in stdenv.mkDerivation {
 
   patchPhase = let
     fmodRpath = stdenv.lib.makeLibraryPath [ "$out" stdenv.cc.cc ];
-    rpath = stdenv.lib.makeLibraryPath [ "$out" SDL2 mesa oldGLEW freeimage ];
+    rpath = stdenv.lib.makeLibraryPath [ "$out" SDL2 libGL oldGLEW freeimage ];
   in ''
     for fmod in lib/libfmod*.so*; do
       patchelf --set-rpath "${fmodRpath}" "$fmod"

@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, makeWrapper, SDL, mesa, libdevil, freetype }:
+{ stdenv, fetchHumbleBundle, makeWrapper, SDL, libGL, libdevil, freetype }:
 
 stdenv.mkDerivation rec {
   name = "ftl-${version}";
@@ -15,7 +15,7 @@ stdenv.mkDerivation rec {
 
   patchPhase = let
     rpath = stdenv.lib.makeLibraryPath [
-      SDL "$out" stdenv.cc.cc mesa libdevil freetype
+      SDL "$out" stdenv.cc.cc libGL libdevil freetype
     ];
   in ''
     patchelf \

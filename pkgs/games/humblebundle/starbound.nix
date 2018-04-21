@@ -1,11 +1,11 @@
-{ stdenv, fetchHumbleBundle, unzip, fetchurl, writeText, SDL2, mesa, xorg
+{ stdenv, fetchHumbleBundle, unzip, fetchurl, writeText, SDL2, libGL, xorg
 , makeDesktopItem
 }:
 
 let
   binaryDeps = {
     starbound.deps = [
-      SDL2 mesa xorg.libX11 xorg.libICE xorg.libSM xorg.libXext
+      SDL2 libGL xorg.libX11 xorg.libICE xorg.libSM xorg.libXext
     ];
     starbound.needsBootconfig = true;
 

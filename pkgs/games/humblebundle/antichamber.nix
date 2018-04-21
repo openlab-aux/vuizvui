@@ -1,5 +1,5 @@
 { stdenv, lib, fetchHumbleBundle, unzip
-, xorg, libpulseaudio, libvorbis, libogg, mesa }:
+, xorg, libpulseaudio, libvorbis, libogg, libGL }:
 
 stdenv.mkDerivation rec {
   name = "antichamber-1.1";
@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
       libpulseaudio
       libvorbis
       libogg
-      mesa
+      libGL
     ];
    in ''
     dest="$out/share/antichamber"

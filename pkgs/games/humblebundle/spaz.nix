@@ -28,7 +28,7 @@ stdenv.mkDerivation rec {
 
   installPhase = let
     libs = pkgsi686Linux.stdenv.lib.makeLibraryPath [
-      pkgsi686Linux.mesa pkgsi686Linux.openal pkgsi686Linux.alsaPlugins
+      pkgsi686Linux.libGL pkgsi686Linux.openal pkgsi686Linux.alsaPlugins
     ];
   in ''
     install -vD SPAZ "$out/libexec/spaz/spaz"

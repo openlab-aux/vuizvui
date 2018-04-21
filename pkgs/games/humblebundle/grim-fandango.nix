@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, mesa, libpulseaudio, alsaLib, SDL2, writeText
+{ stdenv, fetchHumbleBundle, libGL, libpulseaudio, alsaLib, SDL2, writeText
 , xorg
 }:
 
@@ -136,7 +136,7 @@ stdenv.mkDerivation rec {
   '';
 
   rpath = stdenv.lib.makeLibraryPath [
-    mesa stdenv.cc.cc libpulseaudio alsaLib.out SDL2 xorg.libX11
+    libGL stdenv.cc.cc libpulseaudio alsaLib.out SDL2 xorg.libX11
   ];
 
   buildPhase = ''

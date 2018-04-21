@@ -1,4 +1,4 @@
-{ stdenv, fetchSteam, fetchurl, writeText, SDL, mesa, jq, makeDesktopItem
+{ stdenv, fetchSteam, fetchurl, writeText, SDL, libGL, jq, makeDesktopItem
 , flavor ? "stable"
 }:
 
@@ -19,7 +19,7 @@ let
     else id;
 
   binaryDeps = mkOsBinaryDeps {
-    starbound.deps = [ SDL mesa ];
+    starbound.deps = [ SDL libGL ];
     starbound.hasBootconfigArg = true;
     starbound_server.name = "starbound-server";
     starbound_server.hasBootconfigArg = true;
