@@ -22,6 +22,21 @@
 
   boot.kernelModules = [ "kvm-amd" ];
 
+  # The machine has a weird HDMI->DVI adapter which doesn't report back EDID
+  # information and the monitor is also very weird because it doesn't
+  # understand the fallback modes.
+  boot.kernelParams = [ "drm_kms_helper.edid_firmware=edid/weird.bin" ];
+  hardware.firmware = lib.singleton (pkgs.runCommand "weird-edid" {} ''
+    mkdir -p "$out/lib/firmware/edid"
+    base64 -d > "$out/lib/firmware/edid/weird.bin" <<EOF
+    AP///////wAEaaEiAQEBASQRAQOALx1477U1pVZKmiUQUFS/74BxT4GAlQCzAAEBlQ+BioFA
+    ITmQMGIaJ0BosDYAsQ4RAAAcAAAA/QA3Sx5QEQIAIFBYAoAoAAAA/wA3OUxNTVMwMDAyMDAK
+    AAAA/ABBU1VTIFBHMjIxCiAgAc8CAxABSwIRBBMFFBAfCQAAjArQiiDgLRAQPpYAE44hAAAY
+    AR0AclHQHiBuKFUAxI4hAAAYAR2AGHEcFiBYLCUAxI4hAACe8zmAGHE4LUBYLEUAxI4hAAAe
+    jArQkCBAMSAMQFUAE44hAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAASw==
+    EOF
+  '');
+
   environment.systemPackages = with pkgs; [
     mosh wget krita gphoto2 digikam unfreeAndNonDistributablePkgs.dropbox
     firefox
