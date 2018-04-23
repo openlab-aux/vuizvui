@@ -38,6 +38,8 @@ in {
     loader.grub.enable = lib.mkForce false;
     loader.efi.canTouchEfiVariables = true;
 
+    kernelPackages = pkgs.linuxPackages_latest;
+
     initrd = {
       luks.devices = lib.singleton vaultDevice
                   ++ lib.concatLists (lib.attrValues cryptDevices);
@@ -81,7 +83,6 @@ in {
   hardware.sane.extraBackends = [ pkgs.hplip ];
 
   vuizvui.system.kernel.bfq.enable = true;
-  vuizvui.system.kernel.useBleedingEdge = true;
   hardware.enableRedistributableFirmware = true;
 
   networking.hostName = "dnyarri";
