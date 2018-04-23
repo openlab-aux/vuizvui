@@ -1,5 +1,5 @@
 { stdenv, lib, fetchurl, fetchFromGitHub, writeText, writeTextFile, writeScript
-, pythonPackages, vim
+, pythonPackages, ledger, vim
 }:
 
 let
@@ -285,6 +285,13 @@ let
         rm -rf "$out/org.ats-lang.toolats.vim"
       '';
     };
+
+    ledger = fetchFromGitHub {
+      owner = "ledger";
+      repo = "vim-ledger";
+      rev = "6eb3bb21aa979cc295d0480b2179938c12b33d0d";
+      sha256 = "0rbwyaanvl2bqk8xm4kq8fkv8y92lpf9xx5n8gw54iij7xxhnj01";
+    };
   };
 
   generic = ''
@@ -324,6 +331,15 @@ let
     let python_highlight_builtins = 1
     let python_highlight_exceptions = 1
     let g:flake8_cmd = '${pythonPackages.flake8}/bin/flake8'
+
+    " ledger
+    let g:ledger_bin = '${ledger}/bin/ledger'
+    let g:ledger_date_format = '%Y-%m-%d'
+    let g:ledger_maxwidth = 79
+    let g:ledger_align_at = 73
+    let g:ledger_default_commodity = 'EUR'
+    let g:ledger_commodity_before = 0
+    let g:ledger_commodity_sep = ' '
   '';
 
   autocmd = ''
@@ -338,6 +354,9 @@ let
     au FileType python setlocal textwidth=79
     au FileType gitcommit setlocal textwidth=72
     au FileType docbk setlocal tabstop=2 shiftwidth=2 expandtab
+
+    " Autocomplete/align Ledger lines after leaving insert mode
+    au FileType ledger au InsertLeave * call ledger#autocomplete_and_align()
 
     " highlight unnecessary whitespace
     highlight ExtraWhitespace ctermbg=red guibg=red
