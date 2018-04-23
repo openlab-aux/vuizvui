@@ -358,6 +358,11 @@ let
     " Autocomplete/align Ledger lines after leaving insert mode
     au FileType ledger au InsertLeave * call ledger#autocomplete_and_align()
 
+    " Do not sleuth these file types!
+    au FileType ledger let g:sleuth_automatic = 0
+    au FileType haskell let g:sleuth_automatic = 0
+    au FileType nix let g:sleuth_automatic = 0
+
     " highlight unnecessary whitespace
     highlight ExtraWhitespace ctermbg=red guibg=red
     match ExtraWhitespace /\s\+$/
