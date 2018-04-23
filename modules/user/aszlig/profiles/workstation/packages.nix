@@ -25,6 +25,9 @@ pkgs: with pkgs; [
   gnumake
   gnupg1compat
   hexedit
+  hledger
+  hledger-ui
+  hledger-web
   i3
   i3lock
   imagemagick
