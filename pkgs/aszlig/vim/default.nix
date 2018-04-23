@@ -340,6 +340,7 @@ let
     let g:ledger_default_commodity = 'EUR'
     let g:ledger_commodity_before = 0
     let g:ledger_commodity_sep = ' '
+    let g:ledger_fold_blanks = 1
   '';
 
   autocmd = ''
@@ -357,6 +358,7 @@ let
 
     " Autocomplete/align Ledger lines after leaving insert mode
     au FileType ledger au InsertLeave * call ledger#autocomplete_and_align()
+    au FileType ledger set fdm=syntax
 
     " Do not sleuth these file types!
     au FileType ledger let g:sleuth_automatic = 0
