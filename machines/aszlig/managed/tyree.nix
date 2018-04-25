@@ -5,7 +5,7 @@
   boot.kernelModules = [ "kvm-intel" ];
 
   environment.systemPackages = with pkgs; [
-    chromium mosh wget krita rawtherapee darktable gphoto2 digikam
+    darktable digikam firefox gphoto2 krita mosh rawtherapee wget
   ];
 
   fileSystems."/boot".device = "/dev/disk/by-uuid/A0D5-269D";
