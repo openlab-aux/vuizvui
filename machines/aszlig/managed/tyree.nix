@@ -4,6 +4,24 @@
   boot.initrd.availableKernelModules = [ "usbhid" ];
   boot.kernelModules = [ "kvm-intel" ];
 
+  boot.initrd.luks.devices = [
+    { name = "00-vault";
+      device = "/dev/disk/by-uuid/e4eb3d30-7fa5-4af4-86fb-80b47518cc25";
+    }
+    { name = "tyree-swap";
+      device = "/dev/disk/by-uuid/d96e29b4-0b9a-442d-af27-805f69ffffb3";
+      keyFile = "/dev/mapper/00-vault";
+    }
+    { name = "tyree-root";
+      device = "/dev/disk/by-uuid/21e9a86e-c8dc-4d8f-ba75-d03552dc32f7";
+      keyFile = "/dev/mapper/00-vault";
+    }
+  ];
+
+  boot.initrd.postDeviceCommands = lib.mkAfter ''
+    cryptsetup luksClose /dev/mapper/00-vault
+  '';
+
   environment.systemPackages = with pkgs; [
     darktable digikam firefox gphoto2 krita mosh rawtherapee wget
   ];
