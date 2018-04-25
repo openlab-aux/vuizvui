@@ -61,6 +61,7 @@
 
   services.xserver.xkbOptions = "eurosign:e,caps:none";
   services.xserver.wacom.enable = true;
+  services.xserver.libinput.enable = true;
 
   vuizvui.user.aszlig.profiles.managed.enable = true;
   vuizvui.user.aszlig.profiles.managed.mainUser = "bla";
