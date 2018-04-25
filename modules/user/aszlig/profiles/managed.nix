@@ -20,6 +20,7 @@ in {
   config = mkIf cfg.enable {
     vuizvui.system.kernel.bfq.enable = true;
 
+    boot.cleanTmpDir = true;
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
 
