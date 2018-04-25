@@ -56,57 +56,12 @@ in {
     };
 
     environment.systemPackages = with pkgs; [
-      #arandr
       #arc-theme
       #atftp
-      #atom
-      #attic
-      #audacity
-      #biber
-      #bind
-      #brotli
       #bup
       #cacert
-      #cava
-      #cmake
-      #compton
-      #docker
-      #emacs
-      #gimp
-      #gitAndTools.git-annex
-      #gitAndTools.git-extras
-      #gitAndTools.git-remote-hg
-      #gitAndTools.git2cl
-      #gitAndTools.gitFastExport
-      #gitAndTools.gitFull
-      #gitAndTools.gitRemoteGcrypt
-      #gitAndTools.gitSVN
-      #gitAndTools.gitflow
-      #gitAndTools.svn2git
-      #gitAndTools.tig
-      #gnome3.dconf
-      #gnome3.defaultIconTheme
-      #gnome3.gnome_themes_standard
-      #heimdall
-      #inkscape
-      #ipfs
-      #kpcli
-      #mc
-      #mono
-      #monodevelop
-      #netkittftp
-      #numix-icon-theme
-      #pasystray
-      #pavucontrol
-      #python34Packages.hovercraft
-      #ruby
-      #sleuthkit
-      #surfraw
       #texlive.combined.scheme-small
-      #texmacs
       #tftp-hpa
-      #tomahawk
-      #toxic
       abcde
       abook
       accountsservice
@@ -158,17 +113,14 @@ in {
       file
       firefox
       flac
-      foremost
       fortune
       freerdpUnstable
       fuse_exfat
       fzf
       gajim
-      gcc
       gdb
       ghostscript
       git
-      glxinfo
       gnufdisk
       gnupg
       gource
@@ -177,7 +129,6 @@ in {
       gptfdisk
       graphviz
       gstreamer
-      handbrake
       hdparm
       hexedit
       hplipWithPlugin
@@ -185,7 +136,6 @@ in {
       i3lock
       i3lock-color
       i3status
-      icedtea_web
       iftop
       imagemagick
       iotop
@@ -194,7 +144,6 @@ in {
       ipv6calc
       jfsutils
       john
-      jrnl
       jwhois
       keepassxc
       keybase
@@ -208,7 +157,6 @@ in {
       macchanger
       manpages
       mcabber
-      mdp
       mediainfo
       mkvtoolnix
       mmv
@@ -288,6 +236,7 @@ in {
       termdown
       termite
       testdisk
+      tig
       timewarrior
       tldr
       tmux
@@ -295,10 +244,7 @@ in {
       transcode
       transgui
       tree
-      tribler
       tty-clock
-      udevil
-      udiskie
       units
       unrar
       unzip
@@ -313,12 +259,10 @@ in {
       vit
       vlc
       vlock
-      vnstat
       vorbisTools
       vorbisgain
       w3m
       wavpack
-      weather
       weechat
       wget
       which
@@ -326,7 +270,6 @@ in {
       wireshark
       xfsprogs
       xlibs.xev
-      xmpp-client
       xpra
       xscreensaver
       youtube-dl
