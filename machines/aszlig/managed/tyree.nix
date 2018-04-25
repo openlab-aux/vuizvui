@@ -57,6 +57,8 @@
     export LANG=en_US.UTF-8
   '';
 
+  services.journald.extraConfig = "SystemMaxUse=100M";
+
   services.xserver.xkbOptions = "eurosign:e,caps:none";
   services.xserver.wacom.enable = true;
 
