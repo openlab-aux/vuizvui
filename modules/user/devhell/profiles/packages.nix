@@ -120,6 +120,7 @@ in {
       gajim
       gdb
       ghostscript
+      ghostwriter
       git
       gnufdisk
       gnupg
