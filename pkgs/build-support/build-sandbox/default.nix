@@ -68,6 +68,14 @@ in stdenv.mkDerivation ({
     echo 'return true; }' >> params.c
   '';
 
+  postInstall = ''
+    for df in "$drv/share/applications/"*.desktop; do
+      mkdir -p "$out/share/applications"
+      sed -e 's!'"$drv"'/bin!'"$out"'/bin!g' "$df" \
+        > "$out/share/applications/$(basename "$df")"
+    done
+  '';
+
   nativeBuildInputs = [ pkgconfig ];
   buildInputs = [ nix ];
   makeFlags = [ "BINDIR=${drv}/bin" ];
