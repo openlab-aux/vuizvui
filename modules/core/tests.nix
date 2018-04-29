@@ -236,8 +236,10 @@ let
            || config.services.xserver.layout     == "de";
       path  = ["nixos" "keymap" "qwertz"];
     }
-    { check = config.boot.kernelPackages.kernel.version
-           == pkgs.linuxPackages_copperhead_hardened.kernel.version;
+    { check = elem config.boot.kernelPackages.kernel.version
+            [ pkgs.linuxPackages_copperhead_lts.kernel.version
+              pkgs.linuxPackages_copperhead_stable.kernel.version
+            ];
       path  = ["nixos" "kernel-copperhead"];
     }
     { check = config.boot.kernelPackages.kernel.version
