@@ -24,6 +24,7 @@ pkgs: with pkgs; [
   glxinfo
   gnumake
   gnupg1compat
+  gopass
   hexedit
   hledger
   hledger-ui
@@ -52,7 +53,6 @@ pkgs: with pkgs; [
   posix_man_pages
   pulseaudioLight
   vuizvui.aszlig.pvolctrl
-  pass
   pv
   python
   python3

@@ -39,6 +39,7 @@ in {
     programs.zsh.enable = true;
 
     programs.zsh.shellAliases.t = "task";
+    programs.zsh.shellAliases.p = "gopass";
 
     programs.zsh.interactiveShellInit = mkAfter ''
       export HISTFILE=~/.histfile
