@@ -457,8 +457,21 @@ let
     { check = config.services.powerdns.enable;
       path  = ["nixos" "powerdns"];
     }
-    { check = config.networking.usePredictableInterfaceNames;
-      path  = ["nixos" "predictable-interface-names"];
+    { check = config.networking.usePredictableInterfaceNames
+           && !config.networking.useNetworkd;
+      path  = ["nixos" "predictable-interface-names" "predictable"];
+    }
+    { check = config.networking.usePredictableInterfaceNames
+           && config.networking.useNetworkd;
+      path  = ["nixos" "predictable-interface-names" "predictableNetworkd"];
+    }
+    { check = !config.networking.usePredictableInterfaceNames
+           && !config.networking.useNetworkd;
+      path  = ["nixos" "predictable-interface-names" "unpredictable"];
+    }
+    { check = !config.networking.usePredictableInterfaceNames
+           && config.networking.useNetworkd;
+      path  = ["nixos" "predictable-interface-names" "unpredictableNetworkd"];
     }
     { check = config.services.printing.enable;
       path  = ["nixos" "printing"];
