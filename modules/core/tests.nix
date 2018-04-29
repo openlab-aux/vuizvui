@@ -1,16 +1,16 @@
 { options, config, pkgs, lib, ... }:
 
-with lib;
-
 let
+  inherit (lib) any elem;
+
   whichNet = if config.networking.useNetworkd then "networkd" else "scripted";
 
   mkTest = attrs: if attrs.check then attrs.paths or [ attrs.path ] else [];
 
-  anyAttrs = pred: cfg: any id (mapAttrsToList (const pred) cfg);
+  anyAttrs = pred: cfg: any lib.id (lib.mapAttrsToList (lib.const pred) cfg);
   hasPackage = p: any (x: x.name == p.name) config.environment.systemPackages;
 
-  upstreamTests = concatMap mkTest [
+  upstreamTests = lib.concatMap mkTest [
     { check = config.security.acme.certs != {};
       path  = ["nixos" "acme"];
     }
@@ -441,9 +441,9 @@ let
     }
     { check = config.services.postgresql.enable;
       path  = let
-        filterPg = name: drv: hasPrefix "postgresql" name
+        filterPg = name: drv: lib.hasPrefix "postgresql" name
                            && drv == config.services.postgresql.package;
-        pgPackage = head (attrNames (filterAttrs filterPg pkgs));
+        pgPackage = lib.head (lib.attrNames (lib.filterAttrs filterPg pkgs));
       in ["nixos" "postgresql" pgPackage];
     }
     { check = config.services.powerdns.enable;
@@ -580,13 +580,13 @@ let
 
 in {
   options.vuizvui = {
-    requiresTests = mkOption {
-      type = types.listOf (types.listOf types.str);
+    requiresTests = lib.mkOption {
+      type = lib.types.listOf (lib.types.listOf lib.types.str);
       default = [];
       example = [ ["nixos" "nat" "firewall"] ["vuizvui" "foo"] ];
       description = ''
-        A list of attribute paths to the tests which need to succeed in order to
-        trigger a channel update for the current configuration/machine.
+        A list of attribute paths to the tests which need to succeed in order
+        to trigger a channel update for the current configuration/machine.
 
         Every attribute path itself is a list of attribute names, which are
         queried using <function>lib.getAttrFromPath</function>.
