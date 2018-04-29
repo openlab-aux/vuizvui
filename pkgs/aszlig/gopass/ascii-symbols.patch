@@ -1,0 +1,17 @@
+diff --git a/utils/tree/simple/tree.go b/utils/tree/simple/tree.go
+index aa9f42a..76f56e9 100644
+--- a/utils/tree/simple/tree.go
++++ b/utils/tree/simple/tree.go
+@@ -8,9 +8,9 @@ import (
+ 
+ const (
+ 	symEmpty  = "    "
+-	symBranch = "├── "
+-	symLeaf   = "└── "
+-	symVert   = "│   "
++	symBranch = "|-- "
++	symLeaf   = "`-- "
++	symVert   = "|   "
+ )
+ 
+ var (

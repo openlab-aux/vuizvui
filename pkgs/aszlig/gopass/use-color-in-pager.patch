@@ -1,0 +1,20 @@
+diff --git a/action/list.go b/action/list.go
+index c5d2ae0..715ce65 100644
+--- a/action/list.go
++++ b/action/list.go
+@@ -9,7 +9,6 @@ import (
+ 	"os/exec"
+ 	"strings"
+ 
+-	"github.com/fatih/color"
+ 	"github.com/justwatchcom/gopass/utils/ctxutil"
+ 	"github.com/justwatchcom/gopass/utils/out"
+ 	"github.com/justwatchcom/gopass/utils/termutil"
+@@ -84,7 +83,6 @@ func redirectPager(ctx context.Context, subtree tree.Tree) (io.Writer, *bytes.Bu
+ 	if subtree == nil || subtree.Len() < rows {
+ 		return stdout, nil
+ 	}
+-	color.NoColor = true
+ 	buf := &bytes.Buffer{}
+ 	return buf, buf
+ }
