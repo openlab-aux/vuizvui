@@ -8,6 +8,7 @@ let
   mkTest = attrs: if attrs.check then attrs.paths or [ attrs.path ] else [];
 
   anyAttrs = pred: cfg: any id (mapAttrsToList (const pred) cfg);
+  hasPackage = p: any (x: x.name == p.name) config.environment.systemPackages;
 
   upstreamTests = concatMap mkTest [
     { check = config.security.acme.certs != {};
@@ -34,8 +35,18 @@ let
     { check = true;
       path  = ["nixos" "boot-stage1"];
     }
+    { check = config.services.buildbot-master.enable
+           || config.services.buildbot-worker.enable;
+      path  = ["nixos" "buildbot"];
+    }
     { check = config.services.cadvisor.enable;
       path  = ["nixos" "cadvisor"];
+    }
+    { check = config.services.ceph.enable
+           || config.services.ceph.mon.enable
+           || config.services.ceph.mgr.enable
+           || config.services.ceph.osd.enable;
+      path  = ["nixos" "ceph"];
     }
     { check = config.services.cjdns.enable;
       path  = ["nixos" "cjdns"];
@@ -91,11 +102,25 @@ let
     { check = config.services.couchdb.enable;
       path  = ["nixos" "couchdb"];
     }
+    { check = config.services.deluge.enable;
+      path  = ["nixos" "deluge"];
+    }
     { check = config.services.dnscrypt-proxy.enable;
       path  = ["nixos" "dnscrypt-proxy"];
     }
     { check = config.virtualisation.docker.enable;
-      path  = ["nixos" "docker"];
+      paths = [
+        ["nixos" "docker"]
+        ["nixos" "docker-tools"]
+      ];
+    }
+    { check = with config.virtualisation.docker; enable
+           && package.name == pkgs.docker-edge.name;
+      path  = ["nixos" "docker-edge"];
+    }
+    { check = config.virtualisation.docker.enable
+           && config.virtualisation.docker.storageDriver == "overlay";
+      path  = ["nixos" "docker-tools-overlay"];
     }
     { check = config.services.dovecot2.enable;
       path  = ["nixos" "dovecot"];
@@ -118,8 +143,14 @@ let
     { check = config.services.fleet.enable;
       path  = ["nixos" "fleet"];
     }
+    { check = config.services.fwupd.enable;
+      path  = ["nixos" "fwupd"];
+    }
     { check = config.services.gitolite.enable;
       path  = ["nixos" "gitolite"];
+    }
+    { check = hasPackage pkgs.gnome-desktop-testing;
+      path  = ["nixos" "gjs"];
     }
     { check = config.services.xserver.desktopManager.gnome3.enable;
       path  = ["nixos" "gnome3"];
@@ -158,6 +189,9 @@ let
     }
     { check = config.services.xserver.windowManager.i3.enable;
       path  = ["nixos" "i3wm"];
+    }
+    { check = config.programs.iftop.enable;
+      path  = ["nixos" "iftop"];
     }
     { check = config.boot.initrd.network.enable;
       path  = ["nixos" "initrdNetwork"];
@@ -253,7 +287,10 @@ let
     { check = with config.services.kubernetes; apiserver.enable
            || scheduler.enable || controllerManager.enable || kubelet.enable
            || proxy.enable;
-      path  = ["nixos" "kubernetes"];
+      paths = [
+        ["nixos" "kubernetes" "dns"]
+        ["nixos" "kubernetes" "rbac"]
+      ];
     }
     { check = config.boot.kernelPackages.kernel.version
            == pkgs.linuxPackages_latest.kernel.version;
@@ -270,6 +307,9 @@ let
     }
     { check = config.services.mathics.enable;
       path  = ["nixos" "mathics"];
+    }
+    { check = config.services.matrix-synapse.enable;
+      path  = ["nixos" "matrix-synapse"];
     }
     { check = config.services.mesos.master.enable
            || config.services.mesos.slave.enable;
@@ -365,11 +405,20 @@ let
     { check = config.services.nginx.enable;
       path  = ["nixos" "nginx"];
     }
+    { check = config.nix.sshServe.enable;
+      path  = ["nixos" "nix-ssh-serve"];
+    }
+    { check = config.services.novacomd.enable;
+      path  = ["nixos" "novacomd"];
+    }
     { check = config.services.nsd.enable;
       path  = ["nixos" "nsd"];
     }
     { check = config.services.openssh.enable;
       path  = ["nixos" "openssh"];
+    }
+    { check = config.services.openldap.enable;
+      path  = ["nixos" "openldap"];
     }
     { check = let
         hasOCSubServiceType = any (y: y.serviceType == "owncloud");
@@ -387,6 +436,9 @@ let
     { check = config.services.xserver.desktopManager.plasma5.enable;
       path  = ["nixos" "plasma5"];
     }
+    { check = config.programs.plotinus.enable;
+      path  = ["nixos" "plotinus"];
+    }
     { check = config.services.postgresql.enable;
       path  = let
         filterPg = name: drv: hasPrefix "postgresql" name
@@ -394,25 +446,46 @@ let
         pgPackage = head (attrNames (filterAttrs filterPg pkgs));
       in ["nixos" "postgresql" pgPackage];
     }
+    { check = config.services.powerdns.enable;
+      path  = ["nixos" "powerdns"];
+    }
+    { check = config.networking.usePredictableInterfaceNames;
+      path  = ["nixos" "predictable-interface-names"];
+    }
     { check = config.services.printing.enable;
       path  = ["nixos" "printing"];
     }
     { check = config.services.prometheus.enable;
       path  = ["nixos" "prometheus"];
     }
+    { check = config.services.prosody.enable;
+      path  = ["nixos" "prosody"];
+    }
     { check = config.services.httpd.enable
            && elem "proxy_balancer" config.services.httpd.extraModules;
       path  = ["nixos" "proxy"];
+    }
+    { check = config.services.quagga.ospf.enable;
+      path  = ["nixos" "quagga"];
     }
     { check = config.hardware.opengl.driSupport
            && config.services.xserver.enable;
       path  = ["nixos" "quake3"];
     }
+    { check = config.services.rabbitmq.enable;
+      path  = ["nixos" "rabbitmq"];
+    }
     { check = config.services.radicale.enable;
       path  = ["nixos" "radicale"];
     }
+    { check = config.services.rspamd.enable;
+      path  = ["nixos" "rspamd"];
+    }
     { check = true;
       path  = ["nixos" "runInMachine"];
+    }
+    { check = config.networking.rxe.enable;
+      path  = ["nixos" "rxe"];
     }
     { check = config.services.samba.enable;
       path  = ["nixos" "samba"];
@@ -438,17 +511,26 @@ let
     { check = config.services.statsd.enable;
       path  = ["nixos" "statsd"];
     }
+    { check = config.services.strongswan-swanctl.enable;
+      path  = ["nixos" "strongswan-swanctl"];
+    }
     { check = config.security.sudo.enable;
       path  = ["nixos" "sudo"];
     }
     { check = true;
       path  = ["nixos" "switchTest"];
     }
+    { check = true;
+      path  = ["nixos" "systemd"];
+    }
     { check = config.services.taskserver.enable;
       path  = ["nixos" "taskserver"];
     }
     { check = config.services.tomcat.enable;
       path  = ["nixos" "tomcat"];
+    }
+    { check = config.services.transmission.enable;
+      path  = ["nixos" "transmission"];
     }
     { check = config.services.udisks2.enable;
       path  = ["nixos" "udisks2"];
@@ -476,11 +558,20 @@ let
       in config.services.httpd.enable && hasWordPress;
       path  = ["nixos" "wordpress"];
     }
+    { check = config.services.xserver.xautolock.enable;
+      path  = ["nixos" "xautolock"];
+    }
     { check = config.services.xserver.desktopManager.xfce.enable;
       path  = ["nixos" "xfce"];
     }
     { check = config.services.xserver.windowManager.xmonad.enable;
       path  = ["nixos" "xmonad"];
+    }
+    { check = config.services.xrdp.enable;
+      path  = ["nixos" "xrdp"];
+    }
+    { check = config.programs.yabar.enable;
+      path  = ["nixos" "yabar"];
     }
     { check = config.services.zookeeper.enable;
       path  = ["nixos" "zookeeper"];
