@@ -294,8 +294,10 @@ let
            || scheduler.enable || controllerManager.enable || kubelet.enable
            || proxy.enable;
       paths = [
-        ["nixos" "kubernetes" "dns"]
-        ["nixos" "kubernetes" "rbac"]
+        ["nixos" "kubernetes" "dns" "singlenode"]
+        ["nixos" "kubernetes" "dns" "multinode"]
+        ["nixos" "kubernetes" "rbac" "singlenode"]
+        ["nixos" "kubernetes" "rbac" "multinode"]
       ];
     }
     { check = config.boot.kernelPackages.kernel.version
