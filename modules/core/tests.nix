@@ -48,6 +48,9 @@ let
            || config.services.ceph.osd.enable;
       path  = ["nixos" "ceph"];
     }
+    { check = hasPackage pkgs.chromium;
+      path  = ["nixos" "chromium"];
+    }
     { check = config.services.cjdns.enable;
       path  = ["nixos" "cjdns"];
     }
@@ -136,6 +139,9 @@ let
     }
     { check = config.services.ferm.enable;
       path  = ["nixos" "ferm"];
+    }
+    { check = hasPackage pkgs.firefox;
+      path  = ["nixos" "firefox"];
     }
     { check = config.networking.firewall.enable;
       path  = ["nixos" "firewall"];
