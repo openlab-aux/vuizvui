@@ -15,4 +15,6 @@ pythonPackages.buildPythonPackage {
 
   buildInputs = [ pythonPackages.cython gpm ];
   propagatedBuildInputs = [ pythonPackages.pyserial ];
+
+  meta.platforms = [ "x86_64-linux" ];
 }
