@@ -60,7 +60,7 @@
     hostName = "titan";
     wireless.enable = true;
     useNetworkd= true;
-    nameservers = [ "8.8.8.8" "8.8.4.4" ];
+    nameservers = [ "1.1.1.1" "8.8.8.8" "8.8.4.4" ];
   };
 
   powerManagement = {
