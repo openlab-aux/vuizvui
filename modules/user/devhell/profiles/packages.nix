@@ -175,6 +175,7 @@ in {
       mtr
       ncdu
       ncmpcpp
+      neofetch
       neomutt
       neovim
       nethack
