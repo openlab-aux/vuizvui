@@ -77,12 +77,14 @@ in {
       bcal
       beets
       binutils
+      bmon
       cataclysm-dda
       ccrypt
       chromaprint
       chromium
       cifs_utils
       cipherscan
+      clac
       cmatrix
       colordiff
       conky
@@ -93,6 +95,7 @@ in {
       dcfldd
       ddrescue
       dhcping
+      di
       dmenu
       dmidecode
       dos2unix
@@ -122,6 +125,7 @@ in {
       ghostscript
       ghostwriter
       git
+      gitinspector
       gnufdisk
       gnupg
       gource
@@ -141,6 +145,7 @@ in {
       imagemagick
       iotop
       ipcalc
+      iprange
       iptraf-ng
       ipv6calc
       jfsutils
@@ -215,6 +220,7 @@ in {
       qrencode
       recode
       reiserfsprogs
+      reptyr
       ripgrep
       rofi
       rsync
