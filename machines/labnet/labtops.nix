@@ -51,10 +51,11 @@
       '';
     };
 
-    vuizvui.user.openlab.stackenblocken = {
-      enable = true;
-      volume = 35;
-    };
+    # TODO: haskell module broken
+    # vuizvui.user.openlab.stackenblocken = {
+    #   enable = true;
+    #   volume = 35;
+    # };
     vuizvui.user.openlab.speedtest = {
       enable = true;
       outputPath = "${webserverRootDir}/speedtest.yaml";

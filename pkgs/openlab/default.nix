@@ -2,5 +2,6 @@
 
 {
   gitit = callPackage ./gitit { hlib = haskell.lib; };
-  stackenblocken = callPackage ./stackenblocken {};
+  # TODO: fix haskell code
+  # stackenblocken = callPackage ./stackenblocken {};
 }
