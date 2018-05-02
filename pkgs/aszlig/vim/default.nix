@@ -356,8 +356,7 @@ let
     au FileType gitcommit setlocal textwidth=72
     au FileType docbk setlocal tabstop=2 shiftwidth=2 expandtab
 
-    " Autocomplete/align Ledger lines after leaving insert mode
-    au FileType ledger au InsertLeave * call ledger#autocomplete_and_align()
+    " Enable folding for Ledger files
     au FileType ledger set fdm=syntax
 
     " Do not sleuth these file types!
