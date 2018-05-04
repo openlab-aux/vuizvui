@@ -91,7 +91,10 @@
   services = {
     tftpd.enable = false;
     gnome3.gnome-keyring.enable = true;
-    printing.enable = false;
+    printing = {
+      enable = true;
+      drivers = [ pkgs.gutenprint pkgs.hplip pkgs.cups-brother-hl1110 ];
+    };
     dnscrypt-proxy.enable = false;
   };
 
