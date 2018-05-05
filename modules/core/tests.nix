@@ -146,9 +146,6 @@ let
     { check = config.networking.firewall.enable;
       path  = ["nixos" "firewall"];
     }
-    { check = config.services.fleet.enable;
-      path  = ["nixos" "fleet"];
-    }
     { check = config.services.fwupd.enable;
       path  = ["nixos" "fwupd"];
     }
