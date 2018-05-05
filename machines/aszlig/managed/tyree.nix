@@ -23,7 +23,7 @@
   '';
 
   environment.systemPackages = with pkgs; [
-    darktable digikam firefox gphoto2 krita mosh rawtherapee wget
+    darktable digikam firefox gphoto2 kmymoney krita mosh rawtherapee wget
   ];
 
   fileSystems."/boot".device = "/dev/disk/by-uuid/A0D5-269D";
