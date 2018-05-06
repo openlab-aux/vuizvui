@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, unfreePkgs, lib, ... }:
 
 {
   boot.initrd.availableKernelModules = [ "usbhid" ];
@@ -38,6 +38,8 @@
     "space_cache"
     "ssd"
   ];
+
+  fonts.fonts = [ unfreePkgs.corefonts ];
 
   swapDevices = lib.singleton {
     label = "tyree-swap";
