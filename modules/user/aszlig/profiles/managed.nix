@@ -40,6 +40,7 @@ in {
       pkgs.kdeApplications.kate
       pkgs.kdeApplications.kleopatra
       pkgs.kdeApplications.kmail
+      pkgs.kdeApplications.kontact
       pkgs.kdeApplications.korganizer
       pkgs.kdeApplications.okular
       pkgs.libreoffice
