@@ -38,6 +38,7 @@ in {
       pkgs.kdeApplications.gwenview
       pkgs.kdeApplications.kaddressbook
       pkgs.kdeApplications.kate
+      pkgs.kdeApplications.kdepim-addons
       pkgs.kdeApplications.kleopatra
       pkgs.kdeApplications.kmail
       pkgs.kdeApplications.kontact
