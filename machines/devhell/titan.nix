@@ -192,11 +192,11 @@
     #openjdk8
     #skype
     #thunderbird
-    docker
     aircrackng
     calibre
     cdrtools
     claws-mail
+    docker
     dvdplusrwtools
     glxinfo
     horst
@@ -212,6 +212,7 @@
     pmutils
     pythonPackages.alot
     reaverwps
+    signal-desktop
     snort
     vaapiVdpau
     vdpauinfo
