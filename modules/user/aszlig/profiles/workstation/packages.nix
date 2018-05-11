@@ -24,7 +24,7 @@ pkgs: with pkgs; [
   glxinfo
   gnumake
   gnupg1compat
-  gopass
+  vuizvui.aszlig.gopass
   hexedit
   hledger
   hledger-ui
