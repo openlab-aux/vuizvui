@@ -54,7 +54,7 @@
   systemd.services.systemd-networkd-wait-online.enable = false;
 
   # XXX Ensure that these are added in addition to the DHCP proviced DNS servers
-  systemd.network.networks."99-main".dns = [ "1.1.1.1" "8.8.8.8" "8.8.4.4" ];
+  systemd.network.networks."99-main".dns = [ "1.1.1.1" "8.8.8.8" ];
 
   networking = {
     hostName = "titan";
