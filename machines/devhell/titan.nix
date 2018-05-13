@@ -53,8 +53,8 @@
   # FIXME Check if this is still necessary in the future
   systemd.services.systemd-networkd-wait-online.enable = false;
 
-  # XXX Kind of a hack to work around the issue of networkd not honoring networking.nameservers
-  systemd.network.networks."99-main".dhcpConfig.UseDNS = false;
+  # XXX Ensure that these are added in addition to the DHCP proviced DNS servers
+  systemd.network.networks."99-main".dns = [ "1.1.1.1" "8.8.8.8" "8.8.4.4" ];
 
   networking = {
     hostName = "titan";
@@ -94,9 +94,6 @@
       drivers = [ pkgs.gutenprint pkgs.hplip pkgs.cups-brother-hl1110 ];
     };
     dnscrypt-proxy.enable = false;
-    resolved = {
-      fallbackDns = [ "1.1.1.1" "8.8.8.8" "8.8.4.4" ];
-    };
   };
 
   services.acpid = {
