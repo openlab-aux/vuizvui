@@ -60,7 +60,6 @@
     hostName = "titan";
     wireless.enable = true;
     useNetworkd= true;
-    nameservers = [ "1.1.1.1" "8.8.8.8" "8.8.4.4" ];
   };
 
   powerManagement = {
@@ -87,7 +86,6 @@
 
   vuizvui.user.devhell.profiles.services.enable = true;
 
-
   services = {
     tftpd.enable = false;
     gnome3.gnome-keyring.enable = true;
@@ -96,6 +94,9 @@
       drivers = [ pkgs.gutenprint pkgs.hplip pkgs.cups-brother-hl1110 ];
     };
     dnscrypt-proxy.enable = false;
+    resolved = {
+      fallbackDns = [ "1.1.1.1" "8.8.8.8" "8.8.4.4" ];
+    }
   };
 
   services.acpid = {
