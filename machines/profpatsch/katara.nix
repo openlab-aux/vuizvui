@@ -16,20 +16,23 @@ in {
     # Kernel
 
     boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" ];
-    boot.loader.grub.device = "/dev/sda";
-    boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "cryptroot"; } ];
+    boot.loader.grub.device = "/dev/disk/by-id/ata-CT500MX500SSD1_1809E130BEE8";
+    boot.initrd.luks.devices = [ {
+      device = "/dev/disk/by-uuid/2e1c433f-4a54-4f04-9073-3639b66b975d";
+      name = "cryptroot";
+    } ];
 
     ###########
     # Hardware
 
     fileSystems."/" = {
-      device = "/dev/dm-0";
+      device = "/dev/disk/by-uuid/5339f027-df78-437b-8a4c-39b93abc40b9";
       fsType = "btrfs";
-      options = [ "ssd" ];
+      options = [ "ssd" "subvol=/katarafs" ];
     };
 
     fileSystems."/boot" = {
-      device = "/dev/sda1";
+      device = "/dev/disk/by-uuid/53042c4f-bbf2-418b-bf85-5d148ab5dda0";
       fsType = "ext3";
     };
 
