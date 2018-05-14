@@ -16,8 +16,8 @@
     src = fetchFromGitHub {
       owner = "Profpatsch";
       repo = "Droopy";
-      rev = "dc63d0ac9cecd74cdff84ab9ea2a5849d6953e8a";
-      sha256 = "09sms524wrnpdkhnpv9f2qbq30s8h02ljiv934g0dvmxy8571ph7";
+      rev = "55c60c612b913f9fbce9fceebbcb3a332152f1a4";
+      sha256 = "0jcazj9gkdf4k7vsi33dpw9myyy02gjihwsy36dfqq4bas312cq1";
     };
     installPhase = old.installPhase or "" + ''
       mkdir -p $out/share/droopy
