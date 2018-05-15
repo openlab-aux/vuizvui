@@ -193,7 +193,6 @@
     aircrackng
     calibre
     cdrtools
-    claws-mail
     docker
     dvdplusrwtools
     glxinfo
