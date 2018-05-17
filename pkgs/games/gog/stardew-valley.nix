@@ -1,4 +1,4 @@
-{ lib, buildGame, fetchGog, unzip, makeWrapper, mono50, SDL2, openal }:
+{ lib, buildGame, fetchGog, unzip, makeWrapper, mono50, SDL2, libGL, openal }:
 
 buildGame rec {
   name = "stardew-valley-${version}";
@@ -37,6 +37,7 @@ buildGame rec {
     makeWrapper ${lib.escapeShellArg mono50}/bin/mono \
       "$out/bin/stardew-valley" \
       --add-flags "$out/libexec/stardew-valley/StardewValley.exe" \
+      --prefix LD_LIBRARY_PATH : ${lib.escapeShellArg "${libGL}/lib"} \
       --run "cd '$out/libexec/stardew-valley'"
   '';
 
