@@ -2,9 +2,11 @@
 
 buildUnity {
   name = "liads";
+  version = "20180427";
+
   fullName = "LoversInADangerousSpacetime";
   saveDir = "AsteroidBase/LoversInADangerousSpacetime";
-  version = "20180427";
+  sandbox.paths.required = [ "$XDG_DATA_HOME/LoversInADangerousSpacetime" ];
 
   src = fetchHumbleBundle {
     machineName = "loversinadangerousspacetime_linux";
