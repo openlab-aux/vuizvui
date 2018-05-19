@@ -237,7 +237,7 @@ let
 
       def list_downloads(self):
         url = "https://api.gog.com/products/" + self.product_id \
-            + "?expand=downloads"
+            + "?expand=downloads,expanded_dlcs,related_products"
         downloads = self.request(url)['downloads']
         table = []
         for dtype, dloads in downloads.items():
