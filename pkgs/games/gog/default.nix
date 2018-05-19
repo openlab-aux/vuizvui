@@ -13,6 +13,7 @@ let
 
     albion = callPackage_i686 ./albion { inherit (pkgs) buildSandbox; };
     stardew-valley = callPackage ./stardew-valley.nix {};
+    stardew-valley-beta = callPackage ./stardew-valley.nix { beta = true; };
   };
 in {
   options.gog = {
