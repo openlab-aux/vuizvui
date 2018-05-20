@@ -55,7 +55,7 @@ in {
 
     client = { pkgs, ... }: {
       imports = [
-        "${nixpkgsPath.nix}/nixos/tests/common/x11.nix"
+        "${nixpkgsPath}/nixos/tests/common/x11.nix"
       ];
       virtualisation.memorySize = 2047;
       environment.systemPackages = [
