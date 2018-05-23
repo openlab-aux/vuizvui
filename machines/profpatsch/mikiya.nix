@@ -39,11 +39,14 @@ in {
           ssh.authorizedKeys = myLib.authKeys;
           # we wait until the root device is unlocked (by ssh)
           postCommands = ''
+            echo "Waiting for ssh unlock of ${rootDevice} (infinitely)
             while [ ! -e ${rootDevice} ]; do sleep 1; done
           '';
         };
           availableKernelModules = [
             "ahci" "xhci_pci" "usb_storage" "usbhid" "sd_mod"
+          # used for ethernet device(s)
+          "r8169"
           ];
 
         # decrypt root device
