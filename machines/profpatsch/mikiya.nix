@@ -27,19 +27,24 @@ in {
 
   config = {
 
-    vuizvui.user.profpatsch.server.sshPort = 22;
     boot = {
       loader.grub.device = systemDevice;
+      kernelModules = [ "kvm-intel" ];
+
       initrd = {
         network = {
           enable = true;
           ssh.enable = true;
           ssh.authorizedKeys = myLib.authKeys;
+          availableKernelModules = [
+            "ahci" "xhci_pci" "usb_storage" "usbhid" "sd_mod"
+          ];
         };
 
         # decrypt root device
         luks.devices = [systemPartition];
       };
+
     };
 
     fileSystems."/" = {
@@ -47,6 +52,10 @@ in {
       fsType = "ext4";
       options = [ "ssd" ];
     };
+
+    nix.maxJobs = 4;
+
+    vuizvui.user.profpatsch.server.sshPort = 22;
 
     /*
     # decrypt RAID with key from root
