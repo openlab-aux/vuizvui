@@ -36,10 +36,10 @@ in {
           enable = true;
           ssh.enable = true;
           ssh.authorizedKeys = myLib.authKeys;
+        };
           availableKernelModules = [
             "ahci" "xhci_pci" "usb_storage" "usbhid" "sd_mod"
           ];
-        };
 
         # decrypt root device
         luks.devices = [systemPartition];
@@ -52,6 +52,11 @@ in {
       fsType = "ext4";
       options = [ "ssd" ];
     };
+    fileSystems."/boot" = {
+      device = "/dev/disk/by-uuid/9aa38aa7-652f-4762-a0c2-b70332b93f4d";
+      fsType = "ext3";
+    };
+
 
     nix.maxJobs = 4;
 
