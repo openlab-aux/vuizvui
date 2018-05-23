@@ -15,6 +15,7 @@ let
     name = "mikiya-root";
     device = "/dev/disk/by-uuid/56910867-ed83-438a-b67c-c057e662c89e";
   };
+  rootDevice = "/dev/mapper/mikiya-root";
 
   raidDevices = lib.imap (mkDevice "raid") [
     "f0069e04-d058-40b3-8f13-92f11c4c2546"
@@ -36,6 +37,10 @@ in {
           enable = true;
           ssh.enable = true;
           ssh.authorizedKeys = myLib.authKeys;
+          # we wait until the root device is unlocked (by ssh)
+          postCommands = ''
+            while [ ! -e ${rootDevice} ]; do sleep 1; done
+          '';
         };
           availableKernelModules = [
             "ahci" "xhci_pci" "usb_storage" "usbhid" "sd_mod"
@@ -48,7 +53,7 @@ in {
     };
 
     fileSystems."/" = {
-      device = "/dev/mapper/mikiya-root";
+      device = rootDevice;
       fsType = "ext4";
       options = [ "ssd" ];
     };
@@ -57,6 +62,7 @@ in {
       fsType = "ext3";
     };
 
+    networking.useDHCP = true;
 
     nix.maxJobs = 4;
 
