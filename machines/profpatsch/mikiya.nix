@@ -39,7 +39,7 @@ in {
           ssh.authorizedKeys = myLib.authKeys;
           # we wait until the root device is unlocked (by ssh)
           postCommands = ''
-            echo "Waiting for ssh unlock of ${rootDevice} (infinitely)
+            echo "Waiting for ssh unlock of ${rootDevice} (infinitely)"
             while [ ! -e ${rootDevice} ]; do sleep 1; done
           '';
         };
