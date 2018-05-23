@@ -31,6 +31,7 @@ in {
     boot = {
       loader.grub.device = systemDevice;
       kernelModules = [ "kvm-intel" ];
+      kernelParams = [ "ip=192.168.0.5" ];
 
       initrd = {
         network = {
@@ -64,8 +65,6 @@ in {
       device = "/dev/disk/by-uuid/9aa38aa7-652f-4762-a0c2-b70332b93f4d";
       fsType = "ext3";
     };
-
-    networking.useDHCP = true;
 
     nix.maxJobs = 4;
 
