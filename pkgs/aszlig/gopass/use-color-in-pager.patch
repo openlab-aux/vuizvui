@@ -1,16 +1,16 @@
-diff --git a/action/list.go b/action/list.go
-index c5d2ae0..715ce65 100644
---- a/action/list.go
-+++ b/action/list.go
-@@ -9,7 +9,6 @@ import (
- 	"os/exec"
- 	"strings"
+diff --git a/pkg/action/list.go b/pkg/action/list.go
+index 03de22b..d54113f 100644
+--- a/pkg/action/list.go
++++ b/pkg/action/list.go
+@@ -14,7 +14,6 @@ import (
+ 	"github.com/justwatchcom/gopass/pkg/termutil"
+ 	"github.com/justwatchcom/gopass/pkg/tree"
  
 -	"github.com/fatih/color"
- 	"github.com/justwatchcom/gopass/utils/ctxutil"
- 	"github.com/justwatchcom/gopass/utils/out"
- 	"github.com/justwatchcom/gopass/utils/termutil"
-@@ -84,7 +83,6 @@ func redirectPager(ctx context.Context, subtree tree.Tree) (io.Writer, *bytes.Bu
+ 	shellquote "github.com/kballard/go-shellquote"
+ 	"github.com/pkg/errors"
+ 	"github.com/urfave/cli"
+@@ -89,7 +88,6 @@ func redirectPager(ctx context.Context, subtree tree.Tree) (io.Writer, *bytes.Bu
  	if subtree == nil || subtree.Len() < rows {
  		return stdout, nil
  	}
