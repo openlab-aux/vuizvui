@@ -17,6 +17,18 @@ in
 
   config = {
 
+    # TODO abstract out
+    nix.maxJobs = 2;
+    vuizvui.modifyNixPath = false;
+    nix.nixPath = [
+      "vuizvui=/root/vuizvui"
+      "nixpkgs=/root/nixpkgs"
+      # TODO: nicer?
+      "nixos-config=${pkgs.writeText "haku-configuration.nix" ''
+        (import <vuizvui/machines>).profpatsch.haku.config
+      ''}"
+    ];
+
     system.autoUpgrade = {
       enable = true;
       channel = "https://headcounter.org/hydra/channel/custom/openlab/vuizvui/channels.machines.profpatsch.haku";
