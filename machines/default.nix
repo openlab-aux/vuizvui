@@ -17,8 +17,9 @@ with import ../lib;
     skunkworks = callMachine devhell/skunkworks.nix {};
     titan      = callMachine devhell/titan.nix {};
   };
-  labnet = {
-    labtops = callNetwork ./labnet/labtops.nix {};
+  labnet.labtops = {
+    inherit (callNetwork ./labnet/labtops.nix {}) labtop;
+    hannswurscht = callMachine ./labnet/hannswurscht.nix {};
   };
   profpatsch = {
     katara = callMachine ./profpatsch/katara.nix {};
