@@ -18,7 +18,6 @@ with import ../lib;
     titan      = callMachine devhell/titan.nix {};
   };
   labnet.labtops = {
-    inherit (callNetwork ./labnet/labtops.nix {}) labtop;
     hannswurscht = callMachine ./labnet/hannswurscht.nix {};
   };
   profpatsch = {
