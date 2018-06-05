@@ -21,8 +21,8 @@
   </para>
 
   <para>
-    So let's say you want to install the machine <literal>labtop</literal> which
-    has the channel attribute <literal>channels.machines.labnet.labtops.labtop</literal>
+    So let's say you want to install the machine <literal>hannswurscht</literal> which
+    has the channel attribute <literal>channels.machines.openlab.hannswurscht</literal>
   </para>
 
   <para>
@@ -33,7 +33,7 @@
     <command>
 <screen>
 nix-channel --add <link
-  xlink:href="&hydra.channelbase;/channels.machines.labnet.labtop"/> vuizvui
+  xlink:href="&hydra.channelbase;/channels.machines.openlab.hannswurscht"/> vuizvui
 nix-channel --remove nixos  # otherwise it will interfere with the rebuild
 nix-channel --update
 </screen>
@@ -55,10 +55,10 @@ nix-channel --update
     <filename>/etc/nixos/configuration.nix</filename>:
   </para>
 
-  <screen><code language="nix">(import &lt;vuizvui/machines&gt;).labnet.labtop.config</code></screen>
+  <screen><code language="nix">(import &lt;vuizvui/machines&gt;).openlab.hannswurscht.config</code></screen>
 
   <para>
-    Of course you need to replace <literal>labnet.labtop</literal> with the
+    Of course you need to replace <literal>openlab.hannswurscht</literal> with the
     attribute of your machine.
   </para>
 
