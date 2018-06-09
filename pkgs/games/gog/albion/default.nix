@@ -23,7 +23,10 @@ let
     nativeBuildInputs = [ autoreconfHook ];
     buildInputs = [ alsaLib ];
     patches = [ ./wildmidi-build-fixes.patch ];
-    postPatch = "sed -i -e '/^CFLAGS/s/-pedantic//' configure.ac";
+    postPatch = ''
+      sed -i -e '/^CFLAGS/s/-pedantic//' configure.ac
+      sed -i -e '/^wildmidi_libs *=/s!\$(top_builddir)/src/!!' src/Makefile.am
+    '';
   };
 
   compileMidiPlugin = variant: let
