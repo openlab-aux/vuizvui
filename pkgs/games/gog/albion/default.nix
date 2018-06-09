@@ -1,5 +1,5 @@
 { stdenv, lib, buildSandbox, fetchGog, fetchzip, innoextract, SDL2, SDL2_mixer
-, bchunk, p7zip, alsaLib, writeText
+, bchunk, p7zip, alsaLib, writeText, makeWrapper, libGL
 
 # For static recompilation
 , fetchFromGitHub, scons, judy, python, nasm, autoreconfHook
@@ -150,7 +150,7 @@ in buildSandbox (stdenv.mkDerivation {
       --replace ./midiA-wildmidi.so "$wildmidiA/lib/midiA-wildmidi.so" \
   '';
 
-  nativeBuildInputs = [ scons judy python nasm udis86 ];
+  nativeBuildInputs = [ scons judy python nasm udis86 makeWrapper ];
   buildInputs = [ SDL2 SDL2_mixer ];
 
   NIX_CFLAGS_COMPILE = "-I${lib.getDev SDL2}/include/SDL2";
@@ -180,6 +180,10 @@ in buildSandbox (stdenv.mkDerivation {
     install -vD -m 0644 games/Albion/release/linux/Albion.cfg \
       "$out/etc/albion.cfg"
     install -vD games/Albion/SR-Main/SR-Main "$out/bin/albion"
+
+    # XXX: Temporary workaround, because SDL tries to dlopen() libGL.
+    wrapProgram "$out/bin/albion" \
+      --set SDL_OPENGL_LIBRARY ${lib.escapeShellArg "${libGL}/lib/libGL.so"}
   '';
 }) {
   paths.required = [ "$XDG_DATA_HOME/albion" "$XDG_CONFIG_HOME/albion" ];
