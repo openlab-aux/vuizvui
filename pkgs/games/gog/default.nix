@@ -16,6 +16,7 @@ let
     stardew-valley-beta = lib.lowPrio (callPackage ./stardew-valley.nix {
       beta = true;
     });
+    xeen = callPackage ./xeen.nix {};
   };
 in {
   options.gog = {
