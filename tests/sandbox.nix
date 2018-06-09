@@ -18,6 +18,12 @@
     systemd.services.display-manager.enable = false;
 
     environment.systemPackages = let
+      mkNestedLinksTo = drv: let
+        mkLink = name: to: pkgs.runCommand name { inherit to; } ''
+          ln -s "$to" "$out"
+        '';
+      in mkLink "nested-1" (mkLink "nested-2" (mkLink "nested-3" drv));
+
       testPackage = pkgs.runCommand "test-sandbox" {
         program = ''
           #!${pkgs.stdenv.shell} -ex
@@ -30,6 +36,16 @@
 
           # Should fail because we can't access the host's PATH
           ! echo foo | grep -qF foo
+
+          # Check whether we can access files behind nested storepaths that are
+          # symlinks.
+          lfile="$(< ${mkNestedLinksTo (pkgs.writeText "target" "file")})"
+          test "$lfile" = file
+          ldir="$(< ${mkNestedLinksTo (pkgs.runCommand "target" {} ''
+            mkdir -p "$out"
+            echo dir > "$out/canary"
+          '')}/canary)"
+          test "$ldir" = dir
 
           export PATH=/run/baz-test-sandbox/bin
           echo foo > /home/foo/existing/bar

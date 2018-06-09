@@ -189,6 +189,62 @@ static bool bind_file(const char *path)
     return true;
 }
 
+static bool makelinks(const char *from, const char *to)
+{
+    char linktarget[PATH_MAX];
+    char *target, *tmp;
+    ssize_t linksize;
+    bool result;
+
+    if (strcmp(from, to) == 0)
+        return true;
+
+    if ((linksize = readlink(from, linktarget, PATH_MAX)) == -1) {
+        if (errno == EINVAL)
+            // Not a symbolic link
+            return true;
+
+        fprintf(stderr, "reading link %s: %s\n", from, strerror(errno));
+        return false;
+    }
+
+    linktarget[linksize] = '\0';
+
+    if ((target = get_mount_target(from)) == NULL)
+        return false;
+
+    if ((tmp = strdup(target)) == NULL) {
+        fprintf(stderr, "strdup of %s: %s\n", target, strerror(errno));
+        free(target);
+        return false;
+    }
+
+    if (!makedirs(dirname(tmp), true)) {
+        free(target);
+        free(tmp);
+        return false;
+    }
+
+    free(tmp);
+
+    if (cache_path(cached_paths, target)) {
+        if (symlink(linktarget, target) == -1) {
+            if (errno == EEXIST)
+                goto recurse;
+
+            fprintf(stderr, "creating symlink from %s to %s: %s\n",
+                    target, linktarget, strerror(errno));
+            free(target);
+            return false;
+        }
+    }
+
+recurse:
+    result = makelinks(linktarget, to);
+    free(target);
+    return result;
+}
+
 bool bind_mount(const char *path, bool restricted, bool resolve)
 {
     int mflags = MS_BIND | MS_REC;
@@ -206,6 +262,13 @@ bool bind_mount(const char *path, bool restricted, bool resolve)
 
     if ((target = get_mount_target(resolve ? src : path)) == NULL)
         return false;
+
+    if (resolve) {
+        if (!makelinks(path, src)) {
+            free(target);
+            return false;
+        }
+    }
 
     if (!makedirs(target, false)) {
         free(target);
