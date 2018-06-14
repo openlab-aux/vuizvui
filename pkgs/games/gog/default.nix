@@ -12,6 +12,7 @@ let
     };
 
     albion = callPackage_i686 ./albion { inherit (pkgs) buildSandbox; };
+    party-hard = callPackage ./party-hard.nix {};
     stardew-valley = callPackage ./stardew-valley.nix {};
     stardew-valley-beta = lib.lowPrio (callPackage ./stardew-valley.nix {
       beta = true;
