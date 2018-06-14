@@ -155,7 +155,7 @@ in {
       keybase
       lftp
       libarchive
-      libreoffice-fresh
+      libreoffice
       lm_sensors
       lsof
       lxc
