@@ -116,6 +116,7 @@ in {
       file
       firefox
       flac
+      focuswriter
       fortune
       freerdpUnstable
       fuse_exfat
