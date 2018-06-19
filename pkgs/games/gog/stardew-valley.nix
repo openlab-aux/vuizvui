@@ -6,14 +6,14 @@
 
 buildGame rec {
   name = "stardew-valley-${version}";
-  version = if beta then "1.3.11" else "1.2.33";
+  version = if beta then "1.3.18" else "1.2.33";
 
   src = fetchGog (if beta then {
     productId = 1453375253;
     downloadName = "80335";
     downloadType = "product_bonus";
     suffix = "tar.gz";
-    sha256 = "1aqw94paig3q5430vrbh35sghl6snhrdi9aj7bdkfymdmacs2yf3";
+    sha256 = "1brlk6y2dlbcm99s3vdyzpcrksk8a2isqx4x8bh8dr9z250fbinv";
   } else {
     productId = 1453375253;
     downloadName = "en3installer10";
