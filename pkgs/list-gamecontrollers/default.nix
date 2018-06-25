@@ -1,10 +1,10 @@
-{ runCommand, pkgconfig, SDL2 }:
+{ runCommandCC, pkgconfig, SDL2 }:
 
-runCommand "list-gamecontrollers" {
+runCommandCC "list-gamecontrollers" {
   buildInputs = [ pkgconfig SDL2 ];
 } ''
   mkdir -p "$out/bin"
-  gcc -Werror "${./list-gc.c}" \
+  cc -Werror "${./list-gc.c}" \
     $(pkg-config --libs --cflags sdl2) \
     -o "$out/bin/list-gamecontrollers"
 ''
