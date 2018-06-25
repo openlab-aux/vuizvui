@@ -10,6 +10,8 @@
     inherit (haskellPackages) ghcWithPackages;
   };
 
+  inherit (callPackage ./utils-hs {})
+    nix-gen;
 
   # patched version of droopy, with javascript user-enhancement
   droopy = droopy.overrideDerivation (old: {
