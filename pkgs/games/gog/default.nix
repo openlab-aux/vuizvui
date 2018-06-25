@@ -12,6 +12,7 @@ let
     };
 
     albion = callPackage_i686 ./albion { inherit (pkgs) buildSandbox; };
+    dungeons3 = callPackage ./dungeons3.nix {};
     overload = callPackage ./overload.nix {};
     party-hard = callPackage ./party-hard.nix {};
     stardew-valley = callPackage ./stardew-valley.nix {};
