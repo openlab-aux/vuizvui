@@ -19,6 +19,7 @@ let
     stardew-valley-beta = lib.lowPrio (callPackage ./stardew-valley.nix {
       beta = true;
     });
+    thimbleweed-park = callPackage ./thimbleweed-park.nix {};
     wizard-of-legend = callPackage ./wizard-of-legend.nix {};
     xeen = callPackage ./xeen.nix {};
   };
