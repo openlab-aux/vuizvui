@@ -77,9 +77,6 @@ in {
       beets = super.beets.override {
         enableAlternatives = true;
       };
-      miro = super.miro.override {
-        enableBonjour = true;
-      };
       netrw = super.netrw.override {
         checksumType = "mhash";
       };
