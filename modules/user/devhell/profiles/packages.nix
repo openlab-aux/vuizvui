@@ -279,6 +279,7 @@ in {
       wget
       which
       wipe
+      wireguard
       wireshark
       xfsprogs
       xlibs.xev
