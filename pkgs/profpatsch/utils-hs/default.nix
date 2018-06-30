@@ -15,6 +15,7 @@ let
     license = lib.licenses.gpl3;
     isExecutable = true;
     buildDepends = with haskellPackages; [ hnix ansi-wl-pprint protolude data-fix ];
+    hydraPlatforms = [ "x86_64-linux" ];
   };
 
 in {
