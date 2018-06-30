@@ -69,7 +69,6 @@ in {
 
     nixpkgs.config = {
       pulseaudio = true;
-      firefox.icedtea = true;
       allowBroken = true;
     };
 
