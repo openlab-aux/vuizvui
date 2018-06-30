@@ -15,6 +15,7 @@ let
     dungeons3 = callPackage ./dungeons3.nix {};
     overload = callPackage ./overload.nix {};
     party-hard = callPackage ./party-hard.nix {};
+    satellite-reign = callPackage ./satellite-reign.nix {};
     stardew-valley = callPackage ./stardew-valley.nix {};
     stardew-valley-beta = lib.lowPrio (callPackage ./stardew-valley.nix {
       beta = true;
