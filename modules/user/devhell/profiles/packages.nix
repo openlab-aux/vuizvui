@@ -122,12 +122,14 @@ in {
       fuse_exfat
       fzf
       gajim
+      gcc
       gdb
       ghostscript
       ghostwriter
       git
       gitinspector
       gnufdisk
+      gnumake
       gnupg
       gource
       gparted
