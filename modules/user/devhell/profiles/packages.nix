@@ -156,6 +156,7 @@ in {
       jwhois
       keepassxc
       keybase
+      ldns
       lftp
       libarchive
       libreoffice
