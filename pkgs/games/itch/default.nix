@@ -12,6 +12,7 @@ let
     };
 
     invisigun-heroes = callPackage ./invisigun-heroes.nix {};
+    towerfall-ascension = callPackage ./towerfall-ascension.nix {};
   };
 in {
   options.itch.apiKey = lib.mkOption {
