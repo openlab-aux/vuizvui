@@ -247,23 +247,26 @@ recurse:
 
 bool bind_mount(const char *path, bool rdonly, bool restricted, bool resolve)
 {
-    int mflags = MS_BIND | MS_REC;
+    int base_mflags = MS_BIND | MS_REC, mflags = 0;
+    const char *msrc;
     char src[PATH_MAX], *target;
 
     if (rdonly)
         mflags |= MS_RDONLY;
 
     if (restricted)
-        mflags |= MS_NOSUID | MS_NODEV | MS_NOATIME;
+        mflags |= MS_NOSUID | MS_NODEV;
 
     if (resolve ? realpath(path, src) == NULL : access(path, F_OK) == -1)
         // Skip missing mount source
         return true;
 
-    if (is_regular_file(resolve ? src : path))
-        return bind_file(resolve ? src : path);
+    msrc = resolve ? src : path;
 
-    if ((target = get_mount_target(resolve ? src : path)) == NULL)
+    if (is_regular_file(msrc))
+        return bind_file(msrc);
+
+    if ((target = get_mount_target(msrc)) == NULL)
         return false;
 
     if (resolve) {
@@ -278,16 +281,24 @@ bool bind_mount(const char *path, bool rdonly, bool restricted, bool resolve)
         return false;
     }
 
-    if (!cache_path(cached_paths, resolve ? src : path)) {
+    if (!cache_path(cached_paths, msrc)) {
         free(target);
         return true;
     }
 
-    if (mount(resolve ? src : path, target, "", mflags, NULL) == -1) {
-        fprintf(stderr, "mount %s to %s: %s\n",
-                resolve ? src : path, target, strerror(errno));
+    if (mount(msrc, target, "", base_mflags, NULL) == -1) {
+        fprintf(stderr, "mount %s to %s: %s\n", msrc, target, strerror(errno));
         free(target);
         return false;
+    }
+
+    if (mflags != 0) {
+        mflags |= base_mflags | MS_REMOUNT;
+        if (mount("none", target, "", mflags, NULL) == -1) {
+            fprintf(stderr, "remount %s: %s\n", target, strerror(errno));
+            free(target);
+            return false;
+        }
     }
 
     free(target);
