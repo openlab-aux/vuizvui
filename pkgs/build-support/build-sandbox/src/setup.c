@@ -120,7 +120,7 @@ static bool makedirs(const char *path, bool do_cache)
     return true;
 }
 
-static char *get_mount_target(const char *path)
+char *get_mount_target(const char *path)
 {
     size_t pathlen = strlen(path), rootdir_len = strlen(FS_ROOT_DIR);
     char *target;
