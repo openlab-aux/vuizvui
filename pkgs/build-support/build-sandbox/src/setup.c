@@ -245,10 +245,13 @@ recurse:
     return result;
 }
 
-bool bind_mount(const char *path, bool restricted, bool resolve)
+bool bind_mount(const char *path, bool rdonly, bool restricted, bool resolve)
 {
     int mflags = MS_BIND | MS_REC;
     char src[PATH_MAX], *target;
+
+    if (rdonly)
+        mflags |= MS_RDONLY;
 
     if (restricted)
         mflags |= MS_NOSUID | MS_NODEV | MS_NOATIME;
@@ -537,7 +540,7 @@ bool extra_mount(const char *path, bool is_required)
     if (is_required && !makedirs(expanded, false))
         return false;
 
-    if (!bind_mount(expanded, true, true)) {
+    if (!bind_mount(expanded, false, true, true)) {
         free(expanded);
         return false;
     }
@@ -597,7 +600,7 @@ static bool mount_requisites(struct query_state *qs, const char *path)
 
     while ((requisite = next_query_result(qs)) != NULL) {
         if (is_dir(requisite)) {
-            if (!bind_mount(requisite, true, false))
+            if (!bind_mount(requisite, true, true, false))
                 return false;
         } else {
             if (!bind_file(requisite))
@@ -685,25 +688,25 @@ static bool setup_chroot(void)
         return false;
     }
 
-    if (!bind_mount("/etc", true, false))
+    if (!bind_mount("/etc", true, true, false))
         return false;
 
-    if (!bind_mount("/dev", false, false))
+    if (!bind_mount("/dev", false, false, false))
         return false;
 
-    if (!bind_mount("/proc", false, false))
+    if (!bind_mount("/proc", false, false, false))
         return false;
 
-    if (!bind_mount("/sys", false, false))
+    if (!bind_mount("/sys", false, false, false))
         return false;
 
-    if (!bind_mount("/run", false, false))
+    if (!bind_mount("/run", false, false, false))
         return false;
 
-    if (!bind_mount("/var/run", false, false))
+    if (!bind_mount("/var/run", false, false, false))
         return false;
 
-    if (!bind_mount("/tmp", true, false))
+    if (!bind_mount("/tmp", false, true, false))
         return false;
 
     if (!setup_runtime_paths())

@@ -49,7 +49,8 @@ in stdenv.mkDerivation ({
     echo 'bool setup_app_paths(void) {' >> params.c
 
     for dep in $runtimeDeps; do
-      echo 'if (!bind_mount("'"$dep"'", true, true)) return false;' >> params.c
+      echo 'if (!bind_mount("'"$dep"'", true, true, true)) return false;' \
+        >> params.c
     done
 
     ${mkExtraMountParams true  pathsRequired}
