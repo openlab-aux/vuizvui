@@ -81,7 +81,7 @@
     HiddenServicePorT 22 127.0.0.1:22
   '';
 
-  users.extraUsers.lukas = {
+  users.users.lukas = {
     isNormalUser = true;
     uid = 1000;
     openssh.authorizedKeys.keys = [
@@ -93,7 +93,7 @@
     extraGroups = [ "wheel" ];
   };
 
-  users.extraUsers.books = {
+  users.users.books = {
     uid = 1001;
     isNormalUser = true;
     group = "users";
