@@ -11,7 +11,7 @@ let
       inherit (config.gog) email password;
     };
 
-    albion = callPackage_i686 ./albion { inherit (pkgs) buildSandbox; };
+    albion = callPackage_i686 ./albion {};
     dungeons3 = callPackage ./dungeons3.nix {};
     overload = callPackage ./overload.nix {};
     party-hard = callPackage ./party-hard.nix {};

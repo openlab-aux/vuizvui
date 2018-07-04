@@ -18,6 +18,7 @@ let
 
     games = import ./games {
       pkgs = pkgs // self.vuizvui;
+      pkgsi686Linux = pkgs.pkgsi686Linux // self.vuizvui;
       config = pkgs.config.vuizvui.games or null;
     };
 

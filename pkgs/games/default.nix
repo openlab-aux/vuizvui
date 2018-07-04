@@ -1,4 +1,6 @@
-{ config ? null, pkgs ? import <nixpkgs> {} }:
+{ config ? null, pkgs ? import <nixpkgs> {}
+, pkgsi686Linux ? pkgs.pkgsi686Linux
+}:
 
 let
   configFilePath = let
@@ -34,8 +36,7 @@ let
     };
 
     config._module.args.pkgs = pkgs // (mkBuildSupport pkgs) // {
-      pkgsi686Linux = pkgs.pkgsi686Linux
-                   // (mkBuildSupport pkgs.pkgsi686Linux);
+      pkgsi686Linux = pkgsi686Linux // (mkBuildSupport pkgsi686Linux);
     };
   };
 
