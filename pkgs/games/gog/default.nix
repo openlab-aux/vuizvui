@@ -16,6 +16,7 @@ let
     overload = callPackage ./overload.nix {};
     party-hard = callPackage ./party-hard.nix {};
     satellite-reign = callPackage ./satellite-reign.nix {};
+    settlers2 = callPackage ./settlers2.nix {};
     stardew-valley = callPackage ./stardew-valley.nix {};
     stardew-valley-beta = lib.lowPrio (callPackage ./stardew-valley.nix {
       beta = true;
