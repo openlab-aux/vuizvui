@@ -30,6 +30,9 @@ in {
 
     environment.pathsToLink = lib.singleton "/share/chromium/extensions";
 
+    # The default theme hurts my eyes.
+    environment.variables.GTK_THEME = "Adwaita:dark";
+
     vuizvui.lazyPackages = import ./lazy-packages.nix pkgs;
 
     sound.enable = true;
