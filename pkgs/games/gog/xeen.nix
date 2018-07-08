@@ -74,8 +74,8 @@ let
     src = fetchFromGitHub {
       owner = "scummvm";
       repo = "scummvm";
-      rev = "7edac197e4aa9846b71f398d9c5a4d56c5b7c34e";
-      sha256 = "0vj0widczlmvbnv6qzfsh14mhil3p2rbfpj86fb4syrbb8qrc01g";
+      rev = "ca8b79fa751d1f8eac1e468936cbf1f5d7656674";
+      sha256 = "0aa12n3mci7zw2mhh23721ixx0b8zh5463a529s2rkf9wjq751f0";
     };
 
     configureFlags = (drv.configureFlags or []) ++ [
