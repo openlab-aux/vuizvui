@@ -4,12 +4,12 @@ buildUnity {
   name = "overload";
   fullName = "Overload";
   saveDir = "Revival/Overload";
-  version = "1.0.1829";
+  version = "1.0.1839";
 
   src = fetchGog {
     productId = 1309632191;
     downloadName = "en3installer0";
-    sha256 = "0gw2d78smixzkywhwi1cskhr0mwpn4im5r4k1n0pgavb30payhss";
+    sha256 = "1r42ll6k2xif405rp85gn3sbhacrhf1kkpqx2ahp8j5f9alscdxm";
   };
 
   unpackCmd = "${unzip}/bin/unzip -qq \"$curSrc\" 'data/noarch/game/*' || :";
