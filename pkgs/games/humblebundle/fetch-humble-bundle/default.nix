@@ -114,7 +114,7 @@
           prodname = subproduct.human_name.encode('ascii', 'replace')
           downloads = [(download.machine_name, download.download_struct)
                        for download in subproduct.downloads]
-          yield (prodname, downloads)
+          yield ((subproduct.machine_name, prodname), downloads)
 
     def find_download(downloads):
       for machine_name, dstruct in sum(downloads.values(), []):
@@ -161,7 +161,7 @@
       print >>sys.stderr, ${pyStr "Cannot find download for ${machineName}!"}
       print >>sys.stderr, 'Available machine names:'
       for name, dstructs in sorted(products.items(), key=lambda x: x[0]):
-        print >>sys.stderr, "  * " + name
+        print >>sys.stderr, "  * " + name[1]
         print >>sys.stderr, "    " + ', '.join(map(lambda x: x[0], dstructs))
       raise SystemExit(1)
     elif dstruct.md5 != ${pyStr md5}:
