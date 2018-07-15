@@ -17,7 +17,7 @@ buildGame rec {
     sha256 = "1cfll73qazm9nz40n963qvankqkznfjai9g88kgw6xcl40y8jrqn";
   });
 
-  unpackCmd = "${unzip}/bin/unzip -qq \"$curSrc\" 'data/noarch/game/*' || :";
+  unpackCmd = "${unzip}/bin/unzip -qq \"$curSrc\" 'data/noarch/*' || :";
 
   buildInputs = [ libGL ];
 
@@ -38,15 +38,29 @@ buildGame rec {
     }
     EOF
     patchelf --add-needed "$out/libexec/thimbleweed-park/preload.so" \
-      ThimbleweedPark
+      game/ThimbleweedPark
   '';
 
   installPhase = ''
-    install -vD ThimbleweedPark "$out/bin/thimbleweed-park"
+    install -vD game/ThimbleweedPark "$out/bin/thimbleweed-park"
     install -vD preload.so "$out/libexec/thimbleweed-park/preload.so"
-    for i in *.ggpack[0-9]*; do
-      install -vD -m 0644 "$i" "$out/share/thimbleweed-park/$i"
+    for i in game/*.ggpack[0-9]*; do
+      install -vD -m 0644 "$i" "$out/share/thimbleweed-park/$(basename "$i")"
     done
+
+    install -vD -m 0644 support/icon.png \
+      "$out/share/icons/thimbleweed-park.png"
+
+    mkdir -p "$out/share/applications"
+    cat > "$out/share/applications/thimbleweed-park.desktop" <<EOF
+    [Desktop Entry]
+    Name=Thimbleweed Park
+    Type=Application
+    Version=1.1
+    Exec=$out/bin/thimbleweed-park
+    Icon=$out/share/icons/thimbleweed-park.png
+    Categories=Game
+    EOF
   '';
 
   sandbox.paths.required = [
