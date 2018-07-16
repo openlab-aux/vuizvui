@@ -111,5 +111,6 @@ in {
     };
 
     vuizvui.enableGlobalNixpkgsConfig = true;
+    vuizvui.system.kernel.zswap.enable = true;
   };
 }
