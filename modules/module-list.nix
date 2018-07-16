@@ -14,6 +14,7 @@
   ./system/iso.nix
   ./system/kernel/bfq
   ./system/kernel/rckernel.nix
+  ./system/kernel/zswap.nix
   ./user/aszlig/profiles/base.nix
   ./user/aszlig/profiles/managed.nix
   ./user/aszlig/profiles/workstation
