@@ -3,10 +3,6 @@
 let
   cfg = config.vuizvui.user.aszlig.profiles.workstation;
   inherit (config.services.xserver) xrandrHeads;
-
-  kernelVersion = config.boot.kernelPackages.kernel.version;
-  hasZstd = lib.versionAtLeast kernelVersion "4.18";
-
 in {
   options.vuizvui.user.aszlig.profiles.workstation = {
     enable = lib.mkEnableOption "Workstation profile for aszlig";
@@ -15,23 +11,7 @@ in {
   config = lib.mkIf cfg.enable {
     vuizvui.user.aszlig.profiles.base.enable = true;
 
-    boot.kernelPatches = lib.singleton {
-      name = "zswap-config";
-      patch = null;
-      extraConfig = ''
-        CRYPTO_${if hasZstd then "ZSTD" else "LZO"} y
-        ZSWAP y
-        Z3FOLD y
-      '';
-    };
-
-    boot.kernelParams = [
-      "zswap.enabled=1"
-      "zswap.zpool=z3fold"
-      "zswap.compressor=${if hasZstd then "zstd" else "lzo"}"
-      "panic=1800"
-    ];
-
+    boot.kernelParams = [ "panic=1800" ];
     boot.cleanTmpDir = true;
 
     environment.systemPackages = with lib; let
@@ -133,6 +113,8 @@ in {
     vuizvui.programs.gnupg.agent.enable = true;
     vuizvui.programs.gnupg.agent.sshSupport = true;
     vuizvui.programs.gnupg.agent.scdaemon.enable = true;
+
+    vuizvui.system.kernel.zswap.enable = true;
 
     services = {
       openssh.enable = true;
