@@ -5,4 +5,5 @@
     withPulseAudio = config.pulseaudio or true;
   };
   buildUnity = callPackage ./build-unity.nix {};
+  monogamePatcher = callPackage ./monogame-patcher {};
 }
