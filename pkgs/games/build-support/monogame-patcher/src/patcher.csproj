@@ -1,0 +1,39 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         DefaultTargets="Build">
+
+  <Import Project="$(MSBuildToolsPath)/Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <Compile Include="patcher.cs"/>
+    <Compile Include="assembly-info.cs"/>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!-- I *hate* those long lines with a passion, so let's concat them -->
+    <Blurb>, Culture=neutral, PublicKeyToken=</Blurb>
+
+    <CecilInfo>Version=0.10.0.0$(Blurb)50cebf1cceb9d05e</CecilInfo>
+    <CmdLineInfo>Version=2.2.1.0$(Blurb)de6f01bd326f8c32</CmdLineInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Mono.Cecil, $(CecilInfo)">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks"/>
+    <Reference Include="CommandLine, $(CmdLineInfo)">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <AssemblyName>monogame-patcher</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <OutDir>bin/Release/</OutDir>
+    <OutputPath>bin/Release</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+</Project>
