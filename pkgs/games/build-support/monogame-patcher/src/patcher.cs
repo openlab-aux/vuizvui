@@ -97,8 +97,8 @@ class ReplaceCall : Command {
     private MethodReference replace;
 
     public ReplaceCall(ReplaceCallCmd options) : base(options) {
-        this.search = options.replaceCall.ToList()[0];
-        this.replace = this.find_method_ref(options.replaceCall.ToList()[1]);
+        this.search = options.replaceMethod;
+        this.replace = this.find_method_ref(options.replacementMethod);
 
         var filtered = this.module.Types
             .Where(p => options.typesToPatch.Contains(p.Name));

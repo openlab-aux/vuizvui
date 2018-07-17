@@ -19,10 +19,12 @@ class FixFileStreamsCmd : GenericOptions {
 
 [Verb("replace-call", HelpText="Replace calls to types.")]
 class ReplaceCallCmd : GenericOptions {
-    [Value(0, Min=2, Max=2, HelpText="Call to replace.")]
-    public IEnumerable<string> replaceCall { get; set; }
+    [Value(0, Required=true, HelpText="Method call to replace.")]
+    public string replaceMethod { get; set; }
+
+    [Value(1, Required=true, HelpText="The replacement method.")]
+    public string replacementMethod { get; set; }
 
     [Value(2, Required=true, MetaName = "type", HelpText = "Types to patch.")]
     public IEnumerable<string> typesToPatch { get; set; }
-
 };
