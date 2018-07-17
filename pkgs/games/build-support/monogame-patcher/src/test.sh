@@ -51,30 +51,31 @@ class test1 {
 }
 EOF
 
-mcs a.cs -target:library -out:a.dll
-mcs b.cs -target:library -out:b.dll
+mkdir subdir
+mcs a.cs -target:library -out:subdir/a.dll
+mcs b.cs -target:library -out:subdir/b.dll
 
-mcs test1.cs -r:a -r:b -out:test1.exe
-mcs test2.cs -r:a -r:b -out:test2.exe
+mcs test1.cs -r:subdir/a -r:subdir/b -out:subdir/test1.exe
+mcs test2.cs -r:subdir/a -r:subdir/b -out:subdir/test2.exe
 
-! "$out/bin/monogame-patcher" replace-call -i test1.exe \
+! "$out/bin/monogame-patcher" replace-call -i subdir/test1.exe \
     "System.String a::replaceMe(System.String)" \
     "System.String b::notfound(System.String)" \
     test1 2> /dev/null
 
-"$out/bin/monogame-patcher" replace-call -i test1.exe \
+"$out/bin/monogame-patcher" replace-call -i subdir/test1.exe \
     "System.String a::replaceMe(System.String)" \
     "System.String b::replacement(System.String)" \
     test1
 
-test "$(mono test1.exe)" = "bar called: xxx"
+test "$(mono subdir/test1.exe)" = "bar called: xxx"
 
 echo foo > write_test.txt
 
-test "$(mono test2.exe)" = "can write"
+test "$(mono subdir/test2.exe)" = "can write"
 
-"$out/bin/monogame-patcher" fix-filestreams -i b.dll b
+"$out/bin/monogame-patcher" fix-filestreams -i subdir/b.dll b
 
-test "$(mono test2.exe)" = "can not write"
+test "$(mono subdir/test2.exe)" = "can not write"
 
 "$out/bin/monogame-patcher" --help 2>&1 | grep -q fix-filestreams

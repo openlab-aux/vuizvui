@@ -21,8 +21,12 @@ class Command {
             this.outfile = options.outputFile;
         this.infile = options.inputFile;
 
+        var resolver = new DefaultAssemblyResolver();
+        resolver.AddSearchDirectory(Path.GetDirectoryName(this.infile));
+
         var rp = new ReaderParameters {
-            ReadWrite = this.infile == this.outfile
+            ReadWrite = this.infile == this.outfile,
+            AssemblyResolver = resolver
         };
         this.module = ModuleDefinition.ReadModule(this.infile, rp);
     }
