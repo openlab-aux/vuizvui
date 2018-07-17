@@ -7,7 +7,6 @@
     <Compile Include="assembly-info.cs"/>
     <Compile Include="options.cs"/>
     <Compile Include="patcher.cs"/>
-    <Compile Include="tests.cs"/>
   </ItemGroup>
 
   <PropertyGroup>
@@ -16,7 +15,6 @@
 
     <CecilInfo>Version=0.10.0.0$(Blurb)50cebf1cceb9d05e</CecilInfo>
     <CmdLineInfo>Version=2.2.1.0$(Blurb)de6f01bd326f8c32</CmdLineInfo>
-    <NUnitInfo>Version=3.10.1.0$(Blurb)2638cd05610744eb</NUnitInfo>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,12 +22,14 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Mono.Cecil.Rocks"/>
+    <Reference Include="Mono.Cecil.Rocks, $(CecilInfo)">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="CommandLine, $(CmdLineInfo)">
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, $(NUnitInfo)"/>
   </ItemGroup>
 
   <PropertyGroup>

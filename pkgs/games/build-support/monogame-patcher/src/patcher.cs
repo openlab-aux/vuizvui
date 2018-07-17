@@ -27,6 +27,24 @@ class Command {
         this.module = ModuleDefinition.ReadModule(this.infile, rp);
     }
 
+    protected MethodReference find_method_ref(string fullSig) {
+        foreach (var aref in this.module.AssemblyReferences) {
+            var resolved = this.module.AssemblyResolver.Resolve(aref);
+            foreach (var type in resolved.MainModule.Types) {
+                foreach (var ctor in type.GetConstructors()) {
+                    if (ctor.ToString() != fullSig) continue;
+                    return this.module.ImportReference(ctor);
+                }
+                foreach (var meth in type.GetMethods()) {
+                    if (meth.ToString() != fullSig) continue;
+                    return this.module.ImportReference(meth);
+                }
+            }
+        }
+
+        throw new Exception($"Method reference for {fullSig} not found.");
+    }
+
     public void save() {
         if (this.outfile == this.infile)
             this.module.Write();
@@ -36,9 +54,16 @@ class Command {
 }
 
 class FixFileStreams : Command {
+    private MethodReference betterFileStream;
+
     public FixFileStreams(FixFileStreamsCmd options) : base(options) {
         var filtered = this.module.Types
             .Where(p => options.typesToPatch.Contains(p.Name));
+
+        this.betterFileStream = this.find_method_ref(
+            "System.Void System.IO.FileStream::.ctor" +
+            "(System.String,System.IO.FileMode,System.IO.FileAccess)"
+        );
 
         foreach (var toPatch in filtered)
             patch_type(toPatch);
@@ -57,24 +82,7 @@ class FixFileStreams : Command {
         foreach (Instruction i in fileStreams.ToList()) {
             var fileAccessRead = il.Create(OpCodes.Ldc_I4_1);
             il.InsertBefore(i, fileAccessRead);
-
-            var ctorType = this.module.AssemblyReferences.Select(
-                x => new {
-                    type = this.module.AssemblyResolver.Resolve(x)
-                        .MainModule.GetType("System.IO.FileStream")
-                }
-            ).Where(x => x.type != null).Select(x => x.type).First();
-
-            string wantedCtor = "System.Void System.IO.FileStream"
-                              + "::.ctor(System.String,"
-                              + "System.IO.FileMode,"
-                              + "System.IO.FileAccess)";
-
-            var newCtor = ctorType.GetConstructors()
-                .Single(x => x.ToString() == wantedCtor);
-
-            var refCtor = this.module.ImportReference(newCtor);
-            il.Replace(i, il.Create(OpCodes.Newobj, refCtor));
+            il.Replace(i, il.Create(OpCodes.Newobj, this.betterFileStream));
         }
     }
 
@@ -86,11 +94,11 @@ class FixFileStreams : Command {
 
 class ReplaceCall : Command {
     private string search;
-    private string replace;
+    private MethodReference replace;
 
     public ReplaceCall(ReplaceCallCmd options) : base(options) {
         this.search = options.replaceCall.ToList()[0];
-        this.replace = options.replaceCall.ToList()[1];
+        this.replace = this.find_method_ref(options.replaceCall.ToList()[1]);
 
         var filtered = this.module.Types
             .Where(p => options.typesToPatch.Contains(p.Name));
@@ -108,20 +116,8 @@ class ReplaceCall : Command {
             .Where(i => i.OpCode == OpCodes.Call)
             .Where(i => i.Operand.ToString() == this.search);
 
-        var ctorType = this.module.AssemblyReferences.Select(
-            x => new {
-                // XXX: Don't hardcode UnityEngine.Application!
-                type = this.module.AssemblyResolver.Resolve(x)
-                    .MainModule.GetType("UnityEngine.Application")
-            }
-        ).Where(x => x.type != null).Select(x => x.type).First();
-
-        var newMethod = ctorType.GetMethods()
-            .Single(x => x.ToString() == this.replace);
-        var refMethod = this.module.ImportReference(newMethod);
-
         foreach (Instruction i in found.ToList())
-            il.Replace(i, il.Create(OpCodes.Call, refMethod));
+            il.Replace(i, il.Create(OpCodes.Call, this.replace));
     }
 
     private void patch_type(TypeDefinition td) {
