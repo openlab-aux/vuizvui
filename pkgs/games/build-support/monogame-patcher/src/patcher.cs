@@ -9,14 +9,6 @@ using Mono.Cecil;
 
 using CommandLine;
 
-class GenericOptions
-{
-    [Option('i', "infile", Required=true, HelpText="Input file to transform.")]
-    public string inputFile { get; set; }
-    [Option('o', "outfile", HelpText="File to write transformed data to.")]
-    public string outputFile { get; set; }
-}
-
 class Command {
     protected string infile;
     protected string outfile;
@@ -42,13 +34,6 @@ class Command {
             this.module.Write(this.outfile);
     }
 }
-
-[Verb("fix-filestreams", HelpText="Fix System.IO.FileStream constructors"
-                                 +" to open files read-only.")]
-class FixFileStreamsCmd : GenericOptions {
-    [Value(0, Required=true, MetaName = "type", HelpText = "Types to patch.")]
-    public IEnumerable<string> typesToPatch { get; set; }
-};
 
 class FixFileStreams : Command {
     public FixFileStreams(FixFileStreamsCmd options) : base(options) {
@@ -99,16 +84,6 @@ class FixFileStreams : Command {
     }
 }
 
-[Verb("replace-call", HelpText="Replace calls to types.")]
-class ReplaceCallCmd : GenericOptions {
-    [Value(0, Min=2, Max=2, HelpText="Call to replace.")]
-    public IEnumerable<string> replaceCall { get; set; }
-
-    [Value(2, Required=true, MetaName = "type", HelpText = "Types to patch.")]
-    public IEnumerable<string> typesToPatch { get; set; }
-
-};
-
 class ReplaceCall : Command {
     private string search;
     private string replace;
@@ -156,11 +131,8 @@ class ReplaceCall : Command {
 }
 
 public class patcher {
-
     public static int Main(string[] args) {
-        Parser.Default.ParseArguments<
-            GenericOptions, FixFileStreamsCmd, ReplaceCallCmd
-        >(args)
+        Parser.Default.ParseArguments<FixFileStreamsCmd, ReplaceCallCmd>(args)
             .WithParsed<FixFileStreamsCmd>(opts => new FixFileStreams(opts))
             .WithParsed<ReplaceCallCmd>(opts => new ReplaceCall(opts));
         return 0;
