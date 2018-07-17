@@ -1,10 +1,10 @@
-{ buildDotnetPackage, fetchNuGet }:
+{ lib, buildDotnetPackage, fetchNuGet }:
 
 buildDotnetPackage {
   baseName = "monogame-patcher";
   version = "0.1.0";
 
-  src = ./src;
+  src = lib.cleanSource ./src;
 
   buildInputs = [
     (fetchNuGet {
