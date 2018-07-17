@@ -128,7 +128,17 @@ class ReplaceCall : Command {
 
 public class patcher {
     public static int Main(string[] args) {
-        Parser.Default.ParseArguments<FixFileStreamsCmd, ReplaceCallCmd>(args)
+        var parser = new Parser((settings) => {
+            settings.EnableDashDash = true;
+            settings.HelpWriter = Console.Error;
+
+            // XXX: When not running in a terminal the width is 0, but the
+            //      CommandLine library expects it to be greater than zero.
+            if (Console.WindowWidth == 0)
+                settings.MaximumDisplayWidth = 80;
+        });
+
+        parser.ParseArguments<FixFileStreamsCmd, ReplaceCallCmd>(args)
             .WithParsed<FixFileStreamsCmd>(opts => new FixFileStreams(opts))
             .WithParsed<ReplaceCallCmd>(opts => new ReplaceCall(opts));
         return 0;

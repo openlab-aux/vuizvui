@@ -76,3 +76,5 @@ test "$(mono test2.exe)" = "can write"
 "$out/bin/monogame-patcher" fix-filestreams -i b.dll b
 
 test "$(mono test2.exe)" = "can not write"
+
+"$out/bin/monogame-patcher" --help 2>&1 | grep -q fix-filestreams
