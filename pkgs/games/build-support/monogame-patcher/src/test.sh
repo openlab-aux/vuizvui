@@ -99,4 +99,13 @@ test "$(mono subdir/test2.exe)" = "can write"
 
 test "$(mono subdir/test2.exe)" = "can not write"
 
+set +e
+"$out/bin/monogame-patcher" --help &> /dev/null
+ret=$?
+set -e
+if [ $ret -eq 0 ]; then
+    echo "Running with --help should give exit status != 0 but was $ret" >&2
+    exit 1
+fi
+
 "$out/bin/monogame-patcher" --help 2>&1 | grep -q fix-filestreams

@@ -170,9 +170,11 @@ public class patcher {
                 settings.MaximumDisplayWidth = 80;
         });
 
+        var retval = 0;
         parser.ParseArguments<FixFileStreamsCmd, ReplaceCallCmd>(args)
             .WithParsed<FixFileStreamsCmd>(opts => new FixFileStreams(opts))
-            .WithParsed<ReplaceCallCmd>(opts => new ReplaceCall(opts));
-        return 0;
+            .WithParsed<ReplaceCallCmd>(opts => new ReplaceCall(opts))
+            .WithNotParsed(_ => retval = 1);
+        return retval;
     }
 }
