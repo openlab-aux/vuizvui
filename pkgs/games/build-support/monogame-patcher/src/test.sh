@@ -18,7 +18,7 @@ using System.IO;
 
 public class b {
     public static string replacement(string bar) {
-        if (bar == "nope")
+        if (bar == "nope" || bar == "yikes")
             return "nope";
         Console.WriteLine("bar called: " + bar);
         return "bar";
@@ -49,15 +49,20 @@ EOF
 
 cat > "test1.cs" <<EOF
 class test1 {
+    public static void unrelated() {
+        b.replacement("yikes");
+    }
+
     public static void Main() {
         a.replaceMe("xxx");
         b.replacement("nope");
+        test1.unrelated();
     }
 }
 EOF
 
 cat > "test2.cs" <<EOF
-class test1 {
+class test2 {
     public static void Main() {
         b.wrongFileStreamUse();
     }
@@ -87,7 +92,7 @@ test "$(mono subdir/test1.exe)" = "bar called: xxx"
 "$out/bin/monogame-patcher" replace-call -i subdir/test1.exe -a subdir/c.dll \
     "System.String b::replacement(System.String)" \
     "System.String c::anotherReplacement(System.String)" \
-    test1
+    test1::Main
 
 test "$(mono subdir/test1.exe)" = "foobar called: xxx"
 

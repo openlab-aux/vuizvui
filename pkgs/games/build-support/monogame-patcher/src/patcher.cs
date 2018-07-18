@@ -25,6 +25,42 @@ class Command {
         this.module = this.read_module(this.infile, readOnly);
     }
 
+    private IEnumerable<MethodDefinition> get_methods(TypeDefinition td) {
+        return td.NestedTypes
+            .SelectMany(n => this.get_methods(n))
+            .Union(td.Methods);
+    }
+
+    protected IEnumerable<MethodDefinition> getm(IEnumerable<string> types) {
+        var needles = types
+            .Select(t => t.Split(new[] { "::" }, 2, StringSplitOptions.None));
+
+        foreach (var n in needles) {
+            var filtered = this.module.Types.Where(p => p.Name == n[0]);
+            var methods = filtered.SelectMany(t => this.get_methods(t));
+
+            var found = false;
+
+            if (n.Length == 1) {
+                foreach (var m in methods)
+                    yield return m;
+                found = true;
+            } else {
+                foreach (var m in methods) {
+                    if (m.Name == n[1]) {
+                        found = true;
+                        yield return m;
+                    }
+                }
+            }
+
+            if (!found) {
+                var thetype = string.Join("::", n);
+                throw new Exception("Type {thetype} not found.");
+            }
+        }
+    }
+
     protected ModuleDefinition read_module(string path, bool readOnly) {
         var resolver = new DefaultAssemblyResolver();
         resolver.AddSearchDirectory(Path.GetDirectoryName(path));
@@ -69,16 +105,13 @@ class FixFileStreams : Command {
     private MethodReference betterFileStream;
 
     public FixFileStreams(FixFileStreamsCmd options) : base(options) {
-        var filtered = this.module.Types
-            .Where(p => options.typesToPatch.Contains(p.Name));
-
         this.betterFileStream = this.find_method_ref(
             "System.Void System.IO.FileStream::.ctor" +
             "(System.String,System.IO.FileMode,System.IO.FileAccess)"
         );
 
-        foreach (var toPatch in filtered)
-            patch_type(toPatch);
+        foreach (var toPatch in this.getm(options.typesToPatch))
+            patch_method(toPatch);
 
         this.save();
     }
@@ -97,11 +130,6 @@ class FixFileStreams : Command {
             il.Replace(i, il.Create(OpCodes.Newobj, this.betterFileStream));
         }
     }
-
-    private void patch_type(TypeDefinition td) {
-        foreach (var nested in td.NestedTypes) patch_type(nested);
-        foreach (MethodDefinition md in td.Methods) patch_method(md);
-    }
 }
 
 class ReplaceCall : Command {
@@ -117,12 +145,10 @@ class ReplaceCall : Command {
         this.search = options.replaceMethod;
         this.replace = this.find_method_ref(options.replacementMethod);
 
-        var filtered = this.module.Types
-            .Where(p => options.typesToPatch.Contains(p.Name));
-
         this.patch_done = false;
-        foreach (var toPatch in filtered)
-            patch_type(toPatch);
+
+        foreach (var toPatch in this.getm(options.typesToPatch))
+            patch_method(toPatch);
 
         if (!this.patch_done) {
             var types = string.Join(", ", options.typesToPatch);
@@ -150,11 +176,6 @@ class ReplaceCall : Command {
             il.Replace(i, il.Create(OpCodes.Call, this.replace));
             this.patch_done = true;
         }
-    }
-
-    private void patch_type(TypeDefinition td) {
-        foreach (var nested in td.NestedTypes) patch_type(nested);
-        foreach (MethodDefinition md in td.Methods) patch_method(md);
     }
 }
 
