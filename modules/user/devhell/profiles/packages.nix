@@ -288,6 +288,7 @@ in {
       youtube-dl
       zathura
       zbar
+      zgrviewer
       zip
       zotero
       zsync
