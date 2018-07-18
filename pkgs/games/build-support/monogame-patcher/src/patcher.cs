@@ -21,28 +21,36 @@ class Command {
             this.outfile = options.outputFile;
         this.infile = options.inputFile;
 
+        var readOnly = this.infile != this.outfile;
+        this.module = this.read_module(this.infile, readOnly);
+    }
+
+    protected ModuleDefinition read_module(string path, bool readOnly) {
         var resolver = new DefaultAssemblyResolver();
-        resolver.AddSearchDirectory(Path.GetDirectoryName(this.infile));
+        resolver.AddSearchDirectory(Path.GetDirectoryName(path));
 
         var rp = new ReaderParameters {
-            ReadWrite = this.infile == this.outfile,
+            ReadWrite = !readOnly,
             AssemblyResolver = resolver
         };
-        this.module = ModuleDefinition.ReadModule(this.infile, rp);
+        return ModuleDefinition.ReadModule(path, rp);
+    }
+
+    protected virtual IEnumerable<TypeDefinition> get_assembly_types() {
+        return this.module.AssemblyReferences
+            .Select(a => this.module.AssemblyResolver.Resolve(a))
+            .SelectMany(r => r.MainModule.Types);
     }
 
     protected MethodReference find_method_ref(string fullSig) {
-        foreach (var aref in this.module.AssemblyReferences) {
-            var resolved = this.module.AssemblyResolver.Resolve(aref);
-            foreach (var type in resolved.MainModule.Types) {
-                foreach (var ctor in type.GetConstructors()) {
-                    if (ctor.ToString() != fullSig) continue;
-                    return this.module.ImportReference(ctor);
-                }
-                foreach (var meth in type.GetMethods()) {
-                    if (meth.ToString() != fullSig) continue;
-                    return this.module.ImportReference(meth);
-                }
+        foreach (var type in this.get_assembly_types()) {
+            foreach (var ctor in type.GetConstructors()) {
+                if (ctor.ToString() != fullSig) continue;
+                return this.module.ImportReference(ctor);
+            }
+            foreach (var meth in type.GetMethods()) {
+                if (meth.ToString() != fullSig) continue;
+                return this.module.ImportReference(meth);
             }
         }
 
@@ -99,8 +107,12 @@ class FixFileStreams : Command {
 class ReplaceCall : Command {
     private string search;
     private MethodReference replace;
+    private ModuleDefinition targetModule;
 
     public ReplaceCall(ReplaceCallCmd options) : base(options) {
+        if (options.assemblyFile != null)
+            this.targetModule = this.read_module(options.assemblyFile, true);
+
         this.search = options.replaceMethod;
         this.replace = this.find_method_ref(options.replacementMethod);
 
@@ -111,6 +123,13 @@ class ReplaceCall : Command {
             patch_type(toPatch);
 
         this.save();
+    }
+
+    protected override IEnumerable<TypeDefinition> get_assembly_types() {
+        if (this.targetModule != null)
+            return this.targetModule.Types;
+        else
+            return base.get_assembly_types();
     }
 
     private void patch_method(MethodDefinition md) {

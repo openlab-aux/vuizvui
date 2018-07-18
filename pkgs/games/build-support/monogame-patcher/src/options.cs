@@ -27,4 +27,8 @@ class ReplaceCallCmd : GenericOptions {
 
     [Value(2, Required=true, MetaName = "type", HelpText = "Types to patch.")]
     public IEnumerable<string> typesToPatch { get; set; }
+
+    [Option('a', "assembly",
+            HelpText="Look up replacement from the specified assembly.")]
+    public string assemblyFile { get; set; }
 };

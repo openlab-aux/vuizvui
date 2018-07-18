@@ -34,6 +34,19 @@ public class b {
 }
 EOF
 
+cat > "c.cs" <<EOF
+using System;
+
+public class c {
+    public static string anotherReplacement(string foobar) {
+        if (foobar == "nope")
+            return "nope";
+        Console.WriteLine("foobar called: " + foobar);
+        return "foobar";
+    }
+}
+EOF
+
 cat > "test1.cs" <<EOF
 class test1 {
     public static void Main() {
@@ -54,6 +67,7 @@ EOF
 mkdir subdir
 mcs a.cs -target:library -out:subdir/a.dll
 mcs b.cs -target:library -out:subdir/b.dll
+mcs c.cs -target:library -out:subdir/c.dll
 
 mcs test1.cs -r:subdir/a -r:subdir/b -out:subdir/test1.exe
 mcs test2.cs -r:subdir/a -r:subdir/b -out:subdir/test2.exe
@@ -69,6 +83,13 @@ mcs test2.cs -r:subdir/a -r:subdir/b -out:subdir/test2.exe
     test1
 
 test "$(mono subdir/test1.exe)" = "bar called: xxx"
+
+"$out/bin/monogame-patcher" replace-call -i subdir/test1.exe -a subdir/c.dll \
+    "System.String b::replacement(System.String)" \
+    "System.String c::anotherReplacement(System.String)" \
+    test1
+
+test "$(mono subdir/test1.exe)" = "foobar called: xxx"
 
 echo foo > write_test.txt
 
