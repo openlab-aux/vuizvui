@@ -108,6 +108,7 @@ class ReplaceCall : Command {
     private string search;
     private MethodReference replace;
     private ModuleDefinition targetModule;
+    private bool patch_done;
 
     public ReplaceCall(ReplaceCallCmd options) : base(options) {
         if (options.assemblyFile != null)
@@ -119,8 +120,14 @@ class ReplaceCall : Command {
         var filtered = this.module.Types
             .Where(p => options.typesToPatch.Contains(p.Name));
 
+        this.patch_done = false;
         foreach (var toPatch in filtered)
             patch_type(toPatch);
+
+        if (!this.patch_done) {
+            var types = string.Join(", ", options.typesToPatch);
+            throw new Exception($"Unable to find {this.search} in {types}.");
+        }
 
         this.save();
     }
@@ -139,8 +146,10 @@ class ReplaceCall : Command {
             .Where(i => i.OpCode == OpCodes.Call)
             .Where(i => i.Operand.ToString() == this.search);
 
-        foreach (Instruction i in found.ToList())
+        foreach (Instruction i in found.ToList()) {
             il.Replace(i, il.Create(OpCodes.Call, this.replace));
+            this.patch_done = true;
+        }
     }
 
     private void patch_type(TypeDefinition td) {
