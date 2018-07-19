@@ -2,7 +2,9 @@
 
 let
 
-  mpv = pkgs.mpv.override { scripts = [ pkgs.mpvScripts.convert ]; };
+  mpv = pkgs.mpv-with-scripts.override {
+    scripts = [ pkgs.mpvScripts.convert ];
+  };
 
   texlive = with pkgs.texlive; combine { inherit scheme-medium minted units collection-bibtexextra wrapfig libertine enumitem dashrule ifmtarg xstring; };
 

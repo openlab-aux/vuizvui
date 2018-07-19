@@ -45,7 +45,9 @@ let
     }).ghcWithPackages;
   };
 
-  mpv = pkgs.mpv.override { scripts = [ pkgs.mpvScripts.convert ]; };
+  mpv = pkgs.mpv-with-scripts.override {
+    scripts = [ pkgs.mpvScripts.convert ];
+  };
 
   beets = pkgs.beets.override { enableAlternatives = true; };
 
