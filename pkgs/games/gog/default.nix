@@ -22,6 +22,7 @@ let
       beta = true;
     });
     thimbleweed-park = callPackage ./thimbleweed-park.nix {};
+    war-for-the-overworld = callPackage ./war-for-the-overworld.nix {};
     wizard-of-legend = callPackage ./wizard-of-legend.nix {};
     xeen = callPackage ./xeen.nix {};
   };
