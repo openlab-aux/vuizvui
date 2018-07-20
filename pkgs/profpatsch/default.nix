@@ -11,7 +11,7 @@
   };
 
   inherit (callPackage ./utils-hs {})
-    nix-gen;
+    nix-gen until watch-server;
 
   # patched version of droopy, with javascript user-enhancement
   droopy = droopy.overrideDerivation (old: {

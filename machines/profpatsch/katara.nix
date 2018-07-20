@@ -143,7 +143,10 @@ in {
         telnet                       # tcp debugging
         pkgs.vuizvui.profpatsch.nix-http-serve # serve nix builds and rebuild on reloads
         pkgs.vuizvui.profpatsch.nman # open man pages in temporary nix shell
-        pkgs.vuizvui.profpatsch.warpspeed # trivial http file server
+        pkgs.vuizvui.profpatsch.warpspeed    # trivial http file server
+        pkgs.vuizvui.profpatsch.nix-gen      # generate nix expressions
+        pkgs.vuizvui.profpatsch.watch-server # restart server on code change
+        pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
       ];
       documentation = [
         # mustache-spec NOT IN 16.09
@@ -204,7 +207,6 @@ in {
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
         # on remove keep pdfjam!
         (texlive.combine { inherit (texlive) scheme-medium latexmk IEEEtran needspace; })
-        pkgs.vuizvui.profpatsch.nix-gen
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
     ++ programmingTools ++ documentation

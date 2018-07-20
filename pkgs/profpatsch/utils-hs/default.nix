@@ -4,20 +4,42 @@ let
   utilsSrc = fetchFromGitHub {
     owner = "Profpatsch";
     repo = "utils.hs";
-    rev = "7a790aff83659bc4da8f9dc5ffb9881036b80d08";
-    sha256 = "0dnsy2zcvifkl6a6l022rmxdd0mpv6qk50cd2jzgia0j90cng0ms";
+    rev = "1893da94a2feb58ddb7ad048b8e1691e4d0a4bc2";
+    sha256 = "0x7sr61gibc2wsqj1asrsfwvd0knjh9s9x3la0mplbaxdi0vzi28";
   };
+  version = "git";
 
-  nix-gen = haskellPackages.mkDerivation {
-    pname = "nix-gen";
-    version = "0.0.1";
-    src = "${utilsSrc}/nix-gen";
+  haskellDrv = { name, subfolder, deps }: haskellPackages.mkDerivation {
+    pname = name;
+    inherit version;
+    src = "${utilsSrc}/${subfolder}";
+    # TODO make utils.hs buildable from the project itself
+    # src = "${/home/philip/code/haskell/utils.hs}/${subfolder}";
     license = lib.licenses.gpl3;
     isExecutable = true;
-    buildDepends = with haskellPackages; [ hnix ansi-wl-pprint protolude data-fix ];
     hydraPlatforms = [ "x86_64-linux" ];
+    buildDepends = deps;
+  };
+
+
+  nix-gen = haskellDrv {
+    name = "nix-gen";
+    subfolder = "nix-gen";
+    deps = with haskellPackages; [ hnix ansi-wl-pprint protolude data-fix ];
+  };
+
+  until = haskellDrv {
+    name = "until";
+    subfolder = "until";
+    deps = with haskellPackages; [ optparse-applicative data-fix time];
+  };
+
+  watch-server = haskellDrv {
+    name = "watch-server";
+    subfolder = "watch-server";
+    deps = with haskellPackages; [ directory protolude fsnotify regex-tdfa optparse-generic ];
   };
 
 in {
-  inherit nix-gen;
+  inherit nix-gen until watch-server;
 }
