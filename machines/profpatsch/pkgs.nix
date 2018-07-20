@@ -110,7 +110,7 @@ let
     in pkgs.writeScriptBin "execlineb" ''
       #!${eldir}/execlineb -s0
       ${eldir}/importas oldpath PATH
-      env PATH=${eldir}:$${oldpath} exelineb $@
+      env PATH=${eldir}:''${oldpath} ${eldir}/execlineb $@
     '';
 
 in
