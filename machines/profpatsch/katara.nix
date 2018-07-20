@@ -419,7 +419,7 @@ in {
             BusName = "org.freedesktop.Notifications";
             ExecStart =
               let config = pkgs.writeText "dunst.conf" (lib.generators.toINI {} {});
-              in "${lib.getBin pkgs.dunst}/bin/dunst -config ${config}";
+              in "${lib.getBin pkgs.dunst}/bin/dunst --config ${config}";
             Restart = "on-failure";
           };
           partOf = [ "graphical-session.target" ];
