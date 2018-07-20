@@ -147,6 +147,7 @@ in {
         pkgs.vuizvui.profpatsch.nix-gen      # generate nix expressions
         pkgs.vuizvui.profpatsch.watch-server # restart server on code change
         pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
+        myPkgs.execlineb-with-builtins
       ];
       documentation = [
         # mustache-spec NOT IN 16.09

@@ -103,6 +103,15 @@ let
         --replace 'notify-send' '${notify-send}'
     '';
 
+  # wrapper for execlineb that doesn’t need the execline commands
+  # in PATH to work (making them appear like “builtins”)
+  execlineb-with-builtins =
+    let eldir = "${pkgs.execline}/bin";
+    in pkgs.writeScriptBin "execlineb" ''
+      #!${eldir}/execlineb -s0
+      ${eldir}/importas oldpath PATH
+      env PATH=${eldir}:$${oldpath} exelineb $@
+    '';
 
 in
 { inherit
@@ -117,5 +126,6 @@ in
     saneGhci
     /*searx*/
     pyrnotify
+    exelineb-with-builtins
     ;
 }
