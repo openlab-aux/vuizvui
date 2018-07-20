@@ -200,7 +200,7 @@ in {
         pythonPackages.alot  # the next cool thing!
       ];
       nixPkgs = [
-        nix-diff                  # structurally diff two derivations
+        # nix-diff                  # structurally diff two derivations
         nix-prefetch-scripts      # prefetch store paths from various destinations
         pkgs.vuizvui.taalo-build  # build derivation on taalo
       ];
