@@ -21,6 +21,7 @@ in
         alias nsp='nix-shell -p'
         alias nrs='nixos-rebuild switch'
         alias tad='tmux attach -d'
+        alias gs='git status'
       '';
     };
 
