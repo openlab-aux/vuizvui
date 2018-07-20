@@ -126,6 +126,6 @@ in
     saneGhci
     /*searx*/
     pyrnotify
-    exelineb-with-builtins
+    execlineb-with-builtins
     ;
 }
