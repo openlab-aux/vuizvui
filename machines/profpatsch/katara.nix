@@ -194,7 +194,8 @@ in {
         elinks               # command line browser
         mutt-with-sidebar    # has been sucking less since 1995
         msmtp                # SMTP client
-        notmuch              # mail indexer
+        # notmuch              # mail indexer
+        mu                   # mail indexing w/ emacs mode
         pythonPackages.alot  # the next cool thing!
       ];
       nixPkgs = [
@@ -401,8 +402,8 @@ in {
             OnUnitActiveSec ="15m";
           };
         };
-        services.notmuch = {
-          description = "notmuch job";
+        services.mu = {
+          description = "mu job";
           serviceConfig = {
             Restart = "no";
             ExecStart = "${pkgs.notmuch}/bin/notmuch new";
