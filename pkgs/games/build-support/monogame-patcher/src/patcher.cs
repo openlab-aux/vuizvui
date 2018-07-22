@@ -56,7 +56,7 @@ class Command {
 
             if (!found) {
                 var thetype = string.Join("::", n);
-                throw new Exception("Type {thetype} not found.");
+                throw new Exception($"Type {thetype} not found.");
             }
         }
     }
