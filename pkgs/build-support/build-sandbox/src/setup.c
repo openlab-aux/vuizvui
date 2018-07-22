@@ -688,6 +688,48 @@ static bool setup_runtime_paths(void)
     return true;
 }
 
+static bool setup_runtime_debug(void)
+{
+    char *injected_files, *buf, *ptr, *equals, *target;
+
+    if ((injected_files = getenv("NIX_SANDBOX_DEBUG_INJECT_FILES")) == NULL)
+        return true;
+
+    if ((buf = strdup(injected_files)) == NULL) {
+        perror("strdup NIX_SANDBOX_DEBUG_INJECT_FILES");
+        return false;
+    }
+
+    ptr = strtok(buf, ":");
+
+    while (ptr != NULL) {
+        if ((equals = strchr(ptr, '=')) != NULL) {
+            *equals = '\0';
+
+            if ((target = get_mount_target(equals + 1)) == NULL) {
+                free(buf);
+                return false;
+            }
+
+            if (mount(ptr, target, "", MS_BIND, NULL) == -1) {
+                fprintf(stderr, "mount injected file %s to %s: %s\n",
+                        ptr, target, strerror(errno));
+                free(target);
+                free(buf);
+                return false;
+            }
+
+            free(target);
+            fprintf(stderr, "Injected file '%s' to '%s'.\n", ptr, equals + 1);
+        }
+
+        ptr = strtok(NULL, ":");
+    }
+
+    free(buf);
+    return true;
+}
+
 static bool setup_chroot(void)
 {
     int mflags;
@@ -727,6 +769,9 @@ static bool setup_chroot(void)
         return false;
 
     if (!setup_xauthority())
+        return false;
+
+    if (!setup_runtime_debug())
         return false;
 
     if (chroot(FS_ROOT_DIR) == -1) {
