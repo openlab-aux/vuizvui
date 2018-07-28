@@ -130,11 +130,13 @@ buildGame rec {
   # Add all of the libraries in $runtimeDependencies to the FMOD Ex library,
   # because it tries to dlopen() libpulse-simple and libasound.so and we don't
   # have a main ELF binary where we could add that search path.
-  postFixup = ''
+  postPhases = [ "fixFModex" ];
+  fixFModex = ''
     rpath="$(patchelf --print-rpath "$out/libexec/bastion/libfmodex.so")"
     for dep in $runtimeDependencies; do
-      rpath="$rpath${rpath:+:}$dep/lib"
+      rpath="$rpath''${rpath:+:}$dep/lib"
     done
+    echo "setting RPATH for libfmodex to: $rpath" >&2
     patchelf --set-rpath "$rpath" "$out/libexec/bastion/libfmodex.so"
   '';
 
