@@ -23,6 +23,7 @@ let
     self = import ./build-support {
       inherit (super) config;
       callPackage = pkgs.lib.callPackageWith (super // self);
+      callPackages = pkgs.lib.callPackagesWith (super // self);
     };
   in self;
 
