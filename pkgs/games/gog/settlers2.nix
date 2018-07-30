@@ -1,4 +1,4 @@
-{ stdenv, lib, buildSandbox, fetchGog, innoextract, bchunk, p7zip
+{ stdenv, lib, buildSandbox, fetchGog, gogUnpackHook, bchunk, p7zip
 
 , fetchFromGitHub, cmake, gettext, boost, miniupnpc, bzip2
 , SDL, SDL_mixer, libpulseaudio, alsaLib, libGL, lua5_2
@@ -15,14 +15,10 @@ let
       sha256 = "19c88h972ydfpdbay61lz6pi4gnlm2lq5dcya5im9mmlin2nvyr7";
     };
 
-    unpackCmd = toString [
-      "innoextract"
-      "--include" "/app/DATA"
-      "--include" "/app/GFX"
-      "-m" "\"$curSrc\""
-    ];
+    nativeBuildInputs = [ gogUnpackHook ];
+    innoExtractOnly = [ "/app/DATA" "/app/GFX" ];
+    innoExtractKeepCase = true;
 
-    nativeBuildInputs = [ innoextract ];
     phases = [ "unpackPhase" "patchPhase" "installPhase" ];
 
     installPhase = ''

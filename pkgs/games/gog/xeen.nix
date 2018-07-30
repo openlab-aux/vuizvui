@@ -1,4 +1,4 @@
-{ lib, stdenv, buildSandbox, fetchGog, innoextract, bchunk, p7zip
+{ lib, stdenv, buildSandbox, fetchGog, gogUnpackHook, bchunk, p7zip
 , scummvm, fetchFromGitHub
 , runCommand, xvfb_run
 
@@ -20,12 +20,8 @@ let
       sha256 = "0jv9k5rcapqlk61pawa5l4m34iwllx8j6cfz69gl092h04fvfqki";
     };
 
-    unpackCmd = toString [
-      "${innoextract}/bin/innoextract"
-      "--include" "app/game1.gog"
-      "--include" "app/music"
-      "-L" "-m" "\"$curSrc\""
-    ];
+    nativeBuildInputs = [ gogUnpackHook ];
+    innoExtractOnly = [ "app/game1.gog" "app/music" ];
 
     patchPhase = ''
       cat > game1.inst <<EOF

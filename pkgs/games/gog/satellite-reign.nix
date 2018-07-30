@@ -1,4 +1,4 @@
-{ buildUnity, fetchGog, unzip }:
+{ buildUnity, fetchGog }:
 
 buildUnity {
   name = "satellite-reign";
@@ -11,8 +11,6 @@ buildUnity {
     downloadName = "en3installer9";
     sha256 = "0wpkpqrcli2772g6l9yab38vbjh1by4cbpa397fqvhny247qdz5k";
   };
-
-  unpackCmd = "${unzip}/bin/unzip -qq \"$curSrc\" 'data/noarch/game/*' || :";
 
   sandbox.paths.required = [ "$XDG_DATA_HOME/SatelliteReign" ];
 }

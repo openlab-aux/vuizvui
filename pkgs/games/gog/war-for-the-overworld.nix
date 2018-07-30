@@ -1,4 +1,4 @@
-{ buildUnity, fetchGog, unzip, mono, monogamePatcher }:
+{ buildUnity, fetchGog, mono, monogamePatcher }:
 
 buildUnity {
   name = "war-for-the-overworld";
@@ -11,8 +11,6 @@ buildUnity {
     downloadName = "en3installer0";
     sha256 = "07yj9clf3hmy7z67ck9sqf3gnrazx5rzifg91jas77z774vwdg8k";
   };
-
-  unpackCmd = "${unzip}/bin/unzip -qq \"$curSrc\" 'data/noarch/game/*' || :";
 
   nativeBuildInputs = [ mono monogamePatcher ];
 

@@ -1,4 +1,4 @@
-{ lib, buildGame, fetchGog, unzip, libGL, libudev
+{ lib, buildGame, fetchGog, libGL, libudev
 
 , ransomeUnbeeped ? true
 }:
@@ -16,8 +16,6 @@ buildGame rec {
     downloadName = "en3installer0";
     sha256 = "1cfll73qazm9nz40n963qvankqkznfjai9g88kgw6xcl40y8jrqn";
   });
-
-  unpackCmd = "${unzip}/bin/unzip -qq \"$curSrc\" 'data/noarch/*' || :";
 
   buildInputs = [ libGL ];
 
@@ -38,18 +36,17 @@ buildGame rec {
     }
     EOF
     patchelf --add-needed "$out/libexec/thimbleweed-park/preload.so" \
-      game/ThimbleweedPark
+      ThimbleweedPark
   '';
 
   installPhase = ''
-    install -vD game/ThimbleweedPark "$out/bin/thimbleweed-park"
+    install -vD ThimbleweedPark "$out/bin/thimbleweed-park"
     install -vD preload.so "$out/libexec/thimbleweed-park/preload.so"
-    for i in game/*.ggpack[0-9]*; do
+    for i in *.ggpack[0-9]*; do
       install -vD -m 0644 "$i" "$out/share/thimbleweed-park/$(basename "$i")"
     done
 
-    install -vD -m 0644 support/icon.png \
-      "$out/share/icons/thimbleweed-park.png"
+    install -vD -m 0644 xdg-icon.png "$out/share/icons/thimbleweed-park.png"
 
     mkdir -p "$out/share/applications"
     cat > "$out/share/applications/thimbleweed-park.desktop" <<EOF

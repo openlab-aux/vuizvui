@@ -1,5 +1,5 @@
-{ stdenv, lib, buildSandbox, fetchGog, fetchzip, innoextract, SDL2, SDL2_mixer
-, bchunk, p7zip, alsaLib, writeText, makeWrapper, libGL
+{ stdenv, lib, buildSandbox, fetchGog, gogUnpackHook, fetchzip
+, SDL2, SDL2_mixer, bchunk, p7zip, alsaLib, writeText, makeWrapper, libGL
 
 # For static recompilation
 , fetchFromGitHub, scons, judy, python, nasm, autoreconfHook
@@ -97,16 +97,12 @@ let
 
     outputs = [ "out" "dev" ];
 
-    nativeBuildInputs = [ innoextract ];
+    nativeBuildInputs = [ gogUnpackHook ];
+    innoExtractOnly = [ "game.gog" "game.ins" "MAIN.EXE" "SETUP.INI" ];
+    innoExtractKeepCase = true;
+
     phases = [ "unpackPhase" "patchPhase" "installPhase" ];
-    unpackCmd = toString [
-      "innoextract"
-      "--include" "game.gog"
-      "--include" "game.ins"
-      "--include" "MAIN.EXE"
-      "--include" "SETUP.INI"
-      "-m" "\"$curSrc\""
-    ];
+
     patchPhase = ''
       sed -i -e '
         s,^SOURCE_PATH=.*,SOURCE_PATH=C:\\,

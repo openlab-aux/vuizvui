@@ -1,4 +1,4 @@
-{ lib, stdenv, buildGame, fetchGog, unzip, makeWrapper
+{ lib, stdenv, buildGame, fetchGog, makeWrapper
 , mono50, SDL2, libGL, openal
 
 , beta ? false
@@ -19,9 +19,6 @@ buildGame rec {
     downloadName = "en3installer10";
     sha256 = "199xf008cxm6ywb4d8c3dz0h7iiv9d0ka5k93gq0jqj3ga3fjn3i";
   });
-
-  unpackCmd = lib.optionalString (!beta)
-    "${unzip}/bin/unzip -qq \"$curSrc\" 'data/noarch/game/*' || :";
 
   nativeBuildInputs = [ makeWrapper ];
 

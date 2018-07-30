@@ -1,4 +1,4 @@
-{ buildUnity, fetchGog, unzip, mono }:
+{ buildUnity, fetchGog, mono }:
 
 buildUnity {
   name = "dungeons3";
@@ -13,6 +13,4 @@ buildUnity {
   };
 
   buildInputs = [ mono ];
-
-  unpackCmd = "${unzip}/bin/unzip -qq \"$curSrc\" 'data/noarch/game/*' || :";
 }
