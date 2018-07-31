@@ -7,5 +7,5 @@
   buildUnity = callPackage ./build-unity.nix {};
   monogamePatcher = callPackage ./monogame-patcher {};
 
-  inherit (callPackages ./setup-hooks {}) gogUnpackHook;
+  inherit (callPackages ./setup-hooks {}) fixFmodHook gogUnpackHook;
 }
