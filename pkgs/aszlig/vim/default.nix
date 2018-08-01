@@ -177,15 +177,15 @@ let
       lnl7 = fetchFromGitHub {
         owner = "LnL7";
         repo = "vim-nix";
-        rev = "867488a04c2ddc47f0f235f37599a06472fea299";
-        sha256 = "1mwc06z9q45cigyxd0r9qnfs4ph6lbcwx50rf5lmpavakcn3vqir";
+        rev = "e9abff9a0f4d594e360a5216c4e8f9ed3bcae2c0";
+        sha256 = "1gznb0wlwsx94b620m8ccl5046di525z698mswy8xxq1vyjcimi7";
       };
 
       src = fetchFromGitHub {
         owner = "MarcWeber";
         repo = "vim-addon-nix";
-        rev = "2aed79ba5d8c5e6abd102de77e55e242f61b17f1";
-        sha256 = "0zx1q9994py6jmm0qbbx6fc1dy5la8zfskkbvqqxssxrl5dx7vvi";
+        rev = "3001a9db5f816dd7af11384f15415bddd146ef86";
+        sha256 = "195z2yz09wirpqjpsha8x7qcr9is1q8qph4j0svws6qbqrkh8ryy";
       };
 
       phases = [ "unpackPhase" "patchPhase" "installPhase" ];
@@ -193,12 +193,16 @@ let
         for what in indent syntax; do
           install -vD -m 0644 "$lnl7/$what/nix.vim" "$what/nix.vim"
         done
+
         sed -i -re '/^ *au(group)? /,/^ *au(group)? +end/ {
           s/^ *au(tocmd)? +((BufRead|BufNewFile),?)+ +[^ ]+ +setl(ocal)?/${
-            "& sw=2 sts=2 et iskeyword+=-"
+            "& sw=2 sts=2 et iskeyword+='\\''"
           }/
         }' plugin/vim-addon-nix.vim
-        grep '^setlocal' "$lnl7/ftplugin/nix.vim" >> ftplugin/nix.vim
+
+        sed -n -e '/^ *setlocal/ {
+          h; :l; $ { x; p; b }; n; /^ *\\/ { H; bl }; x; p
+        }' "$lnl7/ftplugin/nix.vim" >> ftplugin/nix.vim
       '';
 
       installPhase = ''
