@@ -18,9 +18,6 @@ let
     satellite-reign = callPackage ./satellite-reign.nix {};
     settlers2 = callPackage ./settlers2.nix {};
     stardew-valley = callPackage ./stardew-valley.nix {};
-    stardew-valley-beta = lib.lowPrio (callPackage ./stardew-valley.nix {
-      beta = true;
-    });
     thimbleweed-park = callPackage ./thimbleweed-park.nix {};
     war-for-the-overworld = callPackage ./war-for-the-overworld.nix {};
     wizard-of-legend = callPackage ./wizard-of-legend.nix {};

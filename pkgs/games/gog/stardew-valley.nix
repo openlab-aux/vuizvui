@@ -1,24 +1,16 @@
 { lib, stdenv, buildGame, fetchGog, makeWrapper
 , mono50, SDL2, libGL, openal
-
-, beta ? false
 }:
 
 buildGame rec {
   name = "stardew-valley-${version}";
-  version = if beta then "1.3.26" else "1.2.33";
+  version = "1.3.27";
 
-  src = fetchGog (if beta then {
+  src = fetchGog {
     productId = 1453375253;
-    downloadName = "80335";
-    downloadType = "product_bonus";
-    suffix = "tar.gz";
-    sha256 = "1m140ckz0y0nr1v7b30iqbjmr0fq57djclggvkazqcvanhzymij9";
-  } else {
-    productId = 1453375253;
-    downloadName = "en3installer10";
-    sha256 = "199xf008cxm6ywb4d8c3dz0h7iiv9d0ka5k93gq0jqj3ga3fjn3i";
-  });
+    downloadName = "en3installer0";
+    sha256 = "0i4wq6ii8r82gan1j8j9zd5f0cqs7by0s7h9axnb5zi2j0pxlk2i";
+  };
 
   nativeBuildInputs = [ makeWrapper ];
 
@@ -31,7 +23,7 @@ buildGame rec {
     sed -i -e '/<dllmap.*dll="${dll}\.dll".*os="linux"/ {
       s!target="[^"]*"!target="'"${target}"'"!
     }' MonoGame.Framework.dll.config
-  '') dllmap) + lib.optionalString beta ''
+  '') dllmap) + ''
     sed -i -e '/<dllmap.*os="linux"/ {
       s!target="[^"]*"!target="${
         "'\"$out\"'/libexec/stardew-valley/libGalaxyCSharpGlue.so"
@@ -48,17 +40,13 @@ buildGame rec {
     cp -rv monoconfig "$out/libexec/stardew-valley/StardewValley.exe.config"
     cp -rvt "$out/libexec/stardew-valley" StardewValley.exe \
       MonoGame.Framework.dll* BmFont.dll xTile.dll Lidgren.Network.dll \
-      ${lib.optionalString beta "GalaxyCSharp.dll"}
+      GalaxyCSharp.dll
     ln -s "$out/share/stardew-valley" "$out/libexec/stardew-valley/Content"
 
-    ${lib.optionalString beta ''
-      # install -vD "libGalaxyPeer$bitSuffix.so" \
-      #   "$out/libexec/stardew-valley/libGalaxyPeer$bitSuffix.so"
-      install -vD "lib$bitSuffix/libGalaxy$bitSuffix.so" \
-        "$out/libexec/stardew-valley/libGalaxy$bitSuffix.so"
-      install -vD "lib$bitSuffix/libGalaxyCSharpGlue.so" \
-        "$out/libexec/stardew-valley/libGalaxyCSharpGlue.so"
-    ''}
+    install -vD "lib$bitSuffix/libGalaxy$bitSuffix.so" \
+      "$out/libexec/stardew-valley/libGalaxy$bitSuffix.so"
+    install -vD "lib$bitSuffix/libGalaxyCSharpGlue.so" \
+      "$out/libexec/stardew-valley/libGalaxyCSharpGlue.so"
 
     makeWrapper ${lib.escapeShellArg mono50}/bin/mono \
       "$out/bin/stardew-valley" \
