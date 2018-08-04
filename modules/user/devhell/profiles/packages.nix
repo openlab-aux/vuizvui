@@ -196,7 +196,6 @@ in {
       ntfs3g
       ntfsprogs
       ntopng
-      obnam
       openssl
       p7zip
       pandoc
