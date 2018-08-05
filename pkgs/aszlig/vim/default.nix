@@ -108,6 +108,27 @@ let
         endfun
       '';
     };
+
+    pug = fetchFromGitHub {
+      owner = "digitaltoad";
+      repo = "vim-pug";
+      rev = "ddc5592f8c36bf4bd915c16b38b8c76292c2b975";
+      sha256 = "069pha18g1nlzg44k742vjxm4zwjd1qjzhfllkr35qaiflvjm84y";
+    };
+
+    scss = fetchFromGitHub {
+      owner = "cakebaker";
+      repo = "scss-syntax.vim";
+      rev = "4461789d02f81fd328afbdf27d6404b6c763c25f";
+      sha256 = "0d227d2c1pvcksk2njzpkgmxivrnfb0apn2r62q7q89s61ggbzfj";
+    };
+
+    less = fetchFromGitHub {
+      owner = "groenewege";
+      repo = "vim-less";
+      rev = "6e818d5614d5fc18d95a48c92b89e6db39f9e3d6";
+      sha256 = "0rhqcdry8ycnfbg534q4b3hm78an7mnqhiazxik7k08a57dk9dbm";
+    };
   };
 
   plugins = pluginDeps // {
@@ -295,6 +316,13 @@ let
       repo = "vim-ledger";
       rev = "6eb3bb21aa979cc295d0480b2179938c12b33d0d";
       sha256 = "0rbwyaanvl2bqk8xm4kq8fkv8y92lpf9xx5n8gw54iij7xxhnj01";
+    };
+
+    vue = fetchFromGitHub {
+      owner = "posva";
+      repo = "vim-vue";
+      rev = "e531e1d24f24385a5f4d2f1ba36d972a57ec52d9";
+      sha256 = "1vi4i9ybwg1l1xmarsdhzd08py4w0yfg4xswbz3qrvihk8nhg1km";
     };
   };
 
