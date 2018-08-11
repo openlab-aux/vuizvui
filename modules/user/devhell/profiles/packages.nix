@@ -188,7 +188,6 @@ in {
       netsniff-ng
       nitrogen
       nix-prefetch-scripts
-      nix-repl
       nixops
       nload
       nmap
