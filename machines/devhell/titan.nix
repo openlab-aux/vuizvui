@@ -91,7 +91,7 @@
     gnome3.gnome-keyring.enable = true;
     printing = {
       enable = true;
-      drivers = [ pkgs.gutenprint pkgs.hplip pkgs.cups-brother-hl1110 ];
+      drivers = [ pkgs.foo2zjs pkgs.cups-brother-hl1110 ];
     };
     dnscrypt-proxy.enable = false;
   };
