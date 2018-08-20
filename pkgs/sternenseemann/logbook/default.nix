@@ -20,6 +20,7 @@ stdenv.mkDerivation rec {
   meta = with stdenv.lib; {
     description = "A tool for personal log files";
     platforms = ocaml.meta.platforms;
+    hydraPlatforms = [ "x86_64-linux" ];
     license = licenses.bsd3;
   };
 }
