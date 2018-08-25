@@ -104,7 +104,6 @@ in {
       e2fsprogs
       easytag
       electricsheep
-      electrum
       enhanced-ctorrent
       ethtool
       fbida
