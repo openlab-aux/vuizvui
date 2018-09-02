@@ -4,12 +4,12 @@ buildUnity {
   name = "war-for-the-overworld";
   fullName = "WFTOGame";
   saveDir = "Subterranean Games/War For The Overworld";
-  version = "2.0.3f1";
+  version = "2.0.4";
 
   src = fetchGog {
     productId = 1964276929;
     downloadName = "en3installer0";
-    sha256 = "07yj9clf3hmy7z67ck9sqf3gnrazx5rzifg91jas77z774vwdg8k";
+    sha256 = "0p54dhd2j7zvc78444jnjmkjv7kf6sskbphxkj5vlxmfcrmbd2xq";
   };
 
   nativeBuildInputs = [ mono monogamePatcher ];
