@@ -202,9 +202,12 @@ in with pkgsUpstream.lib; with builtins; {
     buildCommand = ''
       cp -r "${./doc}" doc
       chmod -R +w doc
-      xsltproc -o doc/options-db.xml \
+      xsltproc -o intermediate.xml \
         "${nixpkgs}/nixos/doc/manual/options-to-docbook.xsl" \
         ${optionsFile}
+      xsltproc -o doc/options-db.xml \
+        "${nixpkgs}/nixos/doc/manual/postprocess-option-descriptions.xsl" \
+        intermediate.xml
 
       dest="$out/share/doc/vuizvui"
       mkdir -p "$dest"
