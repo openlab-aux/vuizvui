@@ -274,10 +274,6 @@ let
       path  = ["nixos" "keymap" "qwertz"];
     }
     { check = config.boot.kernelPackages.kernel.version
-           == pkgs.linuxPackages_copperhead_lts.kernel.version;
-      path  = ["nixos" "kernel-copperhead"];
-    }
-    { check = config.boot.kernelPackages.kernel.version
            == pkgs.linuxPackages_latest.kernel.version;
       path  = ["nixos" "kernel-latest"];
     }
