@@ -130,6 +130,7 @@ in {
       gnufdisk
       gnumake
       gnupg
+      gopass
       gource
       gparted
       gpgme
@@ -198,7 +199,6 @@ in {
       p7zip
       pandoc
       paperkey
-      pass
       pbzip2
       pciutils
       pigz
