@@ -79,6 +79,8 @@ in {
     #   };
     #   userControlled.enable = true;
     # };
+
+    services.unbound.enable = true;
     networking.networkmanager.enable = true;
 
     # networking.bonds = {
