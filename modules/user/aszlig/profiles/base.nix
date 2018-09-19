@@ -58,6 +58,7 @@ in {
       file
       htop
       iotop
+      moreutils
       psmisc
       unfreePkgs.unrar
       unzip
