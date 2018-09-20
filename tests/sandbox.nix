@@ -37,6 +37,11 @@
           # Should fail because we can't access the host's PATH
           ! echo foo | grep -qF foo
 
+          # Write PID information to files, so that we can later verify whether
+          # we were in a PID namespace.
+          echo $$ > /home/foo/.cache/xdg/ownpid
+          ls -d1 /proc/[0-9]* > /home/foo/.cache/xdg/procpids
+
           # Check whether we can access files behind nested storepaths that are
           # symlinks.
           lfile="$(< ${mkNestedLinksTo (pkgs.writeText "target" "file")})"
@@ -116,5 +121,8 @@
     $machine->succeed('grep -qF XDG1 /home/foo/.local/share/xdg/1');
     $machine->succeed('grep -qF XDG2 /home/foo/.config/xdg/2');
     $machine->succeed('grep -qF XDG3 /home/foo/.cache/xdg/3');
+
+    $machine->succeed('test "$(< /home/foo/.cache/xdg/procpids)" = /proc/1');
+    $machine->succeed('test "$(< /home/foo/.cache/xdg/ownpid)" = 1');
   '';
 }

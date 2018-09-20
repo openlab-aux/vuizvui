@@ -747,8 +747,13 @@ static bool setup_chroot(void)
     if (!bind_mount("/dev", false, false, false))
         return false;
 
-    if (!bind_mount("/proc", false, false, false))
+    if (!makedirs(FS_ROOT_DIR "/proc", false))
         return false;
+
+    if (mount("none", FS_ROOT_DIR "/proc", "proc", 0, NULL) == -1) {
+        perror("mount /proc");
+        return false;
+    }
 
     if (!bind_mount("/sys", false, false, false))
         return false;
@@ -815,7 +820,8 @@ bool setup_sandbox(void)
             close(sync_pipe[0]);
             _exit(write_maps(parent_pid) ? 0 : 1);
         default:
-            if (unshare(CLONE_NEWNS | CLONE_NEWUSER) == -1) {
+            if (unshare(CLONE_NEWNS | CLONE_NEWUSER | CLONE_NEWPID |
+                        CLONE_NEWUTS | CLONE_NEWIPC) == -1) {
                 perror("unshare");
                 if (write(sync_pipe[1], "X", 1) == -1)
                     perror("signal child exit");
@@ -828,6 +834,19 @@ bool setup_sandbox(void)
             if (WIFEXITED(child_status) && WEXITSTATUS(child_status) == 0)
                 break;
             return false;
+    }
+
+    if ((pid = fork()) == -1) {
+        perror("fork PID namespace");
+        return false;
+    }
+
+    /* Just wait in the parent until the child exits. We need to fork because
+     * otherwise we can't mount /proc in the right PID namespace.
+     */
+    if (pid > 0) {
+        waitpid(pid, NULL, 0);
+        _exit(1);
     }
 
     cached_paths = new_path_cache();
