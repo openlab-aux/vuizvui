@@ -1,4 +1,4 @@
-{ stdenv, lib, pkgconfig, nix }:
+{ stdenv, lib, pkgconfig, nix, boost }:
 
 drv: { paths ? {}, ... }@attrs:
 
@@ -78,7 +78,7 @@ in stdenv.mkDerivation ({
   '';
 
   nativeBuildInputs = [ pkgconfig ];
-  buildInputs = [ nix ];
+  buildInputs = [ nix boost ];
   makeFlags = [ "BINDIR=${drv}/bin" ];
 
 } // removeAttrs attrs [ "paths" ])
