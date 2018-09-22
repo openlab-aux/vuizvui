@@ -12,6 +12,7 @@ let
     };
 
     albion = callPackage_i686 ./albion {};
+    crosscode = callPackage ./crosscode.nix {};
     dungeons3 = callPackage ./dungeons3.nix {};
     overload = callPackage ./overload.nix {};
     party-hard = callPackage ./party-hard.nix {};
