@@ -1,5 +1,5 @@
 { stdenv, runCommand, lib
-, runExecline, s6TouchCommand, s6EchoCommand }:
+, runExecline, bin }:
 
 let
 
@@ -13,7 +13,7 @@ let
 
   /* TODO DOCS */
   drvSeqL = drvDeps: drvOut: let
-    drvOutOutputs = drvOut.outputs or ["out"];
+  drvOutOutputs = drvOut.outputs or ["out"];
   in
     runCommand drvOut.name {
       # we inherit all attributes in order to replicate
@@ -76,10 +76,10 @@ let
   #         importas -i out out
   #         ifte
   #           # if $@ succeeds, $out is touched
-  #           { ${s6TouchCommand} $out }
+  #           { ${bin.s6-touch} $out }
   #           # otherwise we return the exit code
   #           { importas exit ?
-  #             ${s6EchoCommand} $exit }
+  #             ${bin.s6-echo} $exit }
   #           # condition
   #           $@
   #       '';

@@ -1,7 +1,4 @@
-{ stdenv, drvSeqL, runExecline
-, ifCommand, redirfdCommand, s6GrepCommand
-, importasCommand, s6TouchCommand, s6CatCommand
-, execlinebCommand, s6TestCommand, s6ChmodCommand
+{ stdenv, drvSeqL, runExecline, bin
 # https://www.mail-archive.com/skaware@list.skarnet.org/msg01256.html
 , coreutils }:
 
@@ -22,7 +19,7 @@ let
       foreground {
         ${coreutils}/bin/mv $s $out
       }
-      ${s6ChmodCommand} 0755 $out
+      ${bin.s6-chmod} 0755 $out
     '';
    };
 
@@ -35,16 +32,16 @@ let
   fileHasLine = line: file: derivation {
     name = "file-${file.name}-has-line";
     inherit (stdenv) system;
-    builder = ifCommand;
+    builder = bin.execlineIf;
     args =
       (block [
-        redirfdCommand "-r" "0" file   # read file to stdin
-        s6GrepCommand "-F" "-q" line      # and grep for the line
+        bin.redirfd "-r" "0" file   # read file to stdin
+        bin.s6-grep "-F" "-q" line   # and grep for the line
       ])
       ++ [
         # if the block succeeded, touch $out
-        importasCommand "-ui" "out" "out"
-        s6TouchCommand "$out"
+        bin.importas "-ui" "out" "out"
+        bin.s6-touch "$out"
       ];
   };
 
@@ -53,7 +50,7 @@ let
     name = "basic";
     execline = ''
       importas -ui out out
-      ${s6TouchCommand} $out
+      ${bin.s6-touch} $out
     '';
   };
 
@@ -65,21 +62,21 @@ let
       importas -ui out out
       # this pipes stdout of s6-cat to $out
       # and s6-cat redirects from stdin to stdout
-      redirfd -w 1 $out ${s6CatCommand}
+      redirfd -w 1 $out ${bin.s6-cat}
     '';
   });
 
   wrapWithVar = runExecline {
     name = "wrap-with-var";
     builderWrapper = writeScript "var-wrapper" ''
-      #!${execlinebCommand} -S0
+      #!${bin.execlineb} -S0
       export myvar myvalue $@
     '';
     execline = ''
       importas -ui v myvar
-      if { ${s6TestCommand} myvalue = $v }
+      if { ${bin.s6-test} myvalue = $v }
         importas out out
-        ${s6TouchCommand} $out
+        ${bin.s6-touch} $out
     '';
   };
 

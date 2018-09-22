@@ -1,4 +1,4 @@
-{ stdenv, importasCommand, execCommand, redirfdCommand, execlinebCommand }:
+{ stdenv, bin }:
 { name
 # the execline script as string
 , execline
@@ -6,7 +6,7 @@
 , stdin ? ""
 # a program wrapping the acutal execline invocation;
 # should be in Bernstein-chaining style
-, builderWrapper ? execCommand
+, builderWrapper ? bin.exec
 # additional arguments to pass to the derivation
 , derivationArgs ? {}
 }:
@@ -37,23 +37,23 @@ derivation (derivationArgs // {
   builder = builderWrapper;
 
   args = [
-    importasCommand          # import script file as $script
+    bin.importas             # import script file as $script
     "-ui"                    # drop the envvar afterwards
     "script"                 # substitution name
     "_runExeclineScriptPath" # passed script file
 
     # TODO: can we scrap stdin via builderWrapper?
-    importasCommand          # do the same for $stdin
+    bin.importas             # do the same for $stdin
     "-ui"
     "stdin"
     "_runExeclineStdinPath"
 
-    redirfdCommand           # now we
+    bin.redirfd              # now we
     "-r"                     # read the file
     "0"                      # into the stdin of execlineb
     "$stdin"                 # that was given via stdin
 
-    execlinebCommand         # the actual invocation
+    bin.execlineb            # the actual invocation
     # TODO: depending on the use-case, -S0 might not be enough
     # in all use-cases, then a wrapper for execlineb arguments
     # should be added (-P, -S, -s).

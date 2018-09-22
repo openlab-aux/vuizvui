@@ -1,4 +1,4 @@
-{ stdenv, pkgs }:
+{ stdenv, lib, pkgs }:
 
 let
   inherit (pkgs) callPackage;
@@ -15,18 +15,20 @@ let
       ''${eldir}/execlineb $@
     '';
 
-  # TODO: use imports!
-  execlinebCommand = "${execlineb-with-builtins}/bin/execlineb";
-  redirfdCommand = "${pkgs.execline}/bin/redirfd";
-  importasCommand = "${pkgs.execline}/bin/importas";
-  s6TouchCommand = "${pkgs.s6-portable-utils}/bin/s6-touch";
-  s6EchoCommand = "${pkgs.s6-portable-utils}/bin/s6-echo";
-  ifCommand = "${pkgs.execline}/bin/if";
-  s6GrepCommand = "${pkgs.s6-portable-utils}/bin/s6-grep";
-  s6CatCommand = "${pkgs.s6-portable-utils}/bin/s6-cat";
-  s6TestCommand = "${pkgs.s6-portable-utils}/bin/s6-test";
-  s6ChmodCommand = "${pkgs.s6-portable-utils}/bin/s6-chmod";
-  execCommand = "${pkgs.execline}/bin/exec";
+  # Takes a derivation and a list of binary names
+  # and returns an attribute set of `name -> path`.
+  # The list can also contain renames in the form of
+  # { use, as }, which goes `as -> usePath`.
+  bins = drv: xs:
+    let f = x:
+      # TODO: typecheck
+      let x' = if builtins.isString x then { use = x; as = x; } else x;
+      in {
+        name = x'.as;
+        value = "${lib.getBin drv}/bin/${x'.use}";
+      };
+    in builtins.listToAttrs (builtins.map f xs);
+
 
 in rec {
   backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
@@ -62,22 +64,30 @@ in rec {
     # todo: factor out calling tests
     let
       it = import ./execline/run-execline.nix {
-        inherit stdenv execlinebCommand redirfdCommand
-          importasCommand execCommand;
+        bin = (bins execlineb-with-builtins [ "execlineb" ])
+           // (bins pkgs.execline [ "redirfd" "importas" "exec" ]);
+        inherit stdenv;
       };
       tests = import ./execline/run-execline-tests.nix {
         runExecline = it;
         inherit (testing) drvSeqL;
         inherit (pkgs) coreutils;
-        inherit stdenv ifCommand redirfdCommand s6CatCommand
-          s6GrepCommand importasCommand s6TouchCommand
-          s6TestCommand execlinebCommand s6ChmodCommand;
+        inherit stdenv;
+        bin = (bins execlineb-with-builtins [ "execlineb" ])
+           // (bins pkgs.execline [
+                 { use = "if"; as = "execlineIf"; }
+                 "redirfd" "importas"
+               ])
+           // (bins pkgs.s6PortableUtils
+                [ "s6-cat" "s6-grep" "s6-touch" "s6-test" "s6-chmod" ]);
        };
     in tests;
 
 
-  testing = pkgs.callPackage ./testing {
-    inherit runExecline s6TouchCommand s6EchoCommand;
+  testing = import ./testing {
+    inherit stdenv lib runExecline;
+    inherit (pkgs) runCommand;
+    bin = bins pkgs.s6PortableUtils [ "s6-touch" "s6-echo" ];
   };
 
   symlink = pkgs.callPackage ./execline/symlink.nix {
