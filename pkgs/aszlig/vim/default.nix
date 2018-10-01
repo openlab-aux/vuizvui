@@ -1,5 +1,5 @@
 { stdenv, lib, fetchurl, fetchFromGitHub, writeText, writeTextFile, writeScript
-, pythonPackages, ledger, vim
+, pythonPackages, ledger, meson, vim
 }:
 
 let
@@ -323,6 +323,17 @@ let
       repo = "vim-vue";
       rev = "e531e1d24f24385a5f4d2f1ba36d972a57ec52d9";
       sha256 = "1vi4i9ybwg1l1xmarsdhzd08py4w0yfg4xswbz3qrvihk8nhg1km";
+    };
+
+    meson = stdenv.mkDerivation {
+      name = "meson-vim-${meson.version}";
+      inherit (meson) src;
+      phases = [ "unpackPhase" "patchPhase" "installPhase" ];
+      postPatch = ''
+        sed -i -e '/^ *echom \+getline/d' \
+          data/syntax-highlighting/vim/indent/meson.vim
+      '';
+      installPhase = "cp -r data/syntax-highlighting/vim \"$out\"";
     };
   };
 
