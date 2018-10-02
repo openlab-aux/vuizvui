@@ -220,7 +220,6 @@
     wavemon
     xbindkeys
     xorg.xbacklight
-    thunderbird
     iw
   ];
 }
