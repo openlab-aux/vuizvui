@@ -2,8 +2,8 @@
   name = "bfq-kernel";
 
   machine = { pkgs, ... }: {
+    boot.kernelPackages = pkgs.linuxPackages_latest;
     vuizvui.system.kernel.bfq.enable = true;
-    vuizvui.system.kernel.useBleedingEdge = true;
     virtualisation.qemu.diskInterface = "scsi";
   };
 
