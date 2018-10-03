@@ -13,7 +13,7 @@ in {
       virtualbox = {
         host = {
           enable = true;
-          enableHardening = true;
+          enableHardening = false;
         };
       };
       libvirtd = {
