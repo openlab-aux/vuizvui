@@ -66,12 +66,6 @@ in {
       SystemMaxUse = 50M
     '';
 
-    services.psd = {
-      enable = false;
-      users = [ "dev" ];
-      browsers = [ "chromium" ];
-    };
-
     services.mpd = {
       enable = true;
       extraConfig = ''
