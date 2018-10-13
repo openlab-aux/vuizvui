@@ -1,5 +1,5 @@
 { stdenv, lib, fetchurl, fetchFromGitHub, writeText, writeTextFile, writeScript
-, pythonPackages, ledger, meson, vim
+, python3Packages, ledger, meson, vim
 }:
 
 let
@@ -373,7 +373,7 @@ let
     let python_highlight_numbers = 1
     let python_highlight_builtins = 1
     let python_highlight_exceptions = 1
-    let g:flake8_cmd = '${pythonPackages.flake8}/bin/flake8'
+    let g:flake8_cmd = '${python3Packages.flake8}/bin/flake8'
 
     " ledger
     let g:ledger_bin = '${ledger}/bin/ledger'
