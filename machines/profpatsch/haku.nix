@@ -87,7 +87,21 @@ in
         locations."/pub/" = {
           proxyPass = "http://127.0.0.1:${toString warpspeedPort}/";
         };
-        locations."/".root = pkgs.writeTextDir "index.html" ''coi do'';
+        locations."/".root =
+          let lojbanistanSrc = pkgs.fetchFromGitHub {
+            owner = "lojbanistan";
+            repo = "lojbanistan.de";
+            rev = "ef02aa8f074d0d5209839cd12ba7a67685fdaa05";
+            sha256 = "1hr2si73lam463pcf25napfbk0zb30kgv3ncc0ahv6wndjpsvg7z";
+          };
+          in pkgs.runCommand "lojbanistan-www" {} ''
+            mkdir $out
+            echo "coi do" > $out/index.html
+            ${pkgs.imagemagick}/bin/convert \
+              ${lojbanistanSrc}/design/flag-of-lojbanistan-icon.svg \
+              -define icon:auto-resize=64,48,32,16 \
+              $out/favicon.ico
+          '';
         serverAliases = [ "lojbanistan.de" ];
       };
     };
