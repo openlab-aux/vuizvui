@@ -46,10 +46,6 @@ in {
         enableOfficalBranding = true;
       };
 
-      virtualbox = {
-        enableExtensionPack = true;
-      };
-
       mpv = {
         youtubeSupport = true;
       };
