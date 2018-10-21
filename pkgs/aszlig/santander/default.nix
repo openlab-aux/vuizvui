@@ -4,7 +4,7 @@
 
 let
   patchedWine = let
-    libpcsclite = "${pcsclite}/lib/libpcsclite.so";
+    libpcsclite = "${lib.getLib pcsclite}/lib/libpcsclite.so";
   in winePackages.minimal.overrideAttrs (drv: {
     scard4wine = fetchgit {
       url = "git://git.code.sf.net/p/scard4wine/code";
