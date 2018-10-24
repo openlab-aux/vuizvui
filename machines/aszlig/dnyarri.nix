@@ -50,23 +50,7 @@ in {
   };
 
   environment.systemPackages = [
-    (pkgs.gpodder.override {
-      python3Packages = (pkgs.python3.override {
-        packageOverrides = lib.const (super: {
-          podcastparser = super.podcastparser.overridePythonAttrs (drv: let
-            assertVer = assert lib.versionOlder drv.version "0.6.4"; lib.id;
-          in {
-            version = "0.6.3";
-            src = assertVer (pkgs.fetchFromGitHub {
-              owner = "gpodder";
-              repo = "podcastparser";
-              rev = "ca8849f25e08b1aa7fa806c7a27dac200f7a2e8d";
-              sha256 = "105hlkm5h8lzj6dr2jvpc3zqdy7ayaxh9g99mv1m0f7l8mljz26a";
-            });
-          });
-        });
-      }).pkgs;
-    })
+    pkgs.gpodder
     pkgs.paperwork
   ];
 
