@@ -53,11 +53,7 @@ in {
 
     environment.systemPackages = with pkgs; [
       #arc-theme
-      #atftp
-      #bup
-      #cacert
       #texlive.combined.scheme-small
-      #tftp-hpa
       abcde
       abook
       accountsservice
@@ -74,6 +70,7 @@ in {
       beets
       binutils
       bmon
+      borgbackup
       cataclysm-dda
       ccrypt
       chromaprint
