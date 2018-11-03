@@ -28,12 +28,10 @@
 
   hardware = {
     opengl = {
-      extraPackages = [ pkgs.vaapiIntel ];
+      enable = true;
+      extraPackages = [ pkgs.libvdpau-va-gl pkgs.vaapiVdpau pkgs.vaapiIntel ];
     };
   };
-
-  networking.hostName = "eris";
-  networking.networkmanager.enable = true;
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/4788e218-db0f-4fd6-916e-e0c484906eb0";
@@ -53,8 +51,27 @@
 
   swapDevices = [ ];
 
+  # FIXME Check if this is still necessary in the future
+  systemd.services.systemd-networkd-wait-online.enable = false;
+
+  # XXX Ensure that these are added in addition to the DHCP proviced DNS servers
+  systemd.network.networks."99-main".dns = [ "1.1.1.1" "8.8.8.8" ];
+
+  networking = {
+    hostName = "eris";
+    wireless.iwd.enable = true;
+    useNetworkd = true;
+  };
+
+  powerManagement = {
+    powertop.enable = true;
+    cpuFreqGovernor = "powersave";
+  };
+
+  virtualisation.docker.enable = false;
+
   nix = {
-    maxJobs = 4;
+    maxJobs = lib.mkDefault 4;
     extraOptions = ''
       auto-optimise-store = true
     '';
@@ -71,11 +88,11 @@
   vuizvui.user.devhell.profiles.services.enable = true;
 
   services = {
-    tftpd.enable = true;
+    tftpd.enable = false;
     gnome3.gnome-keyring.enable = true;
     printing = {
       enable = true;
-      drivers = [ pkgs.gutenprint pkgs.hplip pkgs.cups-brother-hl1110 ];
+      drivers = [ pkgs.foo2zjs pkgs.hplip pkgs.cups-brother-hl1110 ];
     };
   };
 
@@ -110,17 +127,23 @@
     layout = "gb";
     videoDrivers = [ "intel" ];
 
-    synaptics = {
+    libinput = {
       enable = true;
-      twoFingerScroll = true;
-      palmDetect = true;
+      disableWhileTyping = true;
+      middleEmulation = true;
     };
+#    synaptics = {
+#      enable = true;
+#      twoFingerScroll = true;
+#      palmDetect = true;
+#    };
 
     # XXX: Factor out and make DRY, because a lot of the stuff here is
     # duplicated in the other machine configurations.
     displayManager.sessionCommands = ''
-      ${pkgs.xorg.xsetroot}/bin/xsetroot -solid black
-      ${pkgs.networkmanagerapplet}/bin/nm-applet &
+      ${pkgs.nitrogen}/bin/nitrogen --restore &
+      #${pkgs.xorg.xsetroot}/bin/xsetroot -solid black
+      #${pkgs.networkmanagerapplet}/bin/nm-applet &
       #${pkgs.pasystray}/bin/pasystray &
       #${pkgs.compton}/bin/compton -f &
       ${pkgs.rofi}/bin/rofi &
@@ -207,19 +230,38 @@
   nixpkgs.config.mpv.vaapiSupport = true;
 
   environment.systemPackages = with pkgs; [
+    #connmanui
+    #cura
+    #ipmiutil
+    #ipmiview
+    #networkmanagerapplet
+    #offlineimap
+    #openjdk8
+    #skype
+    #thunderbird
     aircrackng
+    cdrtools
+    dvdplusrwtools
+    glxinfo
     horst
+    ipmitool
+    iw
     kismet
+    libva
+    libvdpau-va-gl
     minicom
-    networkmanagerapplet
+    netalyzr
     pamixer
     pmtools
     pmutils
+    pythonPackages.alot
     reaverwps
+    signal-desktop
     snort
+    vaapiVdpau
+    vdpauinfo
     wavemon
     xbindkeys
     xorg.xbacklight
-    iw
   ];
 }

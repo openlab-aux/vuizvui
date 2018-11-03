@@ -59,7 +59,7 @@
   networking = {
     hostName = "titan";
     wireless.enable = true;
-    useNetworkd= true;
+    useNetworkd = true;
   };
 
   powerManagement = {
@@ -93,7 +93,6 @@
       enable = true;
       drivers = [ pkgs.foo2zjs pkgs.cups-brother-hl1110 ];
     };
-    dnscrypt-proxy.enable = false;
   };
 
   services.acpid = {
