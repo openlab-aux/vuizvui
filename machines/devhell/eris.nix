@@ -63,11 +63,6 @@
     useNetworkd = true;
   };
 
-  powerManagement = {
-    powertop.enable = true;
-    cpuFreqGovernor = "powersave";
-  };
-
   virtualisation.docker.enable = false;
 
   nix = {
