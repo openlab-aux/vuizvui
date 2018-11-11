@@ -27,7 +27,7 @@ in {
       pcscd.enable = true;
       gpm.enable = true;
       openssh.enable = true;
-      haveged.enable = true;
+      rngd.enable = true;
       thermald.enable = true;
       udisks2.enable = true;
       redshift = {
