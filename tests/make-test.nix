@@ -7,11 +7,11 @@ testFun:
 
   lib = import "${nixpkgsPath}/lib";
 
-  testLib = import "${nixpkgsPath}/nixos/lib/testing.nix" {
-    inherit system;
-  };
-
   pkgs = import nixpkgsPath { inherit system; };
+
+  testLib = import "${nixpkgsPath}/nixos/lib/testing.nix" {
+    inherit pkgs system;
+  };
 
   testArgs = if builtins.isFunction testFun then testFun (args // {
     pkgs = pkgs // {
