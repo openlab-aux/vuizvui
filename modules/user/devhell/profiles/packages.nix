@@ -89,10 +89,8 @@ in {
       ddrescue
       dhcping
       di
-      dmenu
       dmidecode
       dos2unix
-      dosbox
       duff
       e2fsprogs
       easytag
@@ -127,6 +125,7 @@ in {
       gource
       gparted
       gpgme
+      gpodder
       gptfdisk
       graphviz
       gstreamer
@@ -134,9 +133,7 @@ in {
       hexedit
       hplipWithPlugin
       htop
-      i3lock
       i3lock-color
-      i3status
       iftop
       imagemagick
       iotop
@@ -180,11 +177,9 @@ in {
       netrw
       netsniff-ng
       nitrogen
-      nix-prefetch-scripts
       nixops
       nload
       nmap
-      notmuch
       ntfs3g
       ntfsprogs
       ntopng
@@ -200,8 +195,6 @@ in {
       posix_man_pages
       powertop
       profanity
-      profile-cleaner
-      profile-sync-daemon
       pulsemixer
       pv
       pxz
