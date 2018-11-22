@@ -266,7 +266,6 @@ in {
       wireshark
       xfsprogs
       xlibs.xev
-      xpra
       xscreensaver
       youtube-dl
       zathura
