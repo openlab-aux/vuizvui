@@ -520,9 +520,6 @@ let
     { check = config.services.smokeping.enable;
       path  = ["nixos" "smokeping"];
     }
-    { check = config.services.statsd.enable;
-      path  = ["nixos" "statsd"];
-    }
     { check = config.services.strongswan-swanctl.enable;
       path  = ["nixos" "strongswan-swanctl"];
     }
