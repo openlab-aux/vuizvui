@@ -4,12 +4,12 @@
 
 buildGame rec {
   name = "stardew-valley-${version}";
-  version = "1.3.28";
+  version = "1.3.32";
 
   src = fetchGog {
     productId = 1453375253;
     downloadName = "en3installer0";
-    sha256 = "0lazp9zbgvg33wc5cvmf3fwvsdx3xkslr8nqdh3sm2grhchqqpfn";
+    sha256 = "1j6zzdjif2xbihcmpf66af4mbnxnvzjnfn0sq597i9a26h3caia2";
   };
 
   nativeBuildInputs = [ makeWrapper ];
