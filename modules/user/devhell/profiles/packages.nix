@@ -122,6 +122,7 @@ in {
       gnumake
       gnupg
       gopass
+      gotop
       gource
       gparted
       gpgme
