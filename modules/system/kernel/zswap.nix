@@ -20,15 +20,7 @@ in {
   config = lib.mkIf config.vuizvui.system.kernel.zswap.enable {
     boot.kernelPatches = lib.singleton {
       name = "zswap-config";
-      # This patch is needed until it hits stable/mainline to prevent z3fold
-      # crashes.
-      #
-      # See also: https://bugs.chromium.org/p/chromium/issues/detail?id=822360
-      patch = pkgs.fetchpatch {
-        name = "z3fold-fix-wrong-handling-of-headless-pages.patch";
-        url = "https://patchwork.kernel.org/patch/10510583/raw/";
-        sha256 = "0c9l912zgxwy31b7m4xkf31imzvjs11n1i6v5w2sykqfx3sk6a3b";
-      };
+      patch = null;
       extraConfig = ''
         CRYPTO_${if hasZstd then "ZSTD" else "LZO"} y
         ZSWAP y
