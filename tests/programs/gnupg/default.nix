@@ -126,7 +126,7 @@ in {
         'echo encrypt me | gpg -sea -r ECC15FE1 > encrypted_x.asc & echo $!'
       );
       chomp $pid;
-      $machine->waitForText(qr/Passphrase/);
+      $machine->waitForText(qr/[Pp]assphrase/);
       $machine->screenshot("passphrase_dialog");
       $machine->sendChars("supersecret\n");
       $machine->waitUntilFails("kill -0 $pid");
