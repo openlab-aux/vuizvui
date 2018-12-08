@@ -2,18 +2,21 @@
 
 buildGame rec {
   name = "crosscode-${version}";
-  version = "1.0.1.1";
+  version = "1.0.2";
 
   src = fetchGog {
     productId = 1252295864;
     downloadName = "en3installer0";
-    sha256 = "0v5vh4fazkjgaxxffad7k230wzdgwd6dnymf3i72d25pwaqdsssd";
+    sha256 = "0gd3i99g79w7nr6dnkjkpfq5s2y20dwrf706ipzkggknygmg9xad";
   };
 
   nativeBuildInputs = [ makeWrapper ];
 
   buildPhase = ''
     substituteInPlace package.json --replace assets/ ""
+
+    # Remove Greenworks (Steamworks integration)
+    rm -r assets/modules
   '';
 
   installPhase = ''
