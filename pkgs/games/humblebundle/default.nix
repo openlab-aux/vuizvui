@@ -31,6 +31,7 @@ let
     spaz = callPackage ./spaz.nix {};
     starbound = callPackage ./starbound.nix {};
     swordsandsoldiers = callPackage ./swordsandsoldiers.nix {};
+    the_bridge = callPackage_i686 ./the_bridge.nix {};
     trine2 = callPackage_i686 ./trine2.nix {};
     unepic = callPackage ./unepic.nix {};
   };
