@@ -252,6 +252,7 @@ in {
       wipe
       wireguard
       wireshark
+      wordgrinder
       xfsprogs
       xlibs.xev
       xscreensaver
