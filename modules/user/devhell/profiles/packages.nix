@@ -52,9 +52,7 @@ in {
     };
 
     environment.systemPackages = with pkgs; [
-      #arc-theme
       #texlive.combined.scheme-small
-      abcde
       abook
       accountsservice
       ag
@@ -70,7 +68,6 @@ in {
       beets
       binutils
       bmon
-      borgbackup
       cataclysm-dda
       ccrypt
       chromaprint
@@ -80,9 +77,7 @@ in {
       clac
       cmatrix
       colordiff
-      conky
       cryptsetup
-      ctodo
       cuetools
       darkstat
       dcfldd
@@ -93,7 +88,6 @@ in {
       dos2unix
       duff
       e2fsprogs
-      easytag
       electricsheep
       enhanced-ctorrent
       ethtool
@@ -202,13 +196,9 @@ in {
       python
       python2
       python3
-      pythonPackages.glances
-      pythonPackages.livestreamer
-      pythonPackages.rainbowstream
       qemu
       qrencode
       recode
-      reiserfsprogs
       reptyr
       ripgrep
       rofi
@@ -227,18 +217,15 @@ in {
       sxiv
       tasksh
       taskwarrior
-      tectonic
       telnet
       termdown
       termite
       testdisk
       tig
-      timewarrior
       tldr
       tmux
       toilet
       transcode
-      transgui
       tree
       tty-clock
       units
