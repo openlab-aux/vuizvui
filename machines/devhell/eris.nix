@@ -225,31 +225,19 @@
   nixpkgs.config.mpv.vaapiSupport = true;
 
   environment.systemPackages = with pkgs; [
-    #connmanui
-    #cura
-    #ipmiutil
-    #ipmiview
-    #networkmanagerapplet
-    #offlineimap
-    #openjdk8
-    #skype
-    #thunderbird
     aircrackng
     cdrtools
     dvdplusrwtools
     glxinfo
     horst
-    ipmitool
     iw
     kismet
     libva
     libvdpau-va-gl
     minicom
-    netalyzr
     pamixer
     pmtools
     pmutils
-    pythonPackages.alot
     reaverwps
     signal-desktop
     snort

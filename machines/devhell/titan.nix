@@ -180,17 +180,7 @@
   nixpkgs.config.mpv.vaapiSupport = true;
 
   environment.systemPackages = with pkgs; [
-    #connmanui
-    #cura
-    #ipmiutil
-    #ipmiview
-    #networkmanagerapplet
-    #offlineimap
-    #openjdk8
-    #skype
-    #thunderbird
     aircrackng
-    calibre
     cdrtools
     docker
     dvdplusrwtools
@@ -202,11 +192,9 @@
     libva
     libvdpau-va-gl
     minicom
-    netalyzr
     pamixer
     pmtools
     pmutils
-    pythonPackages.alot
     reaverwps
     signal-desktop
     snort
