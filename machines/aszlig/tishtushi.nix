@@ -25,10 +25,6 @@
         device = "/dev/disk/by-uuid/cf65f144-9205-40a5-a239-b660695a6740";
         keyFile = "/dev/mapper/00vault";
       }
-      { name = "tishtushi-nix";
-        device = "/dev/disk/by-uuid/af7fc49a-cc38-49f2-8a89-1cd8248554a7";
-        keyFile = "/dev/mapper/00vault";
-      }
     ];
     postDeviceCommands = lib.mkAfter ''
       cryptsetup luksClose /dev/mapper/00vault
@@ -47,12 +43,6 @@
     device = "/dev/mapper/tishtushi-root";
     fsType = "btrfs";
     options = [ "space_cache" "compress=zstd" "noatime" ];
-  };
-
-  fileSystems."/nix" = {
-    device = "/dev/mapper/tishtushi-nix";
-    fsType = "btrfs";
-    options = [ "ssd" "compress=zstd" "noatime" ];
   };
 
   swapDevices = lib.singleton {
