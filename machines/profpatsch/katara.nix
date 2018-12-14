@@ -199,7 +199,7 @@ in {
         msmtp                # SMTP client
         # notmuch              # mail indexer
         mu                   # mail indexing w/ emacs mode
-        pythonPackages.alot  # the next cool thing!
+        python3Packages.alot # the next cool thing!
       ];
       nixPkgs = [
         # nix-diff                  # structurally diff two derivations
