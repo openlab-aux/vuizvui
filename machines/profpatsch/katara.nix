@@ -72,6 +72,19 @@ in {
       ''}"
     ];
 
+    nix.distributedBuilds = true;
+    nix.buildMachines = [
+      # access to the nix-community aarch64 build box
+      {
+        hostName = "aarch64.nixos.community";
+        maxJobs = 64;
+        sshKey = "/root/aarch64-build-box/ssh-key";
+        sshUser = "Profpatsch";
+        system = "aarch64-linux";
+        supportedFeatures = [ "big-parallel" ];
+      }
+    ];
+
     ##########
     # Network
 
