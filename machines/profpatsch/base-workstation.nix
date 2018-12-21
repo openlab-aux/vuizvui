@@ -72,7 +72,7 @@ in {
 
     services.openssh.enable = true;
 
-    time.timeZone = "Europe/Berlin";
+    time.timeZone = "Europe/Paris";
 
     # bounded journal size
     services.journald.extraConfig = "SystemMaxUse=50M";
