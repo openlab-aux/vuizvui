@@ -61,7 +61,7 @@ in {
     ######
     # Nix
 
-    nix.maxJobs = 4;
+    nix.maxJobs = 2;
     vuizvui.modifyNixPath = false;
     nix.nixPath = [
       "vuizvui=${myLib.philip.home}/vuizvui"
