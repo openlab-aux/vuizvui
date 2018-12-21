@@ -46,10 +46,9 @@ in
 
     i18n = {
       defaultLocale = "en_US.UTF-8";
-      # TODO
-      # extraLocales = {
-      #   LC_TIME = "de_DE.UTF-8"; #"en_DK.UTF-8";
-      # };
+      extraLocaleSettings = {
+        LC_TIME = "de_DE.UTF-8"; #"en_DK.UTF-8";
+      };
     };
 
     # Nobody wants mutable state. :)

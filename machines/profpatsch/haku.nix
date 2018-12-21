@@ -106,17 +106,6 @@ in
       };
     };
 
-    # services.mlmmj = {
-    #   enable = true;
-    #   listDomain = "cz.profpatsch.de";
-    #   mailLists = [ "worship" "test" ];
-    # };
-    # services.postfix = {
-    #   # mostly configured by mlmmj
-    #   hostname = "cz.profpatsch.de";
-    #   postmasterAlias = "mail@profpatsch.de";
-    # };
-
     networking = {
       hostName = "haku";
       firewall = {

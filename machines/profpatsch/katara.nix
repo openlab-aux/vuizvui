@@ -53,9 +53,9 @@ in {
     # steam
     hardware.opengl.driSupport32Bit = true;
 
-
     # needed by some games (TODO: general module for games)
     # hardware.opengl.driSupport32Bit = true;
+
     vuizvui.hardware.thinkpad.enable = true;
 
     ######
@@ -89,17 +89,10 @@ in {
     # Network
 
     networking.hostName = "katara";
-    # networking.supplicant.wlp3s0 = {
-    #   configFile = {
-    #     path = "/var/wifi-networks";
-    #     writable = true;
-    #   };
-    #   userControlled.enable = true;
-    # };
 
-    services.unbound.enable = true;
     networking.networkmanager.enable = true;
 
+    # TODO: bond eth and wifi again
     # networking.bonds = {
     #   wifiAndEthernet = {
     #     interfaces = [ "wlp3s0" "enp0s25" ];
@@ -119,22 +112,21 @@ in {
     let
       systemPkgs =
       [
-        atool               # archive tools
-        gnupg gnupg1compat  # PGP encryption
-        imagemagick         # image conversion
-        jmtpfs              # MTP fuse
-        mosh                # ssh with stable connections
-        nfs-utils           # the filesystem of the future for 20 years
-        sshfsFuse           # mount ssh machines
-        tarsnap             # encrypting online backup tool
+        atool                # archive tools
+        gnupg gnupg1compat   # PGP encryption
+        imagemagick          # image conversion
+        jmtpfs               # MTP fuse
+        mosh                 # ssh with stable connections
+        sshfsFuse            # mount ssh machines
         # TODO move into atool deps
-        unzip               # extract zip archives
-        networkmanagerapplet
-        wpa_supplicant_gui  # configure wireless connections
+        unzip                # extract zip archives
+        networkmanagerapplet # for nm-connection-editor
+        wpa_supplicant_gui   # configure wireless connections
       ];
       xPkgs = [
         dmenu             # simple UI menu builder
         dunst             # notification daemon (interfaces with libnotify)
+        # TODO: replace by xscreensaver or i3lock
         alock             # lock screen
         libnotify         # notification library
         xclip             # clipboard thingy
@@ -157,8 +149,6 @@ in {
         go
         httpie                       # nice http CLI
         jq                           # json filter
-        # jid                          # interactive/incremental JSON digger
-        # mercurial                    # the other version control system
         telnet                       # tcp debugging
         pkgs.vuizvui.profpatsch.nix-http-serve # serve nix builds and rebuild on reloads
         pkgs.vuizvui.profpatsch.nman # open man pages in temporary nix shell
@@ -177,19 +167,15 @@ in {
         # TODO integrate lame into audacity
         audacity lame.lib    # audio editor and mp3 codec
         # myPkgs.beets         # audio file metadata tagger
-        # chromium             # browser
-        (chromium.override { enablePepperFlash = true; })
-        cups
+        chromium             # browser
+        cups                 # print tools, mainly for lp(1)
         pkgs.vuizvui.profpatsch.droopy # simple HTML upload server
-        unfreeAndNonDistributablePkgs.dropbox-cli # dropbox.com client
-        electrum             # bitcoin client
+        # electrum             # bitcoin client
         emacs                # pretty neat operating system i guess
         feh                  # brother of meh, displays images in a meh way, but fast
         filezilla            # FTP GUI business-ready interface framework
         myPkgs.saneGhci      # <s>Glorious</s>Glasgow Haskell Compiler, mostly for ghci
         gimp                 # graphics
-        gmpc                 # mpd client and best music player interface in the world
-        haskellPackages.hledger # plain text accounting
         inkscape             # vector graphics
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         lilyterm-git         # terminal emulator, best one around
@@ -201,7 +187,6 @@ in {
         remind               # calender & reminder program
         rtorrent             # monster of a bittorrent client
         unfreeAndNonDistributablePkgs.steam # the one gaming platform
-        myPkgs.xmpp-client   # CLI XMPP Client
         youtube-dl           # download videos
         zathura              # pdf viewer
       ];
@@ -212,60 +197,28 @@ in {
       ];
       mailPkgs = [
         elinks               # command line browser
-        mutt-with-sidebar    # has been sucking less since 1995
         msmtp                # SMTP client
-        # notmuch              # mail indexer
         mu                   # mail indexing w/ emacs mode
-        python3Packages.alot # the next cool thing!
       ];
       nixPkgs = [
-        # nix-diff                  # structurally diff two derivations
+        nix-diff                  # structurally diff two derivations
         nix-prefetch-scripts      # prefetch store paths from various destinations
         pkgs.vuizvui.taalo-build  # build derivation on taalo
       ];
       tmpPkgs = [
         # TODO needs user service
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
-        # on remove keep pdfjam!
-        (texlive.combine { inherit (texlive) scheme-medium latexmk IEEEtran needspace; })
+        # pdfjam is the best CLI pdf modification suite
+        (texlive.combine { inherit (texlive) scheme-minimal pdfjam; })
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
     ++ programmingTools ++ documentation
     ++ userPrograms ++ userScripts
     ++ mailPkgs ++ nixPkgs ++ tmpPkgs;
-    # system.extraDependencies = with pkgs; lib.singleton (
-    #    # Haskell packages I want to keep around
-    #    haskellPackages.ghcWithPackages (hpkgs: with hpkgs;
-    #      [
-    #        # frp
-    #        frpnow
-    #        gloss
-    #        gtk
-    #        frpnow-gtk
-    #        frpnow-gloss
-
-    #        lens
-    #        wreq
-    #        aeson-lens
-    #      ]))
-    #    ++
-    #    # other packages that I use sometimes in a shell
-    #    [
-    #    ];
 
     ###########
     # Services
 
-    # services.openvpn.servers.hakuclient = {
-    #   config = ''
-    #     client
-    #     remote haku.profpatsch.de
-    #     dev tun
-    #     proto tcp-client
-    #     ifconfig 10.20.30.41 10.20.30.40
-    #     secret /root/static-vpn.key
-    #   '';
-    # };
 
     # Automount
     services.udisks2.enable = true;
@@ -345,10 +298,10 @@ in {
       symbola # emoji
     ];
 
-    services.printing = {
-      enable = true;
-      drivers = [ pkgs.gutenprint pkgs.gutenprintBin ];
-    };
+    # services.printing = {
+    #   enable = true;
+    #   drivers = [ pkgs.gutenprint pkgs.gutenprintBin pkgs.hplip ];
+    # };
 
     ###########
     # Programs
