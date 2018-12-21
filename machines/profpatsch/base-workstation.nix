@@ -22,7 +22,13 @@ in {
     hardware.cpu.intel.updateMicrocode = true;
 
     networking = {
-      firewall.enable = false;
+      # better for untrusted networks
+      firewall = {
+        enable = true;
+        # for manual/temporary stuff
+        allowedTCPPortRanges =
+          [{ from = 9990; to = 9999; }];
+      };
     };
 
     i18n = {
