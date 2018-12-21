@@ -16,12 +16,19 @@ in
     boot.cleanTmpDir = true;
 
     programs.bash = {
-      loginShellInit = ''
+      interactiveShellInit = ''
         alias c='vim /root/vuizvui/machines/profpatsch'
         alias nsp='nix-shell -p'
         alias nrs='nixos-rebuild switch'
         alias tad='tmux attach -d'
         alias gs='git status'
+
+        # search recursively in cwd for file glob (insensitive)
+        findia () { find -iname "*''${*}*"; }
+        # like findia, but first argument is directory
+        findian () { path="$1"; shift; find $path -iname "*''${*}*"; }
+        # like findian, but searches whole filepath
+        findiap () { path="$1"; shift; find $path -ipame "*''${*}*"; }
       '';
     };
 
