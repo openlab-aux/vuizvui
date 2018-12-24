@@ -49,7 +49,7 @@ in {
       luks.devices = lib.singleton vaultDevice
                   ++ lib.concatLists (lib.attrValues cryptDevices);
       postDeviceCommands = lib.mkAfter ''
-        cryptsetup luksClose ${lib.escapeShellArg vaultPath}
+        cryptsetup close ${lib.escapeShellArg vaultPath}
       '';
     };
   };
