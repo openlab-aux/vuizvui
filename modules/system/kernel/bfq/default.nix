@@ -17,7 +17,7 @@ in {
         else ./bfq-by-default.patch;
       extraConfig = ''
         SCSI_MQ_DEFAULT y
-        DM_MQ_DEFAULT y
+        DM_MQ_DEFAULT? y
         IOSCHED_BFQ y
         BFQ_GROUP_IOSCHED y
       '';
