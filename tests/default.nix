@@ -9,6 +9,7 @@ let
   };
 
 in {
+  aszlig.dnyarri.luks2-bcache = callTest ./aszlig/dnyarri/luks2-bcache.nix;
   games = {
     starbound = callTest ./games/starbound.nix;
   };

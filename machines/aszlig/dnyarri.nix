@@ -31,6 +31,10 @@ let
 in {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
+  vuizvui.requiresTests = [
+    ["vuizvui" "aszlig" "dnyarri" "luks2-bcache"]
+  ];
+
   nix.maxJobs = 8;
 
   boot = {
@@ -41,6 +45,7 @@ in {
     kernelPackages = pkgs.linuxPackages_latest;
 
     initrd = {
+      availableKernelModules = [ "bcache" ];
       luks.devices = lib.singleton vaultDevice
                   ++ lib.concatLists (lib.attrValues cryptDevices);
       postDeviceCommands = lib.mkAfter ''
