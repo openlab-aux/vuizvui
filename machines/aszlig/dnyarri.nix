@@ -1,18 +1,9 @@
 { pkgs, lib, ... }:
 
 let
-  vaultPath = "/dev/mapper/${vaultDevice.name}";
-
   mkDevice = category: num: uuid: {
     name = "dnyarri-${category}-crypt-${toString num}";
     device = "/dev/disk/by-uuid/${uuid}";
-    keyFile = vaultPath;
-    keyFileSize = 1048576;
-  };
-
-  vaultDevice = {
-    name = "dnyarri-crypt-vault";
-    device = "/dev/disk/by-uuid/61e971d2-be93-4e60-8266-b2c6a71e2dc8";
   };
 
   cryptDevices = {
@@ -46,11 +37,7 @@ in {
 
     initrd = {
       availableKernelModules = [ "bcache" ];
-      luks.devices = lib.singleton vaultDevice
-                  ++ lib.concatLists (lib.attrValues cryptDevices);
-      postDeviceCommands = lib.mkAfter ''
-        cryptsetup close ${lib.escapeShellArg vaultPath}
-      '';
+      luks.devices = lib.concatLists (lib.attrValues cryptDevices);
     };
   };
 
