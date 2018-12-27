@@ -177,7 +177,7 @@ in {
       nmap
       ntfs3g
       ntfsprogs
-      ntopng
+      #ntopng
       openssl
       p7zip
       pandoc
