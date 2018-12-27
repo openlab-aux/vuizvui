@@ -88,7 +88,7 @@ in {
       dos2unix
       duff
       e2fsprogs
-      electricsheep
+      #electricsheep
       enhanced-ctorrent
       ethtool
       fbida
