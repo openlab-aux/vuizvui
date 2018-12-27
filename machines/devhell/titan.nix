@@ -58,7 +58,7 @@
 
   networking = {
     hostName = "titan";
-    wireless.enable = true;
+    wireless.iwd.enable = true;
     useNetworkd = true;
   };
 
