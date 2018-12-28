@@ -29,10 +29,12 @@ in {
       openssh.enable = true;
       thermald.enable = true;
       udisks2.enable = true;
+      geoip-updater.enable = true;
+      geoclue2.enable = true;
+
       redshift = {
         enable = true;
-        latitude = "51.2750";
-        longitude = "1.0870";
+        provider = "geoclue2";
       };
     };
 
