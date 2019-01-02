@@ -12,7 +12,7 @@ in {
     virtualisation = {
       virtualbox = {
         host = {
-          enable = false;
+          enable = true;
           enableHardening = false;
         };
       };
