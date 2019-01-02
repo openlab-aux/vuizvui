@@ -52,6 +52,8 @@ in {
     };
 
     environment.systemPackages = with pkgs; [
+      #electricsheep
+      #ntopng
       #texlive.combined.scheme-small
       abook
       accountsservice
@@ -88,7 +90,6 @@ in {
       dos2unix
       duff
       e2fsprogs
-      #electricsheep
       enhanced-ctorrent
       ethtool
       fbida
@@ -177,7 +178,6 @@ in {
       nmap
       ntfs3g
       ntfsprogs
-      #ntopng
       openssl
       p7zip
       pandoc
@@ -202,6 +202,7 @@ in {
       reptyr
       ripgrep
       rofi
+      rstudio
       rsync
       safecopy
       screen
