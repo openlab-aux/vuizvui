@@ -20,7 +20,7 @@ in {
     '');
 
     boot.kernelPackages = let
-      t100haKernel = pkgs.linux_4_14.override {
+      t100haKernel = pkgs.linux_4_19.override {
         # Missing device drivers:
         #
         #   808622B8 -> Intel(R) Imaging Signal Processor 2401
