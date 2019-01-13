@@ -10,7 +10,7 @@ OBJECTS = nix-query.o path-cache.o params.o setup.o
 CFLAGS = -g -Wall -std=gnu11 -DFS_ROOT_DIR=\"$(out)\"
 CXXFLAGS = -g -Wall -std=c++14 `pkg-config --cflags nix-main`
 CXXFLAGS += -DNIX_VERSION=$(NIX_VERSION)
-LDFLAGS = `pkg-config --libs nix-main`
+LDFLAGS = -Wl,--copy-dt-needed-entries `pkg-config --libs nix-main`
 
 all: $(OBJECTS)
 
