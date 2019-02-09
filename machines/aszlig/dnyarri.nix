@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, utils, lib, ... }:
 
 let
   mkDevice = category: num: uuid: {
@@ -18,6 +18,20 @@ let
       "d26e61d6-c238-4c01-8c57-b1ba0bdb8c93"
     ];
   };
+
+  bcacheMode = "writearound";
+
+  bcacheStart = ''
+    for i in /sys/block/bcache[0-9]*/bcache/cache_mode; do
+      echo ${lib.escapeShellArg bcacheMode} > "$i"
+    done
+  '';
+
+  bcacheStop = ''
+    for i in /sys/block/bcache[0-9]*/bcache/cache_mode; do
+      echo none > "$i"
+    done
+  '';
 
 in {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
@@ -78,9 +92,23 @@ in {
   powerManagement.powerUpCommands = ''
     ${pkgs.hdparm}/sbin/hdparm -B 255 /dev/disk/by-id/ata-ST31500541AS_5XW0AMNH
     ${pkgs.hdparm}/sbin/hdparm -B 255 /dev/disk/by-id/ata-ST31500541AS_6XW0M217
+    ${bcacheStart}
   '';
 
+  powerManagement.powerDownCommands = bcacheStop;
+
   services.btrfs.autoScrub.enable = true;
+
+  # Inject preStart/postStart for activating/deactivating bcache to the scrub
+  # services, so we don't get large amounts of nonsense on the caching device.
+  systemd.services = let
+    scrubServiceUnits = let
+      mkName = fs: "btrfs-scrub-${utils.escapeSystemdPath fs}.service";
+    in map mkName config.services.btrfs.autoScrub.fileSystems;
+  in lib.genAttrs scrubServiceUnits (lib.const {
+    preStart = bcacheStop;
+    postStart = bcacheStart;
+  });
 
   swapDevices = map ({ name, ... }: {
     device = "/dev/mapper/${name}";
