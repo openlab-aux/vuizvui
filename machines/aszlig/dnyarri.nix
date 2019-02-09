@@ -80,6 +80,8 @@ in {
     ${pkgs.hdparm}/sbin/hdparm -B 255 /dev/disk/by-id/ata-ST31500541AS_6XW0M217
   '';
 
+  services.btrfs.autoScrub.enable = true;
+
   swapDevices = map ({ name, ... }: {
     device = "/dev/mapper/${name}";
   }) cryptDevices.swap;
