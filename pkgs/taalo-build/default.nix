@@ -23,7 +23,7 @@ in runCommand "taalo-build" {} ''
     gctmp="$(${lib.escapeShellArg "${coreutils}/bin/mktemp"} -d)"
     trap 'rm -rf "$gctmp"' EXIT
     drv="$(${mkNix "nix-instantiate"} --add-root "$gctmp/drv" --indirect "$@")"
-  '' + remoteRealize "" "\"$drv\"")} > "$out/bin/taalo-build"
+  '' + remoteRealize "" "$drv")} > "$out/bin/taalo-build"
 
   ${emitScript (remoteRealize "exec " "\"$@\"")} > "$out/bin/taalo-realize"
 
