@@ -13,7 +13,11 @@
   getCaptcha = let
     injectedJS = ''
       function waitForResponse() {
-        var response = captcha.get_response();
+        try {
+          var response = grecaptcha.getResponse();
+        } catch(_) {
+          return setTimeout(waitForResponse, 50);
+        }
         if (response != "")
           document.title = response;
         else
