@@ -1,4 +1,4 @@
-{ stdenv, lib, buildGame, fetchHumbleBundle, unzip, makeWrapper, mono50
+{ stdenv, lib, buildGame, fetchHumbleBundle, unzip, makeWrapper, mono
 , SDL2, SDL2_image, openal, libvorbis
 , writeText
 }:
@@ -89,7 +89,7 @@ buildGame rec {
     cp -rvt "$out/lib/owlboy" "$libdir/libmojoshader.so"
     ln -vs "$out/share/owlboy" "$out/libexec/owlboy/content"
 
-    makeWrapper ${lib.escapeShellArg mono50}/bin/mono \
+    makeWrapper ${lib.escapeShellArg mono}/bin/mono \
       "$out/bin/owlboy" \
       --set LD_PRELOAD "$out/lib/owlboy/preloader.so" \
       --add-flags "$out/libexec/owlboy/Owlboy.exe" \

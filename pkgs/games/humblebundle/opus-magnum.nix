@@ -1,4 +1,4 @@
-{ stdenv, lib, buildGame, fetchHumbleBundle, makeWrapper, mono50
+{ stdenv, lib, buildGame, fetchHumbleBundle, makeWrapper, mono
 , SDL2, SDL2_image, SDL2_mixer, libvorbis
 }:
 
@@ -34,7 +34,7 @@ buildGame rec {
     cp -rvt "$out/share/opus-magnum" Content PackedContent
     cp -rvt "$out/libexec/opus-magnum" Lightning.exe* Ionic.Zip.Reduced.dll
 
-    makeWrapper ${lib.escapeShellArg mono50}/bin/mono "$out/bin/opus-magnum" \
+    makeWrapper ${lib.escapeShellArg mono}/bin/mono "$out/bin/opus-magnum" \
       --add-flags "$out/libexec/opus-magnum/Lightning.exe" \
       --run "cd '$out/share/opus-magnum'"
   '';

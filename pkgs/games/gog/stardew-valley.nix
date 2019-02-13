@@ -1,5 +1,5 @@
 { lib, stdenv, buildGame, fetchGog, makeWrapper
-, mono50, SDL2, libGL, openal
+, mono, SDL2, libGL, openal
 }:
 
 buildGame rec {
@@ -48,7 +48,7 @@ buildGame rec {
     install -vD "lib$bitSuffix/libGalaxyCSharpGlue.so" \
       "$out/libexec/stardew-valley/libGalaxyCSharpGlue.so"
 
-    makeWrapper ${lib.escapeShellArg mono50}/bin/mono \
+    makeWrapper ${lib.escapeShellArg mono}/bin/mono \
       "$out/bin/stardew-valley" \
       --add-flags "$out/libexec/stardew-valley/StardewValley.exe" \
       --prefix LD_LIBRARY_PATH : ${lib.escapeShellArg "${libGL}/lib"} \

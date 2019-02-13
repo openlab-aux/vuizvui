@@ -1,4 +1,4 @@
-{ stdenv, lib, buildGame, fetchItch, makeWrapper, p7zip, unzip, mono50
+{ stdenv, lib, buildGame, fetchItch, makeWrapper, p7zip, unzip, mono
 , SDL2, SDL2_image, libGL, libvorbis, openal, monogamePatcher, writeScriptBin
 , coreutils
 
@@ -34,7 +34,7 @@ buildGame rec {
       Texture IntroScene SFX SFXVaried
   '';
 
-  nativeBuildInputs = [ makeWrapper mono50 monogamePatcher ];
+  nativeBuildInputs = [ makeWrapper mono monogamePatcher ];
 
   libdir = if stdenv.system == "x86_64-linux" then "lib64" else "lib";
 
@@ -78,7 +78,7 @@ buildGame rec {
         "TowerFall Dark World Expansion/DarkWorldContent"
     fi
 
-    makeWrapper ${lib.escapeShellArg mono50}/bin/mono \
+    makeWrapper ${lib.escapeShellArg mono}/bin/mono \
       "$out/bin/towerfall-ascension" \
       --set SDL_OPENGL_LIBRARY ${lib.escapeShellArg "${libGL}/lib/libGL.so"} \
       --set PATH "$dummyXdgOpen/bin" \
