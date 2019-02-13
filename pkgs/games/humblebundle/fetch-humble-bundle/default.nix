@@ -98,6 +98,8 @@
 
     postPatch = ''
       sed -i -e '/^LOGIN_URL *=/s,/login,/processlogin,' humblebundle/client.py
+      sed -i -e '/self\.supports_canonical.*data.*supports_canonical/d' \
+        humblebundle/models.py
     '';
 
     propagatedBuildInputs = [ pythonPackages.requests ];
