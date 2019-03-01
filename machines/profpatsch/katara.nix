@@ -83,6 +83,15 @@ in {
         system = "aarch64-linux";
         supportedFeatures = [ "big-parallel" ];
       }
+      # tweag remote builder
+      {
+        hostName = "build01.tweag.io";
+        maxJobs = 24;
+        sshKey = "/root/.ssh/tweag-nix-builder";
+        sshUser = "nix";
+        system = "x86_64-linux";
+        supportedFeatures = [ "big-parallel" ];
+      }
     ];
 
     ##########
