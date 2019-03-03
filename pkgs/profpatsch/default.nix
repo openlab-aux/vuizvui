@@ -41,7 +41,8 @@ in rec {
   };
 
   inherit (callPackage ./utils-hs {})
-    nix-gen until watch-server;
+    nix-gen until watch-server
+    haskellPackages;
 
   # patched version of droopy, with javascript user-enhancement
   droopy = pkgs.droopy.overrideDerivation (old: {

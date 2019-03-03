@@ -1,4 +1,4 @@
-{ lib, fetchFromGitHub, haskellPackages }:
+{ lib, fetchFromGitHub, haskellPackages, haskell }:
 
 let
   utilsSrc = fetchFromGitHub {
@@ -9,7 +9,58 @@ let
   };
   version = "git";
 
-  haskellDrv = { name, subfolder, deps }: haskellPackages.mkDerivation {
+  # TODO: make it possible to override the hps fixpoint again
+  # without removing the overrides in here
+  hps =
+    let hlib = haskell.lib; in
+    haskellPackages.override {
+      overrides = (hself: hsuper: {
+
+        # shell stub
+        shellFor = f: # self -> { buildDepends, buildTools }
+          let args = f hself;
+          in hsuper.mkDerivation {
+            pname = "pkg-env";
+            src = "/dev/null";
+            version = "none";
+            license = "none";
+            inherit (args) buildDepends;
+            buildTools = with hself; [
+              ghcid
+              cabal-install
+              hpack
+              (hoogleLocal {
+                packages = args.buildDepends;
+              })
+            ] ++ args.buildTools or [];
+          };
+
+        # hoogleLocal should never use the builders
+        hoogleLocal = args: (hsuper.hoogleLocal args).overrideAttrs (_: {
+          preferLocalBuild = true;
+          allowSubstitutes = false;
+        });
+
+        these = hlib.doJailbreak hsuper.these;
+
+        hnix = hlib.overrideCabal
+          (hsuper.hnix.override {
+            inherit (hself) these;
+          }) (old: {
+          src = fetchFromGitHub {
+            owner = "haskell-nix";
+            repo = "hnix";
+            rev = "e7efbb4f0624e86109acd818942c8cd18a7d9d3d";
+            sha256 = "0dismb9vl5fxynasc2kv5baqyzp6gpyybmd5p9g1hlcq3p7pfi24";
+          };
+          buildDepends = old.buildDepends or [] ++ (with hself; [
+            dependent-sum prettyprinter (hlib.doJailbreak ref-tf)
+          ]);
+        });
+      } // (import /home/philip/kot/dhall/overlay.nix { inherit haskell fetchFromGitHub; } hself hsuper));
+    };
+
+  haskellDrv = { name, subfolder, deps }: hps.mkDerivation {
     pname = name;
     inherit version;
     src = "${utilsSrc}/${subfolder}";
@@ -19,27 +70,35 @@ let
     isExecutable = true;
     hydraPlatforms = [ "x86_64-linux" ];
     buildDepends = deps;
+
+    # justStaticExecutables
+    enableSharedExecutables = false;
+    enableLibraryProfiling = false;
+    isLibrary = false;
+    doHaddock = false;
+    postFixup = "rm -rf $out/lib $out/nix-support $out/share/doc";
   };
 
 
   nix-gen = haskellDrv {
     name = "nix-gen";
     subfolder = "nix-gen";
-    deps = with haskellPackages; [ hnix ansi-wl-pprint protolude data-fix ];
+    deps = with hps; [ hnix ansi-wl-pprint protolude data-fix ];
   };
 
   until = haskellDrv {
     name = "until";
     subfolder = "until";
-    deps = with haskellPackages; [ optparse-applicative data-fix time];
+    deps = with hps; [ optparse-applicative data-fix time];
   };
 
   watch-server = haskellDrv {
     name = "watch-server";
     subfolder = "watch-server";
-    deps = with haskellPackages; [ directory protolude fsnotify regex-tdfa optparse-generic ];
+    deps = with hps; [ directory protolude fsnotify regex-tdfa optparse-generic ];
   };
 
 in {
   inherit nix-gen until watch-server;
+  haskellPackages = hps;
 }
