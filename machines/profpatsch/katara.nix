@@ -151,7 +151,6 @@ in {
         gnome3.gnome_themes_standard
         pavucontrol
       ];
-      hp = haskellPackages;
       programmingTools = [
         cabal2nix                    # convert cabal files to nixexprs
         # myPkgs.fast-init             # fast-init of haskell projects
@@ -160,6 +159,7 @@ in {
 
         # TODO: move to user config
         go
+        direnv
         httpie                       # nice http CLI
         jq                           # json filter
         telnet                       # tcp debugging
@@ -170,6 +170,7 @@ in {
         pkgs.vuizvui.profpatsch.watch-server # restart server on code change
         pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
         myPkgs.execlineb-with-builtins
+        dhall
       ];
       documentation = [
         # mustache-spec NOT IN 16.09
@@ -222,7 +223,7 @@ in {
         # TODO needs user service
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
         # pdfjam is the best CLI pdf modification suite
-        (texlive.combine { inherit (texlive) scheme-minimal pdfjam; })
+        (texlive.combine { inherit (texlive) scheme-small pdfjam; })
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
     ++ programmingTools ++ documentation
@@ -311,10 +312,10 @@ in {
       symbola # emoji
     ];
 
-    # services.printing = {
-    #   enable = true;
-    #   drivers = [ pkgs.gutenprint pkgs.gutenprintBin pkgs.hplip ];
-    # };
+    services.printing = {
+      enable = true;
+      drivers = [ pkgs.gutenprint pkgs.gutenprintBin pkgs.hplip ];
+    };
 
     ###########
     # Programs
@@ -332,10 +333,13 @@ in {
 
     vuizvui.user.profpatsch.programs.scanning = {
       enable = true;
-      remoteScanners = ''
-        hannswurscht.openlab.lan
-      '';
+      #remoteScanners = ''
+      #  hannswurscht.lab
+      #  hippie.lab
+      #'';
     };
+
+    # virtualisation.docker.enable = true;
 
     #######
     # Misc

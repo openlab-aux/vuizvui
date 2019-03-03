@@ -1,6 +1,5 @@
 { pkgs, lib, myLib }:
 
-with pkgs;
 let
 
   nix = pkgs.nix.overrideAttrs (old: {
@@ -60,7 +59,7 @@ let
 
   poezio = pkgs.python34Packages.poezio;
 
-  vim = vim_configurable;
+  vim = pkgs.vim_configurable;
 
   fast-init = pkgs.haskellPackages.callPackage (import "${(pkgs.fetchFromGitHub {
     owner = "Profpatsch";
@@ -86,7 +85,7 @@ let
   # });
 
   # A ghci with some sane default packages in scope, & hoogle
-  saneGhci = haskellPackages.ghcWithHoogle (h: with h; [ protolude pretty-show ]);
+  saneGhci = pkgs.haskellPackages.ghcWithHoogle (h: with h; [ protolude pretty-show ]);
 
   pyrnotify =
     let src = pkgs.fetchFromGitHub {
