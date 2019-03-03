@@ -57,7 +57,7 @@ let
             dependent-sum prettyprinter (hlib.doJailbreak ref-tf)
           ]);
         });
-      } // (import /home/philip/kot/dhall/overlay.nix { inherit haskell fetchFromGitHub; } hself hsuper));
+      } );# // (import /home/philip/kot/dhall/overlay.nix { inherit haskell fetchFromGitHub; } hself hsuper));
     };
 
   haskellDrv = { name, subfolder, deps }: hps.mkDerivation {
