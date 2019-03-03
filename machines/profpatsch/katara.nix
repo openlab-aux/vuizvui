@@ -93,6 +93,10 @@ in {
         supportedFeatures = [ "big-parallel" ];
       }
     ];
+    nix.extraOptions = ''
+      builders-use-substitutes = true
+      auto-optimise-store = true
+    '';
 
     ##########
     # Network
