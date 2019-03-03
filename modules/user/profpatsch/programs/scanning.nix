@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 
 with lib;
 let
@@ -23,6 +23,7 @@ in {
     hardware.sane = {
       enable = true;
       netConf = cfg.remoteScanners;
+      extraBackends = [ unfreeAndNonDistributablePkgs.hplipWithPlugin ];
     };
   };
 }
