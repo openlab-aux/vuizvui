@@ -95,7 +95,7 @@ in {
         corefonts
         dejavu_fonts
         dosemu_fonts
-        font-awesome_5
+        font-awesome
         freefont_ttf
         google-fonts
         hack-font
