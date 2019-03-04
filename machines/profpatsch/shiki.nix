@@ -67,8 +67,8 @@ in {
       "vuizvui=${myLib.philip.home}/vuizvui"
       "nixpkgs=${myLib.philip.home}/nixpkgs"
       # TODO: nicer?
-      "nixos-config=${pkgs.writeText "katara-configuration.nix" ''
-        (import <vuizvui/machines>).profpatsch.katara.config
+      "nixos-config=${pkgs.writeText "shiki-configuration.nix" ''
+        (import <vuizvui/machines>).profpatsch.shiki.config
       ''}"
     ];
 
@@ -101,7 +101,7 @@ in {
     ##########
     # Network
 
-    networking.hostName = "katara";
+    networking.hostName = "shiki";
 
     networking.networkmanager.enable = true;
 
