@@ -20,7 +20,7 @@ with import ../lib;
     hannswurscht = callMachine ./openlab/hannswurscht.nix {};
   };
   profpatsch = {
-    katara = callMachine ./profpatsch/katara.nix {};
+    shiki = callMachine ./profpatsch/shiki.nix {};
     haku   = callMachine ./profpatsch/haku.nix {};
     mikiya = callMachine ./profpatsch/mikiya.nix {};
   };
