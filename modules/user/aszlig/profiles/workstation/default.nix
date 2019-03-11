@@ -57,6 +57,7 @@ in {
     vuizvui.user.aszlig.services.i3.enable = true;
     vuizvui.user.aszlig.services.slim.enable = true;
     vuizvui.user.aszlig.services.vlock.enable = true;
+    vuizvui.user.aszlig.services.vlock.user = "aszlig";
 
     vuizvui.user.aszlig.programs.mpv.enable = true;
     vuizvui.user.aszlig.programs.taskwarrior.enable = true;

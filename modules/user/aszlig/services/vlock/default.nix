@@ -28,6 +28,16 @@ let
 in {
   options.vuizvui.user.aszlig.services.vlock = {
     enable = lib.mkEnableOption "console lock";
+
+    user = lib.mkOption {
+      type = lib.types.str;
+      example = "horst";
+      internal = true;
+      description = ''
+        The user under which the locked session will run. This is a workaround
+        and thus this option is solely internal.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -43,7 +53,7 @@ in {
       serviceConfig.Type = "oneshot";
 
       #environment.USER = "%i"; XXX
-      environment.USER = "aszlig";
+      environment.USER = cfg.user;
 
       script = ''
         retval=0
