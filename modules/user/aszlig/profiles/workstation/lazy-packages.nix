@@ -10,7 +10,6 @@ pkgs: with pkgs; [
   haskellPackages.cabal-install
   haskellPackages.hlint
   haxe
-  lastwatch
   libchipcard
   lftp
   mp3info
