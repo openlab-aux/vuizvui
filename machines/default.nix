@@ -3,7 +3,6 @@ with import ../lib;
 {
   aszlig = {
     dnyarri   = callMachine ./aszlig/dnyarri.nix {};
-    kzerza    = callMachine ./aszlig/kzerza.nix {};
     meshuggah = callMachine ./aszlig/meshuggah.nix {};
     tishtushi = callMachine ./aszlig/tishtushi.nix {};
     managed = {
