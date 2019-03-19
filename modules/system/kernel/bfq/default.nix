@@ -16,7 +16,7 @@ in {
         else if versionAtLeast version "4.15" then ./bfq-by-default-4.15.patch
         else ./bfq-by-default.patch;
       extraConfig = ''
-        SCSI_MQ_DEFAULT y
+        SCSI_MQ_DEFAULT? y
         DM_MQ_DEFAULT? y
         IOSCHED_BFQ y
         BFQ_GROUP_IOSCHED y
