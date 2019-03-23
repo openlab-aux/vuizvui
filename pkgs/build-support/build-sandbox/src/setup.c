@@ -589,6 +589,21 @@ static bool setup_xauthority(void)
     return result;
 }
 
+#ifdef BINSH_EXECUTABLE
+static bool setup_binsh(const char *executable)
+{
+    if (!makedirs(FS_ROOT_DIR "/bin", false))
+        return false;
+
+    if (symlink(executable, FS_ROOT_DIR "/bin/sh") == -1) {
+        fprintf(stderr, "creating symlink from %s to %s: %s\n",
+                executable, FS_ROOT_DIR "/bin/sh", strerror(errno));
+        return false;
+    }
+    return true;
+}
+#endif
+
 static bool is_dir(const char *path)
 {
     struct stat sb;
@@ -778,6 +793,11 @@ static bool setup_chroot(void)
 
     if (!setup_runtime_debug())
         return false;
+
+#ifdef BINSH_EXECUTABLE
+    if (!setup_binsh(BINSH_EXECUTABLE))
+        return false;
+#endif
 
     if (chroot(FS_ROOT_DIR) == -1) {
         perror("chroot");

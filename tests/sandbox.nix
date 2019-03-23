@@ -37,6 +37,10 @@
           # Should fail because we can't access the host's PATH
           ! echo foo | grep -qF foo
 
+          # No /bin/sh by default
+          test ! -e /bin
+          test ! -e /bin/sh
+
           # Write PID information to files, so that we can later verify whether
           # we were in a PID namespace.
           echo $$ > /home/foo/.cache/xdg/ownpid
@@ -105,6 +109,12 @@
         paths.wanted = [ "/home/foo/nonexisting" ];
         paths.runtimeVars = [ "COLLECT_ME" ];
       })
+
+      (pkgs.vuizvui.buildSandbox (pkgs.writeScriptBin "test-sandbox2" ''
+        #!/bin/sh
+        # Another /bin/sh just to be sure :-)
+        /bin/sh -c 'echo /bin/sh works'
+      '') { allowBinSh = true; })
     ];
     users.users.foo.isNormalUser = true;
   };
@@ -124,5 +134,7 @@
 
     $machine->succeed('test "$(< /home/foo/.cache/xdg/procpids)" = /proc/1');
     $machine->succeed('test "$(< /home/foo/.cache/xdg/ownpid)" = 1');
+
+    $machine->succeed('test "$(su -c test-sandbox2 foo)" = "/bin/sh works"');
   '';
 }

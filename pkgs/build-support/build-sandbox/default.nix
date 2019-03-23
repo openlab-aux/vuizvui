@@ -1,4 +1,4 @@
-{ stdenv, lib, pkgconfig, nix, boost }:
+{ stdenv, lib, pkgconfig, nix, boost, dash }:
 
 drv: { paths ? {}, ... }@attrs:
 
@@ -9,6 +9,8 @@ let
   pathsWanted      = paths.wanted      or [];
   # Paths extracted from PATH-like environment variables, eg. LD_LIBRARY_PATH.
   pathsRuntimeVars = paths.runtimeVars or [];
+  # Mount a dash shell in /bin/sh inside the chroot.
+  allowBinSh       = attrs.allowBinSh or false;
 
   # Create code snippets for params.c to add extra_mount() calls.
   mkExtraMountParams = isRequired: lib.concatMapStringsSep "\n" (extra: let
@@ -24,7 +26,9 @@ in stdenv.mkDerivation ({
 
   inherit drv;
 
-  exportReferencesGraph = [ "sandbox-closure" drv ];
+  exportReferencesGraph =
+    [ "sandbox-closure" drv ] ++
+    lib.optionals allowBinSh [ "sandbox-binsh" dash ];
 
   configurePhase = ''
     runtimeDeps="$(sed -ne '
@@ -43,7 +47,7 @@ in stdenv.mkDerivation ({
       y/X/9/
       x; n; p; x
       bcdown
-    ' ../sandbox-closure | sort -u)"
+    ' ../sandbox-* | sort -u)"
 
     echo '#include "setup.h"' > params.c
     echo 'bool setup_app_paths(void) {' >> params.c
@@ -79,6 +83,7 @@ in stdenv.mkDerivation ({
 
   nativeBuildInputs = [ pkgconfig ];
   buildInputs = [ nix boost ];
-  makeFlags = [ "BINDIR=${drv}/bin" ];
+  makeFlags = [ "BINDIR=${drv}/bin" ]
+           ++ lib.optional allowBinSh "BINSH_EXECUTABLE=${dash}/bin/dash";
 
-} // removeAttrs attrs [ "paths" ])
+} // removeAttrs attrs [ "paths" "allowBinSh" ])
