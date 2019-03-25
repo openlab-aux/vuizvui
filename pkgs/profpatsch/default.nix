@@ -29,8 +29,30 @@ let
       };
     in builtins.listToAttrs (builtins.map f xs);
 
+  # various nix utils and fun experiments
+  nixperiments =
+    let
+      src = pkgs.fetchFromGitHub {
+        owner = "Profpatsch";
+        repo = "nixperiments";
+        rev = "1c654b42d46b680ceef8e2c65a40886f3f8614b9";
+        sha256 = "1lflgly8zy4s212s2caj21si15ydbgbm0szck66vrnwqvw3v3nws";
+      };
+    in import src { nixpkgs = pkgs; };
 
 in rec {
+  inherit (nixperiments)
+    # filterSource by parsing a .gitignore file
+    filterSourceGitignore
+    # canonical pattern matching primitive
+    match
+    # generate an option parser for scripts
+    script
+    # derivation testing
+    drvSeq drvSeqL withTests
+    # using the nix evaluator as a json transformation runtime
+    json2json json2string;
+
   backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
   display-infos = callPackage ./display-infos {};
   nix-http-serve = callPackage ./nix-http-serve {};
