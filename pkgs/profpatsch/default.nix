@@ -40,6 +40,12 @@ let
       };
     in import src { nixpkgs = pkgs; };
 
+  runCommandLocal = name: args: cmd:
+    pkgs.runCommand name (args // {
+      preferLocalBuild = true;
+      allowSubstitutes = false;
+    }) cmd;
+
 in rec {
   inherit (nixperiments)
     # filterSource by parsing a .gitignore file
@@ -55,6 +61,7 @@ in rec {
 
   backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
   display-infos = callPackage ./display-infos {};
+  git-commit-index = callPackage ./git-commit-index { inherit script runCommandLocal; };
   nix-http-serve = callPackage ./nix-http-serve {};
   nman = callPackage ./nman {};
   show-qr-code = callPackage ./show-qr-code {};
