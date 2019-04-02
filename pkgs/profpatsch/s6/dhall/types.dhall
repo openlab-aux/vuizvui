@@ -1,0 +1,1 @@
+{ ServiceDirectory = ./ServiceDirectory/type.dhall }
