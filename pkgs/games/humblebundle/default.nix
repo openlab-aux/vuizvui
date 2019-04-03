@@ -12,6 +12,7 @@ let
     };
 
     antichamber = callPackage_i686 ./antichamber.nix { };
+    baba-is-you = callPackage ./baba-is-you.nix { };
     bastion = callPackage ./bastion.nix {};
     brigador = callPackage ./brigador.nix {};
     cavestoryplus = callPackage ./cavestoryplus.nix {};
