@@ -130,6 +130,7 @@ in {
       hplipWithPlugin
       htop
       i3lock-color
+      i3lock-fancy
       iftop
       imagemagick
       iotop
