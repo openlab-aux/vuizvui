@@ -50,6 +50,18 @@ in {
         greeters.mini = {
           enable = true;
           user = "dev";
+          extraConfig = ''
+            [greeter]
+            show-password-label = true
+            password-label-text = >
+            show-input-cursor = false
+            [greeter-theme]
+            text-color = "#4C566A"
+            window-color = "#3B4252"
+            border-width = 0px
+            layout-space = 5
+            password-background-color = "#3B4252"
+          '';
         };
       };
       desktopManager.xterm.enable = false;
