@@ -45,7 +45,13 @@ in {
     };
 
     services.xserver = {
-      displayManager.lightdm.enable = true;
+      displayManager.lightdm = {
+        enable = true;
+        greeters.mini = {
+          enable = true;
+          user = "dev";
+        };
+      };
       desktopManager.xterm.enable = false;
       desktopManager.default = "none";
     };
