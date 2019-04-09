@@ -1,19 +1,24 @@
 BINARIES = $(wildcard $(BINDIR)/*)
 WRAPPERS = $(subst $(BINDIR),$(out)/bin,$(BINARIES))
 
+OBJECTS = path-cache.o params.o setup.o
+CFLAGS = -g -Wall -std=gnu11 -DFS_ROOT_DIR=\"$(out)\"
+CXXFLAGS = -g -Wall -std=c++14 `pkg-config --cflags nix-main`
+LDFLAGS = -Wl,--copy-dt-needed-entries `pkg-config --libs nix-main`
+
+ifdef FULL_NIX_STORE
+CFLAGS += -DFULL_NIX_STORE
+else
+OBJECTS += nix-query.o
 NIX_VERSION = `pkg-config --modversion nix-main | \
                sed -e 's/^\([0-9]\+\)\.\([0-9][0-9]\).*/\1\2/' \
                    -e 's/^\([0-9]\+\)\.\([0-9]\).*/\10\2/'`
+CXXFLAGS += -DNIX_VERSION=$(NIX_VERSION)
+endif
 
-OBJECTS = nix-query.o path-cache.o params.o setup.o
-
-CFLAGS = -g -Wall -std=gnu11 -DFS_ROOT_DIR=\"$(out)\"
 ifdef BINSH_EXECUTABLE
 CFLAGS += -DBINSH_EXECUTABLE=\"$(BINSH_EXECUTABLE)\"
 endif
-CXXFLAGS = -g -Wall -std=c++14 `pkg-config --cflags nix-main`
-CXXFLAGS += -DNIX_VERSION=$(NIX_VERSION)
-LDFLAGS = -Wl,--copy-dt-needed-entries `pkg-config --libs nix-main`
 
 all: $(OBJECTS)
 

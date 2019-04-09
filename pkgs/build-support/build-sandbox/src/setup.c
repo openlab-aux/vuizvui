@@ -18,8 +18,10 @@
 #include <unistd.h>
 
 #include "params.h"
-#include "nix-query.h"
 #include "path-cache.h"
+#ifndef FULL_NIX_STORE
+#include "nix-query.h"
+#endif
 
 static path_cache cached_paths = NULL;
 
@@ -604,6 +606,7 @@ static bool setup_binsh(const char *executable)
 }
 #endif
 
+#ifndef FULL_NIX_STORE
 static bool is_dir(const char *path)
 {
     struct stat sb;
@@ -663,6 +666,9 @@ bool mount_from_path_var(struct query_state *qs, const char *name)
     return true;
 }
 
+/* `/etc/static` is a special symlink on NixOS, pointing to a storepath
+   of configs that have to be available at runtime for some programs
+   to function. So we need to mount the closure of that storepath. */
 static bool setup_static_etc(struct query_state *qs)
 {
     char dest[PATH_MAX];
@@ -680,6 +686,7 @@ static bool setup_static_etc(struct query_state *qs)
     return mount_requisites(qs, dest);
 }
 
+/* Bind-mount all necessary nix store paths. */
 static bool setup_runtime_paths(void)
 {
     struct query_state *qs;
@@ -702,6 +709,7 @@ static bool setup_runtime_paths(void)
     free_query(qs);
     return true;
 }
+#endif
 
 static bool setup_runtime_debug(void)
 {
@@ -782,8 +790,11 @@ static bool setup_chroot(void)
     if (!bind_mount("/tmp", false, true, false))
         return false;
 
+    // We don’t need to query the nix store if we mount the full store
+#ifndef FULL_NIX_STORE
     if (!setup_runtime_paths())
         return false;
+#endif
 
     if (!setup_app_paths())
         return false;
