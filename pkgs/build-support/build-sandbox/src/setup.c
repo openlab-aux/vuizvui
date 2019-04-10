@@ -864,9 +864,25 @@ bool setup_sandbox(void)
     /* Just wait in the parent until the child exits. We need to fork because
      * otherwise we can't mount /proc in the right PID namespace.
      */
+    int wstatus;
     if (pid > 0) {
-        waitpid(pid, NULL, 0);
-        _exit(1);
+
+        if (waitpid(pid, &wstatus, 0) == -1) {
+          fputs("sandbox: waitpid failure", stderr);
+          _exit(EXIT_FAILURE);
+        }
+        else if (WIFEXITED(wstatus)) {
+          _exit(WEXITSTATUS(wstatus));
+        }
+        else if (WIFSIGNALED(wstatus)) {
+          fprintf(stderr, "sandbox: killed by signal %d\n", WTERMSIG(wstatus));
+          _exit(EXIT_FAILURE);
+        }
+        else {
+          // WIFSTOPPED, WIFCONTINUED?
+          fputs("sandbox: wait failed", stderr);
+          _exit(EXIT_FAILURE);
+        }
     }
 
     cached_paths = new_path_cache();
