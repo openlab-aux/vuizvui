@@ -181,6 +181,8 @@
 
   nixpkgs.config.mpv.vaapiSupport = true;
 
+  programs.light.enable = true;
+
   environment.systemPackages = with pkgs; [
     aircrackng
     cdrtools
@@ -193,8 +195,6 @@
     kismet
     libva
     libvdpau-va-gl
-    light
-    light
     minicom
     pamixer
     pmtools
