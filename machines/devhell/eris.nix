@@ -234,6 +234,7 @@
     kismet
     libva
     libvdpau-va-gl
+    light
     minicom
     pamixer
     pmtools
@@ -245,6 +246,5 @@
     vdpauinfo
     wavemon
     xbindkeys
-    xorg.xbacklight
   ];
 }
