@@ -120,7 +120,7 @@
   services.xserver = {
     enable = true;
     layout = "gb";
-    videoDrivers = [ "intel" ];
+    videoDrivers = [ "modesetting" ];
 
     libinput = {
       enable = true;
