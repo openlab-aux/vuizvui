@@ -6,7 +6,9 @@ runCommandNoCC "nman" {
     license = licenses.gpl3;
   };
 } ''
-    ${lib.getBin go}/bin/go build -o nman ${./nman.go}
+    mkdir cache
+    env GOCACHE="$PWD/cache" \
+      ${lib.getBin go}/bin/go build -o nman ${./nman.go}
     install -D nman $out/bin/nman
 ''
 
