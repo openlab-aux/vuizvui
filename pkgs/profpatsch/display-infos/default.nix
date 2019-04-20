@@ -1,8 +1,8 @@
-{ lib, runCommand, python3, libnotify }:
+{ lib, runCommand, writeText, python3, libnotify, sfttime }:
 
 let
   name = "display-infos-0.1.0";
-  script = builtins.toFile (name + "-script") ''
+  script = writeText (name + "-script") ''
     #!@python3@
 
     import sys
@@ -11,19 +11,22 @@ let
     import os.path as path
     import statistics as st
 
+    def readint(fn):
+        with open(fn, 'r') as f:
+            return int(f.read())
+
     full = 0
     now  = 0
     for bat in glob.iglob("/sys/class/power_supply/BAT*"):
-        def readint(fn):
-            with open(fn, 'r') as f:
-                return int(f.read())
 
         full += readint(path.join(bat, "energy_full"))
         now  += readint(path.join(bat, "energy_now" ))
 
     bat = round( now/full, 2 )
+    ac = "🗲" if readint("/sys/class/power_supply/AC/online") else ""
     date = sub.run(["date", "+%d.%m. %a %T"], stdout=sub.PIPE).stdout.strip().decode()
-    notify = "BAT: {}% | {}".format(int(bat*100), date)
+    sfttime = sub.run(["${sfttime}/bin/sfttime"], stdout=sub.PIPE).stdout.strip().decode()
+    notify = "BAT: {}% {} | {} | {}".format(int(bat*100), ac, date, sfttime)
     sub.run(["@notify-send@", notify])
   '';
 
