@@ -64,6 +64,7 @@ in rec {
   git-commit-index = callPackage ./git-commit-index { inherit script runCommandLocal; };
   nix-http-serve = callPackage ./nix-http-serve {};
   nman = callPackage ./nman {};
+  sfttime = callPackage ./sfttime {};
   show-qr-code = callPackage ./show-qr-code {};
   warpspeed = callPackage ./warpspeed {
     inherit (pkgs.haskellPackages) ghcWithPackages;
