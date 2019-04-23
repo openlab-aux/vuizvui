@@ -16,6 +16,8 @@
 #	displays name of unit [sft]$num, as well as it's value
 #	in both days and 'standard' units.
 
+SFT_EPOCH_UNIX=49020
+
 case $1 in
 	"c")
 		unixtime=$(date --date="$2" +%s.%N)
@@ -44,7 +46,7 @@ case $1 in
 			mode=in
 		elif [[ $inforeq =~ ^(\[[sS][fF][tT]\])?[eE][pP][oO][cC][hH]$ ]]; then
 			echo "[sft]epoch:"
-			echo "unix time 49020"
+			echo "unix time $SFT_EPOCH_UNIX"
 			echo "1970-01-01 13:37:00 UTC"
 			exit 0
 		else
@@ -62,7 +64,7 @@ esac
 
 case $mode in
 	"fw")
-		sfttime=$(echo "obase=16; ($unixtime-49020)/86400" | bc -l)
+		sfttime=$(echo "obase=16; ($unixtime-$SFT_EPOCH_UNIX)/86400" | bc -l)
 		if [[ $1 -ge 1 ]]; then
 			digits=$1
 			shift
