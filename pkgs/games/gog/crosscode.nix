@@ -2,12 +2,12 @@
 
 buildGame rec {
   name = "crosscode-${version}";
-  version = "1.0.2";
+  version = "1.0.3";
 
   src = fetchGog {
     productId = 1252295864;
     downloadName = "en3installer0";
-    sha256 = "0gd3i99g79w7nr6dnkjkpfq5s2y20dwrf706ipzkggknygmg9xad";
+    sha256 = "0b0ymc6zia9b1cs3iv40d9f0vi0lci2ha8bhalcqccckg8vjibjx";
   };
 
   nativeBuildInputs = [ makeWrapper ];
