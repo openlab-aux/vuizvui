@@ -58,7 +58,18 @@ let
             dependent-sum prettyprinter (hlib.doJailbreak ref-tf)
           ]);
         });
-      } );# // (import /home/philip/kot/dhall/overlay.nix { inherit haskell fetchFromGitHub; } hself hsuper));
+
+        dhall-nix = hlib.justStaticExecutables (hlib.overrideCabal hsuper.dhall-nix (old: {
+          src = fetchFromGitHub {
+            owner = "Profpatsch";
+            repo = "dhall-nix";
+            # manual update to dhall @0.19
+            rev = "feae0ce5b2ecf4daeeae15c39f427f126c33da7c";
+            sha256 = "1kdsbnj681lf65dsdclcrzj4cab1hh0v22n2140386zvwmawyp6r";
+          };
+          broken = false;
+        }));
+      });
     };
 
   haskellDrv = { name, subfolder, deps }: hps.mkDerivation {
