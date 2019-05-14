@@ -111,7 +111,7 @@ in {
         ttf_bitstream_vera
         ubuntu_font_family
         unifont
-        vistafonts
+        #vistafonts
         wqy_microhei
       ] ++ lib.filter lib.isDerivation (lib.attrValues lohit-fonts);
     };
