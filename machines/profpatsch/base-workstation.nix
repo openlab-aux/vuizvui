@@ -1,4 +1,4 @@
-# A base configuration that still assumes a workstation
+# A base configuration for Thinkpads.
 { pkgs, lib, ... }:
 let
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
@@ -13,6 +13,9 @@ in {
   ];
 
   config = {
+
+    ###########
+    # Hardware
 
     boot.loader = {
       grub.enable = true;
@@ -34,12 +37,75 @@ in {
     i18n = {
       consoleFont = "lat9w-16";
       consoleKeyMap = "neo";
-      # TODO: kinda broken?
-      # inputMethod = {
-      #   enabled = "fcitx";
-      #   fcitx.engines = with pkgs.fcitx-engines; [ mozc ];
-      # };
     };
+
+    # Enables drivers, acpi, power management
+    vuizvui.hardware.thinkpad.enable = true;
+
+    ###################
+    # Graphical System
+
+    services.xserver = {
+
+      enable = true;
+      layout = "de";
+      xkbVariant = "neo";
+      xkbOptions = "altwin:swap_alt_win";
+      serverFlagsSection = ''
+        Option "StandbyTime" "10"
+        Option "SuspendTime" "20"
+        Option "OffTime" "30"
+      '';
+
+      # otherwise xterm is enabled, creating an xterm that spawns the window manager.
+      desktopManager.xterm.enable = false;
+
+      windowManager.xmonad = {
+        enable = true;
+        enableContribAndExtras = true;
+      };
+
+      displayManager = {
+        sessionCommands = with pkgs; ''
+            #TODO add as nixpkg
+            export PATH+=":$HOME/scripts" #add utility scripts
+            export EDITOR=emacsclient
+            export TERMINAL=${lilyterm}/bin/lilyterm
+
+            ${xorg.xset}/bin/xset r rate 250 35
+
+            set-background &
+            # TODO xbindkeys user service file
+            ${lib.getBin xbindkeys}/bin/xbindkeys
+            # synchronize clipboards
+            ${lib.getBin autocutsel}/bin/autocutsel -s PRIMARY &
+          '';
+      };
+
+      synaptics = {
+        enable = true;
+        minSpeed = "0.6";
+        maxSpeed = "1.5";
+        accelFactor = "0.015";
+        twoFingerScroll = true;
+        vertEdgeScroll = false;
+      };
+
+    };
+
+    fonts.fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [ "Source Code Pro" "DejaVu Sans Mono" ]; # TODO does not work
+        sansSerif = [ "Liberation Sans" ];
+      };
+      ultimate = {
+        enable = true;
+        substitutions = "combi";
+        preset = "ultimate4";
+      };
+    };
+
 
     programs.ssh.startAgent = false;
 
@@ -77,15 +143,7 @@ in {
     # bounded journal size
     services.journald.extraConfig = "SystemMaxUse=50M";
 
-    services.xserver = {
-      # otherwise xterm is enabled, creating an xterm that spawns the window manager.
-      desktopManager.xterm.enable = false;
-
-      windowManager.xmonad = {
-        enable = true;
-        enableContribAndExtras = true;
-      };
-    };
+    vuizvui.programs.fish.fasd.enable = true;
 
     ########
     # Users

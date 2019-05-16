@@ -51,12 +51,17 @@ in {
       support32Bit = true;
     };
     # steam
+    # needed by some games (TODO: general module for games)
     hardware.opengl.driSupport32Bit = true;
 
-    # needed by some games (TODO: general module for games)
-    # hardware.opengl.driSupport32Bit = true;
-
-    vuizvui.hardware.thinkpad.enable = true;
+    # TODO: kinda broken?
+    # i18n = {
+    #   inputMethod = {
+    #     enabled = "fcitx";
+    #     Japanese input
+    #     fcitx.engines = with pkgs.fcitx-engines; [ mozc ];
+    #   };
+    # };
 
     ######
     # Nix
@@ -110,8 +115,10 @@ in {
     #   wifiAndEthernet = {
     #     interfaces = [ "wlp3s0" "enp0s25" ];
     #     driverOptions = {
-    #       miimon = "100";
+    #       # how often to check for link failures, i.e. ethernet down (ms)
+    #       miimon = "500";
     #       primary = "enp0s25";
+    #       primary_reselect = "always";
     #       mode = "active-backup";
     #     };
     #   };
@@ -246,59 +253,9 @@ in {
     # Graphical System
 
     services.xserver = {
-      enable = true;
-      layout = "de";
-      xkbVariant = "neo";
-      xkbOptions = "altwin:swap_alt_win";
-      serverFlagsSection = ''
-        Option "StandbyTime" "10"
-        Option "SuspendTime" "20"
-        Option "OffTime" "30"
-      '';
-
-      synaptics = {
-        enable = true;
-        minSpeed = "0.6";
-        maxSpeed = "1.5";
-        accelFactor = "0.015";
-        twoFingerScroll = true;
-        vertEdgeScroll = false;
-      };
-
-
       videoDrivers = [ "intel" ];
-
-      displayManager = {
-        sessionCommands = with pkgs; ''
-            #TODO add as nixpkg
-            export PATH+=":$HOME/scripts" #add utility scripts
-            export EDITOR=emacsclient
-            export TERMINAL=${lilyterm}/bin/lilyterm
-
-            ${xorg.xset}/bin/xset r rate 250 35
-
-            set-background &
-            # TODO xbindkeys user service file
-            ${lib.getBin xbindkeys}/bin/xbindkeys
-            # synchronize clipboards
-            ${lib.getBin autocutsel}/bin/autocutsel -s PRIMARY &
-          '';
-      };
-
     };
 
-    fonts.fontconfig = {
-      enable = true;
-      defaultFonts = {
-        monospace = [ "Source Code Pro" "DejaVu Sans Mono" ]; # TODO does not work
-        sansSerif = [ "Liberation Sans" ];
-      };
-      ultimate = {
-        enable = true;
-        substitutions = "combi";
-        preset = "ultimate4";
-      };
-    };
     fonts.fonts = with pkgs; [
       unfreeAndNonDistributablePkgs.corefonts
       source-han-sans-japanese
@@ -327,9 +284,6 @@ in {
         sshSupport = true;
       };
     };
-
-    # TODO: base config?
-    vuizvui.programs.fish.fasd.enable = true;
 
     vuizvui.user.profpatsch.programs.scanning = {
       enable = true;
