@@ -18,6 +18,7 @@ assert !derivationArgs ? builder;
 assert !derivationArgs ? args;
 
 derivation (derivationArgs // {
+  # TODO: what about cross?
   inherit (stdenv) system;
   inherit name;
 

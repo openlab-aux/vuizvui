@@ -115,10 +115,9 @@ in
       firewall = {
         allowedTCPPorts =
           [ 80 443
+            # transmission
+            6882
           ];
-        allowedTCPPortRanges =
-          # rtorrent
-          [{ from = 6881; to = 6889; }];
       };
       nameservers = [
         "62.210.16.6"
