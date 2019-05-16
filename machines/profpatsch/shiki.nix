@@ -144,7 +144,6 @@ in {
         wpa_supplicant_gui   # configure wireless connections
       ];
       xPkgs = [
-        dmenu             # simple UI menu builder
         dunst             # notification daemon (interfaces with libnotify)
         # TODO: replace by xscreensaver or i3lock
         alock             # lock screen
@@ -199,7 +198,6 @@ in {
         gimp                 # graphics
         inkscape             # vector graphics
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
-        lilyterm-git         # terminal emulator, best one around
         myPkgs.mpv           # you are my sun and my stars, and you play my stuff.
         pass                 # standard unix password manager
         picard               # jean-luc, music tagger

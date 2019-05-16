@@ -70,7 +70,7 @@ in {
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
             export EDITOR=emacsclient
-            export TERMINAL=${lilyterm}/bin/lilyterm
+            export TERMINAL=${lilyterm-git}/bin/lilyterm
 
             ${xorg.xset}/bin/xset r rate 250 35
 
@@ -128,7 +128,12 @@ in {
         traceroute        # trace ip routes
         wirelesstools     # iwlist (wifi scan)
       ];
-    in basePkgs;
+      # minimal set of gui applications
+      guiPkgs = [
+        lilyterm-git      # terminal emulator, best one around
+        dmenu             # minimal launcher
+      ];
+    in basePkgs ++ guiPkgs;
 
     # friendly user shell
    programs.fish.enable = true;
