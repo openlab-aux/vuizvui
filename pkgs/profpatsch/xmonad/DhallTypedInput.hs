@@ -1,16 +1,48 @@
 {-# language RecordWildCards, NamedFieldPuns, OverloadedStrings, ScopedTypeVariables, KindSignatures, DataKinds, ScopedTypeVariables, RankNTypes, GADTs, TypeApplications, AllowAmbiguousTypes, LambdaCase #-}
+{- Exports the `inputWithTypeArgs` function, which is able to read dhall files of the normalized form
+
+@
+\(CustomType: Type) ->
+\(AnotherType: Type) ->
+…
+@
+
+and set their actual representation on the Haskell side:
+
+This has various advantages:
+
+- dhall files still type check & normalize with the normal dhall
+  tooling, they are standalone (and the types can be instantiated from
+  dhall as well without any workarounds)
+- It can be used like the default `input` function, no injection of
+  custom symbols in the Normalizer is reqired
+- Brings this style of dhall integration to Haskell, where it was only
+  feasible in nix before, because that is untyped
+
+The dhall types can be instantiated by every Haskell type that has an
+`Interpret` instance. The “name” of the type lambda variable is
+compared on the Haskell side with a type-level string that the user
+provides, to prevent mixups.
+
+TODO:
+- Improve error messages (!)
+- Provide a way to re-use the type mapping on the Haskell side, so
+  that the returned values are not just the normal `Interpret` types,
+  but the mapped ones (with name phantom type)
+-}
 module DhallTypedInput
 ( inputWithTypeArgs, TypeArg(..), TypeArgError(..), TypeArgEx(..),  typeArg
 )
 where
 
 import Control.Monad.Trans.State.Strict as State
-import GHC.TypeLits (KnownSymbol, Symbol, symbolVal)
-import Data.Proxy (Proxy(Proxy))
 import Data.List (foldl')
-
 import Control.Exception (Exception)
 import qualified Control.Exception
+import qualified Data.Text as Text
+
+import GHC.TypeLits (KnownSymbol, Symbol, symbolVal)
+import Data.Proxy (Proxy(Proxy))
 
 import Dhall (Type(..), InvalidType(..), InputSettings(..), EvaluateSettings(..), rootDirectory, startingContext, normalizer, standardVersion, sourceName, defaultEvaluateSettings, Interpret(..), auto)
 import Dhall.TypeCheck (X)
@@ -23,27 +55,53 @@ import qualified Dhall.Parser
 
 import Lens.Family (LensLike', set, view)
 
-import qualified Data.Text as Text
-
 import Data.Text.Prettyprint.Doc (Pretty)
 import qualified Data.Text.Prettyprint.Doc               as Pretty
 import qualified Data.Text.Prettyprint.Doc.Render.Text   as Pretty
 import qualified Data.Text.Prettyprint.Doc.Render.String as Pretty
 
 
+-- | Information about a type argument in the dhall input
+--
+-- If the dhall file starts with @\(CustomType : Type) ->@,
+-- that translates to @TypeArg "CustomType" interpretionType@
+-- where @"CustomType"@ is a type-level string describing the
+-- name of the type in the dhall file (as a sanity check) and
+-- @interpretationType@ is any type which implements
+-- 'Dhall.Interpret'.
+--
+-- This is basically a specialized 'Data.Proxy'.
 data TypeArg (sym :: Symbol) t = TypeArg
 
--- | existential wrapper of a type arg
+-- | Existential wrapper of a 'TypeArg', allows to create a list
+-- of heterogenous 'TypeArg's.
 data TypeArgEx
   where TypeArgEx :: (KnownSymbol sym, Interpret t) => TypeArg sym t -> TypeArgEx
 
+-- | Shortcut for creating a 'TypeArgEx'.
+--
+-- Use with @TypeApplications@:
+--
+-- @
+-- typeArg @"CustomType" @Integer
+-- @
 typeArg :: forall sym t. (KnownSymbol sym, Interpret t) => TypeArgEx
 typeArg = TypeArgEx (TypeArg :: TypeArg sym t)
 
+-- | Possible errors returned when applying a 'TypeArg'
+-- to a 'Dhall.Expr'.
 data TypeArgError
   = WrongLabel Text.Text
+  -- ^ The name (label) of the type was different,
+  -- the text value is the expected label.
   | NoLambda
+  -- ^ The 'Dhall.Expr' does not start with 'Dhall.Lam'.
 
+-- | Apply a 'TypeArg' to a 'Dhall.Expr'.
+--
+-- Checks that the dhall file starts with the 'Dhall.Lam'
+-- corresponding to 'TypeArg`, then applies @t@ (dhall type application)
+-- and normalizes, effectively stripping the 'Dhall.Lam'.
 applyTypeArg
   :: forall sym t. (KnownSymbol sym, Interpret t)
   => Expr Src X
@@ -60,6 +118,7 @@ applyTypeArg expr ta@(TypeArg) = case expr of
         Dhall.Type _ tExpect = Dhall.auto :: Dhall.Type t
   expr -> Left NoLambda
 
+-- | Inflect the type-level string @sym@ to a text value.
 getLabel :: forall sym t. (KnownSymbol sym) => TypeArg sym t -> Text.Text
 getLabel _ = Text.pack $ symbolVal (Proxy :: (Proxy :: Symbol -> *) sym)
 
@@ -68,6 +127,15 @@ instance (KnownSymbol sym) => Show (TypeArg sym t) where
     "TypeArg "
     ++ (symbolVal (Proxy :: (Proxy :: Symbol -> *) sym))
 
+-- | Takes a list of 'TypeArg's and parses the given
+-- dhall string, applying the given 'TypeArg's in order
+-- to the opaque dhall type arguments (see 'TypeArg' for
+-- how these should look).
+--
+-- This is a slightly changed 'Dhall.inputWith'.
+--
+-- Discussion: Any trace of our custom type is removed from
+-- the resulting
 inputWithTypeArgs
   :: InputSettings
   -> [TypeArgEx]
@@ -81,6 +149,7 @@ inputWithTypeArgs settings typeArgs (Dhall.Type {extract, expected}) txt = do
     -- let evSettings = view evaluateSettings settings
     let evSettings :: EvaluateSettings = defaultEvaluateSettings
 
+    -- -vvv copied verbatim from 'Dhall.inputWith' vvv-
     let transform =
                set Dhall.Import.standardVersion
                (view standardVersion evSettings)
@@ -93,57 +162,63 @@ inputWithTypeArgs settings typeArgs (Dhall.Type {extract, expected}) txt = do
                             (view rootDirectory settings))
 
     expr' <- State.evalStateT (Dhall.Import.loadWith expr) status
+    -- -^^^ copied verbatim ^^^-
 
-    let skipNote e f = case e of
+    let
+      -- | if there’s a note, run the transformation and rewrap with the note
+      skipNote e f = case e of
           Note n e -> Note n $ f e
           e -> f e
 
     let
+      -- | strip one 'TypeArg'
       stripTypeArg :: Expr Src X -> TypeArgEx -> Expr Src X
       stripTypeArg e (TypeArgEx ta) = skipNote e $ \e' -> case e' of
           (Lam label _ _) ->
             case applyTypeArg e' ta of
               Right e'' -> e''
-              -- TODO obvously
+              -- TODO obvously improve error messages
               Left (WrongLabel l) ->
                 error $ "Wrong label, should have been `" ++ Text.unpack l ++ "` but was `" ++ Text.unpack label ++ "`"
               Left NoLambda -> error $ "I expected a lambda of the form λ(" ++ Text.unpack label ++ ": Type) → but got: " ++ show e
           e' -> error $ show e'
 
+    -- strip all 'TypeArg's
     let expr'' = foldl' stripTypeArg expr' typeArgs
 
-    -- - check first arg is \(label: Type) lambda
-    -- - type-check expression
-    -- - apply the type we label to signify to expression
-    -- - type-check the new normalized expression
-    --   - TODO: check if the error message makes sense to the user
+    -- -vvv copied verbatim as well (expr' -> expr'') vvv-
     let suffix = prettyToStrictText expected
     let annot = case expr'' of
             Note (Src begin end bytes) _ ->
-                -- Note (Src begin end bytes') (Annot expr'' expected)
-                Annot expr'' expected
+                Note (Src begin end bytes') (Annot expr'' expected)
               where
                 bytes' = bytes <> " : " <> suffix
             _ ->
                 Annot expr'' expected
-    print annot
+
     _ <- throws (Dhall.TypeCheck.typeWith (view startingContext settings) annot)
     case extract (Dhall.Core.normalizeWith (Dhall.Core.getReifiedNormalizer (view normalizer settings)) expr'') of
         Just x  -> return x
         Nothing -> Control.Exception.throwIO InvalidType
 
+
+-- copied from Dhall.Pretty.Internal
 prettyToStrictText :: Pretty a => a -> Text.Text
 prettyToStrictText = docToStrictText . Pretty.pretty
 
+-- copied from Dhall.Pretty.Internal
 docToStrictText :: Pretty.Doc ann -> Text.Text
 docToStrictText = Pretty.renderStrict . Pretty.layoutPretty options
   where
    options = Pretty.LayoutOptions { Pretty.layoutPageWidth = Pretty.Unbounded }
 
+-- copied from somewhere in Dhall
 throws :: Exception e => Either e a -> IO a
 throws (Left  e) = Control.Exception.throwIO e
 throws (Right r) = return r
 
+
+-- TODO: add errors like these
 -- data WrongTypeLabel = WrongTypeLabel deriving (Typeable)
 
 -- _ERROR :: String
@@ -155,27 +230,3 @@ throws (Right r) = return r
 --         \                                                                                \n\
 --         \Expected your t provide an extract function that succeeds if an expression      \n\
 --         \matches the expected type.  You provided a Type that disobeys this contract     \n"
-
--- instance (KnownSymbol s, D.Interpret t, D.Interpret a)
---   => D.Interpret (TypeArg s t a)
---   where
---   autoWith opts = D.Type
---     { D.extract = extr
---     -- TODO: the symbolVal is ignored for the type check;
---     -- yet, if the type check succeeds, we cannot fail
---     -- in the extract function (even if the label is wrong)
---     , D.expected = DC.Pi (T.pack expectedLabel) (DC.Const DC.Type) aExpect
---     }
---       where
---         expectedLabel = symbolVal (Proxy :: (Proxy :: Symbol -> *) s)
---         D.Type aExtr aExpect = D.autoWith opts :: D.Type a
---         D.Type tExtr tExpect = D.autoWith opts :: D.Type t
---         extr expr@(DC.Lam label (DC.Const DC.Type) _)
---           | label == T.pack (symbolVal (Proxy :: (Proxy :: Symbol -> *) s))
---               = Just (case aExtr (DC.normalize (DC.App expr tExpect)) of
---                         Just a -> TypeArg a
---                         Nothing -> error $ show (DC.normalize (DC.App expr tExpect) :: DC.Expr () DCT.X))
---           -- TODO: nice error message?!
---           | otherwise = error ("Wrong type label; expected "
---                                ++ expectedLabel ++ ", was " ++ T.unpack label)
---         extr _ = Nothing
