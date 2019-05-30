@@ -5,6 +5,18 @@ let
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
 
   warpspeedPort = 1338;
+  ethernetInterface = "enp0s20";
+  wireguard = {
+    port = 6889;
+    interface = "wg0";
+    internalNetwork =
+      let genIp = cidr: lastByte: "10.42.0.${toString lastByte}/${toString cidr}";
+      in {
+        addr = genIp 32;
+        range = genIp 24 0;
+        server = genIp 24 1;
+      };
+  };
 
   myKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNMQvmOfon956Z0ZVdp186YhPHtSBrXsBwaCt0JAbkf/U/P+4fG0OROA++fHDiFM4RrRHH6plsGY3W6L26mSsCM2LtlHJINFZtVILkI26MDEIKWEsfBatDW+XNAvkfYEahy16P5CBtTVNKEGsTcPD+VDistHseFNKiVlSLDCvJ0vMwOykHhq+rdJmjJ8tkUWC2bNqTIH26bU0UbhMAtJstWqaTUGnB0WVutKmkZbnylLMICAvnFoZLoMPmbvx8efgLYY2vD1pRd8Uwnq9MFV1EPbkJoinTf1XSo8VUo7WCjL79aYSIvHmXG+5qKB9ed2GWbBLolAoXkZ00E4WsVp9H philip@nyx";
 
@@ -111,14 +123,51 @@ in
     };
 
     networking = {
+      nat = {
+        enable = true;
+        externalInterface = ethernetInterface;
+        internalInterfaces = [ wireguard.interface ];
+      };
+
       hostName = "haku";
       firewall = {
-        allowedTCPPorts =
-          [ 80 443
-            # transmission
-            6882
-          ];
+        allowedTCPPorts = [
+          80 443
+          6882
+        ];
+        allowedUDPPorts = [
+          wireguard.port
+        ];
+        # forward wireguard connections to ethernet device (VPN)
+        extraCommands = ''
+          iptables -t nat -A POSTROUTING -s ${wireguard.internalNetwork.range} -o ${ethernetInterface} -j MASQUERADE
+        ''
+        # drop every other kind of forwarding, except from wg0 to epn (and bridge wg)
+        + ''
+          iptables -P FORWARD DROP
+          iptables -A FORWARD -i ${wireguard.interface} -o ${ethernetInterface} -j ACCEPT
+          iptables -A FORWARD -o ${wireguard.interface} -i ${ethernetInterface} -j ACCEPT
+          iptables -A FORWARD -i ${wireguard.interface} -o ${wireguard.interface} -j ACCEPT
+        '';
       };
+
+      wireguard.interfaces.${wireguard.interface} = {
+        ips = [ wireguard.internalNetwork.server ];
+        listenPort = wireguard.port;
+        privateKeyFile = "/root/keys/wg/vpn.priv";
+
+        peers = [
+          { # shiki (TODO: factor out)
+            publicKey = "x3ko/R8PLzcyjVjqot9qmGBb3NrG/4JvgRkIOQMEsUA=";
+            allowedIPs = [ (wireguard.internalNetwork.addr 2) ];
+          }
+          { # mushu
+            publicKey = "Stx6N4/JurtAuYX+43WPOCLBqheE99O6WRvxW+sd3jw=";
+            allowedIPs = [ (wireguard.internalNetwork.addr 3) ];
+          }
+        ];
+      };
+
       nameservers = [
         "62.210.16.6"
         "62.210.16.7"
