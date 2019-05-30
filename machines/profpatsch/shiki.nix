@@ -209,8 +209,14 @@ in {
         youtube-dl           # download videos
         zathura              # pdf viewer
       ];
-      userScripts = with pkgs.vuizvui.profpatsch; [
+      userScripts = with pkgs.vuizvui.profpatsch;
+        let
+          di-notify = pkgs.writers.writeBashBin "display-infos-notify" ''
+            ${pkgs.libnotify}/bin/notify-send "$(${display-infos}/bin/display-infos)"
+          '';
+        in [
         display-infos  # show time & battery
+        di-notify      # same, but pipe to libnotify
         show-qr-code   # display a QR code
         backlight      # adjust laptop backlight
       ];

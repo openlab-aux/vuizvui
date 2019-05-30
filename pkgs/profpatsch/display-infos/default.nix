@@ -57,7 +57,7 @@ let
       date = date,
       sftdate = sftdate
     )
-    sub.run(["@notify-send@", notify])
+    print(notify)
   '';
 
 in
@@ -66,7 +66,6 @@ in
   } ''
     substitute ${script} script \
       --replace "@python3@" "${getBin python3}/bin/python3" \
-      --replace "@notify-send@" "${getBin libnotify}/bin/notify-send" \
       --replace "@bc@" "${getBin bc}/bin/bc" \
       --replace "@sfttime@" "${getBin sfttime}/bin/sfttime"
     install -D script $out/bin/display-infos
