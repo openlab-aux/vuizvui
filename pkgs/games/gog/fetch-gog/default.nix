@@ -185,13 +185,19 @@ let
           browser['login[password]'] = ${mkPyStr password}
           browser.submit_selected()
 
-          auth_code = parse_qs(urlsplit(browser.get_url()).query)['code']
+          query = parse_qs(urlsplit(browser.get_url()).query)
+
+          if 'code' not in query:
+            sys.stderr.write(
+              "Unable to login with the provided GOG credentials."
+            )
+            raise SystemExit(1)
 
           token_url = "https://auth.gog.com/token?" + urlencode({
             'client_id': ${mkPyStr clientId},
             'client_secret': ${mkPyStr clientSecret},
             'grant_type': 'authorization_code',
-            'code': auth_code,
+            'code': query['code'],
             'redirect_uri': ${mkPyStr redirectUri}
           })
 
