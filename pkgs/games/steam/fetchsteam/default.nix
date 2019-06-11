@@ -79,6 +79,7 @@ let
 in with stdenv.lib; runCommand "${name}-src" {
   buildInputs = [ DepotDownloader ];
   inherit username password appId depotId manifestId;
+  preferLocalBuild = true;
   outputHashAlgo = "sha256";
   outputHash = sha256;
   outputHashMode = "recursive";

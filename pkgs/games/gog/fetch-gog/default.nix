@@ -150,6 +150,7 @@ let
   in runCommandCC "get-captcha" {
     nativeBuildInputs = [ pkgconfig ];
     buildInputs = [ qt5.qtbase qt5.qtwebengine ];
+    preferLocalBuild = true;
   } ''
     g++ $(pkg-config --libs --cflags Qt5WebEngineWidgets Qt5WebEngine) \
       -Wall -std=c++11 -o "$out" ${application}
@@ -283,6 +284,8 @@ in stdenv.mkDerivation {
   inherit name;
   outputHashAlgo = "sha256";
   outputHash = sha256;
+
+  preferLocalBuild = true;
 
   nativeBuildInputs = [
     curl python3Packages.tabulate python3Packages.MechanicalSoup

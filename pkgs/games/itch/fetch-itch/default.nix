@@ -69,6 +69,7 @@ in stdenv.mkDerivation {
 
   SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
+  preferLocalBuild = true;
   nativeBuildInputs = [ python3Packages.python ];
 
   buildCommand = ''

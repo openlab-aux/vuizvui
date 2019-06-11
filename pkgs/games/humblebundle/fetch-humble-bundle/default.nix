@@ -80,6 +80,7 @@
   in runCommandCC "get-captcha" {
     nativeBuildInputs = [ pkgconfig ];
     buildInputs = [ qt5.qtbase qt5.qtwebengine ];
+    preferLocalBuild = true;
   } ''
     g++ $(pkg-config --libs --cflags Qt5WebEngineWidgets Qt5WebEngine) \
       -Wall -std=c++11 -o "$out" ${application}
@@ -183,6 +184,7 @@ in stdenv.mkDerivation {
   outputHashAlgo = "md5";
   outputHash = md5;
 
+  preferLocalBuild = true;
   buildInputs = [ python humbleAPI ];
 
   buildCommand = ''
