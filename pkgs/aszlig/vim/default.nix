@@ -335,6 +335,15 @@ let
       '';
       installPhase = "cp -r data/syntax-highlighting/vim \"$out\"";
     };
+
+    jinja2 = stdenv.mkDerivation {
+      name = "jinja2-vim-${python3Packages.jinja2.version}";
+      inherit (python3Packages.jinja2) src;
+      phases = [ "unpackPhase" "installPhase" ];
+      installPhase = ''
+        install -vD -m 0644 ext/Vim/jinja.vim "$out/syntax/jinja.vim"
+      '';
+    };
   };
 
   generic = ''
