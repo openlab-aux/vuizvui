@@ -1,0 +1,36 @@
+diff --git a/launcher/mainwindow_moc.cpp b/launcher/mainwindow_moc.cpp
+index a07774ed2..3275af71a 100644
+--- a/launcher/mainwindow_moc.cpp
++++ b/launcher/mainwindow_moc.cpp
+@@ -11,7 +11,7 @@
+ #include "mainwindow_moc.h"
+ #include "ui_mainwindow_moc.h"
+ 
+-#include <QProcess>
++#include <unistd.h>
+ #include <QDir>
+ 
+ #include "../lib/CConfigHandler.h"
+@@ -77,19 +77,11 @@ void MainWindow::on_startGameButton_clicked()
+ 
+ void MainWindow::startExecutable(QString name)
+ {
+-	QProcess process;
+-
+-	// Start the executable
+-	if(process.startDetached(name))
+-	{
+-		close(); // exit launcher
+-	}
+-	else
+-	{
++	if (execl(name.toLatin1().data(), "vcmiclient", nullptr) == -1) {
++		QString msg("Failed to start %1\nReason: %2");
+ 		QMessageBox::critical(this,
+ 		                      "Error starting executable",
+-		                      "Failed to start " + name + "\n"
+-		                      "Reason: " + process.errorString(),
++							  msg.arg(name).arg(strerror(errno)),
+ 		                      QMessageBox::Ok,
+ 		                      QMessageBox::Ok);
+ 		return;
