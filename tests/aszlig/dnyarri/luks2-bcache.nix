@@ -94,6 +94,10 @@
       );
       chomp $csetuuid;
 
+      $newmachine->nest('wait for cache device to appear', sub {
+        $newmachine->waitUntilSucceeds("test -e /sys/fs/bcache/$csetuuid");
+      });
+
       $newmachine->succeed(
         "echo $csetuuid > /sys/block/$bcache1/bcache/attach",
         "echo writeback > /sys/block/$bcache1/bcache/cache_mode",
