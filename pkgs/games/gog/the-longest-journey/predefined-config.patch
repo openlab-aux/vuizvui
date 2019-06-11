@@ -1,0 +1,29 @@
+diff --git a/base/commandLine.cpp b/base/commandLine.cpp
+index ab741917..8723fc0d 100644
+--- a/base/commandLine.cpp
++++ b/base/commandLine.cpp
+@@ -425,6 +425,9 @@ Common::String parseCommandLine(Common::StringMap &settings, int argc, const cha
+ 			DO_LONG_COMMAND("list-saves")
+ 			END_COMMAND
+ 
++			DO_LONG_OPTION("predefined-config")
++			END_OPTION
++
+ 			DO_OPTION('c', "config")
+ 			END_OPTION
+ 
+diff --git a/base/main.cpp b/base/main.cpp
+index 2fbfc679..d74b15e5 100644
+--- a/base/main.cpp
++++ b/base/main.cpp
+@@ -394,6 +394,10 @@ extern "C" int scummvm_main(int argc, const char * const argv[]) {
+ 	Common::StringMap settings;
+ 	command = Base::parseCommandLine(settings, argc, argv);
+ 
++	// Load config file with predefined options
++	if (settings.contains("predefined-config"))
++		ConfMan.loadConfigFile(settings["predefined-config"]);
++
+ 	// Load the config file (possibly overridden via command line):
+ 	if (settings.contains("config")) {
+ 		ConfMan.loadConfigFile(settings["config"]);

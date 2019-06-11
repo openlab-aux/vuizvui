@@ -21,6 +21,7 @@ let
     satellite-reign = callPackage ./satellite-reign.nix {};
     settlers2 = callPackage ./settlers2.nix {};
     stardew-valley = callPackage ./stardew-valley.nix {};
+    the-longest-journey = callPackage ./the-longest-journey {};
     thimbleweed-park = callPackage ./thimbleweed-park.nix {};
     war-for-the-overworld = callPackage ./war-for-the-overworld.nix {};
     wizard-of-legend = callPackage ./wizard-of-legend.nix {};
