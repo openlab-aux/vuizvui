@@ -92,6 +92,7 @@
       my $csetuuid = $newmachine->succeed(
         'make-bcache -C /dev/vde | sed -n -e "s/^Set UUID:[^a-f0-9]*//p"'
       );
+      chomp $csetuuid;
 
       $newmachine->succeed(
         "echo $csetuuid > /sys/block/$bcache1/bcache/attach",
