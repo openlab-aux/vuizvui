@@ -384,6 +384,13 @@ let
     let g:ledger_commodity_before = 0
     let g:ledger_commodity_sep = ' '
     let g:ledger_fold_blanks = 1
+
+    " php
+    let php_noShortTags = 1
+    let php_sql_query = 1
+    let php_baselib = 1
+    let php_htmlInStrings = 1
+    let g:PHP_vintage_case_default_indent = 1
   '';
 
   autocmd = ''
