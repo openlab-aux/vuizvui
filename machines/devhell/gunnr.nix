@@ -70,7 +70,7 @@
   };
 
   nix = {
-    maxJobs = lib.mkDefault = 16;
+    maxJobs = lib.mkDefault 16;
     extraOptions = ''
       auto-optimise-store = true
     '';
