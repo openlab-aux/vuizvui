@@ -12,9 +12,9 @@ with import ../lib;
     };
   };
   devhell = {
-    eris       = callMachine devhell/eris.nix {};
-    skunkworks = callMachine devhell/skunkworks.nix {};
-    titan      = callMachine devhell/titan.nix {};
+    eir       = callMachine devhell/eir.nix {};
+    sigrun = callMachine devhell/sigrun.nix {};
+    hildr      = callMachine devhell/hildr.nix {};
     gunnr      = callMachine devhell/gunnr.nix {};
   };
   openlab = {

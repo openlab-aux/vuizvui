@@ -15,12 +15,15 @@
     };
 
     initrd = {
-      availableKernelModules = [ "xhci_hcd" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
+      availableKernelModules = [ "ehci_pci" "ahci" "usb_storage" ];
       kernelModules = [ "fuse" ];
+      postDeviceCommands = ''
+        echo noop > /sys/block/sda/queue/scheduler
+      '';
     };
 
-    kernelModules = [ "kvm-intel" ];
-    extraModulePackages = [ ];
+    kernelModules = [ "tp_smapi" ];
+    extraModulePackages = [ config.boot.kernelPackages.tp_smapi ];
   };
 
   hardware = {
@@ -31,24 +34,22 @@
   };
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/3099f245-51cf-4ca8-b89c-269dbc0ad730";
+    device = "/dev/disk/by-uuid/4788e218-db0f-4fd6-916e-e0c484906eb0";
     fsType = "btrfs";
     options = [
+      "autodefrag"
       "space_cache"
       "compress=zstd"
       "noatime"
-      "autodefrag"
     ];
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/9344-E6FE";
+    device = "/dev/disk/by-uuid/BDBC-FC8B";
     fsType = "vfat";
   };
 
-  swapDevices = [ 
-    { device = "/dev/disk/by-uuid/ff725995-b9a1-453f-9e6d-ba9bd6579db6"; }
-  ];
+  swapDevices = [ ];
 
   # FIXME Check if this is still necessary in the future
   systemd.services.systemd-networkd-wait-online.enable = false;
@@ -57,17 +58,12 @@
   systemd.network.networks."99-main".dns = [ "1.1.1.1" "8.8.8.8" ];
 
   networking = {
-    hostName = "titan";
-    wireless.enable = true;
+    hostName = "eir";
+    wireless.iwd.enable = true;
     useNetworkd = true;
   };
 
-  powerManagement = {
-    powertop.enable = true;
-    cpuFreqGovernor = "powersave";
-  };
-
-  virtualisation.docker.enable = true;
+  virtualisation.docker.enable = false;
 
   nix = {
     maxJobs = lib.mkDefault 4;
@@ -77,7 +73,7 @@
   };
 
   i18n = {
-    consoleFont = "lat9w-16";
+    consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "uk";
     defaultLocale = "en_GB.UTF-8";
   };
@@ -91,8 +87,14 @@
     gnome3.gnome-keyring.enable = true;
     printing = {
       enable = true;
-      drivers = [ pkgs.foo2zjs pkgs.cups-brother-hl1110 ];
+      drivers = [ pkgs.foo2zjs pkgs.hplip pkgs.cups-brother-hl1110 ];
     };
+  };
+
+  services.udev = {
+    extraRules = ''
+      SUBSYSTEM=="firmware", ACTION=="add", ATTR{loading}="-1"
+    '';
   };
 
   services.acpid = {
@@ -110,8 +112,6 @@
 
   services.compton = {
     enable = true;
-    backend = "glx";
-    vSync = "drm";
     extraOptions = ''
       inactive-dim = 0.2;
     '';
@@ -136,9 +136,7 @@
     # XXX: Factor out and make DRY, because a lot of the stuff here is
     # duplicated in the other machine configurations.
     displayManager.sessionCommands = ''
-      ${pkgs.xbindkeys}/bin/xbindkeys &
       ${pkgs.nitrogen}/bin/nitrogen --restore &
-      ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
       ${pkgs.rofi}/bin/rofi &
       ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
         Xft.dpi:                     96
@@ -171,6 +169,51 @@
     '';
   };
 
+  services.tlp = {
+    enable = true;
+    extraConfig = ''
+      TLP_ENABLE = 1
+      DISK_IDLE_SECS_ON_BAT=2
+      MAX_LOST_WORK_SECS_ON_AC=15
+      MAX_LOST_WORK_SECS_ON_BAT=60
+      SCHED_POWERSAVE_ON_AC=0
+      SCHED_POWERSAVE_ON_BAT=1
+      NMI_WATCHDOG=0
+      DISK_DEVICES="sda sdb"
+      DISK_APM_LEVEL_ON_AC="254 254"
+      DISK_APM_LEVEL_ON_BAT="254 127"
+      DISK_IOSCHED="bfq bfq"
+      SATA_LINKPWR_ON_AC=max_performance
+      SATA_LINKPWR_ON_BAT=min_power
+      PCIE_ASPM_ON_AC=performance
+      PCIE_ASPM_ON_BAT=powersave
+      WIFI_PWR_ON_AC=1
+      WIFI_PWR_ON_BAT=5
+      WOL_DISABLE=Y
+      SOUND_POWER_SAVE_ON_AC=0
+      SOUND_POWER_SAVE_ON_BAT=1
+      SOUND_POWER_SAVE_CONTROLLER=Y
+      RUNTIME_PM_ON_AC=on
+      RUNTIME_PM_ON_BAT=auto
+      RUNTIME_PM_ALL=1
+      USB_AUTOSUSPEND=1
+      USB_BLACKLIST_WWAN=1
+      RESTORE_DEVICE_STATE_ON_STARTUP=0
+      DEVICES_TO_DISABLE_ON_STARTUP="bluetooth wwan"
+      DEVICES_TO_ENABLE_ON_STARTUP="wifi"
+      DEVICES_TO_DISABLE_ON_SHUTDOWN="bluetooth wifi wwan"
+      #DEVICES_TO_ENABLE_ON_SHUTDOWN=""
+      START_CHARGE_THRESH_BAT0=70
+      STOP_CHARGE_THRESH_BAT0=95
+      #DEVICES_TO_DISABLE_ON_LAN_CONNECT="wifi wwan"
+      #DEVICES_TO_DISABLE_ON_WIFI_CONNECT="wwan"
+      #DEVICES_TO_DISABLE_ON_WWAN_CONNECT="wifi"
+      #DEVICES_TO_ENABLE_ON_LAN_DISCONNECT="wifi wwan"
+      #DEVICES_TO_ENABLE_ON_WIFI_DISCONNECT=""
+      #DEVICES_TO_ENABLE_ON_WWAN_DISCONNECT=""
+    '';
+  };
+
   #### Machine-specific packages configuration ####
 
   vuizvui.user.devhell.profiles.packages.enable = true;
@@ -182,11 +225,9 @@
   environment.systemPackages = with pkgs; [
     aircrackng
     cdrtools
-    docker
     dvdplusrwtools
     glxinfo
     horst
-    ipmitool
     iw
     kismet
     libva

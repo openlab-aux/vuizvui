@@ -63,14 +63,14 @@
     { device = "/dev/disk/by-uuid/3f1835a8-5587-4963-9b6c-66ecb36059de"; }
   ];
 
-  networking.hostName = "skunkworks";
+  networking.hostName = "sigrun";
   networking.wireless.enable = false;
   networking.useNetworkd = true;
 
   nix.maxJobs = 8;
 
   i18n = {
-    consoleFont = "lat9w-16";
+    consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "dvorak";
     defaultLocale = "en_US.UTF-8";
   };
