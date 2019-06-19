@@ -15,6 +15,7 @@ with import ../lib;
     eris       = callMachine devhell/eris.nix {};
     skunkworks = callMachine devhell/skunkworks.nix {};
     titan      = callMachine devhell/titan.nix {};
+    gunnr      = callMachine devhell/gunnr.nix {};
   };
   openlab = {
     hannswurscht = callMachine ./openlab/hannswurscht.nix {};
