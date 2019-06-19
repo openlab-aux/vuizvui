@@ -20,7 +20,7 @@
     };
 
     kernelParams = [ ];
-    kernelMOdules = [ "kvm-amd" ];
+    kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
     blacklistedKernelModules = [ ];
   };
