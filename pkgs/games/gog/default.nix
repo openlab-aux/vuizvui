@@ -24,6 +24,7 @@ let
     the-longest-journey = callPackage ./the-longest-journey {};
     thimbleweed-park = callPackage ./thimbleweed-park.nix {};
     war-for-the-overworld = callPackage ./war-for-the-overworld.nix {};
+    warcraft2 = callPackage ./warcraft2 {};
     wizard-of-legend = callPackage ./wizard-of-legend.nix {};
     xeen = callPackage ./xeen.nix {};
   };

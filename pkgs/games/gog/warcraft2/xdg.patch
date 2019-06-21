@@ -1,0 +1,37 @@
+diff --git a/src/stratagus/parameters.cpp b/src/stratagus/parameters.cpp
+index a705ba21d..8585856b0 100644
+--- a/src/stratagus/parameters.cpp
++++ b/src/stratagus/parameters.cpp
+@@ -48,26 +48,13 @@ void Parameters::SetDefaultValues()
+ 
+ void Parameters::SetDefaultUserDirectory()
+ {
+-#ifdef USE_GAME_DIR
+-	userDirectory = StratagusLibPath;
+-#elif USE_WIN32
+-	userDirectory = getenv("APPDATA");
+-#else
+-	userDirectory = getenv("HOME");
+-#endif
+-
+-	if (!userDirectory.empty()) {
+-		userDirectory += "/";
++	const char *xdg_data_home = getenv("XDG_DATA_HOME");
++	if (xdg_data_home == NULL) {
++		userDirectory = getenv("HOME");
++		userDirectory += "/.local/share";
++	} else {
++		userDirectory = xdg_data_home;
+ 	}
+-
+-#ifdef USE_GAME_DIR
+-#elif USE_WIN32
+-	userDirectory += "Stratagus";
+-#elif defined(USE_MAC)
+-	userDirectory += "Library/Stratagus";
+-#else
+-	userDirectory += ".stratagus";
+-#endif
+ }
+ 
+ static std::string GetLocalPlayerNameFromEnv()
