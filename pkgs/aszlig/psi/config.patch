@@ -1,0 +1,292 @@
+diff --git a/options/default.xml b/options/default.xml
+index bedbe91e..d69e521f 100644
+--- a/options/default.xml
++++ b/options/default.xml
+@@ -19,7 +19,7 @@
+             <domain comment="Always use the same domain to register with. Leave this empty to allow the user to choose his server." type="QString"/>
+         </account>
+         <auto-update comment="Auto updater">
+-            <check-on-startup comment="Check for available updates on startup" type="bool">true</check-on-startup>
++            <check-on-startup comment="Check for available updates on startup" type="bool">false</check-on-startup>
+         </auto-update>
+         <enable-multicast comment="Enable multicasting messages to multiple recipients" type="bool">false</enable-multicast>
+         <html comment="Hypertext markup options">
+@@ -86,7 +86,7 @@
+                 <security comment="Options related to the seciruty UI">
+                     <show comment="Show the security UI" type="bool">true</show>
+                 </security>
+-                <single comment="Limit the client to a single account" type="bool">false</single>
++                <single comment="Limit the client to a single account" type="bool">true</single>
+             </account>
+             <message comment="Message options">
+                 <enabled comment="Enable message (i.e. non-chat) functionality" type="bool">true</enabled>
+@@ -113,7 +113,7 @@
+                 <auto-popup type="bool">false</auto-popup>
+                 <auto-capitalize type="bool">false</auto-capitalize>
+                 <auto-scroll-to-bottom type="bool">false</auto-scroll-to-bottom>
+-                <delete-contents-after type="QString">hour</delete-contents-after>
++                <delete-contents-after type="QString">day</delete-contents-after>
+                 <raise-chat-windows-on-new-messages type="bool">false</raise-chat-windows-on-new-messages>
+                 <switch-tab-on-new-messages type="bool">false</switch-tab-on-new-messages>
+                 <use-chat-says-style type="bool">false</use-chat-says-style>
+@@ -130,7 +130,7 @@
+                 <default-jid-mode comment="Default jid mode: barejid | auto" type="QString">auto</default-jid-mode>
+                 <default-jid-mode-ignorelist comment="Default autojid mode ignore list: jid1,jid2,..." type="QString"></default-jid-mode-ignorelist>
+                 <history comment="Message history options">
+-                    <preload-history-size comment="The number of preloaded messages" type="int">5</preload-history-size>
++                    <preload-history-size comment="The number of preloaded messages" type="int">10</preload-history-size>
+                 </history>
+             </chat>
+             <save>
+@@ -148,8 +148,8 @@
+                 <auto-delete-unlisted comment="Automatically remove an unlisted contact from the contact list if it does not have any pending messages anymore" type="bool">false</auto-delete-unlisted>
+                 <opacity comment="Opacity percentage of the contact list" type="int">100</opacity>
+                 <status-messages comment="Status messages for contacts">
+-                    <single-line comment="Show status messages on the same line as the nickname" type="bool">true</single-line>
+-                    <show comment="Show status messages" type="bool">false</show>
++                    <single-line comment="Show status messages on the same line as the nickname" type="bool">false</single-line>
++                    <show comment="Show status messages" type="bool">true</show>
+                 </status-messages>
+                 <tooltip comment="Display options for the contact list tooltips">
+                     <css type="QString"></css>
+@@ -210,7 +210,7 @@ QLineEdit#le_status_text {
+                 <always-on-top type="bool">false</always-on-top>
+                 <automatically-resize-roster type="bool">false</automatically-resize-roster>
+                 <grow-roster-upwards type="bool">true</grow-roster-upwards>
+-                <disable-scrollbar type="bool">true</disable-scrollbar>
++                <disable-scrollbar type="bool">false</disable-scrollbar>
+                 <contact-sort-style type="QString">status</contact-sort-style>
+                 <disable-service-discovery type="bool">false</disable-service-discovery>
+                 <enable-groups type="bool">true</enable-groups>
+@@ -225,7 +225,7 @@ QLineEdit#le_status_text {
+                     <agent-contacts type="bool">true</agent-contacts>
+                     <away-contacts type="bool">true</away-contacts>
+                     <hidden-contacts-group type="bool">true</hidden-contacts-group>
+-                    <offline-contacts type="bool">true</offline-contacts>
++                    <offline-contacts type="bool">false</offline-contacts>
+                     <self-contact type="bool">true</self-contact>
+                 </show>
+                 <show-group-counts type="bool">true</show-group-counts>
+@@ -250,7 +250,7 @@ QLineEdit#le_status_text {
+                 <use-left-click type="bool">false</use-left-click>
+                 <use-single-click type="bool">false</use-single-click>
+                 <use-status-change-animation type="bool">true</use-status-change-animation>
+-                <aio-left-roster type="bool">false</aio-left-roster>
++                <aio-left-roster type="bool">true</aio-left-roster>
+                 <use-transport-icons type="bool">true</use-transport-icons>
+                 <saved-window-geometry type="QRect" >
+                     <x>64</x>
+@@ -287,7 +287,7 @@ QLineEdit#le_status_text {
+                     <custom-pgp-key comment="Show the 'assign pgp key' menu" type="bool">true</custom-pgp-key>
+                 </contact>
+                 <main comment="Options for the main menu">
+-                    <change-profile comment="Show the 'change profile' menu" type="bool">true</change-profile>
++                    <change-profile comment="Show the 'change profile' menu" type="bool">false</change-profile>
+                 </main>
+                 <status comment="Options for the status menu">
+                     <chat comment="Enable free for chat" type="bool">true</chat>
+@@ -337,11 +337,11 @@ QLineEdit#le_status_text {
+             <disable-send-button type="bool">true</disable-send-button>
+             <systemtray comment="Options related to the system tray">
+                 <use-old comment="Use the old system tray code (deprecated)" type="bool">false</use-old>
+-                <enable type="bool">true</enable>
++                <enable type="bool">false</enable>
+                 <use-double-click type="bool">false</use-double-click>
+             </systemtray>
+             <tip comment="Tip of the day options">
+-                <show comment="Show the tip of the day upon startup" type="bool">true</show>
++                <show comment="Show the tip of the day upon startup" type="bool">false</show>
+                 <number comment="The next tip to show" type="int">0</number>
+             </tip>
+             <flash-windows comment="Allow windows to flash upon activity" type="bool">true</flash-windows>
+@@ -359,8 +359,8 @@ QLineEdit#le_status_text {
+                     <contactlist>
+                         <background type="QColor"/>
+                         <grouping>
+-                            <header-background type="QColor">#f0f0f0</header-background>
+-                            <header-foreground type="QColor">#5a5a5a</header-foreground>
++                            <header-background type="QColor">#00007f</header-background>
++                            <header-foreground type="QColor">#969696</header-foreground>
+                         </grouping>
+                         <profile>
+                             <header-background type="QColor">#969696</header-background>
+@@ -370,16 +370,16 @@ QLineEdit#le_status_text {
+                             <away type="QColor">#004bb4</away>
+                             <do-not-disturb type="QColor">#7e0000</do-not-disturb>
+                             <offline type="QColor">#646464</offline>
+-                            <online type="QColor"/>
++                            <online type="QColor">#ffffff</online>
+                         </status>
+-                        <status-change-animation1 type="QColor">#000000</status-change-animation1>
++                        <status-change-animation1 type="QColor">#6f0000</status-change-animation1>
+                         <status-change-animation2 type="QColor">#969696</status-change-animation2>
+                         <status-messages type="QColor">#808080</status-messages>
+                     </contactlist>
+                     <tooltip>
+                         <enable comment="Enable tooltip coloring feature" type="bool">true</enable>
+                         <background comment="Tooltip background color" type="QColor">#e9ecc7</background>
+-                        <text comment="Tooltip text color" type="QColor">#000000</text>
++                        <text comment="Tooltip text color" type="QColor">#ffffff</text>
+                     </tooltip>
+                     <muc>
+                         <nick-colors type="QStringList" >
+@@ -390,21 +390,21 @@ QLineEdit#le_status_text {
+                             <item>Red</item>
+                         </nick-colors>
+                         <role-moderator type="QColor">#910000</role-moderator>
+-                        <role-participant type="QColor">#00008a</role-participant>
++                        <role-participant type="QColor">#00aaff</role-participant>
+                         <role-visitor type="QColor">#336600</role-visitor>
+-                        <role-norole type="QColor">black</role-norole>
++                        <role-norole type="QColor">#cccccc</role-norole>
+                     </muc>
+                     <messages comment="Message coloring.">
+-                        <received type="QColor" comment="Color used to indicate received messages.">#0000ff</received>
++                        <received type="QColor" comment="Color used to indicate received messages.">#0055ff</received>
+                         <sent type="QColor" comment="Color used to indicate sent messages.">#ff0000</sent>
+                         <informational type="QColor" comment="Color used to indicate informational (status change, spooled) messages.">#008000</informational>
+                         <usertext type="QColor" comment="Color used to indicate additional text for informational messages.">#606060</usertext>
+                         <highlighting type="QColor">#FF0000</highlighting>
+-                        <link type="QColor">#000080</link>
++                        <link type="QColor">#55ffff</link>
+                         <link-visited type="QColor">#400080</link-visited>
+                     </messages>
+                     <chat>
+-                        <composing-color type="QColor">darkGreen</composing-color>
++                        <composing-color type="QColor">#cccccc</composing-color>
+                         <unread-message-color type="QColor">red</unread-message-color>
+                         <inactive-color type="QColor">grey</inactive-color>
+                     </chat>
+@@ -417,10 +417,10 @@ QLineEdit#le_status_text {
+                     <use-slim-group-headings type="bool">false</use-slim-group-headings>
+                 </contactlist>
+                 <font>
+-                    <chat type="QString">Sans Serif,11,-1,5,50,0,0,0,0,0</chat>
+-                    <contactlist type="QString">Sans Serif,11,-1,5,50,0,0,0,0,0</contactlist>
+-                    <message type="QString">Sans Serif,11,-1,5,50,0,0,0,0,0</message>
+-                    <passive-popup type="QString">Sans Serif,9,-1,5,50,0,0,0,0,0</passive-popup>
++                    <chat type="QString">Monospace,12,-1,5,50,0,0,0,0,0</chat>
++                    <contactlist type="QString">Monospace,12,-1,5,50,0,0,0,0,0</contactlist>
++                    <message type="QString">Monospace,12,-1,5,50,0,0,0,0,0</message>
++                    <passive-popup type="QString">Monospace,12,-1,5,50,0,0,0,0,0</passive-popup>
+                 </font>
+                 <css type="QString" />
+             </look>
+@@ -468,20 +468,20 @@ QLineEdit#le_status_text {
+                     <suppress-while-away type="bool">false</suppress-while-away>
+                 </popup-dialogs>
+                 <sounds>
+-                    <chat-message type="QString">sound/chat2.wav</chat-message>
+-                    <groupchat-message type="QString">sound/chat2.wav</groupchat-message>
+-                    <completed-file-transfer type="QString">sound/ft_complete.wav</completed-file-transfer>
+-                    <contact-offline type="QString">sound/offline.wav</contact-offline>
+-                    <contact-online type="QString">sound/online.wav</contact-online>
+-                    <enable type="bool">true</enable>
+-                    <incoming-file-transfer type="QString">sound/ft_incoming.wav</incoming-file-transfer>
+-                    <incoming-headline type="QString">sound/chat2.wav</incoming-headline>
+-                    <incoming-message type="QString">sound/chat2.wav</incoming-message>
+-                    <new-chat type="QString">sound/chat1.wav</new-chat>
++                    <chat-message type="QString"/>
++                    <groupchat-message type="QString"/>
++                    <completed-file-transfer type="QString"/>
++                    <contact-offline type="QString"/>
++                    <contact-online type="QString"/>
++                    <enable type="bool">false</enable>
++                    <incoming-file-transfer type="QString"/>
++                    <incoming-headline type="QString"/>
++                    <incoming-message type="QString"/>
++                    <new-chat type="QString"/>
+                     <notify-every-muc-message type="bool">false</notify-every-muc-message>
+-                    <outgoing-chat type="QString">sound/send.wav</outgoing-chat>
+-                    <silent-while-away type="bool">false</silent-while-away>
+-                    <system-message type="QString">sound/chat2.wav</system-message>
++                    <outgoing-chat type="QString"/>
++                    <silent-while-away type="bool">true</silent-while-away>
++                    <system-message type="QString"/>
+                     <unix-sound-player type="QString"/>
+                 </sounds>
+                 <successful-subscription type="bool">false</successful-subscription>
+@@ -500,7 +500,7 @@ QLineEdit#le_status_text {
+                 <mouse-middle-button type="QString">close</mouse-middle-button> <!-- hide|close|detach -->
+                 <mouse-doubleclick-action type="QString">detach</mouse-doubleclick-action>
+                 <size type="QString"></size> <!-- will be invalid when converted to QSize so we can detect first load -->
+-                <grouping type="QString" comment="A ':' seperated list of groups of kinds of tabs to keep in the same tabset. 'C' for chat and 'M' for mucs. 'A' means using all in one window patch.">CM</grouping>
++                <grouping type="QString" comment="A ':' seperated list of groups of kinds of tabs to keep in the same tabset. 'C' for chat and 'M' for mucs. 'A' means using all in one window patch.">ACM</grouping>
+                 <group-state comment="Saved state data of the tabsets defined by options.ui.tabs.grouping"/>
+                 <tab-singles type="QString" comment="Tab types that would have been untabbed are given their own tabset. 'C' for chat and 'M' for mucs"/>
+                 <use-tab-shortcuts type="bool">true</use-tab-shortcuts>
+@@ -630,7 +630,7 @@ QLineEdit#le_status_text {
+             <last-activity type="bool">true</last-activity>
+         </service-discovery>
+         <status>
+-            <ask-for-message-on-offline type="bool">false</ask-for-message-on-offline>
++            <ask-for-message-on-offline type="bool">true</ask-for-message-on-offline>
+             <ask-for-message-on-online type="bool">false</ask-for-message-on-online>
+             <ask-for-message-on-chat type="bool">true</ask-for-message-on-chat>
+             <ask-for-message-on-away type="bool">true</ask-for-message-on-away>
+@@ -653,7 +653,20 @@ QLineEdit#le_status_text {
+                 <by-template type="bool">true</by-template>
+                 <by-status type="bool">false</by-status>
+             </last-overwrite>
+-            <presets/>
++            <presets>
++                <m0>
++                    <key type="QString">zone</key>
++                    <force-priority type="bool">false</force-priority>
++                    <status type="QString">dnd</status>
++                    <message type="QString">In The Zone[TM]</message>
++                </m0>
++                <m1>
++                    <key type="QString">sleep</key>
++                    <force-priority type="bool">false</force-priority>
++                    <status type="QString">offline</status>
++                    <message type="QString">Sleeping the hell out of here.</message>
++                </m1>
++            </presets>
+             <presets-in-status-menus type="QString" comment="'yes', 'no' or 'submenu'">submenu</presets-in-status-menus>
+             <show-only-online-offline type="bool">false</show-only-online-offline>
+             <show-choose type="bool">true</show-choose>
+@@ -693,5 +706,9 @@ QLineEdit#le_status_text {
+         </keychain>
+     </options>
+     <accounts comment="Account definitions and options"/>
+-    <plugins comment="Plugin options"/>
++    <plugins comment="Plugin options">
++        <auto-load>
++            <omemo type="bool">true</omemo>
++        </auto-load>
++    </plugins>
+ </psi>
+diff --git a/src/psi_profiles.cpp b/src/psi_profiles.cpp
+index fb2e1b9c..d4f67be2 100644
+--- a/src/psi_profiles.cpp
++++ b/src/psi_profiles.cpp
+@@ -79,8 +79,8 @@ void UserAccount::reset()
+     req_mutual_auth = false;
+     legacy_ssl_probe = false;
+     security_level = QCA::SL_None;
+-    ssl = SSL_Auto;
+-    jid = "";
++    ssl = SSL_Yes;
++    jid = "@jid@";
+     pass = "";
+     scramSaltedHashPassword = "";
+     opt_pass = false;
+@@ -90,7 +90,7 @@ void UserAccount::reset()
+     opt_automatic_resource = true;
+     priority_dep_on_status = true;
+     ignore_global_actions = false;
+-    resource = ApplicationInfo::name();
++    resource = "@resource@";
+     priority = 55;
+     ibbOnly = false;
+     opt_keepAlive = true;
+@@ -133,7 +133,7 @@ void UserAccount::reset()
+               << "stun.voipbuster.com"
+               << "stun.voxgratia.org";
+ 
+-    stunHost = stunHosts[0];
++    stunHost = "";
+ 
+     keybind.clear();
+ 

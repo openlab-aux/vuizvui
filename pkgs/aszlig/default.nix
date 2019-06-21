@@ -8,6 +8,7 @@
   grandpa = callPackage ./grandpa { };
   librxtx_java = callPackage ./librxtx-java { };
   lockdev = callPackage ./lockdev { };
+  psi = callPackage ./psi { };
   pvolctrl = callPackage ./pvolctrl { };
   santander = callPackage_i686 ./santander { };
   vim = callPackage ./vim { vim = vim_configurable; };

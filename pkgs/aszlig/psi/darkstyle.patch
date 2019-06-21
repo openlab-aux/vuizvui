@@ -1,0 +1,32 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 7118ea75..c6f58e35 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -237,6 +237,7 @@ endif()
+ set(RESOURCES
+     ${PROJECT_SOURCE_DIR}/psi.qrc
+     ${PROJECT_SOURCE_DIR}/iconsets.qrc
++    ${QDARKSTYLE_PATH}/qdarkstyle/style.qrc
+ )
+ qt5_add_resources(QRC_SOURCES ${RESOURCES})
+ 
+diff --git a/src/main.cpp b/src/main.cpp
+index b45fbab0..1cbead4a 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -532,6 +532,15 @@ PSI_EXPORT_FUNC int main(int argc, char *argv[])
+     QCoreApplication::addLibraryPath(appPath);
+ # endif
+     PsiApplication app(argc, argv);
++
++    QFile darkstyle(":qdarkstyle/style.qss");
++    if (!darkstyle.exists()) {
++        qWarning() << "Unable to set dark style";
++    } else {
++        darkstyle.open(QFile::ReadOnly | QFile::Text);
++        QTextStream ts(&darkstyle);
++        app.setStyleSheet(ts.readAll());
++    }
+     QApplication::setApplicationName(ApplicationInfo::name());
+     QApplication::addLibraryPath(ApplicationInfo::resourcesDir());
+     QApplication::addLibraryPath(ApplicationInfo::homeDir(ApplicationInfo::DataLocation));
