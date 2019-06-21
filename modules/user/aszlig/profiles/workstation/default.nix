@@ -25,7 +25,12 @@ in {
     in singleton (pkgs.writeScriptBin "xreset" ''
       #!${pkgs.stdenv.shell}
       ${pkgs.xorg.xrandr}/bin/xrandr ${concatStringsSep " " randrConf}
-    '') ++ import ./packages.nix pkgs;
+    '') ++ import ./packages.nix pkgs ++ [
+      (pkgs.vuizvui.aszlig.psi.override {
+        jid = "aszlig@aszlig.net";
+        resource = config.networking.hostName;
+      })
+    ];
 
     environment.pathsToLink = lib.singleton "/share/chromium/extensions";
 

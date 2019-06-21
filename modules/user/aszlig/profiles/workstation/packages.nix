@@ -17,7 +17,6 @@ pkgs: with pkgs; [
   figlet
   firefox
   flac
-  gajim
   gdb
   ghostscript
   vuizvui.aszlig.git-detach
