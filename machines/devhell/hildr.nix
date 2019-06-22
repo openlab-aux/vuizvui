@@ -67,7 +67,7 @@
     cpuFreqGovernor = "powersave";
   };
 
-  virtualisation.docker.enable = true;
+#  virtualisation.docker.enable = true;
 
   nix = {
     maxJobs = lib.mkDefault 4;
@@ -77,7 +77,7 @@
   };
 
   i18n = {
-    consoleFont = "Lat2-Terminus16";
+    consoleFont = "lat9w-16";
     consoleKeyMap = "uk";
     defaultLocale = "en_GB.UTF-8";
   };
