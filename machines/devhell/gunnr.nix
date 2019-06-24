@@ -151,5 +151,6 @@
      pamixer
      vaapiVdpau
      vdpauinfo
+     xbindkeys
    ];
 }
