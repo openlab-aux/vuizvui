@@ -64,11 +64,6 @@
     };
   };
 
-  powerManagement = {
-    powertop.enable = true;
-    cpuFreqGovernor = "ondemand";
-  };
-
   nix = {
     maxJobs = lib.mkDefault 16;
     extraOptions = ''
