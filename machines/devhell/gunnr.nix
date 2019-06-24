@@ -133,6 +133,10 @@
     '';
    };
 
+   services.timesyncd = {
+     servers = [ "ntp.canterbury.ac.uk" ];
+   };
+
    #### Machine-specific packages configuration ####
 
    vuizvui.user.devhell.profiles.packages.enable = true;
