@@ -6,12 +6,17 @@
 
   boot = {
     loader = {
-      timeout = 2;
-      systemd-boot = {
+      grub  = {
         enable = true;
+        version = 2;
+        copyKernels = true;
+        devices = [ "/dev/sda" "/dev/sdb" ];
       };
+    };
 
-      efi.canTouchEfiVariables = true;
+    zfs = {
+      enableUnstable = true;
+      requestEncryptionCredentials = true;
     };
 
     initrd = {
@@ -33,21 +38,18 @@
   };
 
   fileSystems."/" = {
-    device = "/dev/disk/by-label/nixos";
-    fsType = "btrfs";
-    options = [
-      "space_cache"
-      "compress=zstd"
-      "noatime"
-      "autodefrag"
-      "discard"
-      "ssd"
-    ];
+    device = "zpool/root/nixos";
+    fsType = "zfs";
+  };
+
+  fileSystems."/home" = {
+    device = "zpool/home";
+    fsType = "zfs";
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-label/BOOT";
-    fsType = "vfat";
+    device = "/dev/disk/by-label/boot";
+    fsType = "ext4";
   };
 
   zramSwap.enable = true;
@@ -56,6 +58,7 @@
 
   networking = {
     hostName = "gunnr";
+    hostId = "29e6affc";
     wireless.enable = false;
     useNetworkd = true;
     proxy = {
@@ -80,6 +83,8 @@
   #### Machine-specific service configuration ####
 
   vuizvui.user.devhell.profiles.services.enable = true;
+
+  services.zfs.autoScrub.enable = true;
 
   services.compton = {
     enable = true;
