@@ -87,6 +87,7 @@
   vuizvui.user.devhell.profiles.services.enable = true;
 
   services = {
+    thermald.enable = true;
     tftpd.enable = false;
     gnome3.gnome-keyring.enable = true;
     printing = {

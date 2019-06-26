@@ -27,7 +27,6 @@ in {
       pcscd.enable = true;
       gpm.enable = true;
       openssh.enable = true;
-      thermald.enable = true;
       udisks2.enable = true;
       geoip-updater.enable = true;
       geoclue2.enable = true;

@@ -91,6 +91,7 @@
       enable = true;
       drivers = [ pkgs.hplipWithPlugin ];
     };
+    thermald.enable = true;
     timesyncd.enable = true;
     resolved.enable = true;
     canto-daemon.enable = true;
