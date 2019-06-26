@@ -54,6 +54,9 @@
 
   zramSwap.enable = true;
 
+  # FIXME Check if this is still necessary in the future
+  systemd.services.systemd-networkd-wait-online.enable = false;
+  
   systemd.network.networks."99-main".dns = [ "1.1.1.1" "8.8.8.8" ];
 
   networking = {
