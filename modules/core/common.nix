@@ -1,4 +1,4 @@
-{ config, options, pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 with lib;
 
@@ -41,9 +41,7 @@ with lib;
       vuizvui = import ../../pkgs { inherit pkgs; };
     });
 
-    nix.binaryCaches = options.nix.binaryCaches.default ++ [
-      "https://headcounter.org/hydra/"
-    ];
+    nix.binaryCaches = [ "https://headcounter.org/hydra/" ];
     nix.binaryCachePublicKeys = [
       "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
     ];
