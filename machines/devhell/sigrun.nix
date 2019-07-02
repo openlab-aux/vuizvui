@@ -95,6 +95,11 @@
     timesyncd.enable = true;
     resolved.enable = true;
     canto-daemon.enable = true;
+    offlineimap = {
+      enable = true;
+      install = true;
+      path = [ pkgs.notmuch ];
+    };
   };
 
   services.xserver = {

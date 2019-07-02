@@ -94,6 +94,11 @@
       enable = true;
       drivers = [ pkgs.foo2zjs pkgs.cups-brother-hl1110 ];
     };
+    offlineimap = {
+      enable = true;
+      install = true;
+      path = [ pkgs.notmuch ];
+    };
   };
 
   services.acpid = {
