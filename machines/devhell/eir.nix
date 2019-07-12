@@ -83,7 +83,6 @@
   vuizvui.user.devhell.profiles.services.enable = true;
 
   services = {
-    localtime.enable = true;
     thermald.enable = true;
     tftpd.enable = false;
     gnome3.gnome-keyring.enable = true;
