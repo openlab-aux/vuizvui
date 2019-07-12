@@ -20,7 +20,7 @@ in {
     };
 
     time = {
-      timeZone = "Europe/London";
+      timeZone = "null";
     };
 
     system = {
