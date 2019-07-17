@@ -66,7 +66,7 @@
     useNetworkd = true;
     proxy = {
       default = "http://wproxy.canterbury.ac.uk:3128/";
-      noProxy = "127.0.0.1,localhost,canterbury.ac.uk";
+      noProxy = "127.0.0.1,localhost";
     };
   };
 
