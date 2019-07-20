@@ -246,6 +246,7 @@ in {
       vlock
       vorbisTools
       vorbisgain
+      vscodium
       w3m
       wavpack
       weechat
