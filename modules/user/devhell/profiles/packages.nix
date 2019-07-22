@@ -15,11 +15,6 @@ in {
         clockSupport = true;
       };
 
-      polybar = super.polybar.override {
-        i3Support = true;
-        mpdSupport = true;
-      };
-
       sox = super.sox.override {
         enableLame = true;
       };
@@ -187,7 +182,7 @@ in {
       pciutils
       pigz
       pixz
-      polybar
+      polybarFull
       posix_man_pages
       powertop
       profanity
