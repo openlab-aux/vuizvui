@@ -79,7 +79,7 @@
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "uk";
+    consoleKeyMap = "dvorak";
     defaultLocale = "en_GB.UTF-8";
   };
 
@@ -100,7 +100,7 @@
 
   services.xserver = {
     enable = true;
-    layout = "gb";
+    layout = "dvorak";
     videoDrivers = [ "modesetting" ];
 
     # XXX: Factor out and make DRY, because a lot of the stuff here is
