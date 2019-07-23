@@ -16,7 +16,9 @@ in {
       };
 
       polybar = super.polybar.override {
-        i3Support = true;
+        nlSupport = true;
+        pulseSupport = true;
+        i3GapsSupport = true;
         mpdSupport = true;
       };
 
