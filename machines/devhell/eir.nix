@@ -116,13 +116,6 @@
     '';
   };
 
-  services.compton = {
-    enable = true;
-    extraOptions = ''
-      inactive-dim = 0.2;
-    '';
-  };
-
   services.xserver = {
     enable = true;
     layout = "gb";

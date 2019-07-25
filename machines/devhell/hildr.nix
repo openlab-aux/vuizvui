@@ -114,15 +114,6 @@
     '';
   };
 
-  services.compton = {
-    enable = true;
-    backend = "glx";
-    vSync = "drm";
-    extraOptions = ''
-      inactive-dim = 0.2;
-    '';
-  };
-
   services.xserver = {
     enable = true;
     layout = "gb";

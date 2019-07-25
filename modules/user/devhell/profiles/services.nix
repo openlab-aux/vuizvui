@@ -37,6 +37,12 @@ in {
       };
     };
 
+    services = {
+      compton.enable = true;
+      vSync = true;
+      backend = "glx";
+    };
+
     services.xserver = {
       displayManager.lightdm = {
         enable = true;
