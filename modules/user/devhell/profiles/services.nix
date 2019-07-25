@@ -35,13 +35,14 @@ in {
         enable = true;
         provider = "geoclue2";
       };
+
+      compton = {
+        enable = true;
+        vSync = true;
+        backend = "glx";
+      };
     };
 
-    services = {
-      compton.enable = true;
-      vSync = true;
-      backend = "glx";
-    };
 
     services.xserver = {
       displayManager.lightdm = {
