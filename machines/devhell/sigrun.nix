@@ -100,6 +100,11 @@
       install = true;
       path = [ pkgs.notmuch ];
     };
+    syncthing = {
+      enable = true;
+      user = "dev";
+      dataDir = "/home/dev/syncthing/";
+    };
   };
 
   services.xserver = {
