@@ -444,8 +444,8 @@ let
     " prevent colorscheme from overriding these highlights
     au ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
 
-    " highlight everything exceeding 79 characters (except for CSV)
-    au BufWinEnter * if &ft !=# 'csv'
+    " highlight everything exceeding 79 characters (with exceptions)
+    au BufWinEnter * if index(['csv', 'strace', 'xt'], &ft) < 0
       \ | let w:m2=matchadd('ErrorMsg', '\%>79v.\+', -1)
       \ | endif
 
