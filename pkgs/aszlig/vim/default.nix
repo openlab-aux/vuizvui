@@ -344,6 +344,18 @@ let
         install -vD -m 0644 ext/Vim/jinja.vim "$out/syntax/jinja.vim"
       '';
     };
+
+    xdebug = fetchurl {
+      name = "vim-xt-syntax";
+      url = "https://raw.githubusercontent.com/xdebug/xdebug/"
+          + "ce4f6bc7ae04ae542960af6c1b8975888e9c3e5e/contrib/xt.vim";
+      sha256 = "05a3nry310s2w1h2q7w6yw2wick81jrnrs43x9vk0k7dqyavhvhi";
+      downloadToTemp = true;
+      recursiveHash = true;
+      postFetch = ''
+        install -vD -m 0644 "$downloadedFile" "$out/syntax/xt.vim"
+      '';
+    };
   };
 
   generic = ''
@@ -410,6 +422,7 @@ let
     " filetype defaults
     au BufNewFile,BufRead *.as setlocal ft=actionscript
     au BufNewFile,BufRead *.tt setlocal ft=tt2html ts=2 sw=2 sts=2 et
+    au BufNewFile,BufRead *.xt setlocal ft=xt foldlevel=4
     au BufNewFile,BufRead *.html setlocal ts=2 sw=2 sts=2 et
     au FileType python setlocal textwidth=79
     au FileType gitcommit setlocal textwidth=72
