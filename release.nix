@@ -194,6 +194,8 @@ in with pkgsUpstream.lib; with builtins; {
       admon.style = "";
     };
 
+    xsltPath = "${nixpkgs}/nixos/lib/make-options-doc";
+
   in pkgsUpstream.stdenv.mkDerivation {
     name = "vuizvui-options";
 
@@ -203,10 +205,10 @@ in with pkgsUpstream.lib; with builtins; {
       cp -r "${./doc}" doc
       chmod -R +w doc
       xsltproc -o intermediate.xml \
-        "${nixpkgs}/nixos/doc/manual/options-to-docbook.xsl" \
+        "${xsltPath}/options-to-docbook.xsl" \
         ${optionsFile}
       xsltproc -o doc/options-db.xml \
-        "${nixpkgs}/nixos/doc/manual/postprocess-option-descriptions.xsl" \
+        "${xsltPath}/postprocess-option-descriptions.xsl" \
         intermediate.xml
 
       dest="$out/share/doc/vuizvui"
