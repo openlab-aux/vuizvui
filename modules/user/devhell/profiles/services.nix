@@ -22,6 +22,8 @@ in {
       };
     };
 
+    location.provider = "geoclue2";
+
     services = {
       keybase.enable = true;
       pcscd.enable = true;
@@ -30,11 +32,7 @@ in {
       udisks2.enable = true;
       geoip-updater.enable = true;
       geoclue2.enable = true;
-
-      redshift = {
-        enable = true;
-        provider = "geoclue2";
-      };
+      redshift.enable = true;
 
       compton = {
         enable = true;
