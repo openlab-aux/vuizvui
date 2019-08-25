@@ -31,6 +31,7 @@
   };
 
   hardware = {
+    cpu.amd.updateMicrocode = true;
     opengl = {
       enable = true;
       extraPackages = [ pkgs.libvdpau-va-gl pkgs.vaapiVdpau ];

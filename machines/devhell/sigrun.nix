@@ -28,6 +28,7 @@
   };
 
   hardware = {
+    cpu.intel.updateMicrocode = true;
     opengl = {
       extraPackages = [ pkgs.vaapiVdpau ];
     };

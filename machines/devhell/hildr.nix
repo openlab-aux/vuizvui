@@ -24,6 +24,7 @@
   };
 
   hardware = {
+    cpu.intel.updateMicrocode = true;
     opengl = {
       enable = true;
       extraPackages = [ pkgs.libvdpau-va-gl pkgs.vaapiVdpau pkgs.vaapiIntel ];
