@@ -135,9 +135,12 @@ in
         allowedTCPPorts = [
           80 443
           6882
+          1337 2342 4223
+          60100
         ];
         allowedUDPPorts = [
           wireguard.port
+          60100
         ];
         # forward wireguard connections to ethernet device (VPN)
         extraCommands = ''
