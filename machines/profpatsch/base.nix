@@ -42,6 +42,8 @@ in
       tmux              # detachable terminal multiplexer
       wget              # the other URL file fetcher
       myPkgs.vim        # slight improvement over vi
+      lr                # list recursively, ls & find replacement
+      xe                # xargs with a modern interface
     ];
 
     i18n = {
