@@ -274,6 +274,5 @@
     hplip
     nzbget
     slrn
-    twister
   ];
 }
