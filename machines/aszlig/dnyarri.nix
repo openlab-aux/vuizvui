@@ -63,7 +63,7 @@ in {
   # This is very ugly and I really want to avoid non-free packages on all
   # of my workstations. But right now I need to get rid of useless paper.
   nixpkgs.config.allowUnfreePredicate = pkg: let
-    inherit (builtins.parseDrvName pkg.name) name;
+    inherit (builtins.parseDrvName (pkg.name or "")) name;
   in name == "hplip";
   nixpkgs.overlays = lib.singleton (lib.const (super: {
     hplip = super.hplip.override { withPlugin = true; };
