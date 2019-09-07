@@ -57,9 +57,6 @@ in {
         };
       }))
     ];
-
-    xserver.synaptics.enable = true;
-    xserver.synaptics.twoFingerScroll = true;
   };
 
   swapDevices = lib.singleton { label = "swap"; };

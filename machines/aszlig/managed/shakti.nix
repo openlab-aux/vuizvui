@@ -65,7 +65,6 @@
   nix.maxJobs = 4;
 
   services.xserver.xkbOptions = "eurosign:e,caps:none";
-  services.xserver.libinput.enable = true;
 
   services.deluge.enable = true;
 
