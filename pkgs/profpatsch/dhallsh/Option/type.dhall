@@ -1,0 +1,1 @@
+< Long : Text | Short : Text >
