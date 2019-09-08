@@ -1,5 +1,4 @@
-let Prelude =
-	  https://prelude.dhall-lang.org/package.dhall sha256:2acd9f8eae045eae46d8288d76b01678c4ac4883a58eadb6be0da00b3ba590cf
+let Prelude = ./imports/Prelude.dhall
 
 let List/filterOptional = ./List/filterOptional.dhall
 
@@ -15,14 +14,14 @@ let Complete =
 	  , description :
 		  Text
 	  , condition :
-		  Optional Text
+		  Optional (Command Argument)
 	  , short-option :
 		  Optional Text
 	  , long-option :
 		  Optional Text
 	  , long-option-old-style :
 		  Optional Text
-	  , arguments :
+	  , argument :
 		  Optional Text
 	  , keep-order :
 		  Bool
@@ -34,6 +33,12 @@ let Complete =
 		  Optional Text
 	  }
 
+let argCommandToList
+	: Command Argument → List Text
+	= ./Command/toList.dhall
+	  Argument
+	  (./Argument/toArgList.dhall ./OptionPrinter/newStyle.dhall)
+
 let complete =
 		λ(a : { cmd : Text, description : Text })
 	  → { cmd =
@@ -41,19 +46,19 @@ let complete =
 		, description =
 			a.description
 		, condition =
-			None Text
+			None (Command Argument)
 		, short-option =
 			None Text
 		, long-option =
 			None Text
 		, long-option-old-style =
 			None Text
-		, arguments =
+		, argument =
 			None Text
 		, keep-order =
 			False
 		, no-files =
-			False
+			True
 		, require-parameter =
 			False
 		, wraps =
@@ -62,40 +67,74 @@ let complete =
 
 let completeToCommand
 	: Complete → Command Argument
-	= let l = λ(o : Text) → Option.Long o
-
-	  in    λ(c : Complete)
-		  → let long =
-					λ(name : Text)
-				  → λ(content : Text)
+	=   λ(c : Complete)
+	  → let long =
+				λ(name : Text)
+			  → Prelude.Optional.map
+				Text
+				Argument
+				(   λ(content : Text)
 				  → Argument.Option { opt = Option.Long name, arg = content }
+				)
 
-			let args =
-					[ Some (long "description" c.description)
-					, Prelude.Optional.map
-					  Text
-					  Argument
-					  (long "condition")
-					  c.condition
-					]
-				  : List (Optional Argument)
+		let flag =
+				λ(name : Text)
+			  → λ(flag : Bool)
+			  →       if flag
 
-			let id = λ(a : Optional Argument) → a
+				then  Some (Argument.Flag (Option.Long name))
 
-			in  { cmd =
-					c.cmd
-				, args =
-					  List/filterOptional (Optional Argument) Argument id args
-					: List Argument
-				}
+				else  None Argument
 
-in  let foo =
-		  completeToCommand (complete { cmd = "complete", description = "foo" })
+		let conditionToText =
+				λ(c : Command Argument)
+			  → Prelude.Text.concatSep " " (argCommandToList c)
 
-	in  [   [ foo.cmd ]
-		  # Prelude.List.concatMap
-			Argument
-			Text
-			(./Argument/toArgList.dhall ./OptionPrinter/newStyle.dhall)
-			foo.args
-		]
+		let args =
+				[ long "command" (Some c.cmd)
+				, long "description" (Some c.description)
+				, Prelude.Optional.map
+				  (Command Argument)
+				  Argument
+				  (   λ(c : Command Argument)
+					→ Argument.Option
+					  { opt = Option.Long "condition", arg = conditionToText c }
+				  )
+				  c.condition
+				, long "short-option" c.short-option
+				, long "long-option" c.long-option
+				, long "old-option" c.long-option-old-style
+				, long "arguments" c.argument
+				, long "wraps" c.wraps
+				, flag "keep-order" c.keep-order
+				, flag "no-files" c.no-files
+				, flag "require-parameter" c.require-parameter
+				]
+			  : List (Optional Argument)
+
+		let id = λ(a : Optional Argument) → a
+
+		in  { cmd =
+				"complete"
+			, args =
+				  List/filterOptional (Optional Argument) Argument id args
+				: List Argument
+			}
+
+in  let fishSeenSubcommandFn = "__fish_seen_subcommand_from"
+
+	let fishUseSubcommandFn = "__fish_use_subcommand"
+
+	let foo
+		: Command Argument
+		= completeToCommand
+		  (   complete { cmd = "abc", description = "this is foo option" }
+			⫽ { condition =
+				  Some { cmd = fishUseSubcommandFn, args = [] : List Argument }
+			  , argument =
+				  Some "foo"
+			  }
+		  )
+
+	in    [ argCommandToList foo, [ "complete", "--do-complete=abc " ] ]
+		: List (List Text)
