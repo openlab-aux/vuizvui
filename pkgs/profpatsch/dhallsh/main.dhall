@@ -125,7 +125,7 @@ in  let fishSeenSubcommandFn = "__fish_seen_subcommand_from"
 
 	let fishUseSubcommandFn = "__fish_use_subcommand"
 
-	let foo
+	let fooSubcommand
 		: Command Argument
 		= completeToCommand
 		  (   complete { cmd = "abc", description = "this is foo option" }
@@ -136,5 +136,26 @@ in  let fishSeenSubcommandFn = "__fish_seen_subcommand_from"
 			  }
 		  )
 
-	in    [ argCommandToList foo, [ "complete", "--do-complete=abc " ] ]
+	let fooSubcommandBarOption
+		: Command Argument
+		= completeToCommand
+		  (   complete { cmd = "abc", description = "will bar the baz" }
+			⫽ { condition =
+				  Some
+				  { cmd =
+					  fishSeenSubcommandFn
+				  , args =
+					  [ Argument.Plain "foo" ]
+				  }
+			  , long-option =
+				  Some "bar"
+			  , short-option =
+				  Some "b"
+			  }
+		  )
+
+	in    [ argCommandToList fooSubcommand
+		  , argCommandToList fooSubcommandBarOption
+		  , [ "complete", "--do-complete=abc foo -" ]
+		  ]
 		: List (List Text)
