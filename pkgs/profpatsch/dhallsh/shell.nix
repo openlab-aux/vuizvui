@@ -6,10 +6,16 @@ let pkgs = import <nixpkgs> {};
       sha256 = "02f5723rx4q4b53dbckmc7mgzfc1m27xbh1m8rkdhlkklwb5jydp";
     }) {};
 
+  dhall-to-shell = pkgs.writers.writeBashBin "dhall-to-shell" ''
+    ${simple.dhall-json-simple}/bin/dhall-to-json \
+      | ${pkgs.jq}/bin/jq -r 'map(@sh) | join("\n")'
+  '';
+
 in
   pkgs.mkShell {
     name = "dhallsh";
     buildInputs = [
+      dhall-to-shell
       simple.dhall-simple
     ];
   }
