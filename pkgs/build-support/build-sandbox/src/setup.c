@@ -9,7 +9,6 @@
 #include <fcntl.h>
 #include <libgen.h>
 #include <limits.h>
-#include <malloc.h>
 #include <sched.h>
 #include <stdbool.h>
 #include <stdio.h>
