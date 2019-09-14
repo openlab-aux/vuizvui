@@ -1,28 +1,8 @@
-let Void =
-      https://raw.githubusercontent.com/sellout/dada/master/Void/Type sha256:a413d5091ac5fb02410f02bdbede12eacd89ae52a933a6d24bb68eadbff92613
+let Void = ../imports/Void.dhall
 
-let Option =
-      { short :
-          Optional Text
-      , long :
-          Text
-      , description :
-          Text
-      , argument :
-          Optional Text
-      }
+let Option = ./Option/type.dhall
 
-let Command =
-        λ(a : Type)
-      → { name :
-            Text
-        , description :
-            Text
-        , options :
-            List Option
-        , subcommands :
-            List a
-        }
+let Command = ./Command/type.dhall
 
 let opt =
         λ(long : Text)
