@@ -5,6 +5,6 @@
       Text
   , options :
       List ../Option/type.dhall
-  , subcommands :
-      List a
+  , arguments :
+      ./Arguments.dhall a
   }

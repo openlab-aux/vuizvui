@@ -43,7 +43,6 @@ in    λ(conditionOptionPrinter : OptionPrinter)
 
       let args =
               [ long "command" (Some c.cmd)
-              , long "description" (Some c.description)
               , Prelude.Optional.map
                 (Command Argument)
                 Argument
@@ -60,6 +59,7 @@ in    λ(conditionOptionPrinter : OptionPrinter)
               , flag "keep-order" c.keep-order
               , flag "no-files" c.no-files
               , flag "require-parameter" c.require-parameter
+              , long "description" (Some c.description)
               ]
             : List (Optional Argument)
 
