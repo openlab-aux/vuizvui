@@ -41,24 +41,25 @@ in {
     programs.zsh.shellAliases.t = "task";
     programs.zsh.shellAliases.p = "gopass";
 
+    programs.zsh.setOptions = lib.mkForce [
+      "auto_cd"
+      "auto_pushd"
+      "beep"
+      "correct"
+      "dvorak"
+      "extended_glob"
+      "extended_history"
+      "hist_fcntl_lock"
+      "hist_ignore_dups"
+      "hist_no_store"
+      "hist_reduce_blanks"
+      "interactive_comments"
+    ];
+
     programs.zsh.interactiveShellInit = mkAfter ''
       export HISTFILE=~/.histfile
       export HISTSIZE=100000
       export SAVEHIST=100000
-
-      unsetopt SHARE_HISTORY
-
-      setopt extendedglob
-      setopt extendedhistory
-      setopt globcomplete
-      setopt histnostore
-      setopt histreduceblanks
-      setopt correct
-      setopt dvorak
-      setopt interactivecomments
-      setopt autopushd
-      setopt autocd
-      setopt beep
 
       bindkey -v
       if [[ "$TERM" = xterm ]]; then
@@ -109,9 +110,6 @@ in {
         %SScrolling active: current selection at %p%s
       zstyle ':completion:*' use-compctl false
       zstyle ':completion:*' verbose true
-
-      autoload -Uz compinit
-      compinit
 
       autoload -Uz zmv
     '';
