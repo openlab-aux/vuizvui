@@ -1,5 +1,5 @@
 diff --git a/options/default.xml b/options/default.xml
-index bedbe91e..d69e521f 100644
+index 90f019b3..ef33997b 100644
 --- a/options/default.xml
 +++ b/options/default.xml
 @@ -19,7 +19,7 @@
@@ -20,16 +20,7 @@ index bedbe91e..d69e521f 100644
              </account>
              <message comment="Message options">
                  <enabled comment="Enable message (i.e. non-chat) functionality" type="bool">true</enabled>
-@@ -113,7 +113,7 @@
-                 <auto-popup type="bool">false</auto-popup>
-                 <auto-capitalize type="bool">false</auto-capitalize>
-                 <auto-scroll-to-bottom type="bool">false</auto-scroll-to-bottom>
--                <delete-contents-after type="QString">hour</delete-contents-after>
-+                <delete-contents-after type="QString">day</delete-contents-after>
-                 <raise-chat-windows-on-new-messages type="bool">false</raise-chat-windows-on-new-messages>
-                 <switch-tab-on-new-messages type="bool">false</switch-tab-on-new-messages>
-                 <use-chat-says-style type="bool">false</use-chat-says-style>
-@@ -130,7 +130,7 @@
+@@ -128,7 +128,7 @@
                  <default-jid-mode comment="Default jid mode: barejid | auto" type="QString">auto</default-jid-mode>
                  <default-jid-mode-ignorelist comment="Default autojid mode ignore list: jid1,jid2,..." type="QString"></default-jid-mode-ignorelist>
                  <history comment="Message history options">
@@ -38,7 +29,7 @@ index bedbe91e..d69e521f 100644
                  </history>
              </chat>
              <save>
-@@ -148,8 +148,8 @@
+@@ -146,8 +146,8 @@
                  <auto-delete-unlisted comment="Automatically remove an unlisted contact from the contact list if it does not have any pending messages anymore" type="bool">false</auto-delete-unlisted>
                  <opacity comment="Opacity percentage of the contact list" type="int">100</opacity>
                  <status-messages comment="Status messages for contacts">
@@ -49,7 +40,7 @@ index bedbe91e..d69e521f 100644
                  </status-messages>
                  <tooltip comment="Display options for the contact list tooltips">
                      <css type="QString"></css>
-@@ -210,7 +210,7 @@ QLineEdit#le_status_text {
+@@ -208,7 +208,7 @@ QLineEdit#le_status_text {
                  <always-on-top type="bool">false</always-on-top>
                  <automatically-resize-roster type="bool">false</automatically-resize-roster>
                  <grow-roster-upwards type="bool">true</grow-roster-upwards>
@@ -58,7 +49,7 @@ index bedbe91e..d69e521f 100644
                  <contact-sort-style type="QString">status</contact-sort-style>
                  <disable-service-discovery type="bool">false</disable-service-discovery>
                  <enable-groups type="bool">true</enable-groups>
-@@ -225,7 +225,7 @@ QLineEdit#le_status_text {
+@@ -223,7 +223,7 @@ QLineEdit#le_status_text {
                      <agent-contacts type="bool">true</agent-contacts>
                      <away-contacts type="bool">true</away-contacts>
                      <hidden-contacts-group type="bool">true</hidden-contacts-group>
@@ -67,7 +58,7 @@ index bedbe91e..d69e521f 100644
                      <self-contact type="bool">true</self-contact>
                  </show>
                  <show-group-counts type="bool">true</show-group-counts>
-@@ -250,7 +250,7 @@ QLineEdit#le_status_text {
+@@ -248,7 +248,7 @@ QLineEdit#le_status_text {
                  <use-left-click type="bool">false</use-left-click>
                  <use-single-click type="bool">false</use-single-click>
                  <use-status-change-animation type="bool">true</use-status-change-animation>
@@ -76,7 +67,7 @@ index bedbe91e..d69e521f 100644
                  <use-transport-icons type="bool">true</use-transport-icons>
                  <saved-window-geometry type="QRect" >
                      <x>64</x>
-@@ -287,7 +287,7 @@ QLineEdit#le_status_text {
+@@ -285,7 +285,7 @@ QLineEdit#le_status_text {
                      <custom-pgp-key comment="Show the 'assign pgp key' menu" type="bool">true</custom-pgp-key>
                  </contact>
                  <main comment="Options for the main menu">
@@ -85,7 +76,7 @@ index bedbe91e..d69e521f 100644
                  </main>
                  <status comment="Options for the status menu">
                      <chat comment="Enable free for chat" type="bool">true</chat>
-@@ -337,11 +337,11 @@ QLineEdit#le_status_text {
+@@ -335,7 +335,7 @@ QLineEdit#le_status_text {
              <disable-send-button type="bool">true</disable-send-button>
              <systemtray comment="Options related to the system tray">
                  <use-old comment="Use the old system tray code (deprecated)" type="bool">false</use-old>
@@ -93,13 +84,8 @@ index bedbe91e..d69e521f 100644
 +                <enable type="bool">false</enable>
                  <use-double-click type="bool">false</use-double-click>
              </systemtray>
-             <tip comment="Tip of the day options">
--                <show comment="Show the tip of the day upon startup" type="bool">true</show>
-+                <show comment="Show the tip of the day upon startup" type="bool">false</show>
-                 <number comment="The next tip to show" type="int">0</number>
-             </tip>
              <flash-windows comment="Allow windows to flash upon activity" type="bool">true</flash-windows>
-@@ -359,8 +359,8 @@ QLineEdit#le_status_text {
+@@ -353,8 +353,8 @@ QLineEdit#le_status_text {
                      <contactlist>
                          <background type="QColor"/>
                          <grouping>
@@ -110,7 +96,7 @@ index bedbe91e..d69e521f 100644
                          </grouping>
                          <profile>
                              <header-background type="QColor">#969696</header-background>
-@@ -370,16 +370,16 @@ QLineEdit#le_status_text {
+@@ -364,16 +364,16 @@ QLineEdit#le_status_text {
                              <away type="QColor">#004bb4</away>
                              <do-not-disturb type="QColor">#7e0000</do-not-disturb>
                              <offline type="QColor">#646464</offline>
@@ -130,7 +116,7 @@ index bedbe91e..d69e521f 100644
                      </tooltip>
                      <muc>
                          <nick-colors type="QStringList" >
-@@ -390,21 +390,21 @@ QLineEdit#le_status_text {
+@@ -384,21 +384,21 @@ QLineEdit#le_status_text {
                              <item>Red</item>
                          </nick-colors>
                          <role-moderator type="QColor">#910000</role-moderator>
@@ -157,7 +143,7 @@ index bedbe91e..d69e521f 100644
                          <unread-message-color type="QColor">red</unread-message-color>
                          <inactive-color type="QColor">grey</inactive-color>
                      </chat>
-@@ -417,10 +417,10 @@ QLineEdit#le_status_text {
+@@ -411,10 +411,10 @@ QLineEdit#le_status_text {
                      <use-slim-group-headings type="bool">false</use-slim-group-headings>
                  </contactlist>
                  <font>
@@ -172,7 +158,7 @@ index bedbe91e..d69e521f 100644
                  </font>
                  <css type="QString" />
              </look>
-@@ -468,20 +468,20 @@ QLineEdit#le_status_text {
+@@ -462,20 +462,20 @@ QLineEdit#le_status_text {
                      <suppress-while-away type="bool">false</suppress-while-away>
                  </popup-dialogs>
                  <sounds>
@@ -206,7 +192,7 @@ index bedbe91e..d69e521f 100644
                      <unix-sound-player type="QString"/>
                  </sounds>
                  <successful-subscription type="bool">false</successful-subscription>
-@@ -500,7 +500,7 @@ QLineEdit#le_status_text {
+@@ -494,7 +494,7 @@ QLineEdit#le_status_text {
                  <mouse-middle-button type="QString">close</mouse-middle-button> <!-- hide|close|detach -->
                  <mouse-doubleclick-action type="QString">detach</mouse-doubleclick-action>
                  <size type="QString"></size> <!-- will be invalid when converted to QSize so we can detect first load -->
@@ -215,7 +201,7 @@ index bedbe91e..d69e521f 100644
                  <group-state comment="Saved state data of the tabsets defined by options.ui.tabs.grouping"/>
                  <tab-singles type="QString" comment="Tab types that would have been untabbed are given their own tabset. 'C' for chat and 'M' for mucs"/>
                  <use-tab-shortcuts type="bool">true</use-tab-shortcuts>
-@@ -630,7 +630,7 @@ QLineEdit#le_status_text {
+@@ -627,7 +627,7 @@ QLineEdit#le_status_text {
              <last-activity type="bool">true</last-activity>
          </service-discovery>
          <status>
@@ -224,7 +210,7 @@ index bedbe91e..d69e521f 100644
              <ask-for-message-on-online type="bool">false</ask-for-message-on-online>
              <ask-for-message-on-chat type="bool">true</ask-for-message-on-chat>
              <ask-for-message-on-away type="bool">true</ask-for-message-on-away>
-@@ -653,7 +653,20 @@ QLineEdit#le_status_text {
+@@ -650,7 +650,20 @@ QLineEdit#le_status_text {
                  <by-template type="bool">true</by-template>
                  <by-status type="bool">false</by-status>
              </last-overwrite>
@@ -246,7 +232,7 @@ index bedbe91e..d69e521f 100644
              <presets-in-status-menus type="QString" comment="'yes', 'no' or 'submenu'">submenu</presets-in-status-menus>
              <show-only-online-offline type="bool">false</show-only-online-offline>
              <show-choose type="bool">true</show-choose>
-@@ -693,5 +706,9 @@ QLineEdit#le_status_text {
+@@ -690,5 +703,9 @@ QLineEdit#le_status_text {
          </keychain>
      </options>
      <accounts comment="Account definitions and options"/>
@@ -258,7 +244,7 @@ index bedbe91e..d69e521f 100644
 +    </plugins>
  </psi>
 diff --git a/src/psi_profiles.cpp b/src/psi_profiles.cpp
-index fb2e1b9c..d4f67be2 100644
+index 77fbd169..4b4bca11 100644
 --- a/src/psi_profiles.cpp
 +++ b/src/psi_profiles.cpp
 @@ -79,8 +79,8 @@ void UserAccount::reset()
