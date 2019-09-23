@@ -122,6 +122,9 @@ in {
 
     vuizvui.system.kernel.zswap.enable = true;
 
+    location.latitude = 48.4284;
+    location.longitude = 10.866;
+
     services = {
       openssh.enable = true;
 
@@ -149,8 +152,6 @@ in {
 
       redshift = {
         enable = true;
-        latitude = "48.428404";
-        longitude = "10.866007";
         temperature.day = 5500;
         temperature.night = 3500;
       };
