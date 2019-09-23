@@ -14,6 +14,17 @@ in {
         host = {
           enable = true;
           enableHardening = false;
+
+          # TODO: Upstream to nixpkgs and remove this afterwards.
+          package = pkgs.virtualbox.overrideAttrs (drv: {
+            patches = (drv.patches or []) ++ lib.singleton (pkgs.fetchpatch {
+              name = "virtualbox-linux-5.3.patch";
+              url = "https://git.archlinux.org/svntogit/community.git/plain/"
+                  + "virtualbox/trunk/015-linux-5-3.patch"
+                  + "?id=bd69d43ad87dc49e703c8e86d09ab31f2bd0e021";
+              sha256 = "0gsa0lrhpfn9yvf1hzbx0gxz9ls213v6gallzj6a2dj83r0llic0";
+            });
+          });
         };
       };
       libvirtd = {
