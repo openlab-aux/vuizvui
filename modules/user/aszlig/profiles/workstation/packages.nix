@@ -61,7 +61,6 @@ pkgs: with pkgs; [
   radare2
   rlwrap
   rsync
-  vuizvui.aszlig.santander
   samplicator
   screen
   scrot
