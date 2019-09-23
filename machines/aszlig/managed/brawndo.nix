@@ -44,19 +44,7 @@ in {
 
   services = {
     deluge.enable = true;
-    printing.drivers = [
-      pkgs.cups-bjnp
-      # XXX: Until https://github.com/NixOS/nixpkgs/pull/58399 gets merged.
-      (pkgs.cnijfilter2.overrideAttrs (drv: rec {
-        name = "cnijfilter2-${version}";
-        version = assert drv.version == "5.30"; "5.70";
-        src = pkgs.fetchzip {
-          url = "http://gdlp01.c-wss.com/gds/0/0100009930/01/"
-              + "cnijfilter2-source-5.70-1.tar.gz";
-          sha256 = "045zjsmaidn1m44ki6m1018gjzbj77gm234n5i2lshxpbzpyh0is";
-        };
-      }))
-    ];
+    printing.drivers = [ pkgs.cups-bjnp pkgs.cnijfilter2 ];
   };
 
   swapDevices = lib.singleton { label = "swap"; };
