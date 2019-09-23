@@ -54,7 +54,7 @@ in stdenv.mkDerivation rec {
   ];
 
   enableParallelBuilding = true;
-  nativeBuildInputs = [ cmake makeWrapper ];
+  nativeBuildInputs = [ cmake makeWrapper qt5.wrapQtAppsHook ];
   buildInputs = [
     hunspell
     libgcrypt
@@ -69,12 +69,4 @@ in stdenv.mkDerivation rec {
     qt5.qtwebengine
     qt5.qtx11extras
   ];
-
-  postInstall = let
-    inherit (qt5.qtbase) qtPluginPrefix;
-    qtPlugins = "${qt5.qtbase}/${qtPluginPrefix}";
-  in ''
-    wrapProgram "$out/bin/psi" \
-      --suffix QT_PLUGIN_PATH : ${lib.escapeShellArg qtPlugins}
-  '';
 }
