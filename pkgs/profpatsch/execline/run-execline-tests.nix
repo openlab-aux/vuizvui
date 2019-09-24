@@ -2,8 +2,6 @@
 # https://www.mail-archive.com/skaware@list.skarnet.org/msg01256.html
 , coreutils }:
 
-# TODO: run all of these locally! runExeclineLocal
-
 let
 
   # lol
@@ -12,6 +10,8 @@ let
     derivationArgs = {
       inherit script;
       passAsFile = [ "script" ];
+      preferLocalBuild = true;
+      allowSubstitutes = false;
     };
     execline = ''
       importas -ui s scriptPath
@@ -30,7 +30,7 @@ let
   # in the given file. Does not use runExecline, because
   # that should be tested after all.
   fileHasLine = line: file: derivation {
-    name = "file-${file.name}-has-line";
+    name = "run-execline-test-file-${file.name}-has-line";
     inherit (stdenv) system;
     builder = bin.execlineIf;
     args =
@@ -47,16 +47,20 @@ let
 
   # basic test that touches out
   basic = runExecline {
-    name = "basic";
+    name = "run-execline-test-basic";
     execline = ''
       importas -ui out out
       ${bin.s6-touch} $out
     '';
+    derivationArgs = {
+      preferLocalBuild = true;
+      allowSubstitutes = false;
+    };
   };
 
   # whether the stdin argument works as intended
   stdin = fileHasLine "foo" (runExecline {
-    name = "stdin";
+    name = "run-execline-test-stdin";
     stdin = "foo\nbar\nfoo";
     execline = ''
       importas -ui out out
@@ -64,10 +68,14 @@ let
       # and s6-cat redirects from stdin to stdout
       redirfd -w 1 $out ${bin.s6-cat}
     '';
+    derivationArgs = {
+      preferLocalBuild = true;
+      allowSubstitutes = false;
+    };
   });
 
   wrapWithVar = runExecline {
-    name = "wrap-with-var";
+    name = "run-execline-test-wrap-with-var";
     builderWrapper = writeScript "var-wrapper" ''
       #!${bin.execlineb} -S0
       export myvar myvalue $@
@@ -78,6 +86,10 @@ let
         importas out out
         ${bin.s6-touch} $out
     '';
+    derivationArgs = {
+      preferLocalBuild = true;
+      allowSubstitutes = false;
+    };
   };
 
-in args: drvSeqL [ basic stdin wrapWithVar ] (runExecline args)
+in [ basic stdin wrapWithVar ]

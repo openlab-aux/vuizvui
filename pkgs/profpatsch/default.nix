@@ -46,6 +46,49 @@ let
       allowSubstitutes = false;
     }) cmd;
 
+  testing = import ./testing {
+    inherit stdenv lib;
+    inherit (runExeclineFns) runExecline;
+    inherit (pkgs) runCommand;
+    bin = bins pkgs.s6PortableUtils [ "s6-touch" "s6-echo" ];
+  };
+
+  runExeclineFns =
+    # todo: factor out calling tests
+    let
+      it = import ./execline/run-execline.nix {
+        bin = (bins execlineb-with-builtins [ "execlineb" ])
+           // (bins pkgs.execline [ "redirfd" "importas" "exec" ]);
+        inherit stdenv;
+      };
+      itLocal = args: it (args // {
+        derivationArgs = args.derivationArgs or {} // {
+          preferLocalBuild = true;
+          allowSubstitutes = false;
+        };
+      });
+      tests = import ./execline/run-execline-tests.nix {
+        # can’t use runExeclineLocal in the tests,
+        # because it is tested by the tests (well, it does
+        # work, but then you have to run the tests every time)
+        runExecline = it;
+        inherit (testing) drvSeqL;
+        inherit (pkgs) coreutils;
+        inherit stdenv;
+        bin = (bins execlineb-with-builtins [ "execlineb" ])
+           // (bins pkgs.execline [
+                 { use = "if"; as = "execlineIf"; }
+                 "redirfd" "importas"
+               ])
+           // (bins pkgs.s6PortableUtils
+                [ "s6-cat" "s6-grep" "s6-touch" "s6-test" "s6-chmod" ]);
+       };
+    in {
+      runExecline = it;
+      runExeclineLocal = args: testing.drvSeqL tests (itLocal args);
+    };
+
+
 in rec {
   inherit (nixperiments)
     # filterSource by parsing a .gitignore file
@@ -91,35 +134,8 @@ in rec {
     ];
   });
 
-  runExecline =
-    # todo: factor out calling tests
-    let
-      it = import ./execline/run-execline.nix {
-        bin = (bins execlineb-with-builtins [ "execlineb" ])
-           // (bins pkgs.execline [ "redirfd" "importas" "exec" ]);
-        inherit stdenv;
-      };
-      tests = import ./execline/run-execline-tests.nix {
-        runExecline = it;
-        inherit (testing) drvSeqL;
-        inherit (pkgs) coreutils;
-        inherit stdenv;
-        bin = (bins execlineb-with-builtins [ "execlineb" ])
-           // (bins pkgs.execline [
-                 { use = "if"; as = "execlineIf"; }
-                 "redirfd" "importas"
-               ])
-           // (bins pkgs.s6PortableUtils
-                [ "s6-cat" "s6-grep" "s6-touch" "s6-test" "s6-chmod" ]);
-       };
-    in tests;
-
-
-  testing = import ./testing {
-    inherit stdenv lib runExecline;
-    inherit (pkgs) runCommand;
-    bin = bins pkgs.s6PortableUtils [ "s6-touch" "s6-echo" ];
-  };
+  inherit (runExeclineFns)
+    runExecline runExeclineLocal;
 
   symlink = pkgs.callPackage ./execline/symlink.nix {
     inherit runExecline;
