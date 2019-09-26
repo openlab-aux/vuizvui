@@ -61,12 +61,14 @@ let
            // (bins pkgs.execline [ "redirfd" "importas" "exec" ]);
         inherit stdenv lib;
       };
-      itLocal = args: it (args // {
-        derivationArgs = args.derivationArgs or {} // {
-          preferLocalBuild = true;
-          allowSubstitutes = false;
-        };
-      });
+      itLocal = name: args: execline:
+        it name (args // {
+          derivationArgs = args.derivationArgs or {} // {
+            preferLocalBuild = true;
+            allowSubstitutes = false;
+          };
+        }) execline;
+
       tests = import ./execline/run-execline-tests.nix {
         # can’t use runExeclineLocal in the tests,
         # because it is tested by the tests (well, it does
@@ -85,7 +87,8 @@ let
        };
     in {
       runExecline = it;
-      runExeclineLocal = args: testing.drvSeqL tests (itLocal args);
+      runExeclineLocal = name: args: execline:
+        testing.drvSeqL tests (itLocal name args execline);
     };
 
 

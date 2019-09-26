@@ -1,17 +1,18 @@
 { stdenv, bin, lib }:
-{ name
-# the execline script as a nested list of string,
-# representing the blocks;
-# see docs of `escapeExecline`.
-, execline
+name:
+{
 # a string to pass as stdin to the execline script
-, stdin ? ""
+stdin ? ""
 # a program wrapping the acutal execline invocation;
 # should be in Bernstein-chaining style
 , builderWrapper ? bin.exec
 # additional arguments to pass to the derivation
 , derivationArgs ? {}
 }:
+# the execline script as a nested list of string,
+# representing the blocks;
+# see docs of `escapeExecline`.
+ execline:
 
 # those arguments can’t be overwritten
 assert !derivationArgs ? system;

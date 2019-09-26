@@ -11,9 +11,7 @@ let
     "${toString (builtins.stringLength s)}:${s},";
 
 in
-runExecline {
-  inherit name;
-
+runExecline name {
   derivationArgs = {
     pathTuples = lib.concatMapStrings
       ({dest, orig}: toNetstring
@@ -23,28 +21,26 @@ runExecline {
     # bah! coreutils just for cat :(
     PATH = lib.makeBinPath [ s6-portable-utils ];
   };
+} [
+  "importas" "-ui" "p" "pathTuplesPath"
+  "importas" "-ui" "out" "out"
+  "forbacktickx" "-d" "" "destorig" [ "${coreutils}/bin/cat" "$p" ]
+    "importas" "-ui" "do" "destorig"
+    "multidefine" "-d" "" "$do" [ "destsuffix" "orig" ]
+    "define" "dest" ''''${out}/''${destsuffix}''
 
-  execline = [
-    "importas" "-ui" "p" "pathTuplesPath"
-    "importas" "-ui" "out" "out"
-    "forbacktickx" "-d" "" "destorig" [ "${coreutils}/bin/cat" "$p" ]
-      "importas" "-ui" "do" "destorig"
-      "multidefine" "-d" "" "$do" [ "destsuffix" "orig" ]
-      "define" "dest" ''''${out}/''${destsuffix}''
+    # this call happens for every file, not very efficient
+    "foreground" [
+      "backtick" "-n" "d" [ "s6-dirname" "$dest" ]
+      "importas" "-ui" "d" "d"
+      "s6-mkdir" "-p" "$d"
+    ]
 
-      # this call happens for every file, not very efficient
-      "foreground" [
-        "backtick" "-n" "d" [ "s6-dirname" "$dest" ]
-        "importas" "-ui" "d" "d"
-        "s6-mkdir" "-p" "$d"
-      ]
-
-      "ifthenelse" [ "s6-test" "-L" "$orig" ] [
-        "backtick" "-n" "res" [ "s6-linkname" "-f" "$orig" ]
-        "importas" "-ui" "res" "res"
-        "s6-ln" "-fs" "$res" "$dest"
-      ] [
-        "s6-ln" "-fs" "$orig" "$dest"
-      ]
-  ];
-}
+    "ifthenelse" [ "s6-test" "-L" "$orig" ] [
+      "backtick" "-n" "res" [ "s6-linkname" "-f" "$orig" ]
+      "importas" "-ui" "res" "res"
+      "s6-ln" "-fs" "$res" "$dest"
+    ] [
+      "s6-ln" "-fs" "$orig" "$dest"
+    ]
+]
