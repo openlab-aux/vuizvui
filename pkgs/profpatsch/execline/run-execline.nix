@@ -1,6 +1,8 @@
-{ stdenv, bin }:
+{ stdenv, bin, lib }:
 { name
-# the execline script as string
+# the execline script as a nested list of string,
+# representing the blocks;
+# see docs of `escapeExecline`.
 , execline
 # a string to pass as stdin to the execline script
 , stdin ? ""
@@ -27,7 +29,10 @@ derivation (derivationArgs // {
   # to pass the script and stdin as envvar;
   # this might clash with another passed envar,
   # so we give it a long & unique name
-  _runExeclineScript = execline;
+  _runExeclineScript =
+    let
+      escape = (import ./escape.nix { inherit lib; });
+    in escape.escapeExecline execline;
   _runExeclineStdin = stdin;
   passAsFile = [
     "_runExeclineScript"

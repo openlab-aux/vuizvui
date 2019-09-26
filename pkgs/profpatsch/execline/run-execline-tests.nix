@@ -13,14 +13,14 @@ let
       preferLocalBuild = true;
       allowSubstitutes = false;
     };
-    execline = ''
-      importas -ui s scriptPath
-      importas -ui out out
-      foreground {
-        ${coreutils}/bin/mv $s $out
-      }
-      ${bin.s6-chmod} 0755 $out
-    '';
+    execline = [
+      "importas" "-ui" "s" "scriptPath"
+      "importas" "-ui" "out" "out"
+      "foreground" [
+        "${coreutils}/bin/mv" "$s" "$out"
+      ]
+      "${bin.s6-chmod}" "0755" "$out"
+    ];
    };
 
   # execline block of depth 1
@@ -43,15 +43,17 @@ let
         bin.importas "-ui" "out" "out"
         bin.s6-touch "$out"
       ];
+    preferLocalBuild = true;
+    allowSubstitutes = false;
   };
 
   # basic test that touches out
   basic = runExecline {
     name = "run-execline-test-basic";
-    execline = ''
-      importas -ui out out
-      ${bin.s6-touch} $out
-    '';
+    execline = [
+      "importas" "-ui" "out" "out"
+      "${bin.s6-touch}" "$out"
+    ];
     derivationArgs = {
       preferLocalBuild = true;
       allowSubstitutes = false;
@@ -62,12 +64,12 @@ let
   stdin = fileHasLine "foo" (runExecline {
     name = "run-execline-test-stdin";
     stdin = "foo\nbar\nfoo";
-    execline = ''
-      importas -ui out out
+    execline = [
+      "importas" "-ui" "out" "out"
       # this pipes stdout of s6-cat to $out
       # and s6-cat redirects from stdin to stdout
-      redirfd -w 1 $out ${bin.s6-cat}
-    '';
+      "redirfd" "-w" "1" "$out" bin.s6-cat
+    ];
     derivationArgs = {
       preferLocalBuild = true;
       allowSubstitutes = false;
@@ -80,12 +82,12 @@ let
       #!${bin.execlineb} -S0
       export myvar myvalue $@
     '';
-    execline = ''
-      importas -ui v myvar
-      if { ${bin.s6-test} myvalue = $v }
-        importas out out
-        ${bin.s6-touch} $out
-    '';
+    execline = [
+      "importas" "-ui" "v" "myvar"
+      "if" [ bin.s6-test "myvalue" "=" "$v" ]
+        "importas" "out" "out"
+        bin.s6-touch "$out"
+    ];
     derivationArgs = {
       preferLocalBuild = true;
       allowSubstitutes = false;

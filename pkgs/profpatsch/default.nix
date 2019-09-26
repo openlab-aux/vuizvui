@@ -59,7 +59,7 @@ let
       it = import ./execline/run-execline.nix {
         bin = (bins execlineb-with-builtins [ "execlineb" ])
            // (bins pkgs.execline [ "redirfd" "importas" "exec" ]);
-        inherit stdenv;
+        inherit stdenv lib;
       };
       itLocal = args: it (args // {
         derivationArgs = args.derivationArgs or {} // {
