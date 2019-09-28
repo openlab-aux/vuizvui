@@ -256,6 +256,9 @@ in {
       LidSwitchIgnoreInhibited=no
     '';
 
+    # TMP
+
+    vuizvui.services.guix.enable = true;
     ###################
     # Graphical System
 

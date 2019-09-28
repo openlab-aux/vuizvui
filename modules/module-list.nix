@@ -11,6 +11,7 @@
   ./programs/fish/fasd.nix
   ./services/postfix
   ./services/starbound.nix
+  ./services/guix.nix
   ./system/iso.nix
   ./system/kernel/bfq
   ./system/kernel/rckernel.nix
