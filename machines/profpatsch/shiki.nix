@@ -220,6 +220,7 @@ in {
         di-notify      # same, but pipe to libnotify
         show-qr-code   # display a QR code
         backlight      # adjust laptop backlight
+        sfttime        # geek time
       ];
       mailPkgs = [
         elinks               # command line browser
