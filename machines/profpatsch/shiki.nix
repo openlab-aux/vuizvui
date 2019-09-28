@@ -162,6 +162,7 @@ in {
         # myPkgs.fast-init             # fast-init of haskell projects
         gitAndTools.git-annex        # version controlled binary file storage
         gitAndTools.git-dit          # decentral issue tracking for git
+        gitAndTools.git-hub          # lightweight GitHub integration
 
         # TODO: move to user config
         go
@@ -172,7 +173,7 @@ in {
         pkgs.vuizvui.profpatsch.nix-http-serve # serve nix builds and rebuild on reloads
         pkgs.vuizvui.profpatsch.nman # open man pages in temporary nix shell
         pkgs.vuizvui.profpatsch.warpspeed    # trivial http file server
-        pkgs.vuizvui.profpatsch.nix-gen      # generate nix expressions
+        # pkgs.vuizvui.profpatsch.nix-gen      # generate nix expressions
         pkgs.vuizvui.profpatsch.watch-server # restart server on code change
         pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
         myPkgs.execlineb-with-builtins
@@ -235,6 +236,8 @@ in {
         redshift   # increases screen warmth at night (so i don’t have to feel cold)
         # pdfjam is the best CLI pdf modification suite
         (texlive.combine { inherit (texlive) scheme-small pdfjam; })
+        # move script/nix-cache-binary to here
+        cdb
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
     ++ programmingTools ++ documentation
