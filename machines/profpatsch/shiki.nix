@@ -178,6 +178,7 @@ in {
         pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
         myPkgs.execlineb-with-builtins
         dhall
+        myPkgs.dhall-flycheck
       ];
       documentation = [
         # mustache-spec NOT IN 16.09
