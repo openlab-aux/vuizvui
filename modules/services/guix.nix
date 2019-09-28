@@ -1,3 +1,4 @@
+# ATTN: this is a WIP service, use at your own risk!
 { config, lib, pkgs, ... }:
 # https://www.gnu.org/software/guix/manual/en/html_node/Binary-Installation.html
 
