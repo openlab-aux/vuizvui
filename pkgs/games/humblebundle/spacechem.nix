@@ -7,13 +7,17 @@ with lib;
 buildGame rec {
   version = "1013_FIXED";
   name = "spacechem-${version}";
-
   src = fetchHumbleBundle {
     name = "SpaceChem_Linux_v1013_FIXED.zip";
     machineName = "spacechem_android_pc_soundtrack_linux";
     downloadName = "download";
     md5 = "c290e8631ae3380b7e70362501a5adb6";
   };
+
+  sandbox.paths.required = [
+    "$XDG_DATA_HOME/Zachtronics Industries/SpaceChem"
+    "$XDG_CONFIG_HOME/pulse"
+  ];
 
   buildInputs = [ makeWrapper ];
 
