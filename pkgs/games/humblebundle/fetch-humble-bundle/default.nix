@@ -78,12 +78,14 @@
     '';
 
   in runCommandCC "get-captcha" {
-    nativeBuildInputs = [ pkgconfig ];
+    nativeBuildInputs = [ pkgconfig qt5.wrapQtAppsHook ];
     buildInputs = [ qt5.qtbase qt5.qtwebengine ];
     preferLocalBuild = true;
   } ''
+    mkdir -p $out/bin
     g++ $(pkg-config --libs --cflags Qt5WebEngineWidgets Qt5WebEngine) \
-      -Wall -std=c++11 -o "$out" ${application}
+      -Wall -std=c++11 -o "$out/bin/get-captcha" ${application}
+    wrapQtApp $out/bin/get-captcha
   '';
 
   humbleAPI = pythonPackages.buildPythonPackage rec {
@@ -138,7 +140,7 @@
 
     def login_with_captcha(hb):
       print >>sys.stderr, "Solving a captcha is required to log in."
-      print >>sys.stderr, "Please run " ${pyStr (toString getCaptcha)} " now."
+      print >>sys.stderr, "Please run " ${pyStr "${getCaptcha}/bin/get-captcha"} " now."
       sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       print >>sys.stderr, "Waiting for connection",
       i = 0
