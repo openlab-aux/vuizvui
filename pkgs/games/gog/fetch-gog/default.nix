@@ -147,14 +147,24 @@ let
       }
     '';
 
-  in runCommandCC "get-captcha" {
-    nativeBuildInputs = [ pkgconfig ];
+  in stdenv.mkDerivation {
+    name = "get-captcha";
+
+    dontUnpack = true;
+
+    nativeBuildInputs = [ pkgconfig (qt5.wrapQtAppsHook or null) ];
     buildInputs = [ qt5.qtbase qt5.qtwebengine ];
     preferLocalBuild = true;
-  } ''
-    g++ $(pkg-config --libs --cflags Qt5WebEngineWidgets Qt5WebEngine) \
-      -Wall -std=c++11 -o "$out" ${application}
-  '';
+
+    buildPhase = ''
+      g++ $(pkg-config --libs --cflags Qt5WebEngineWidgets Qt5WebEngine) \
+        -Wall -std=c++11 -o get-captcha ${application}
+    '';
+
+    installPhase = ''
+      install -vD get-captcha "$out/bin/get-captcha"
+    '';
+  };
 
   mkPyStr = str: "'${stdenv.lib.escape ["'" "\\"] (toString str)}'";
 
@@ -178,7 +188,7 @@ let
       def login(self):
         browser = mechanicalsoup.StatefulBrowser()
         response = browser.open(${mkPyStr authURL})
-        if "google.com/recaptcha" in response.text:
+        if "https://www.recaptcha.net/recaptcha" in response.text:
           token_url = self.login_with_captcha()
         else:
           browser.select_form('form[name="login"]')
@@ -190,7 +200,7 @@ let
 
           if 'code' not in query:
             sys.stderr.write(
-              "Unable to login with the provided GOG credentials."
+              "Unable to login with the provided GOG credentials.\n"
             )
             raise SystemExit(1)
 
@@ -210,7 +220,8 @@ let
 
       def login_with_captcha(self):
         sys.stderr.write("Solving a captcha is required to log in.\n")
-        sys.stderr.write("Please run " ${mkPyStr getCaptcha} " now.\n")
+        sys.stderr.write("Please run " ${mkPyStr getCaptcha}
+                         "/bin/get-captcha now.\n")
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sys.stderr.write("Waiting for connection")
         i = 0
