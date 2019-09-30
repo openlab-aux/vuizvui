@@ -16,6 +16,7 @@ let
     dungeons3 = callPackage ./dungeons3.nix {};
     epistory = callPackage ./epistory.nix { };
     homm3 = callPackage ./homm3 {};
+    kingdoms-and-castles = callPackage ./kingdoms-and-castles.nix {};
     overload = callPackage ./overload.nix {};
     party-hard = callPackage ./party-hard.nix {};
     satellite-reign = callPackage ./satellite-reign.nix {};
