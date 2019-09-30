@@ -1,0 +1,121 @@
+diff --git a/humblebundle/client.py b/humblebundle/client.py
+index fbc31c9..44184a1 100644
+--- a/humblebundle/client.py
++++ b/humblebundle/client.py
+@@ -75,7 +75,9 @@ class HumbleApi(object):
+     """
+ 
+     @callback
+-    def login(self, username, password, authy_token=None, recaptcha_challenge=None, recaptcha_response=None,
++    def login(self, username, password, authy_token=None,
++              recaptcha_challenge=None, recaptcha_response=None,
++              guard_code=None, captcha_skip_code=None,
+               *args, **kwargs):
+         """
+         Login to the Humble Bundle API. The response sets the _simpleauth_sess cookie which is stored in the session
+@@ -87,6 +89,8 @@ class HumbleApi(object):
+         :type authy_token: integer or str
+         :param str recaptcha_challenge: (optional) The challenge signed by Humble Bundle's public key from reCAPTCHA
+         :param str recaptcha_response: (optional) The plaintext solved CAPTCHA
++        :param str guard_code: (optional) The guard code sent via email
++        :param str captcha_skip_code: (optional) A token to skip the CAPTCHA
+         :param list args: (optional) Extra positional args to pass to the request
+         :param dict kwargs: (optional) Extra keyword args to pass to the request. If a data dict is supplied a key
+                             collision with any of the above params will resolved in favor of the supplied param
+@@ -108,7 +112,9 @@ class HumbleApi(object):
+             'password': password,
+             'authy-token': authy_token,
+             'recaptcha_challenge_field': recaptcha_challenge,
+-            'recaptcha_response_field': recaptcha_response}
++            'recaptcha_response_field': recaptcha_response,
++            'guard': guard_code,
++            'captcha-skip-code': captcha_skip_code}
+         kwargs.setdefault('data', {}).update({k: v for k, v in default_data.items() if v is not None})
+ 
+         response = self._request('POST', LOGIN_URL, *args, **kwargs)
+diff --git a/humblebundle/exceptions.py b/humblebundle/exceptions.py
+index 9041219..fe4eeaf 100644
+--- a/humblebundle/exceptions.py
++++ b/humblebundle/exceptions.py
+@@ -9,7 +9,7 @@ __copyright__ = "Copyright 2014, Joel Pedraza"
+ __license__ = "MIT"
+ 
+ __all__ = ['HumbleException', 'HumbleResponseException', 'HumbleAuthenticationException', 'HumbleCredentialException',
+-           'HumbleCaptchaException', 'HumbleTwoFactorException', 'HumbleParseException']
++           'HumbleCaptchaException', 'HumbleTwoFactorException', 'HumbleGuardRequiredException', 'HumbleParseException']
+ 
+ from requests import RequestException
+ 
+@@ -38,6 +38,7 @@ class HumbleAuthenticationException(HumbleResponseException):
+     def __init__(self, *args, **kwargs):
+         self.captcha_required = kwargs.pop('captcha_required', None)
+         self.authy_required = kwargs.pop('authy_required', None)
++        self.captcha_skip_code = kwargs.pop('captcha_skip_code', None)
+         super(HumbleAuthenticationException, self).__init__(*args, **kwargs)
+ 
+ 
+@@ -62,6 +63,13 @@ class HumbleTwoFactorException(HumbleAuthenticationException):
+     pass
+ 
+ 
++class HumbleGuardRequiredException(HumbleAuthenticationException):
++    """
++    A guard code is required
++    """
++    pass
++
++
+ class HumbleParseException(HumbleResponseException):
+     """
+     An error occurred while parsing
+diff --git a/humblebundle/handlers.py b/humblebundle/handlers.py
+index 36fc6e1..a8acebf 100644
+--- a/humblebundle/handlers.py
++++ b/humblebundle/handlers.py
+@@ -64,29 +64,42 @@ def login_handler(client, response):
+     success = data.get('success', None)
+     if success is True:
+         return True
++    if data.get('goto', None) is not None:
++        return True
+ 
+     captcha_required = data.get('captcha_required')
+     authy_required = data.get('authy_required')
++    captcha_skip_code = data.get('skip_code', [None])[0]
++
++    guard = data.get('humble_guard_required', False)
++    if guard:
++        raise HumbleGuardRequiredException('Guard code required', request=response.request, response=response,
++                                           captcha_required=captcha_required, authy_required=authy_required,
++                                           captcha_skip_code=captcha_skip_code)
+ 
+     errors, error_msg = get_errors(data)
+     if errors:
+         captcha = errors.get('captcha')
+         if captcha:
+             raise HumbleCaptchaException(error_msg, request=response.request, response=response,
+-                                         captcha_required=captcha_required, authy_required=authy_required)
++                                         captcha_required=captcha_required, authy_required=authy_required,
++                                         captcha_skip_code=captcha_skip_code)
+ 
+         username = errors.get('username')
+         if username:
+             raise HumbleCredentialException(error_msg, request=response.request, response=response,
+-                                            captcha_required=captcha_required, authy_required=authy_required)
++                                            captcha_required=captcha_required, authy_required=authy_required,
++                                            captcha_skip_code=captcha_skip_code)
+ 
+         authy_token = errors.get("authy-token")
+         if authy_token:
+             raise HumbleTwoFactorException(error_msg, request=response.request, response=response,
+-                                           captcha_required=captcha_required, authy_required=authy_required)
++                                           captcha_required=captcha_required, authy_required=authy_required,
++                                           captcha_skip_code=captcha_skip_code)
+ 
+     raise HumbleAuthenticationException(error_msg, request=response.request, response=response,
+-                                        captcha_required=captcha_required, authy_required=authy_required)
++                                        captcha_required=captcha_required, authy_required=authy_required,
++                                        captcha_skip_code=captcha_skip_code)
+ 
+ 
+ def gamekeys_handler(client, response):
