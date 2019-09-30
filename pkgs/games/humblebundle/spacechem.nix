@@ -1,6 +1,8 @@
-{ stdenv, lib, fetchHumbleBundle, buildGame
-, SDL, SDL_mixer, SDL_image, SDL_net, SDL_gfx, SDL_ttf, smpeg
-, mono4, sqlite, coreutils, makeWrapper}:
+{ buildGame, fetchHumbleBundle, lib
+
+, SDL, SDL_gfx, SDL_image, SDL_mixer, SDL_net, SDL_ttf
+, coreutils, makeWrapper, mono4, smpeg, sqlite, xclip
+}:
 
 with lib;
 
@@ -10,16 +12,15 @@ buildGame rec {
   src = fetchHumbleBundle {
     name = "SpaceChem_Linux_v1013_FIXED.zip";
     machineName = "spacechem_android_pc_soundtrack_linux";
-    downloadName = "download";
+    downloadName = "Download";
     md5 = "c290e8631ae3380b7e70362501a5adb6";
   };
 
   sandbox.paths.required = [
     "$XDG_DATA_HOME/Zachtronics Industries/SpaceChem"
-    "$XDG_CONFIG_HOME/pulse"
   ];
 
-  buildInputs = [ makeWrapper ];
+  nativeBuildInputs = [ makeWrapper ];
 
   postPatch = let
     dllmap = {
@@ -64,10 +65,12 @@ buildGame rec {
   '';
 
   # coreutils because Tao.OpenGL relies on uname for platform detection
+  # xclip because SpaceChem relies on it for import/export of challenges
   postInstall = ''
     makeWrapper ${mono4}/bin/mono $out/bin/spacechem \
-      --prefix PATH : ${coreutils}/bin              \
-      --run "cd $out/lib/SpaceChem"                 \
+      --prefix PATH : ${coreutils}/bin               \
+      --prefix PATH : ${xclip}/bin                   \
+      --run "cd $out/lib/SpaceChem"                  \
       --add-flags $out/lib/SpaceChem/SpaceChem.exe
   '';
 }
