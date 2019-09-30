@@ -38,6 +38,7 @@ in {
         enable = true;
         vSync = true;
         backend = "glx";
+        settings = { inactive-dim = 0.2; };
       };
     };
 
