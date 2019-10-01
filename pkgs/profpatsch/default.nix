@@ -33,7 +33,7 @@ let
   # and returns an attribute set of `name -> path`.
   # The list can also contain renames in the form of
   # { use, as }, which goes `as -> usePath`.
-  bins = drv: xs:
+  getBins = drv: xs:
     let f = x:
       # TODO: typecheck
       let x' = if builtins.isString x then { use = x; as = x; } else x;
@@ -64,15 +64,15 @@ let
     inherit stdenv lib;
     inherit (runExeclineFns) runExecline;
     inherit (pkgs) runCommand;
-    bin = bins pkgs.s6PortableUtils [ "s6-touch" "s6-echo" ];
+    bin = getBins pkgs.s6PortableUtils [ "s6-touch" "s6-echo" ];
   };
 
   runExeclineFns =
     # todo: factor out calling tests
     let
       it = import ./execline/run-execline.nix {
-        bin = (bins execlineb-with-builtins [ "execlineb" ])
-           // (bins pkgs.execline [ "redirfd" "importas" "exec" ]);
+        bin = (getBins execlineb-with-builtins [ "execlineb" ])
+           // (getBins pkgs.execline [ "redirfd" "importas" "exec" ]);
         inherit stdenv lib;
       };
       itLocal = name: args: execline:
@@ -91,12 +91,12 @@ let
         inherit (testing) drvSeqL;
         inherit (pkgs) coreutils;
         inherit stdenv;
-        bin = (bins execlineb-with-builtins [ "execlineb" ])
-           // (bins pkgs.execline [
+        bin = (getBins execlineb-with-builtins [ "execlineb" ])
+           // (getBins pkgs.execline [
                  { use = "if"; as = "execlineIf"; }
                  "redirfd" "importas"
                ])
-           // (bins pkgs.s6PortableUtils
+           // (getBins pkgs.s6PortableUtils
                 [ "s6-cat" "s6-grep" "s6-touch" "s6-test" "s6-chmod" ]);
        };
     in {
@@ -153,6 +153,8 @@ in rec {
 
   inherit (runExeclineFns)
     runExecline runExeclineLocal;
+
+  inherit getBins;
 
   symlink = pkgs.callPackage ./execline/symlink.nix {
     inherit runExecline;
