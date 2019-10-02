@@ -105,7 +105,7 @@ let
         testing.drvSeqL tests (itLocal name args execline);
     };
 
-  writeExeclineFns = import ./write-execline.nix {
+  writeExeclineFns = import ./execline/write-execline.nix {
     inherit pkgs execlineb-with-builtins;
   };
 
