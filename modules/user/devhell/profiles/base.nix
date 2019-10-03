@@ -90,6 +90,8 @@ in {
       enableGhostscriptFonts = true;
       enableCoreFonts = true;
       fonts = with pkgs; [
+        #vistafonts
+        cascadia-code
         clearlyU
         cm_unicode
         corefonts
@@ -111,7 +113,6 @@ in {
         ttf_bitstream_vera
         ubuntu_font_family
         unifont
-        #vistafonts
         wqy_microhei
       ] ++ lib.filter lib.isDerivation (lib.attrValues lohit-fonts);
     };
