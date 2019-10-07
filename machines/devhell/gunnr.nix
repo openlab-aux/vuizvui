@@ -96,7 +96,6 @@
     # XXX: Factor out and make DRY, because a lot of the stuff here is
     # duplicated in the other machine configurations.
     displayManager.sessionCommands = ''
-      ${pkgs.xbindkeys}/bin/xbindkeys &
       ${pkgs.nitrogen}/bin/nitrogen --restore &
       ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
       ${pkgs.rofi}/bin/rofi &
@@ -143,16 +142,11 @@
    nixpkgs.config.mpv.bs2bSupport = true;
 
    environment.systemPackages = with pkgs; [
-     cdrtools
-     docker
-     dvdplusrwtools
      glxinfo
-     ipmitool
      libva
      libvdpau-va-gl
      pamixer
      vaapiVdpau
      vdpauinfo
-     xbindkeys
    ];
 }
