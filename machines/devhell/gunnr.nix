@@ -96,6 +96,7 @@
     # XXX: Factor out and make DRY, because a lot of the stuff here is
     # duplicated in the other machine configurations.
     displayManager.sessionCommands = ''
+      ${pkgs.xbindkeys}/bin/xbindkeys &
       ${pkgs.nitrogen}/bin/nitrogen --restore &
       ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
       ${pkgs.rofi}/bin/rofi &
@@ -148,5 +149,6 @@
      pamixer
      vaapiVdpau
      vdpauinfo
+     xbindkeys
    ];
 }
