@@ -30,6 +30,7 @@ in {
     networking.wireless.enable = false;
     networking.firewall.enable = false;
     networking.useNetworkd = true;
+    networking.useDHCP = false;
 
     i18n.consoleKeyMap = "dvorak";
     i18n.consoleFont = "lat9w-16";

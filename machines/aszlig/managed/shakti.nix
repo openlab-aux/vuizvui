@@ -58,7 +58,6 @@
   };
 
   networking.hostName = "shakti";
-  networking.useNetworkd = true;
 
   hardware.cpu.amd.updateMicrocode = true;
 

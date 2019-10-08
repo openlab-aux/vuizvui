@@ -76,6 +76,7 @@ in {
   hardware.enableRedistributableFirmware = true;
 
   networking.hostName = "dnyarri";
+  networking.interfaces.eno0.useDHCP = true;
 
   fileSystems = {
     "/boot" = {

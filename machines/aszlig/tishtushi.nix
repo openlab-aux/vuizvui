@@ -33,6 +33,7 @@
 
   networking.hostName = "tishtushi";
   networking.wireless.enable = lib.mkForce true;
+  networking.interfaces.wlp2s0.useDHCP = true;
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/763a7117-3dbf-4e80-9e63-c7039477ef3d";

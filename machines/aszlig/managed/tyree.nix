@@ -48,6 +48,8 @@
 
   networking.hostName = "tyree";
   networking.useNetworkd = true;
+  networking.useDHCP = false;
+  networking.interfaces.wlan0.useDHCP = true;
 
   hardware.cpu.intel.updateMicrocode = true;
 
