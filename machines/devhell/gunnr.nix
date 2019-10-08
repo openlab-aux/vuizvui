@@ -67,6 +67,7 @@
       default = "http://wproxy.canterbury.ac.uk:3128/";
       noProxy = "127.0.0.1,localhost";
     };
+    interfaces.enp4s0.useDHCP = true;
   };
 
   nix = {
