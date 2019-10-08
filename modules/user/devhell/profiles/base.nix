@@ -44,7 +44,10 @@ in {
       };
     };
 
-    networking.firewall.enable = false;
+    networking = {
+      firewall.enable = false;
+      useDHCP = false;
+    };
 
     users.users.dev = {
       isNormalUser = true;
