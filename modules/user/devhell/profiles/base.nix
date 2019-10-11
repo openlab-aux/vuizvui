@@ -33,6 +33,7 @@ in {
 
     hardware = {
       enableAllFirmware = true;
+      nitrokey.enable = true;
       opengl = {
         s3tcSupport = true;
         driSupport32Bit = true;
@@ -51,7 +52,7 @@ in {
 
     users.users.dev = {
       isNormalUser = true;
-      extraGroups = [ "plugdev" "docker" "vboxusers" "wheel" "mpd" "libvirtd" "wireshark" "video" "audio" ];
+      extraGroups = [ "nitrokey" "plugdev" "docker" "vboxusers" "wheel" "mpd" "libvirtd" "wireshark" "video" "audio" ];
       uid = 1000;
       shell = "${pkgs.zsh}/bin/zsh";
     };

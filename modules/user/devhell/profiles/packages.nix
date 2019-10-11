@@ -176,7 +176,6 @@ in {
       netrw
       netsniff-ng
       nitrogen
-      nitrokey-udev-rules
       nixops
       nload
       nmap
