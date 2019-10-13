@@ -77,6 +77,7 @@ pkgs: with pkgs; [
   vbindiff
   vorbisTools
   w3m
+  wcc
   wireshark
   xorg.xhost
   xpdf
