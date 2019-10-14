@@ -216,6 +216,7 @@ in {
       speedtest-cli
       spek
       ssdeep
+      starship
       stow
       strace
       sxiv
