@@ -196,7 +196,6 @@ in {
       pulsemixer
       pv
       pxz
-      python
       qemu
       qrencode
       recode
