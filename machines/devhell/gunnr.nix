@@ -24,7 +24,7 @@
       kernelModules = [ "fuse" ];
     };
 
-    kernelParams = [ ];
+    kernelParams = [ "pcie_aspm=off" ];
     kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
     blacklistedKernelModules = [ ];

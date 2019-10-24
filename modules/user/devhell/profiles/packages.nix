@@ -197,8 +197,6 @@ in {
       pv
       pxz
       python
-      python2
-      python3
       qemu
       qrencode
       recode
@@ -216,7 +214,6 @@ in {
       speedtest-cli
       spek
       ssdeep
-      starship
       stow
       strace
       sxiv
