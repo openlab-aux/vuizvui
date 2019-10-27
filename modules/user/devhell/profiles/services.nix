@@ -52,7 +52,7 @@ in {
           extraConfig = ''
             [greeter]
             show-password-label = true
-            password-label-text = >
+            password-label-text = ❯
             show-input-cursor = false
             [greeter-theme]
             text-color = "#4C566A"
