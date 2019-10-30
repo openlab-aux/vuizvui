@@ -1,4 +1,4 @@
-{ config, pkgs, unfreePkgs, lib, ... }:
+{ config, pkgs, unfreePkgs, unfreeAndNonDistributablePkgs, lib, ... }:
 
 let
   mainDisk = "ata-WDC_WD5000LPVX-22V0TT0_WD-WXG1E2559AYH";
@@ -37,7 +37,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     vuizvui.aszlig.axbo chromium firefox gpodder opentyrian unfreePkgs.steam
-    python3
+    python3 unfreeAndNonDistributablePkgs.vscode-with-extensions
   ];
 
   i18n.defaultLocale = "en_US.UTF-8";
