@@ -19,6 +19,7 @@ let
     kingdoms-and-castles = callPackage ./kingdoms-and-castles.nix {};
     overload = callPackage ./overload.nix {};
     party-hard = callPackage ./party-hard.nix {};
+    planescape-torment-enhanced-edition = callPackage ./planescape-torment-enhanced-edition.nix {};
     satellite-reign = callPackage ./satellite-reign.nix {};
     settlers2 = callPackage ./settlers2.nix {};
     stardew-valley = callPackage ./stardew-valley.nix {};
