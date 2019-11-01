@@ -241,7 +241,7 @@ in {
       (virtinst.override {
         python2Packages = python2Packages.override {
           overrides = lib.const (super: {
-            routes = super.routes.overridePythonattrs (lib.const {
+            routes = super.routes.overridePythonAttrs (lib.const {
               doCheck = false;
             });
           });
