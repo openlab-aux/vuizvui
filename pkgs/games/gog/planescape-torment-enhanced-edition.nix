@@ -28,5 +28,5 @@ buildGame {
       --run "cd '$SHARE'"
   '';
 
-  sandbox.paths.required = [ "$XDG_CONFIG_HOME/Planescape Torment - Enhanced Edition" ];
+  sandbox.paths.required = [ "$XDG_DATA_HOME/Planescape Torment - Enhanced Edition" ];
 }
