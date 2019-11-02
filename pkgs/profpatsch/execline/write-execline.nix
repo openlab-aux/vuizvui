@@ -1,6 +1,6 @@
 { pkgs, execlineb-with-builtins }:
 let
-  escape = ./escape.nix { inherit (pkgs) lib; };
+  escape = import ./escape.nix { inherit (pkgs) lib; };
 
   # Write a list of execline argv parameters to an execline script.
   # Everything is escaped correctly.
