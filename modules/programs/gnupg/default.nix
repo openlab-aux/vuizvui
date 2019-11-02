@@ -78,9 +78,9 @@ in {
 
       pinentry.program = mkOption {
         type = types.path;
-        default = "${pkgs.pinentry}/bin/pinentry";
-        defaultText = "\${pkgs.pinentry}/bin/pinentry";
-        example = literalExample "\${pkgs.pinentry_qt5}/bin/pinentry";
+        default = "${pkgs.pinentry_gtk2}/bin/pinentry";
+        defaultText = "\${pkgs.pinentry_gtk2}/bin/pinentry";
+        example = literalExample "\${pkgs.pinentry_qt}/bin/pinentry";
         description = "The pinentry program to use to ask for passphrases.";
       };
 
