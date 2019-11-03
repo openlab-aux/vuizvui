@@ -141,7 +141,7 @@ in {
       iptraf-ng
       ipv6calc
       jfsutils
-      (john.override { pythonPackages = python3Packages; })
+      john
       jwhois
       keepassxc
       keybase
