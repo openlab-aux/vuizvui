@@ -88,12 +88,8 @@ in {
     fonts = {
       fontconfig = {
         enable = true;
-        ultimate = {
-          enable = true;
-        };
       };
       enableGhostscriptFonts = true;
-      enableCoreFonts = true;
       fonts = with pkgs; [
         cascadia-code
         clearlyU
