@@ -300,7 +300,6 @@ in {
     vuizvui.user.profpatsch.programs.scanning = {
       enable = true;
       #remoteScanners = ''
-      #  hannswurscht.lab
       #  hippie.lab
       #'';
     };
