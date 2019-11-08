@@ -17,9 +17,6 @@ with import ../lib;
     hildr      = callMachine devhell/hildr.nix {};
     gunnr      = callMachine devhell/gunnr.nix {};
   };
-  openlab = {
-    hannswurscht = callMachine ./openlab/hannswurscht.nix {};
-  };
   profpatsch = {
     shiki = callMachine ./profpatsch/shiki.nix {};
     haku   = callMachine ./profpatsch/haku.nix {};
