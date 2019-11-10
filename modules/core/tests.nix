@@ -480,10 +480,6 @@ let
     { check = config.services.quagga.ospf.enable;
       path  = ["nixos" "quagga"];
     }
-    { check = config.hardware.opengl.driSupport
-           && config.services.xserver.enable;
-      path  = ["nixos" "quake3"];
-    }
     { check = config.services.rabbitmq.enable;
       path  = ["nixos" "rabbitmq"];
     }
