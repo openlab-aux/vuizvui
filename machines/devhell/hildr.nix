@@ -72,7 +72,7 @@
     cpuFreqGovernor = "powersave";
   };
 
-#  virtualisation.docker.enable = true;
+  virtualisation.docker.enable = true;
 
   nix = {
     maxJobs = lib.mkDefault 4;
