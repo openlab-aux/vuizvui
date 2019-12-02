@@ -59,6 +59,10 @@ in {
     };
 
     programs = {
+      gnupg = {
+        agent.enable = true;
+        agent.pinentryFlavor = "gnome3";
+      };
       ssh = {
         startAgent = false;
       };
