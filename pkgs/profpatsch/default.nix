@@ -142,6 +142,9 @@ in rec {
   warpspeed = callPackage ./warpspeed {
     inherit (pkgs.haskellPackages) ghcWithPackages;
   };
+  youtube2audiopodcast = callPackage ./youtube2audiopodcast {
+    inherit writeExecline getBins runInEmptyEnv;
+  };
 
   inherit (callPackage ./utils-hs {})
     nix-gen until watch-server
