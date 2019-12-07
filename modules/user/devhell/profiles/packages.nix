@@ -219,6 +219,7 @@ in {
       sxiv
       tasksh
       taskwarrior
+      taizen
       telnet
       termdown
       termite
