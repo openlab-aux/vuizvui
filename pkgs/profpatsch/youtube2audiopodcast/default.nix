@@ -2,10 +2,13 @@
 
 let
   bins = getBins pkgs.hello [ "hello" ]
-    // getBins pkgs.coreutils [ "echo" "env" "cat" "printf" "wc" "tr" "cut" "mktemp" ]
+    // getBins pkgs.coreutils [ "printf" "wc" "tr" "cut" "mktemp" ]
     // getBins pkgs.youtube-dl [ "youtube-dl" ]
     // getBins pkgs.s6-networking [ "s6-tcpserver" ]
-    // getBins pkgs.execline [ "fdmove" "backtick" "importas" "if" "redirfd" "pipeline" ];
+    // getBins pkgs.execline [ "fdmove" "backtick" "importas" "if" "redirfd" "pipeline" ]
+    // getBins pkgs.s6-portable-utils [
+         { use = "s6-cat"; as = "cat"; }
+       ];
 
   youtube-dl-audio = writeExecline "youtube-dl-audio" { readNArgs = 1; } [
     bins.youtube-dl
