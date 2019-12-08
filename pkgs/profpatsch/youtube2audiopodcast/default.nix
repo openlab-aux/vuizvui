@@ -2,16 +2,16 @@
 
 let
   bins = getBins pkgs.hello [ "hello" ]
-    // getBins pkgs.coreutils [ "echo" "env" "cat" "printf" "wc" "tr" ]
+    // getBins pkgs.coreutils [ "echo" "env" "cat" "printf" "wc" "tr" "cut" "mktemp" ]
     // getBins pkgs.youtube-dl [ "youtube-dl" ]
     // getBins pkgs.s6-networking [ "s6-tcpserver" ]
     // getBins pkgs.execline [ "fdmove" "backtick" "importas" "if" "redirfd" "pipeline" ];
 
-  youtube-dl-audio = writeExecline "abc" { readNArgs = 1; } [
+  youtube-dl-audio = writeExecline "abc" { readNArgs = 2; } [
     bins.youtube-dl
       "--extract-audio"
       "--audio-format" "opus"
-      "--output" "\${1}/audio.opus" "https://www.youtube.com/watch?v=5Opw5oR2LDY"
+      "--output" "\${1}/audio.opus" "https://www.youtube.com/watch?v=\${2}"
   ];
 
   # minimal CGI request parser for use as UCSPI middleware
@@ -39,18 +39,30 @@ let
     os.execlp(cmd, cmd, *args)
   '';
 
+  envvar-to-stdin = writeExecline "envvar-to-stdin" { readNArgs = 1; } [
+    "importas" "VAR" "$1"
+    "pipeline" [ bins.printf "%s" "$VAR" ] "$@"
+  ];
 
   serve-audio = writeExecline "audio-server" {} [
     (runInEmptyEnv [])
     bins.s6-tcpserver "::1" "8888"
     yolo-cgi
     # bins.fdmove "1" "2" bins.env
+    bins.backtick "-i" "tmpdir" [ bins.mktemp "-d" ]
+    bins.importas "-u" "tmpdir" "tmpdir"
     bins.${"if"} [
+      # remove leading slash
+      bins.backtick "-i" "yt-video-id" [
+        envvar-to-stdin "REQUEST_URI"
+        bins.cut "-c2-"
+      ]
+      bins.importas "yt-video-id" "yt-video-id"
       bins.fdmove "1" "2"
-      youtube-dl-audio "tmpdir"
+      youtube-dl-audio "$tmpdir" "$yt-video-id"
     ]
     bins.backtick "-i" "-n" "filesize" [
-      bins.redirfd "-r" "0" "tmpdir/audio.opus"
+      bins.redirfd "-r" "0" "\${tmpdir}/audio.opus"
       bins.wc "--bytes"
     ]
     bins.importas "filesize" "filesize"
@@ -60,7 +72,7 @@ let
       Content-Length: %u
 
     '' "$filesize" ]
-    bins.redirfd "-r" "0" "tmpdir/audio.opus" bins.cat
+    bins.redirfd "-r" "0" "\${tmpdir}/audio.opus" bins.cat
   ];
 
 # in printFeed
