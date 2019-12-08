@@ -20,9 +20,6 @@ let
     { check = config.services.avahi.enable;
       path  = ["nixos" "avahi"];
     }
-    { check = config.services.beegfsEnable;
-      path  = ["nixos" "beegfs"];
-    }
     { check = config.vuizvui.createISO;
       paths = [
         ["nixos" "boot" "biosCdrom"]
