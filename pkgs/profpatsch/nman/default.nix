@@ -1,6 +1,6 @@
-{ lib, runCommandNoCC, go }:
+{ lib, runCommand, go }:
 
-runCommandNoCC "nman" {
+runCommand "nman" {
   meta = with lib; {
     description = "Invoke manpage in temporary nix-shell";
     license = licenses.gpl3;

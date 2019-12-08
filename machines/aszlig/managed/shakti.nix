@@ -26,7 +26,7 @@
   # information and the monitor is also very weird because it doesn't
   # understand the fallback modes.
   boot.kernelParams = [ "drm_kms_helper.edid_firmware=edid/weird.bin" ];
-  hardware.firmware = lib.singleton (pkgs.runCommand "weird-edid" {} ''
+  hardware.firmware = lib.singleton (pkgs.runCommandLocal "weird-edid" {} ''
     mkdir -p "$out/lib/firmware/edid"
     base64 -d > "$out/lib/firmware/edid/weird.bin" <<EOF
     AP///////wAEaaEiAQEBASQRAQOALx1477U1pVZKmiUQUFS/74BxT4GAlQCzAAEBlQ+BioFA

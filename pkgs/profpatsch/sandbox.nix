@@ -26,7 +26,7 @@ let
       mount = "${pkgs.utillinux}/bin/mount";
       unshare = "${pkgs.utillinux}/bin/unshare";
       # this is the directory the sandbox runs under (in a separate mount namespace)
-      newroot = pkgs.runCommand "sandbox-root" {} ''mkdir "$out"'';
+      newroot = pkgs.runCommandLocal "sandbox-root" {} ''mkdir "$out"'';
       # this runs in a separate namespace, sets up a chroot root
       # and then chroots into the new root.
       sandbox = writeExecline "sandbox" {} (builtins.concatLists [

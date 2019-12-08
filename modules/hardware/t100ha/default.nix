@@ -8,7 +8,7 @@ in {
   options.vuizvui.hardware.t100ha.enable = lib.mkEnableOption desc;
 
   config = lib.mkIf cfg.enable {
-    hardware.firmware = lib.singleton (pkgs.runCommand "t100ha-firmware" {
+    hardware.firmware = lib.singleton (pkgs.runCommandLocal "t100ha-firmware" {
       params = ./brcmfmac43340-sdio.txt;
       fwpkg = pkgs.firmwareLinuxNonfree;
       install = "install -vD -m 0644";

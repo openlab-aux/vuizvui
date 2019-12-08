@@ -19,7 +19,7 @@
 
     environment.systemPackages = let
       mkNestedLinksTo = drv: let
-        mkLink = name: to: pkgs.runCommand name { inherit to; } ''
+        mkLink = name: to: pkgs.runCommandLocal name { inherit to; } ''
           ln -s "$to" "$out"
         '';
       in mkLink "nested-1" (mkLink "nested-2" (mkLink "nested-3" drv));
@@ -50,7 +50,7 @@
           # symlinks.
           lfile="$(< ${mkNestedLinksTo (pkgs.writeText "target" "file")})"
           test "$lfile" = file
-          ldir="$(< ${mkNestedLinksTo (pkgs.runCommand "target" {} ''
+          ldir="$(< ${mkNestedLinksTo (pkgs.runCommandLocal "target" {} ''
             mkdir -p "$out"
             echo dir > "$out/canary"
           '')}/canary)"

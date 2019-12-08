@@ -1,4 +1,4 @@
-{ stdenv, lib, runCommand, coreutils, nixUnstable }:
+{ stdenv, lib, runCommandLocal, coreutils, nixUnstable }:
 
 let
   nixRemote = "ssh-ng://nix-remote-build@taalo.headcounter.org?compress=true";
@@ -16,7 +16,7 @@ let
   emitScript = content:
     "echo -n ${lib.escapeShellArg "#!${stdenv.shell}\nset -e\n${content}"}";
 
-in runCommand "taalo-build" {} ''
+in runCommandLocal "taalo-build" {} ''
   mkdir -p "$out/bin"
 
   ${emitScript (''

@@ -81,7 +81,7 @@ in with pkgsUpstream.lib; with builtins; {
   machines = let
     # We need to expose all the real builds within vuizvui.lazyPackages to make
     # sure they don't get garbage collected on the Hydra instance.
-    wrapLazy = machine: pkgsUpstream.runCommand machine.build.name {
+    wrapLazy = machine: pkgsUpstream.runCommandLocal machine.build.name {
       fakeRuntimeDeps = machine.eval.config.vuizvui.lazyPackages;
       product = machine.build;
     } ''
@@ -97,7 +97,7 @@ in with pkgsUpstream.lib; with builtins; {
     buildIso = attrs: let
       name = attrs.iso.config.networking.hostName;
       cond = attrs.iso.config.vuizvui.createISO;
-    in if !cond then {} else pkgsUpstream.runCommand "vuizvui-iso-${name}" {
+    in if !cond then {} else pkgsUpstream.runCommandLocal "vuizvui-iso-${name}" {
       meta.description = "Live CD/USB stick of ${name}";
       iso = attrs.iso.config.system.build.isoImage;
       passthru.config = attrs.iso.config;
