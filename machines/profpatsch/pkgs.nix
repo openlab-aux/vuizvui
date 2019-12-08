@@ -102,16 +102,6 @@ let
         --replace 'notify-send' '${notify-send}'
     '';
 
-  # wrapper for execlineb that doesn’t need the execline commands
-  # in PATH to work (making them appear like “builtins”)
-  execlineb-with-builtins =
-    let eldir = "${pkgs.execline}/bin";
-    in pkgs.writeScriptBin "execlineb" ''
-      #!${eldir}/execlineb -s0
-      ${eldir}/importas oldpath PATH
-      env PATH=${eldir}:''${oldpath} ${eldir}/execlineb $@
-    '';
-
   dhall-flycheck = pkgs.vuizvui.profpatsch.haskellPackages.callPackage
     (import "${pkgs.fetchFromGitHub {
       owner = "Profpatsch";
@@ -133,7 +123,6 @@ in
     saneGhci
     /*searx*/
     pyrnotify
-    execlineb-with-builtins
     dhall-flycheck
     ;
 }

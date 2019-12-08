@@ -3,32 +3,6 @@
 let
   inherit (pkgs) callPackage;
 
-  # wrapper for execlineb that doesn’t need the execline commands
-  # in PATH to work (making them appear like “builtins”)
-  # TODO: upstream into nixpkgs
-  # TODO: the grep could be nicer
-  execlineb-with-builtins =
-    let eldir = "${pkgs.execline}/bin";
-    in pkgs.writeScriptBin "execlineb" ''
-      #!${eldir}/execlineb -s0
-      # appends the execlineb bin dir to PATH if not yet in PATH
-      ${eldir}/define eldir ${eldir}
-      ''${eldir}/ifelse
-      {
-        # since this is nix, we can grep for the execline drv hash in PATH
-        # to see whether it’s already in there
-        ''${eldir}/pipeline
-        { ${pkgs.coreutils}/bin/printenv PATH }
-        ${pkgs.gnugrep}/bin/grep --quiet "${eldir}"
-      }
-      # it’s there already
-      { ''${eldir}/execlineb $@ }
-      # not there yet, add it
-      ''${eldir}/importas oldpath PATH
-      ''${eldir}/export PATH "''${eldir}:''${oldpath}"
-      ''${eldir}/execlineb $@
-    '';
-
   # Takes a derivation and a list of binary names
   # and returns an attribute set of `name -> path`.
   # The list can also contain renames in the form of
@@ -65,8 +39,7 @@ let
     # todo: factor out calling tests
     let
       it = import ./execline/run-execline.nix {
-        bin = (getBins execlineb-with-builtins [ "execlineb" ])
-           // (getBins pkgs.execline [ "redirfd" "importas" "exec" ]);
+        bin = getBins pkgs.execline [ "execlineb" "redirfd" "importas" "exec" ];
         inherit stdenv lib;
       };
       itLocal = name: args: execline:
@@ -85,8 +58,8 @@ let
         inherit (testing) drvSeqL;
         inherit (pkgs) coreutils;
         inherit stdenv;
-        bin = (getBins execlineb-with-builtins [ "execlineb" ])
-           // (getBins pkgs.execline [
+        bin = (getBins pkgs.execline [
+                 "execlineb"
                  { use = "if"; as = "execlineIf"; }
                  "redirfd" "importas"
                ])
@@ -100,7 +73,7 @@ let
     };
 
   writeExeclineFns = import ./execline/write-execline.nix {
-    inherit pkgs execlineb-with-builtins;
+    inherit pkgs;
   };
 
 

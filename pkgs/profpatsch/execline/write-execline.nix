@@ -1,4 +1,4 @@
-{ pkgs, execlineb-with-builtins }:
+{ pkgs }:
 let
   escape = import ./escape.nix { inherit (pkgs) lib; };
 
@@ -6,7 +6,7 @@ let
   # Everything is escaped correctly.
   # TODO upstream into nixpkgs
   writeExeclineCommon = writer: name: { readNArgs ? 0 }: argList: writer name ''
-    #!${execlineb-with-builtins}/bin/execlineb -Ws${toString readNArgs}
+    #!${pkgs.execline}/bin/execlineb -Ws${toString readNArgs}
     ${escape.escapeExecline argList}
   '';
   writeExecline = writeExeclineCommon pkgs.writeScript;
