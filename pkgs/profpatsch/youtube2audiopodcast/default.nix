@@ -1,4 +1,4 @@
-{ pkgs, lib, writeExecline, getBins, runInEmptyEnv }:
+{ pkgs, lib, writeExecline, getBins, runInEmptyEnv, sandbox }:
 
 let
   bins = getBins pkgs.hello [ "hello" ]
@@ -7,11 +7,12 @@ let
     // getBins pkgs.s6-networking [ "s6-tcpserver" ]
     // getBins pkgs.execline [ "fdmove" "backtick" "importas" "if" "redirfd" "pipeline" ];
 
-  youtube-dl-audio = writeExecline "abc" { readNArgs = 2; } [
+  youtube-dl-audio = writeExecline "youtube-dl-audio" { readNArgs = 1; } [
     bins.youtube-dl
+      "--verbose"
       "--extract-audio"
       "--audio-format" "opus"
-      "--output" "\${1}/audio.opus" "https://www.youtube.com/watch?v=\${2}"
+      "--output" "./audio.opus" "https://www.youtube.com/watch?v=\${1}"
   ];
 
   # minimal CGI request parser for use as UCSPI middleware
@@ -27,7 +28,7 @@ let
 
     inbuf = sys.stdin.buffer
 
-    first_line = inbuf.readline().split(sep=b" ")
+    first_line = inbuf.readline().rstrip(b"\n").split(sep=b" ")
     parse_ass(len(first_line) == 3)
     parse_ass(first_line[2].startswith(b"HTTP/"))
 
@@ -47,10 +48,9 @@ let
   serve-audio = writeExecline "audio-server" {} [
     (runInEmptyEnv [])
     bins.s6-tcpserver "::1" "8888"
+    (sandbox { extraMounts = [ "/etc" ]; })
     yolo-cgi
     # bins.fdmove "1" "2" bins.env
-    bins.backtick "-i" "tmpdir" [ bins.mktemp "-d" ]
-    bins.importas "-u" "tmpdir" "tmpdir"
     bins.${"if"} [
       # remove leading slash
       bins.backtick "-i" "yt-video-id" [
@@ -58,11 +58,11 @@ let
         bins.cut "-c2-"
       ]
       bins.importas "yt-video-id" "yt-video-id"
-      bins.fdmove "1" "2"
-      youtube-dl-audio "$tmpdir" "$yt-video-id"
+      bins.fdmove "-c" "1" "2"
+      youtube-dl-audio "$yt-video-id"
     ]
     bins.backtick "-i" "-n" "filesize" [
-      bins.redirfd "-r" "0" "\${tmpdir}/audio.opus"
+      bins.redirfd "-r" "0" "./audio.opus"
       bins.wc "--bytes"
     ]
     bins.importas "filesize" "filesize"
@@ -72,7 +72,7 @@ let
       Content-Length: %u
 
     '' "$filesize" ]
-    bins.redirfd "-r" "0" "\${tmpdir}/audio.opus" bins.cat
+    bins.redirfd "-r" "0" "./audio.opus" bins.cat
   ];
 
 # in printFeed
