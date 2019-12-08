@@ -119,7 +119,7 @@ in rec {
 
   backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
   display-infos = callPackage ./display-infos { inherit sfttime; };
-  git-commit-index = callPackage ./git-commit-index { inherit script runCommandLocal; };
+  git-commit-index = callPackage ./git-commit-index { inherit script; };
   nix-http-serve = callPackage ./nix-http-serve {};
   nman = callPackage ./nman {};
   sfttime = callPackage ./sfttime {};
