@@ -54,16 +54,10 @@ let
       };
     in import src { nixpkgs = pkgs; };
 
-  runCommandLocal = name: args: cmd:
-    pkgs.runCommand name (args // {
-      preferLocalBuild = true;
-      allowSubstitutes = false;
-    }) cmd;
-
   testing = import ./testing {
     inherit stdenv lib;
     inherit (runExeclineFns) runExecline;
-    inherit (pkgs) runCommand;
+    inherit (pkgs) runCommandLocal;
     bin = getBins pkgs.s6PortableUtils [ "s6-touch" "s6-echo" ];
   };
 

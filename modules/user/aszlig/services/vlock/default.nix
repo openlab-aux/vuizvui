@@ -3,7 +3,7 @@
 let
   cfg = config.vuizvui.user.aszlig.services.vlock;
 
-  messageFile = pkgs.runCommand "message.cat" {} ''
+  messageFile = pkgs.runCommandLocal "message.cat" {} ''
     echo -en '\e[H\e[2J\e[?25l' > "$out"
     "${pkgs.vuizvui.aszlig.aacolorize}/bin/aacolorize" \
       "${./message.cat}" "${./message.colmap}" \

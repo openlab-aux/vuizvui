@@ -97,7 +97,7 @@ let
         notify-send = "${pkgs.libnotify.overrideAttrs (old: {
           patches = old.patches or [] ++ [ ./patches/libnotify.patch ];
         })}/bin/notify-send";
-    in pkgs.runCommand "pyrnotify.py" {} ''
+    in pkgs.runCommandLocal "pyrnotify.py" {} ''
       substitute "${src}/pyrnotify.py" $out \
         --replace 'notify-send' '${notify-send}'
     '';

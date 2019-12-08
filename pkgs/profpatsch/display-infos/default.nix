@@ -1,4 +1,4 @@
-{ lib, runCommand, writeText, python3, libnotify, bc, sfttime }:
+{ lib, runCommandLocal, writeText, python3, libnotify, bc, sfttime }:
 
 let
   name = "display-infos-0.1.0";
@@ -61,7 +61,7 @@ let
   '';
 
 in
-  with lib; runCommand "display-infos" {
+  with lib; runCommandLocal "display-infos" {
     meta.description = "Script to display time & battery";
   } ''
     substitute ${script} script \

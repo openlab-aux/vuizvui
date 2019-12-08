@@ -12,7 +12,7 @@ let
   # The command used to fetch the store path from the binary cache.
   fetchSubstitute = "${escapeShellArg "${pkgs.nix}/bin/nix-store"} -r";
 
-  mkWrapper = package: pkgs.runCommand "${package.name}-lazy" {
+  mkWrapper = package: pkgs.runCommandLocal "${package.name}-lazy" {
     inherit package;
   } ''
     encoded="$(echo "$package" | ${encoder})"

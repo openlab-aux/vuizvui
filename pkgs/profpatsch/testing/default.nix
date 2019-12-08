@@ -1,4 +1,4 @@
-{ stdenv, runCommand, lib
+{ stdenv, runCommandLocal, lib
 , runExecline, bin }:
 
 let
@@ -15,13 +15,11 @@ let
   drvSeqL = drvDeps: drvOut: let
   drvOutOutputs = drvOut.outputs or ["out"];
   in
-    runCommand drvOut.name {
+    runCommandLocal drvOut.name {
       # we inherit all attributes in order to replicate
       # the original derivation as much as possible
       outputs = drvOutOutputs;
       passthru = drvOut.drvAttrs;
-      preferLocalBuild = true;
-      allowSubstitutes = false;
       # depend on drvDeps (by putting it in builder context)
       inherit drvDeps;
     }

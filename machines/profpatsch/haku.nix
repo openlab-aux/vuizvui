@@ -111,7 +111,7 @@ in
             rev = "ef02aa8f074d0d5209839cd12ba7a67685fdaa05";
             sha256 = "1hr2si73lam463pcf25napfbk0zb30kgv3ncc0ahv6wndjpsvg7z";
           };
-          in pkgs.runCommand "lojbanistan-www" {} ''
+          in pkgs.runCommandLocal "lojbanistan-www" {} ''
             mkdir $out
             echo "coi do" > $out/index.html
             ${pkgs.imagemagick}/bin/convert \

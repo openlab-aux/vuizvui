@@ -6,7 +6,7 @@ let
   bin = drv: name: "${lib.getBin drv}/bin/${name}";
   cfg = config.vuizvui.user.openlab.speedtest;
 
-  py = pkgs.runCommand "speedtest.py" {} ''
+  py = pkgs.runCommandLocal "speedtest.py" {} ''
     cat ${./speedtest.py} \
       | sed -e 's|^PING_BIN =.*$|PING_BIN = "${config.security.wrapperDir}/ping"|' \
       > $out
