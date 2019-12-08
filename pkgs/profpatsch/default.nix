@@ -49,8 +49,8 @@ let
       src = pkgs.fetchFromGitHub {
         owner = "Profpatsch";
         repo = "nixperiments";
-        rev = "1c654b42d46b680ceef8e2c65a40886f3f8614b9";
-        sha256 = "1lflgly8zy4s212s2caj21si15ydbgbm0szck66vrnwqvw3v3nws";
+        rev = "519cddb867af054f242cb318ea0c61efe56a2471";
+        sha256 = "1i11yr2q40l2ghccn5lydp3dbag8m7y9vl456ghzygyz48jzavf9";
       };
     in import src { nixpkgs = pkgs; };
 
