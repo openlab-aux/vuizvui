@@ -12,7 +12,8 @@ in {
     boot.kernelPatches = lib.singleton {
       name = "bfq";
       patch =
-        if      versionAtLeast version "4.18" then ./bfq-by-default-4.18.patch
+        if      versionAtLeast version "5.4"  then ./bfq-by-default-5.4.patch
+        else if versionAtLeast version "4.18" then ./bfq-by-default-4.18.patch
         else if versionAtLeast version "4.15" then ./bfq-by-default-4.15.patch
         else ./bfq-by-default.patch;
       extraConfig = ''

@@ -1,0 +1,13 @@
+diff --git a/block/elevator.c b/block/elevator.c
+index 4eab3d70e880..7ea8f9d34e86 100644
+--- a/block/elevator.c
++++ b/block/elevator.c
+@@ -631,7 +631,7 @@ static struct elevator_type *elevator_get_default(struct request_queue *q)
+ 	if (q->nr_hw_queues != 1)
+ 		return NULL;
+ 
+-	return elevator_get(q, "mq-deadline", false);
++	return elevator_get(q, "bfq", false);
+ }
+ 
+ /*
