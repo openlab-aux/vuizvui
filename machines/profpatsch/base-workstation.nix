@@ -99,11 +99,6 @@ in {
         monospace = [ "Source Code Pro" "DejaVu Sans Mono" ]; # TODO does not work
         sansSerif = [ "Liberation Sans" ];
       };
-      ultimate = {
-        enable = true;
-        substitutions = "combi";
-        preset = "ultimate4";
-      };
     };
 
 
