@@ -45,14 +45,33 @@ let
     "pipeline" [ bins.printf "%s" "$VAR" ] "$@"
   ];
 
+  # serve an opus file as HTTP on stdout
+  serve-http-opus-file =
+    writeExecline "serve-http-opus-file" { readNArgs = 1; } [
+      # determine file size
+      bins.backtick "-i" "-n" "filesize" [
+        bins.redirfd "-r" "0" "$1"
+        bins.wc "--bytes"
+      ]
+      bins.importas "filesize" "filesize"
+      # yolo html
+      bins.${"if"} [ bins.printf ''
+        HTTP/1.1 200 OK
+        Content-Type: audio/ogg
+        Content-Length: %u
+
+      '' "$filesize" ]
+      # the payload is our file
+      bins.redirfd "-r" "0" "$1" bins.cat
+    ];
+
   serve-audio = writeExecline "audio-server" {} [
     (runInEmptyEnv [])
     bins.s6-tcpserver "::1" "8888"
     (sandbox { extraMounts = [ "/etc" ]; })
     yolo-cgi
-    # bins.fdmove "1" "2" bins.env
     bins.${"if"} [
-      # remove leading slash
+      # remove leading slash from youtube-id
       bins.backtick "-i" "yt-video-id" [
         envvar-to-stdin "REQUEST_URI"
         bins.cut "-c2-"
@@ -61,18 +80,7 @@ let
       bins.fdmove "-c" "1" "2"
       youtube-dl-audio "$yt-video-id"
     ]
-    bins.backtick "-i" "-n" "filesize" [
-      bins.redirfd "-r" "0" "./audio.opus"
-      bins.wc "--bytes"
-    ]
-    bins.importas "filesize" "filesize"
-    bins.${"if"} [ bins.printf ''
-      HTTP/1.1 200 OK
-      Content-Type: audio/ogg
-      Content-Length: %u
-
-    '' "$filesize" ]
-    bins.redirfd "-r" "0" "./audio.opus" bins.cat
+    serve-http-opus-file "./audio.opus"
   ];
 
 # in printFeed
