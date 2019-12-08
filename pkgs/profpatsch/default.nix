@@ -134,7 +134,7 @@ in rec {
     inherit (pkgs.haskellPackages) ghcWithPackages;
   };
   youtube2audiopodcast = callPackage ./youtube2audiopodcast {
-    inherit writeExecline getBins runInEmptyEnv;
+    inherit writeExecline getBins runInEmptyEnv sandbox;
   };
 
   inherit (callPackage ./utils-hs {})
