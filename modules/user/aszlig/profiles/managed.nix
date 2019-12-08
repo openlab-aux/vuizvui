@@ -64,7 +64,7 @@ in {
     ];
 
     # For MTP and other stuff.
-    services.gnome3.gvfs.enable = true;
+    services.gvfs.enable = true;
 
     # Plasma desktop with German keyboard layout.
     services.xserver.enable = true;
