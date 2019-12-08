@@ -24,7 +24,6 @@
   ./user/aszlig/programs/taskwarrior
   ./user/aszlig/programs/zsh
   ./user/aszlig/services/i3
-  ./user/aszlig/services/slim
   ./user/aszlig/services/vlock
   ./user/devhell/profiles/base.nix
   ./user/devhell/profiles/packages.nix

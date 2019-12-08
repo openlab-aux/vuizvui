@@ -504,9 +504,6 @@ let
     { check = true;
       path  = ["nixos" "simple"];
     }
-    { check = config.services.xserver.displayManager.slim.enable;
-      path  = ["nixos" "slim"];
-    }
     { check = config.services.snapper.configs != {};
       path  = ["nixos" "snapper"];
     }

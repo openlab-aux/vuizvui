@@ -60,7 +60,6 @@ in {
     };
 
     vuizvui.user.aszlig.services.i3.enable = true;
-    vuizvui.user.aszlig.services.slim.enable = true;
     vuizvui.user.aszlig.services.vlock.enable = true;
     vuizvui.user.aszlig.services.vlock.user = "aszlig";
 
@@ -160,6 +159,7 @@ in {
         enable = true;
         layout = "dvorak";
 
+        displayManager.lightdm.enable = true;
         displayManager.sessionCommands = ''
           ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
             XTerm*font:                vga
