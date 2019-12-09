@@ -8,15 +8,47 @@ let
     // getBins pkgs.execline [ "fdmove" "backtick" "importas" "if" "redirfd" "pipeline" ]
     // getBins pkgs.s6-portable-utils [
          { use = "s6-cat"; as = "cat"; }
-       ];
+       ]
+    // getBins pkgs.jl [ "jl" ];
 
+  # fetch the audio of a youtube video to ./audio.opus, given video ID
   youtube-dl-audio = writeExecline "youtube-dl-audio" { readNArgs = 1; } [
     bins.youtube-dl
       "--verbose"
       "--extract-audio"
       "--audio-format" "opus"
-      "--output" "./audio.opus" "https://www.youtube.com/watch?v=\${1}"
+      # We have to give a specific filename (with the right extension).
+      # youtube-dl is really finicky with output filenames.
+      "--output" "./audio.opus"
+      "https://www.youtube.com/watch?v=\${1}"
   ];
+
+  # print youtube playlist information to stdout, given playlist ID
+  youtube-playlist-info = writeExecline "youtube-playlist-info" { readNArgs = 1; } [
+    bins.youtube-dl
+      "--verbose"
+      # don’t query detailed info of every video,
+      # which takes a lot of time
+      "--flat-playlist"
+      # print a single line of json to stdout
+      "--dump-single-json"
+      "--yes-playlist"
+      "https://www.youtube.com/playlist?list=\${1}"
+  ];
+
+  writeHaskellInterpret = nameOrPath: { withPackages ? lib.const [] }: content:
+    let ghc = pkgs.haskellPackages.ghcWithPackages withPackages; in
+    pkgs.writers.makeScriptWriter {
+      interpreter = "${ghc}/bin/runhaskell";
+      check = pkgs.writers.writeDash "ghc-typecheck" ''
+        ln -s "$1" ./Main.hs
+        ${ghc}/bin/ghc -fno-code -Wall ./Main.hs
+      '';
+    } nameOrPath content;
+
+  printFeed = writeHaskellInterpret "print-feed" {
+    withPackages = hps: [ hps.feed hps.aeson ];
+  } ./Main.hs;
 
   # minimal CGI request parser for use as UCSPI middleware
   yolo-cgi = pkgs.writers.writePython3 "yolo-cgi" {} ''
@@ -43,6 +75,7 @@ let
     os.execlp(cmd, cmd, *args)
   '';
 
+  # print the contents of an envar to the stdin of $@
   envvar-to-stdin = writeExecline "envvar-to-stdin" { readNArgs = 1; } [
     "importas" "VAR" "$1"
     "pipeline" [ bins.printf "%s" "$VAR" ] "$@"
@@ -86,6 +119,59 @@ let
     serve-http-opus-file "./audio.opus"
   ];
 
+  example-config = pkgs.writeText "example-config.json" (lib.generators.toJSON {} {
+    channelName = "Lonely Rolling Star";
+    channelURL = "https://www.youtube.com/playlist?list=PLV9hywkogVcOuHJ8O121ulSfFDKUhJw66";
+  });
+
+  transform-flat-playlist-to-rss = hostUrl:
+    let
+      playlist-item-info-jl = ''
+        (\o ->
+          { itemTitle: o.title
+          , itemYoutubeLink: append "https://youtube.com/watch?v=" o.id
+          ${/*TODO how to add the url here nicely?*/""}
+          , itemURL: append "${hostUrl}/" o.id
+
+          ${/*# TODO*/""}
+          , itemDescription: ""
+          , itemCategory: ""
+          , itemTags: []
+          , itemSizeBytes: 0
+          , itemHash: ""
+          })
+     '';
+     playlist-info-jl = ''
+       \pl ->
+         { channelInfo:
+           { channelDescription: pl.title
+
+           ${/*# TODO*/""}
+           , channelLastUpdate: "000"
+           , channelImage: null
+           }
+         , channelItems:
+           map
+             ${playlist-item-info-jl}
+             pl.entries
+         }
+     '';
+   in writeExecline "youtube-dl-playlist-json-to-rss-json" {} [
+    bins.jl playlist-info-jl
+  ];
+
+  print-feed-json = writeExecline "ex2" {} [
+    "pipeline" [
+      youtube-playlist-info "PLV9hywkogVcOuHJ8O121ulSfFDKUhJw66"
+    ] (transform-flat-playlist-to-rss "localhost:8888")
+  ];
+
+  print-example-feed = writeExecline "ex" {} [
+    "pipeline" [ print-feed-json ]
+    printFeed
+  ];
+
+
 # in printFeed
-in serve-audio
-# in youtube-dl-audio
+# in serve-audio
+in print-example-feed
