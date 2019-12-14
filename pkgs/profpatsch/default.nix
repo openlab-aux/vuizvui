@@ -35,6 +35,17 @@ let
     bin = getBins pkgs.s6PortableUtils [ "s6-touch" "s6-echo" ];
   };
 
+  # TODO: upstream
+  writeHaskellInterpret = nameOrPath: { withPackages ? lib.const [] }: content:
+    let ghc = pkgs.haskellPackages.ghcWithPackages withPackages; in
+    pkgs.writers.makeScriptWriter {
+      interpreter = "${ghc}/bin/runhaskell";
+      check = pkgs.writers.writeDash "ghc-typecheck" ''
+        ln -s "$1" ./Main.hs
+        ${ghc}/bin/ghc -fno-code -Wall ./Main.hs
+      '';
+    } nameOrPath content;
+
   runExeclineFns =
     # todo: factor out calling tests
     let
@@ -101,7 +112,7 @@ in rec {
     inherit (pkgs.haskellPackages) ghcWithPackages;
   };
   youtube2audiopodcast = callPackage ./youtube2audiopodcast {
-    inherit writeExecline getBins runInEmptyEnv sandbox;
+    inherit writeExecline writeHaskellInterpret getBins runInEmptyEnv sandbox;
   };
 
   inherit (callPackage ./utils-hs {})

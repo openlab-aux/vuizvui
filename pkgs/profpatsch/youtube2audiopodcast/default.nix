@@ -1,4 +1,4 @@
-{ pkgs, lib, writeExecline, getBins, runInEmptyEnv, sandbox }:
+{ pkgs, lib, writeExecline, writeHaskellInterpret, getBins, runInEmptyEnv, sandbox }:
 
 let
   bins = getBins pkgs.hello [ "hello" ]
@@ -35,16 +35,6 @@ let
       "--yes-playlist"
       "https://www.youtube.com/playlist?list=\${1}"
   ];
-
-  writeHaskellInterpret = nameOrPath: { withPackages ? lib.const [] }: content:
-    let ghc = pkgs.haskellPackages.ghcWithPackages withPackages; in
-    pkgs.writers.makeScriptWriter {
-      interpreter = "${ghc}/bin/runhaskell";
-      check = pkgs.writers.writeDash "ghc-typecheck" ''
-        ln -s "$1" ./Main.hs
-        ${ghc}/bin/ghc -fno-code -Wall ./Main.hs
-      '';
-    } nameOrPath content;
 
   printFeed = writeHaskellInterpret "print-feed" {
     withPackages = hps: [ hps.feed hps.aeson ];
