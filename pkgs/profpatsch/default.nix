@@ -119,6 +119,10 @@ in rec {
     nix-gen until watch-server
     haskellPackages;
 
+  query-audio-streams = callPackage ./query-album-streams {
+    inherit writeExecline writeHaskellInterpret getBins;
+  };
+
   # patched version of droopy, with javascript user-enhancement
   droopy = pkgs.droopy.overrideDerivation (old: {
     src = pkgs.fetchFromGitHub {
