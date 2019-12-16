@@ -148,6 +148,7 @@
      libva
      libvdpau-va-gl
      pamixer
+     teams
      vaapiVdpau
      vdpauinfo
      xbindkeys
