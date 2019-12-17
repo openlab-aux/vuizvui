@@ -25,7 +25,4 @@ with import ../lib;
   misc = {
     mailserver = callMachine ./misc/mailserver.nix {};
   };
-  sternenseemann = {
-    schnurrkadse = callMachine ./sternenseemann/schnurrkadse.nix {};
-  };
 }
