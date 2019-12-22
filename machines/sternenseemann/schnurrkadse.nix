@@ -59,9 +59,12 @@ in {
   };
 
   i18n = {
-    consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "de";
     defaultLocale = "en_US.UTF-8";
+  };
+
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "de";
   };
 
   time.timeZone = "Europe/Berlin";

@@ -82,9 +82,12 @@
   };
 
   i18n = {
-    consoleFont = "lat9w-16";
-    consoleKeyMap = "uk";
     defaultLocale = "en_GB.UTF-8";
+  };
+
+  console = {
+    font = "lat9w-16";
+    keyMap = "uk";
   };
 
   #### Machine-specific service configuration ####

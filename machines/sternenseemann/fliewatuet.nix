@@ -77,9 +77,12 @@ in {
 
 
   i18n = {
-    consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "de-latin1";
     defaultLocale = "en_US.UTF-8";
+  };
+
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "de-latin1";
   };
 
   time.timeZone = "Europe/Berlin";

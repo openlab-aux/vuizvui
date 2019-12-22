@@ -26,10 +26,14 @@ in
     };
 
     i18n = {
-      consoleFont = "lat9w-16";
-      consoleKeyMap = "us";
       defaultLocale = "de_DE.UTF-8";
     };
+
+    console = {
+      font = "lat9w-16";
+      keyMap = "us";
+    };
+
     time.timeZone = "Europe/Berlin";
 
     hardware.enableRedistributableFirmware = true;
