@@ -212,8 +212,9 @@ in {
       userScripts = with pkgs.vuizvui.profpatsch;
         let
           di-notify = pkgs.vuizvui.profpatsch.writeExeclineBin "display-infos-notify" {} [
-            "pipeline" [ "${pkgs.libnotify}/bin/notify-send" ]
-            "${display-infos}/bin/display-infos"
+            "backtick" "-i" "DI" [ "${display-infos}/bin/display-infos" ]
+            "importas" "DI" "DI"
+            "${pkgs.libnotify}/bin/notify-send" "$DI"
           ];
         in [
         display-infos  # show time & battery
