@@ -141,7 +141,6 @@ in {
         # TODO move into atool deps
         unzip                # extract zip archives
         networkmanagerapplet # for nm-connection-editor
-        wpa_supplicant_gui   # configure wireless connections
       ];
       xPkgs = [
         dunst             # notification daemon (interfaces with libnotify)
@@ -160,16 +159,16 @@ in {
       programmingTools = [
         cabal2nix                    # convert cabal files to nixexprs
         # myPkgs.fast-init             # fast-init of haskell projects
-        gitAndTools.git-annex        # version controlled binary file storage
+        # gitAndTools.git-annex        # version controlled binary file storage
         gitAndTools.git-dit          # decentral issue tracking for git
-        gitAndTools.git-hub          # lightweight GitHub integration
+        # gitAndTools.git-hub          # lightweight GitHub integration
 
         # TODO: move to user config
-        go
         direnv
         httpie                       # nice http CLI
         jq                           # json filter
         telnet                       # tcp debugging
+        # TODO: make static binaries
         pkgs.vuizvui.profpatsch.nix-http-serve # serve nix builds and rebuild on reloads
         pkgs.vuizvui.profpatsch.nman # open man pages in temporary nix shell
         pkgs.vuizvui.profpatsch.warpspeed    # trivial http file server
@@ -184,7 +183,7 @@ in {
         # mustache-spec NOT IN 16.09
       ];
       userPrograms = [
-        abcde                # high-level cd-ripper with tag support
+        # abcde                # high-level cd-ripper with tag support
         anki mecab kakasi    # spaced repetition system & japanese analyzer
         # TODO integrate lame into audacity
         audacity lame.lib    # audio editor and mp3 codec
@@ -206,16 +205,16 @@ in {
         poppler_utils        # pdfto*
         ranger               # CLI file browser
         remind               # calender & reminder program
-        rtorrent             # monster of a bittorrent client
         unfreeAndNonDistributablePkgs.steam # the one gaming platform
         youtube-dl           # download videos
         zathura              # pdf viewer
       ];
       userScripts = with pkgs.vuizvui.profpatsch;
         let
-          di-notify = pkgs.writers.writeBashBin "display-infos-notify" ''
-            ${pkgs.libnotify}/bin/notify-send "$(${display-infos}/bin/display-infos)"
-          '';
+          di-notify = pkgs.vuizvui.profpatsch.writeExeclineBin "display-infos-notify" {} [
+            "pipeline" [ "${pkgs.libnotify}/bin/notify-send" ]
+            "${display-infos}/bin/display-infos"
+          ];
         in [
         display-infos  # show time & battery
         di-notify      # same, but pipe to libnotify
