@@ -4,7 +4,12 @@ let
   myLib  = import ./lib.nix  { inherit pkgs lib; };
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
 
+  hakuHostName = "haku.profpatsch.de";
+
   warpspeedPort = 1338;
+  youtube2audiopodcastPort = "1339";
+  youtube2audiopodcastSubdir = "/halp";
+
   ethernetInterface = "enp0s20";
   wireguard = {
     port = 6889;
@@ -84,6 +89,10 @@ in
           "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCneS9f0u6sITEzKULgIK7LGKskPpyXlQoSLB6aYAS9ZUkZXHh97XwIQqv20/edsAwpKhSSw//n08bvlYjpUSDAg9V/iZzdEV1M7fxek1c0rxtFxbeCds5K67JV+wGEusVyQdtmVzyshBBg+Mk/66E3KgqMyjCyGPk/0qWaj6187DOxerbXI5QkO7lCPIa5jP2YR4yzmFomcGb4PqpPlWfOcjjEjtpenQkhy7iS0ukfkQ9jhIcppuvkZ9A8PL/ccHDNVg0YKNJbsviB5MwKm/6drK87fprP9SP0i7QZsdKhaaW3rQtzCiWup4Avwx91VfeLvef8JJnmDrx+tR7azdGCiiRQvLakT2aIyMSTcDG41PYsesFvqBhRidSgzdZ4I2jjT1iHL4XREQVSjB5voAFdXHrndZj9PT8mTMo1RsdM1YMspHD1ohn2a3YkzKHD6g1n0UM379lyJ2mBEA1w+Nb48s60Mecuy2MlFgN6MbwYXifJkm806nI09ExEfgan8JvWOUQLgCDtp4mGt62vYMmBb5UqyUpvTcPbxoAbpHx+LEAD9Q0OE8S8WGnmkXxnnP2fL1fkcL1wjwvDbW0q9ezl9SrMfxcd+n46kbkYnSJ8HwZSZPX3wn2FAqIAKR+46BSsXW5FTo0xwR9wEjaBC7/6PxcxmAivGJZzYUZ0cjCCOw== lisanne.wolters@gmx.net"
         ];
       };
+
+      youtube2audiopodcast = {
+        isSystemUser = true;
+      };
     };
 
     systemd.services.warpspeed =
@@ -96,13 +105,29 @@ in
         serviceConfig.User = config.users.users.rtorrent.name;
       };
 
+    systemd.services.youtube2audiopodcast =
+      let user = config.users.users.youtube2audiopodcast;
+      in {
+        description = "serve a youtube playlist as rss";
+        wantedBy = [ "default.target" ];
+        script = "${pkgs.vuizvui.profpatsch.youtube2audiopodcast {
+          url = "${hakuHostName}${youtube2audiopodcastSubdir}";
+          internalPort = youtube2audiopodcastPort;
+        }}";
+        serviceConfig.User = config.users.users.youtube2audiopodcast.name;
+      };
+
+
     services.nginx = {
       enable = true;
-      virtualHosts."haku.profpatsch.de" = {
+      virtualHosts.${hakuHostName} = {
         forceSSL = true;
         enableACME = true;
         locations."/pub/" = {
           proxyPass = "http://127.0.0.1:${toString warpspeedPort}/";
+        };
+        locations."${youtube2audiopodcastSubdir}/" = {
+          proxyPass = "http://127.0.0.1:${toString youtube2audiopodcastPort}/";
         };
         locations."/".root =
           let lojbanistanSrc = pkgs.fetchFromGitHub {
