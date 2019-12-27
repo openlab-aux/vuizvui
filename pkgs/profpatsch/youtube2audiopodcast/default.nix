@@ -1,8 +1,10 @@
 { pkgs, lib, writeExecline, writeHaskellInterpret, getBins, runInEmptyEnv, sandbox }:
 
+config@{ url, internalPort }:
+
 let
   bins = getBins pkgs.hello [ "hello" ]
-    // getBins pkgs.coreutils [ "printf" "wc" "tr" "cut" "mktemp" ]
+    // getBins pkgs.coreutils [ "printf" "wc" "tr" "cut" "mktemp" "mkdir" "ls" ]
     // getBins pkgs.youtube-dl [ "youtube-dl" ]
     // getBins pkgs.s6-networking [ "s6-tcpserver" ]
     // getBins pkgs.execline [ "fdmove" "backtick" "importas" "if" "redirfd" "pipeline" ]
@@ -72,8 +74,8 @@ let
   ];
 
   # serve an opus file as HTTP on stdout
-  serve-http-opus-file =
-    writeExecline "serve-http-opus-file" { readNArgs = 1; } [
+  serve-http-file = content-type:
+    writeExecline "serve-http-file" { readNArgs = 1; } [
       # determine file size
       bins.backtick "-i" "-n" "filesize" [
         bins.redirfd "-r" "0" "$1"
@@ -83,7 +85,7 @@ let
       # yolo html
       bins.${"if"} [ bins.printf ''
         HTTP/1.1 200 OK
-        Content-Type: audio/ogg
+        Content-Type: ${content-type}
         Content-Length: %u
 
       '' "$filesize" ]
@@ -91,22 +93,28 @@ let
       bins.redirfd "-r" "0" "$1" bins.cat
     ];
 
-  serve-audio = writeExecline "audio-server" {} [
+  dispatch-request = pkgs.writers.writeDash "dispatch-request" ''
+    case "$REQUEST_URI" in
+      /playlist/*)
+        ${bins.mkdir} /tmp >&2
+        ${bins.mkdir} /work >&2
+        ${print-feed-xml} "''${REQUEST_URI#/playlist/}" >/work/feed \
+          && ${serve-http-file "text/xml"} /work/feed
+        ;;
+      /video/*)
+        ${youtube-dl-audio} "''${REQUEST_URI#/video/}" 1>&2 \
+          && ${serve-http-file "audio/opus"} "./audio.opus"
+        ;;
+      *) return 1 ;;
+    esac
+  '';
+
+  http-server = writeExecline "http-server" {} [
     (runInEmptyEnv [])
-    bins.s6-tcpserver "::1" "8888"
+    bins.s6-tcpserver config.url config.internalPort
     (sandbox { extraMounts = [ "/etc" ]; })
     yolo-cgi
-    bins.${"if"} [
-      # remove leading slash from youtube-id
-      bins.backtick "-i" "yt-video-id" [
-        envvar-to-stdin "REQUEST_URI"
-        bins.cut "-c2-"
-      ]
-      bins.importas "yt-video-id" "yt-video-id"
-      bins.fdmove "-c" "1" "2"
-      youtube-dl-audio "$yt-video-id"
-    ]
-    serve-http-opus-file "./audio.opus"
+    dispatch-request
   ];
 
   example-config = pkgs.writeText "example-config.json" (lib.generators.toJSON {} {
@@ -150,18 +158,16 @@ let
     bins.jl playlist-info-jl
   ];
 
-  print-feed-json = writeExecline "ex2" {} [
-    "pipeline" [
-      youtube-playlist-info "PLV9hywkogVcOuHJ8O121ulSfFDKUhJw66"
-    ] (transform-flat-playlist-to-rss "localhost:8888")
-  ];
+  ex = "PLV9hywkogVcOuHJ8O121ulSfFDKUhJw66";
 
-  print-example-feed = writeExecline "ex" {} [
-    "pipeline" [ print-feed-json ]
+  print-feed-xml = writeExecline "print-feed-xml" { readNArgs = 1; } [
+    "pipeline" [
+      youtube-playlist-info "$1"
+    ]
+    "pipeline" [
+      (transform-flat-playlist-to-rss config.url)
+    ]
     printFeed
   ];
 
-
-# in printFeed
-# in serve-audio
-in print-example-feed
+in http-server

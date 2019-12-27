@@ -5,6 +5,7 @@
 module Main where
 
 import Data.Text (Text)
+import Data.Text.Lazy.IO as TIO
 import Text.RSS.Syntax
 import Text.Feed.Types (Feed(RSSFeed))
 import Text.Feed.Export (textFeed)
@@ -68,7 +69,8 @@ main = do
         { channelName = "channel name"
         , channelURL = "channel url"
         })
-  print $ textFeed $ RSSFeed $ toRSS exConfig rss
+  let (Just feed) = textFeed $ RSSFeed $ toRSS exConfig rss
+  TIO.putStr feed
 
 toRSS :: Config -> Channel -> RSS
 toRSS Config{..} Channel{channelInfo, channelItems}  =
