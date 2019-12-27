@@ -103,7 +103,7 @@ let
         ;;
       /video/*)
         ${youtube-dl-audio} "''${REQUEST_URI#/video/}" 1>&2 \
-          && ${serve-http-file "audio/opus"} "./audio.opus"
+          && ${serve-http-file "audio/ogg"} "./audio.opus"
         ;;
       *) return 1 ;;
     esac
@@ -122,14 +122,14 @@ let
     channelURL = "https://www.youtube.com/playlist?list=PLV9hywkogVcOuHJ8O121ulSfFDKUhJw66";
   });
 
-  transform-flat-playlist-to-rss = hostUrl:
+  transform-flat-playlist-to-rss = { videoUrl }:
     let
       playlist-item-info-jl = ''
         (\o ->
           { itemTitle: o.title
           , itemYoutubeLink: append "https://youtube.com/watch?v=" o.id
           ${/*TODO how to add the url here nicely?*/""}
-          , itemURL: append "${hostUrl}/" o.id
+          , itemURL: append "${videoUrl}/" o.id
 
           ${/*# TODO*/""}
           , itemDescription: ""
@@ -165,7 +165,7 @@ let
       youtube-playlist-info "$1"
     ]
     "pipeline" [
-      (transform-flat-playlist-to-rss config.url)
+      (transform-flat-playlist-to-rss { videoUrl = "${config.url}/video"; })
     ]
     printFeed
   ];

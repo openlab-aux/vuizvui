@@ -111,7 +111,7 @@ in
         description = "serve a youtube playlist as rss";
         wantedBy = [ "default.target" ];
         script = "${pkgs.vuizvui.profpatsch.youtube2audiopodcast {
-          url = "${hakuHostName}${youtube2audiopodcastSubdir}";
+          url = "https://${hakuHostName}${youtube2audiopodcastSubdir}";
           internalPort = youtube2audiopodcastPort;
         }}";
         serviceConfig.User = config.users.users.youtube2audiopodcast.name;
