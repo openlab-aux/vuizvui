@@ -111,7 +111,7 @@ let
 
   http-server = writeExecline "http-server" {} [
     (runInEmptyEnv [])
-    bins.s6-tcpserver config.url config.internalPort
+    bins.s6-tcpserver "::1" config.internalPort
     (sandbox { extraMounts = [ "/etc" ]; })
     yolo-cgi
     dispatch-request
