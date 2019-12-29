@@ -101,7 +101,8 @@ in
         description = "internally served public files (see nginx)";
         wantedBy = [ "default.target" ];
         serviceConfig.WorkingDirectory = "${user.home}/public";
-        script = "${pkgs.vuizvui.profpatsch.warpspeed}/bin/warpspeed ${toString warpspeedPort}";
+        # *6: all hosts, v6 preferred
+        script = ''${pkgs.vuizvui.profpatsch.warpspeed}/bin/warpspeed "*6" ${toString warpspeedPort}'';
         serviceConfig.User = config.users.users.rtorrent.name;
       };
 
