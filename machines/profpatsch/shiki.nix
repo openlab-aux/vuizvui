@@ -176,8 +176,8 @@ in {
         pkgs.vuizvui.profpatsch.watch-server # restart server on code change
         pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
         execline
-        dhall
-        myPkgs.dhall-flycheck
+        pkgs.vuizvui.profpatsch.dhall
+        pkgs.vuizvui.profpatsch.dhall-flycheck
       ];
       documentation = [
         # mustache-spec NOT IN 16.09
