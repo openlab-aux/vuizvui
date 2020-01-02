@@ -115,6 +115,7 @@ in {
       ghostwriter
       git
       gitinspector
+      glow
       gnufdisk
       gnumake
       gnupg
