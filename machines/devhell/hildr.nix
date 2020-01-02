@@ -86,7 +86,7 @@
   };
 
   console = {
-    font = "lat9w-16";
+    font = "Lat2-Terminus16";
     keyMap = "uk";
   };
 
