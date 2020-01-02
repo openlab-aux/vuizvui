@@ -59,11 +59,11 @@
 
   networking = {
     hostName = "hildr";
-    wireless.enable = true;
+    wireless.iwd.enable = true;
     useNetworkd = true;
     interfaces = {
       enp0s31f6.useDHCP = true;
-      wlp2s0.useDHCP = true;
+      wlan0.useDHCP = true;
     };
   };
 
