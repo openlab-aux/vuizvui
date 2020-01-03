@@ -60,8 +60,10 @@ in {
       abook
       accountsservice
       ag
+      alacritty
       antiword
       apg
+      aria2
       ascii
       aspell
       aspellDicts.de
@@ -108,7 +110,6 @@ in {
       freerdpUnstable
       fuse_exfat
       fzf
-      gajim
       gcc
       gdb
       ghostscript
@@ -121,8 +122,6 @@ in {
       gnupg
       gopass
       gotop
-      gource
-      gparted
       gpgme
       gpodder
       gptfdisk
@@ -132,7 +131,6 @@ in {
       hexedit
       hplipWithPlugin
       htop
-      i3lock-color
       i3lock-fancy
       iftop
       imagemagick
@@ -156,7 +154,6 @@ in {
       lynx
       macchanger
       manpages
-      mcabber
       mediainfo
       mkvtoolnix
       mmv
