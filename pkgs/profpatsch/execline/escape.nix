@@ -20,6 +20,7 @@ let
     (let
       go = arg:
         if      builtins.isString arg then [(escapeExeclineArg arg)]
+        else if builtins.isPath arg then [(escapeExeclineArg "${arg}")]
         else if lib.isDerivation arg then [(escapeExeclineArg arg)]
         else if builtins.isList arg then [ "{" ] ++ builtins.concatMap go arg ++ [ "}" ]
         else abort "escapeExecline can only hande nested lists of strings, was ${lib.generators.toPretty {} arg}";
