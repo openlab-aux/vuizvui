@@ -101,6 +101,7 @@ in {
         corefonts
         dejavu_fonts
         dosemu_fonts
+        fira-code
         font-awesome
         freefont_ttf
         google-fonts

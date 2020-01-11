@@ -215,6 +215,7 @@ in {
       stow
       strace
       sxiv
+      taskell
       tasksh
       taskwarrior
       taizen
