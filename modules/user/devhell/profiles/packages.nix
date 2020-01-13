@@ -74,6 +74,7 @@ in {
       beets
       binutils
       bmon
+      broot
       cataclysm-dda
       ccrypt
       chromaprint
