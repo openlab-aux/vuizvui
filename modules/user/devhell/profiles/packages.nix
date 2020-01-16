@@ -132,6 +132,7 @@ in {
       hexedit
       hplipWithPlugin
       htop
+      httpie
       i3lock-fancy
       iftop
       imagemagick
