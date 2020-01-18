@@ -3,7 +3,7 @@
 let
   mkDevice = category: num: uuid: {
     name = "dnyarri-${category}-crypt-${toString num}";
-    device = "/dev/disk/by-uuid/${uuid}";
+    value.device = "/dev/disk/by-uuid/${uuid}";
   };
 
   cryptDevices = {
@@ -51,7 +51,8 @@ in {
 
     initrd = {
       availableKernelModules = [ "bcache" ];
-      luks.devices = lib.concatLists (lib.attrValues cryptDevices);
+      luks.devices =
+        lib.listToAttrs (lib.concatLists (lib.attrValues cryptDevices));
     };
   };
 
