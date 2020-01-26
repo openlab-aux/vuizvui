@@ -144,6 +144,8 @@ in rec {
     runExecline runExeclineLocal;
   inherit (writeExeclineFns)
     writeExecline writeExeclineBin;
+  inherit (import ./execline/runblock.nix { inherit pkgs; })
+    runblock;
 
   inherit getBins;
 
