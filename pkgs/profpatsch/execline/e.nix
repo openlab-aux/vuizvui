@@ -12,6 +12,8 @@ let
       "--remember"
       "--quote-characters" "\""
       "--complete-filenames"
+      "--ansi-colour-aware"
+      "--prompt-colour=yellow"
     "forstdin" "-d\n" "cmd"
     "importas" "cmd" "cmd"
     bins.execlineb "-Pc" "$cmd"
