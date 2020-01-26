@@ -6,17 +6,19 @@ let
     // getBins pkgs.execline [ "execlineb" ];
 
   # minimal execline shell
-  e = writeExecline "e" {} [
-    bins.rlwrap
-      "--substitute-prompt" "e> "
-      "--remember"
-      "--quote-characters" "\""
-      "--complete-filenames"
-      "--ansi-colour-aware"
-      "--prompt-colour=yellow"
-    "forstdin" "-d\n" "cmd"
-    "importas" "cmd" "cmd"
-    bins.execlineb "-Pc" "$cmd"
-  ];
+  e =
+    let
+      prompt = [ "if" [ "printf" ''\e[0;33me>\e[0m '' ] ];
+    in
+      writeExecline "e" {} ([
+        bins.rlwrap
+          "--remember"
+          "--quote-characters" "\""
+          "--complete-filenames"
+      ] ++ prompt ++ [
+        "forstdin" "-d\n" "cmd"
+        "importas" "cmd" "cmd"
+        "foreground" [ bins.execlineb "-Pc" "$cmd" ]
+      ] ++ prompt);
 
 in { inherit e; }
