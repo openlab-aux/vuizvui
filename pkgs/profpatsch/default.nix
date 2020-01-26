@@ -146,6 +146,8 @@ in rec {
     writeExecline writeExeclineBin;
   inherit (import ./execline/runblock.nix { inherit pkgs; })
     runblock;
+  inherit (import ./execline/e.nix { inherit pkgs writeExecline getBins; })
+    e;
 
   inherit getBins;
 
