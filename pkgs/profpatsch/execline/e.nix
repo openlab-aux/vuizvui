@@ -7,15 +7,15 @@ let
 
   # minimal execline shell
   e = writeExecline "e" {} [
+    bins.rlwrap
+      "--substitute-prompt" "e> "
+      "--remember"
+      "--quote-characters" "\""
+      "--complete-filenames"
     "pipeline" [
-      bins.rlwrap
-        "--substitute-prompt" "e> "
-        "--remember"
-        "--quote-characters" "\""
-        "--complete-filenames"
       bins.cat
     ]
-    "forstdin" "cmd"
+    "forstdin" "-d\n" "cmd"
     "importas" "cmd" "cmd"
     bins.execlineb "-Pc" "$cmd"
   ];
