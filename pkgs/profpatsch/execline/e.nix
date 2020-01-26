@@ -12,9 +12,6 @@ let
       "--remember"
       "--quote-characters" "\""
       "--complete-filenames"
-    "pipeline" [
-      bins.cat
-    ]
     "forstdin" "-d\n" "cmd"
     "importas" "cmd" "cmd"
     bins.execlineb "-Pc" "$cmd"
