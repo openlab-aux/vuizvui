@@ -224,6 +224,7 @@ in {
       telnet
       termdown
       termite
+      termshark
       testdisk
       tig
       tldr
