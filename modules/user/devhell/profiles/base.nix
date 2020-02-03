@@ -116,6 +116,7 @@ in {
         source-serif-pro
         terminus_font
         tewi-font
+        tt2020
         ttf_bitstream_vera
         ubuntu_font_family
         unifont
