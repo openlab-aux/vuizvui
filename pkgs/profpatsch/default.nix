@@ -173,7 +173,7 @@ in rec {
   dhall = easy-dhall-nix.dhall-simple;
   dhall-nix = easy-dhall-nix.dhall-nix-simple;
 
-  dhall-flycheck = pkgs.vuizvui.profpatsch.haskellPackages.callPackage
+  dhall-flycheck = haskellPackages.callPackage
     (import "${pkgs.fetchFromGitHub {
       owner = "Profpatsch";
       repo = "dhall-flycheck";
