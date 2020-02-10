@@ -5,8 +5,8 @@ with lib;
 let
   cfg = config.vuizvui.user.aszlig.programs.mpv;
 
-  patchedMpv = overrideDerivation pkgs.mpv (o: {
-    installPhase = o.installPhase + ''
+  patchedMpv = overrideAttrs pkgs.mpv (drv: {
+    postInstall = (drv.postInstall or "") + ''
       mkdir -p "$out/etc/mpv"
       cat > "$out/etc/mpv/mpv.conf" <<CONFIG
       ao=pulse
