@@ -1,11 +1,9 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
 let
   cfg = config.vuizvui.user.aszlig.programs.mpv;
 
-  patchedMpv = overrideAttrs pkgs.mpv (drv: {
+  patchedMpv = pkgs.mpv.overrideAttrs (drv: {
     postInstall = (drv.postInstall or "") + ''
       mkdir -p "$out/etc/mpv"
       cat > "$out/etc/mpv/mpv.conf" <<CONFIG
@@ -17,10 +15,10 @@ let
 
 in {
   options.vuizvui.user.aszlig.programs.mpv = {
-    enable = mkEnableOption "aszlig's MPV";
+    enable = lib.mkEnableOption "aszlig's MPV";
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     environment.systemPackages = [ patchedMpv ];
   };
 }
