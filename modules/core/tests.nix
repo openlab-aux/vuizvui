@@ -50,8 +50,8 @@ let
            || config.services.opentracker.enable;
       path  = ["nixos" "bittorrent"];
     }
-    { check = config.services.buildkite-agent.enable;
-      path  = ["nixos" "buildkite-agent"];
+    { check = config.services.buildkite-agents.enable;
+      path  = ["nixos" "buildkite-agents"];
     }
     { check = config.vuizvui.createISO;
       paths = [
