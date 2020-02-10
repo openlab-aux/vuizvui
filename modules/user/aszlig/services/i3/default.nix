@@ -107,8 +107,6 @@ in
     vuizvui.user.aszlig.services.i3.workspaces = defaultWorkspaces;
 
     services.xserver.windowManager = {
-      default = "i3";
-
       i3.enable = true;
       i3.configFile = pkgs.substituteAll {
         name = "i3.conf";

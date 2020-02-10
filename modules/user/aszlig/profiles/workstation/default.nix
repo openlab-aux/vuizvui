@@ -160,6 +160,7 @@ in {
         layout = "dvorak";
 
         displayManager.lightdm.enable = true;
+        displayManager.defaultSession = "none+i3";
         displayManager.sessionCommands = ''
           ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
             XTerm*font:                vga
@@ -172,9 +173,6 @@ in {
             XTerm*ptyInitialErase:     true
           ''}"
         '';
-
-        desktopManager.default = "none";
-        desktopManager.xterm.enable = false;
       };
     };
 

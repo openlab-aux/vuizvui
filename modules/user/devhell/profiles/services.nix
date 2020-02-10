@@ -44,6 +44,7 @@ in {
 
 
     services.xserver = {
+      displayManager.defaultSession = "none+i3";
       displayManager.lightdm = {
         enable = true;
         greeters.mini = {
@@ -63,16 +64,11 @@ in {
           '';
         };
       };
-      desktopManager.xterm.enable = false;
-      desktopManager.default = "none";
     };
 
-    services.xserver.windowManager = {
-      default = "i3";
-      i3 = {
-        enable = true;
-        package = pkgs.i3-gaps;
-      };
+    services.xserver.windowManager.i3 = {
+      enable = true;
+      package = pkgs.i3-gaps;
     };
 
     services.journald.extraConfig = ''
