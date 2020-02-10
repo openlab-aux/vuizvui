@@ -172,4 +172,12 @@ in rec {
 
   dhall = easy-dhall-nix.dhall-simple;
   dhall-nix = easy-dhall-nix.dhall-nix-simple;
+
+  dhall-flycheck = pkgs.vuizvui.profpatsch.haskellPackages.callPackage
+    (import "${pkgs.fetchFromGitHub {
+      owner = "Profpatsch";
+      repo = "dhall-flycheck";
+      rev = "0db095732820cd27eccbe9ece97500dd292353de";
+      sha256 = "05n76b781fgm5n7kqq1gpqfzshjfpadahxryxqrfvs3sjn3a6bvp";
+    }}/dhall-flycheck.nix") {};
 }
