@@ -169,7 +169,8 @@ class ReplaceCall : Command {
         var il = md.Body.GetILProcessor();
 
         var found = md.Body.Instructions
-            .Where(i => i.OpCode == OpCodes.Call)
+            .Where(i => i.OpCode == OpCodes.Call ||
+                        i.OpCode == OpCodes.Callvirt)
             .Where(i => i.Operand.ToString() == this.search);
 
         foreach (Instruction i in found.ToList()) {
