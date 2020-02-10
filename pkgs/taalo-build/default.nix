@@ -1,20 +1,25 @@
-{ stdenv, lib, runCommandLocal, coreutils, nixUnstable }:
+{ stdenv, lib, runCommandLocal, coreutils, nix }:
 
 let
-  nixRemote = "ssh-ng://nix-remote-build@taalo.headcounter.org?compress=true";
-  remoteEsc = lib.escapeShellArg nixRemote;
-  mkNix = cmd: lib.escapeShellArg "${nixUnstable}/bin/${cmd}";
+  mkNixRemote = proto: let
+    hostAndQuery = "nix-remote-build@taalo.headcounter.org?compress=true";
+  in "${proto}://${hostAndQuery}";
+
+  remoteCopyEsc = lib.escapeShellArg (mkNixRemote "ssh");
+  remoteEsc = lib.escapeShellArg (mkNixRemote "ssh-ng");
+  mkNix = cmd: lib.escapeShellArg "${nix}/bin/${cmd}";
 
   errorOnly = cmd:
     "if ! outerr=\"$(${cmd} 2>&1)\"; then echo \"$outerr\" >&2; exit 1; fi";
 
   remoteRealize = pre: arg: ''
-    ${errorOnly "${mkNix "nix"} copy -s --quiet --to ${remoteEsc} ${arg}"}
+    ${errorOnly "${mkNix "nix"} copy -s --quiet --to ${remoteCopyEsc} ${arg}"}
     NIX_REMOTE=${remoteEsc} ${pre}${mkNix "nix-store"} -r ${arg}
   '';
 
-  emitScript = content:
-    "echo -n ${lib.escapeShellArg "#!${stdenv.shell}\nset -e\n${content}"}";
+  emitScript = content: let
+    result = "#!${stdenv.shell}\nset -e\n${content}";
+  in "echo -n ${lib.escapeShellArg result}";
 
 in runCommandLocal "taalo-build" {} ''
   mkdir -p "$out/bin"
