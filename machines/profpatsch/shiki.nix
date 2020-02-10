@@ -388,47 +388,47 @@ in {
       })
 
       ({
-        services.pyrnotify-ssh-connection = {
-          description = "ssh connection to make pyrnotify work";
-          serviceConfig = {
-            # TODO: get out of the gpg-agent service directly
-            Environment = ''"SSH_AUTH_SOCK=%t/gnupg/S.gpg-agent.ssh"'';
-            ExecStart = pkgs.writeScript "pyrnotify-start-ssh" ''
-              #!${pkgs.stdenv.shell}
-              set -e
-              # first delete the socket file if it exists
-              # otherwise the forward doesn’t work
-              ${lib.getBin pkgs.openssh}/bin/ssh \
-                bigmac \
-                "rm /home/bigmac/.weechat/pyrnotify.socket"
-              # forwards the remote socket over ssh
-              # thE options make it disconnect after 45 sec
-              # by sending a keepalive packet every 15 seconds
-              # and retrying 3 times
-              ${lib.getBin pkgs.openssh}/bin/ssh \
-                -o ServerAliveInterval=15 \
-                -o ServerAliveCountMax=3 \
-                -o ExitOnForwardFailure=yes \
-                -R /home/bigmac/.weechat/pyrnotify.socket:localhost:8099 \
-                -N \
-                bigmac
-            '';
-          };
-          requires = [ "gpg-agent.service" ];
-          after = [ "gpg-agent.service" ];
-        };
-        services.pyrnotify-listen = rec {
-          description = "get notified about weechat messages";
-          serviceConfig = {
-            ExecStart = "${lib.getBin pkgs.python
-              }/bin/python ${myPkgs.pyrnotify} 8099";
-            Restart = "on-failure";
-            RestartSec = "5s";
-          };
-          bindsTo = [ "pyrnotify-ssh-connection.service" ];
-          after = [ "pyrnotify-ssh-connection.service" ];
-          wantedBy = [ "default.target" ];
-        };
+      #   services.pyrnotify-ssh-connection = {
+      #     description = "ssh connection to make pyrnotify work";
+      #     serviceConfig = {
+      #       # TODO: get out of the gpg-agent service directly
+      #       Environment = ''"SSH_AUTH_SOCK=%t/gnupg/S.gpg-agent.ssh"'';
+      #       ExecStart = pkgs.writeScript "pyrnotify-start-ssh" ''
+      #         #!${pkgs.stdenv.shell}
+      #         set -e
+      #         # first delete the socket file if it exists
+      #         # otherwise the forward doesn’t work
+      #         ${lib.getBin pkgs.openssh}/bin/ssh \
+      #           bigmac \
+      #           "rm /home/bigmac/.weechat/pyrnotify.socket"
+      #         # forwards the remote socket over ssh
+      #         # thE options make it disconnect after 45 sec
+      #         # by sending a keepalive packet every 15 seconds
+      #         # and retrying 3 times
+      #         ${lib.getBin pkgs.openssh}/bin/ssh \
+      #           -o ServerAliveInterval=15 \
+      #           -o ServerAliveCountMax=3 \
+      #           -o ExitOnForwardFailure=yes \
+      #           -R /home/bigmac/.weechat/pyrnotify.socket:localhost:8099 \
+      #           -N \
+      #           bigmac
+      #       '';
+      #     };
+      #     requires = [ "gpg-agent.service" ];
+      #     after = [ "gpg-agent.service" ];
+      #   };
+      #   services.pyrnotify-listen = rec {
+      #     description = "get notified about weechat messages";
+      #     serviceConfig = {
+      #       ExecStart = "${lib.getBin pkgs.python
+      #         }/bin/python ${myPkgs.pyrnotify} 8099";
+      #       Restart = "on-failure";
+      #       RestartSec = "5s";
+      #     };
+      #     bindsTo = [ "pyrnotify-ssh-connection.service" ];
+      #     after = [ "pyrnotify-ssh-connection.service" ];
+      #     wantedBy = [ "default.target" ];
+      #   };
       })
 
     ];
