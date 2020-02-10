@@ -240,6 +240,7 @@ in {
         (texlive.combine { inherit (texlive) scheme-small pdfjam; })
         # move script/nix-cache-binary to here
         cdb
+        taskwarrior tasksh
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
     ++ programmingTools ++ documentation
