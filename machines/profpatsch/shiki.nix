@@ -188,7 +188,7 @@ in {
         # TODO integrate lame into audacity
         audacity lame.lib    # audio editor and mp3 codec
         # myPkgs.beets         # audio file metadata tagger
-        chromium             # browser
+        firefox              # browser
         cups                 # print tools, mainly for lp(1)
         pkgs.vuizvui.profpatsch.droopy # simple HTML upload server
         # electrum             # bitcoin client
