@@ -1,0 +1,12 @@
+diff --git a/iris/src/xmpp/xmpp-im/jingle.cpp b/iris/src/xmpp/xmpp-im/jingle.cpp
+index 0ac149a..e445acf 100644
+--- a/iris/src/xmpp/xmpp-im/jingle.cpp
++++ b/iris/src/xmpp/xmpp-im/jingle.cpp
+@@ -1681,6 +1681,7 @@ namespace XMPP { namespace Jingle {
+ 
+     Session *Manager::incomingSessionInitiate(const Jid &from, const Jingle &jingle, const QDomElement &jingleEl)
+     {
++        return nullptr;
+         if (d->maxSessions > 0 && d->sessions.size() == d->maxSessions) {
+             d->lastError = XMPP::Stanza::Error(XMPP::Stanza::Error::Wait, XMPP::Stanza::Error::ResourceConstraint);
+             return nullptr;

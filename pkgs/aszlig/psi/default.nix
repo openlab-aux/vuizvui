@@ -38,6 +38,7 @@ in stdenv.mkDerivation rec {
   patches = [
     ./disable-xep-0232.patch
     ./darkstyle.patch
+    ./disable-jingle.patch
     (substituteAll {
       src = ./config.patch;
       inherit jid resource;
