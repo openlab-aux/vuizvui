@@ -76,8 +76,9 @@ in
       xkbOptions = "eurosign:e";
 
       displayManager = {
-        auto.enable = true;
-        auto.user = "openlab";
+        lightdm.enable = true;
+        lightdm.autoLogin.enable = true;
+        lightdm.autoLogin.user = "openlab";
         sessionCommands = with pkgs; ''
           ${xorg.xset}/bin/xset r rate 250 35
         '';

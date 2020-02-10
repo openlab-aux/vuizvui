@@ -31,7 +31,7 @@ in {
     ) [ "user-account" "x11" ];
 
     services.openssh.enable = true;
-    services.xserver.displayManager.auto.user = "alice";
+    test-support.displayManager.auto.user = "alice";
 
     vuizvui.programs.gnupg.enable = true;
     vuizvui.programs.gnupg.agent.enable = true;

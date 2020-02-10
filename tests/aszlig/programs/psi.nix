@@ -8,8 +8,7 @@
       "${nixpkgsPath}/nixos/tests/common/user-account.nix"
       "${nixpkgsPath}/nixos/tests/common/x11.nix"
     ];
-    services.xserver.displayManager.auto.enable = true;
-    services.xserver.displayManager.auto.user = "alice";
+    test-support.displayManager.auto.user = "alice";
     environment.systemPackages = [ pkgs.vuizvui.aszlig.psi ];
   };
 
