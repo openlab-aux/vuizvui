@@ -5,7 +5,7 @@ index 7118ea75..c6f58e35 100644
 @@ -237,6 +237,7 @@ endif()
  set(RESOURCES
      ${PROJECT_SOURCE_DIR}/psi.qrc
-     ${PROJECT_SOURCE_DIR}/iconsets.qrc
+     ${ICONSETSQRC_OUTPUT_FILE}
 +    ${QDARKSTYLE_PATH}/qdarkstyle/style.qrc
  )
  qt5_add_resources(QRC_SOURCES ${RESOURCES})

@@ -18,21 +18,21 @@ let
 
 in stdenv.mkDerivation rec {
   name = "psi-${version}";
-  version = "2.0git20190922aszlig";
+  version = "2.0git20200208aszlig";
 
   src = fetchFromGitHub {
     owner = "psi-im";
     repo = "psi";
-    rev = "af26ce1c04207d384a05ea530d571068310957c6";
-    sha256 = "0pxd4ha391mfmsa7n7ag5kqw0nv825wsnkyfxi8wsa942bnbircg";
+    rev = "f1ca4cc0d45d0c1981fd2abd5da40182bbd8c5fb";
+    sha256 = "170g3dlpd8hp9g4j4y28l8y2xhgsmfay4m7dknvd9vanxd7s42ks";
     fetchSubmodules = true;
   };
 
   plugins = fetchFromGitHub {
     owner = "psi-im";
     repo = "plugins";
-    rev = "5574afcc8ab4c5647831d38be111976fb1fa10d3";
-    sha256 = "1h011j94iy40ksiqlprjamfyv7irql502hhhb0mpabk4mndxmjgn";
+    rev = "5dc21909fc46c4780e1f4d23c56bf4be94802912";
+    sha256 = "0bxlsmwisc22m8y0py1ms69fyqspyx1a1zcjh6m51c4vmzskfr7a";
   };
 
   patches = [

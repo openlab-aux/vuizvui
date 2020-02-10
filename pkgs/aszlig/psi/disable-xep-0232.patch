@@ -1,13 +1,13 @@
 diff --git a/iris/src/xmpp/xmpp-im/client.cpp b/iris/src/xmpp/xmpp-im/client.cpp
-index d8573bf..31af799 100644
+index 66960b0..c8edd75 100644
 --- a/iris/src/xmpp/xmpp-im/client.cpp
 +++ b/iris/src/xmpp/xmpp-im/client.cpp
-@@ -1257,45 +1257,6 @@ DiscoItem Client::makeDiscoResult(const QString &node) const
+@@ -1131,45 +1131,6 @@ DiscoItem Client::makeDiscoResult(const QString &node) const
  
      item.setFeatures(features);
  
 -    // xep-0232 Software Information
--    XData si;
+-    XData            si;
 -    XData::FieldList si_fields;
 -
 -    XData::Field si_type_field;
