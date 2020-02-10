@@ -10,7 +10,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     boot = {
-      kernelPackages = pkgs.linuxPackages_latest;
+      kernelPackages = pkgs.linuxPackages_5_4;
       cleanTmpDir = true;
     };
 
