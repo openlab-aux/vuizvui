@@ -113,7 +113,7 @@ in {
     let
       # of utmost necessity for me to function
       basePkgs = [
-        silver-searcher   # file content searcher, > ack > grep
+        ripgrep           # file content searcher, > ag > ack > grep
         lr                # list recursively, ls & find replacement
         dos2unix          # text file conversion
         manpages          # system manpages (not included by default)
