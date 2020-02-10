@@ -60,6 +60,7 @@ in {
       export HISTFILE=~/.histfile
       export HISTSIZE=100000
       export SAVEHIST=100000
+      export KEYTIMEOUT=1
 
       bindkey -v
       if [[ "$TERM" = xterm ]]; then
