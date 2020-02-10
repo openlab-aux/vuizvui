@@ -241,7 +241,6 @@
     libva
     libvdpau-va-gl
     minicom
-    pamixer
     pmtools
     pmutils
     reaverwps

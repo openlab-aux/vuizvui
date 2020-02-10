@@ -183,6 +183,7 @@ in {
       ntfsprogs
       openssl
       p7zip
+      pamixer
       pandoc
       paperkey
       pbzip2
