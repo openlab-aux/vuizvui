@@ -186,10 +186,6 @@ let
            && package.name == pkgs.docker-edge.name;
       path  = ["nixos" "docker-edge"];
     }
-    { check = config.virtualisation.docker.enable
-           && config.virtualisation.dockerPreloader.images != [];
-      path  = ["nixos" "docker-preloader"];
-    }
     { check = config.services.dockerRegistry.enable;
       path  = ["nixos" "docker-registry"];
     }
