@@ -176,8 +176,9 @@ in {
         pkgs.vuizvui.profpatsch.watch-server # restart server on code change
         pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
         execline
-        pkgs.vuizvui.profpatsch.dhall
-        pkgs.vuizvui.profpatsch.dhall-flycheck
+        # XXX: Breaks channel evaluation because these attributes do not exist.
+        #pkgs.vuizvui.profpatsch.dhall
+        #pkgs.vuizvui.profpatsch.dhall-flycheck
       ];
       documentation = [
         # mustache-spec NOT IN 16.09
