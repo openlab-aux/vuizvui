@@ -10,6 +10,7 @@ let
       mkdir -p "$out/etc/mpv"
       cat > "$out/etc/mpv/mpv.conf" <<CONFIG
       ao=pulse
+      ytdl-format=bestvideo[height <= 1080]+bestaudio/best
       CONFIG
     '';
   });
