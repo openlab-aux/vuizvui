@@ -206,6 +206,7 @@
     reaverwps
     signal-desktop
     snort
+    teams
     vaapiVdpau
     vdpauinfo
     wavemon
