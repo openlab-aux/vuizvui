@@ -46,6 +46,10 @@ in {
       zeroconf.discovery.enable = true;
       # for Pillars of Eternity
       support32Bit = true;
+      package = pkgs.pulseaudio.override {
+        bluetoothSupport = true;
+      };
+      extraModules = [ pkgs.pulseaudio-modules-bt ];
     };
     # steam
     # needed by some games (TODO: general module for games)
@@ -59,6 +63,8 @@ in {
     #     fcitx.engines = with pkgs.fcitx-engines; [ mozc ];
     #   };
     # };
+    hardware.bluetooth.enable = true;
+    services.blueman.enable = true;
 
     ######
     # Nix
