@@ -195,7 +195,6 @@ in {
         emacs                # pretty neat operating system i guess
         feh                  # brother of meh, displays images in a meh way, but fast
         filezilla            # FTP GUI business-ready interface framework
-        myPkgs.saneGhci      # <s>Glorious</s>Glasgow Haskell Compiler, mostly for ghci
         gimp                 # graphics
         inkscape             # vector graphics
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
