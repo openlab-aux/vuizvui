@@ -119,6 +119,9 @@ in
       };
 
 
+    security.acme.acceptTerms = true;
+    security.acme.email = "mail@profpatsch.de";
+
     services.nginx = {
       enable = true;
       virtualHosts.${hakuHostName} = {
