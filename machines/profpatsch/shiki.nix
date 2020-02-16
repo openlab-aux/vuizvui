@@ -21,10 +21,7 @@ in {
     # VPN support
     boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
 
-    boot.initrd.luks.devices = [ {
-      device = "/dev/disk/by-uuid/2e1c433f-4a54-4f04-9073-3639b66b975d";
-      name = "cryptroot";
-    } ];
+    boot.initrd.luks.devices.cryptroot.device = "/dev/disk/by-uuid/2e1c433f-4a54-4f04-9073-3639b66b975d";
 
     ###########
     # Hardware
