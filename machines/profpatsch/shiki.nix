@@ -160,7 +160,7 @@ in {
         cabal2nix                    # convert cabal files to nixexprs
         # myPkgs.fast-init             # fast-init of haskell projects
         # gitAndTools.git-annex        # version controlled binary file storage
-        gitAndTools.git-dit          # decentral issue tracking for git
+        # gitAndTools.git-dit          # decentral issue tracking for git
         # gitAndTools.git-hub          # lightweight GitHub integration
 
         # TODO: move to user config
