@@ -69,8 +69,6 @@ let
     sha256 = "03006xzs250knzcyr6j564kn9jf2a6cp3mxkpqsqmmyp6v28w90z";
   })}/overrides.nix") {};
 
-  xmpp-client = pkgs.callPackage (import ./xmpp-client.nix myLib.philip.home "irc/xmppOla.wtf") { inherit (pkgs) xmpp-client; };
-
   # searx = pkgs.searx.overrideAttrs (old: {
   #   propagatedBuildInputs = old.propagatedBuildInputs ++ [ pythonPackages.pyxdg ];
   #   patches = old.patches or [] ++ [
@@ -111,7 +109,6 @@ in
     poezio
     vim
     fast-init
-    xmpp-client
     saneGhci
     /*searx*/
     pyrnotify
