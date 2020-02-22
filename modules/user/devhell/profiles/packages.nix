@@ -74,11 +74,11 @@ in {
       beets
       binutils
       bmon
+      brave
       broot
       cataclysm-dda
       ccrypt
       chromaprint
-      chromium
       cifs_utils
       cipherscan
       clac

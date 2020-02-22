@@ -263,7 +263,6 @@
 
   vuizvui.user.devhell.profiles.packages.enable = true;
 
-  nixpkgs.config.chromium.enablePepperFlash = true;
   nixpkgs.config.mpv.bs2bSupport = true;
 
   environment.systemPackages = with pkgs; [
