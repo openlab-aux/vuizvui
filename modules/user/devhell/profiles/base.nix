@@ -99,6 +99,7 @@ in {
         clearlyU
         cm_unicode
         corefonts
+        cozette
         dejavu_fonts
         dosemu_fonts
         fira-code
@@ -108,6 +109,7 @@ in {
         hack-font
         inconsolata
         junicode
+        nerdfonts
         powerline-fonts
         proggyfonts
         siji
