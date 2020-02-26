@@ -109,7 +109,6 @@ in {
         hack-font
         inconsolata
         junicode
-        nerdfonts
         powerline-fonts
         proggyfonts
         siji
