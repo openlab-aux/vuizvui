@@ -295,7 +295,7 @@ let
     }
     { check = with config.services.graphite; carbon.enableCache
            || carbon.enableAggregator || carbon.enableRelay
-           || web.enable || api.enable || seyren.enable || pager.enable
+           || web.enable || api.enable || seyren.enable
            || beacon.enable;
       path  = ["nixos" "graphite"];
     }
