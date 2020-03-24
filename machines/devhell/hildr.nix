@@ -56,6 +56,10 @@
 
   # XXX Ensure that these are added in addition to the DHCP provided DNS servers
   systemd.network.networks."99-main".dns = [ "1.1.1.1" "1.0.0.1" ];
+  systemd.network.networks."99-libvirt" = {
+    matchConfig.Name = "virbr* vnet* docker*";
+    linkConfig.Unmanaged = true;
+  };
 
   networking = {
     hostName = "hildr";
