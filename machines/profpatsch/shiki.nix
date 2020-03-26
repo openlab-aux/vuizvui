@@ -2,7 +2,7 @@
 let
 
   myLib  = import ./lib.nix  { inherit pkgs lib; };
-  myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
+  myPkgs = import ./pkgs.nix { inherit pkgs lib myLib unfreeAndNonDistributablePkgs; };
 
 in {
 
@@ -243,6 +243,7 @@ in {
         # move script/nix-cache-binary to here
         cdb
         taskwarrior tasksh
+        myPkgs.zoomboxed
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
     ++ programmingTools ++ documentation

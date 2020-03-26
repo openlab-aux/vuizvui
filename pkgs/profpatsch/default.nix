@@ -83,9 +83,7 @@ let
         testing.drvSeqL tests (itLocal name args execline);
     };
 
-  writeExeclineFns = import ./execline/write-execline.nix {
-    inherit pkgs;
-  };
+  writeExeclineFns = callPackage ./execline/write-execline.nix {};
 
 
 in rec {

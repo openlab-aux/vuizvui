@@ -1,4 +1,8 @@
-{ pkgs, lib, myLib }:
+{ pkgs, lib, myLib
+, withUnfree ? false, unfreeAndNonDistributablePkgs ? null
+}:
+
+assert withUnfree -> unfreeAndNonDistributablePkgs != null;
 
 let
 
@@ -33,6 +37,14 @@ let
         --replace 'notify-send' '${notify-send}'
     '';
 
+  zoomboxed = pkgs.vuizvui.buildSandbox unfreeAndNonDistributablePkgs.zoom-us {
+    paths.required = [
+      "$XDG_CONFIG_HOME/zoomus.conf"
+      "$XDG_CONFIG_HOME/.zoom"
+    ];
+    allowBinSh = true;
+  };
+
 in
 { inherit
     mpv
@@ -40,5 +52,6 @@ in
     vim
     # fast-init
     pyrnotify
+    zoomboxed
     ;
 }
