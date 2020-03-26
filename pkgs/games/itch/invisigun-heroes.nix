@@ -4,14 +4,14 @@ buildUnity rec {
   name = "invisigun-heroes";
   fullName = "Invisigun";
   saveDir = "Sombr Studio/Invisigun Reloaded";
-  version = "1.7.16";
+  version = "1.8.1";
 
   src = fetchItch {
     name = "${name}-${version}.zip";
     gameId = 25561;
     uploadId = 208583;
     version = "v${version}";
-    sha256 = "1flwc5wvw84s53my8v8n402iz6izjs4d4ppffajdv9cg1vs3nbpl";
+    sha256 = "11ik5zi9acpv9gbyra4h6zn223gw18bk56x8rn2vhb291ilmxl5n";
   };
 
   nativeBuildInputs = [ mono monogamePatcher ];
@@ -39,5 +39,5 @@ buildUnity rec {
       FileManagerAdapter_Desktop::ApplicationPath
   '';
 
-  sandbox.paths.required = [ "$HOME/Invisigun Heroes" ];
+  sandbox.paths.required = [ "$XDG_DATA_HOME/Invisigun Reloaded" ];
 }
