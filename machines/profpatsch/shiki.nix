@@ -81,6 +81,7 @@ in {
     ];
 
     nix.distributedBuilds = true;
+    nix.trustedUsers = [ "@wheel" ];
     nix.buildMachines = [
       # access to the nix-community aarch64 build box
       {
