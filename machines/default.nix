@@ -20,7 +20,7 @@ with import ../lib;
   profpatsch = {
     shiki = callMachine ./profpatsch/shiki.nix {};
     haku   = callMachine ./profpatsch/haku.nix {};
-    mikiya = callMachine ./profpatsch/mikiya.nix {};
+    # mikiya = callMachine ./profpatsch/mikiya.nix {};
   };
   misc = {
     mailserver = callMachine ./misc/mailserver.nix {};
