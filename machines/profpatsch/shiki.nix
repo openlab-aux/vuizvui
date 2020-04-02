@@ -192,6 +192,7 @@ in {
         audacity lame.lib    # audio editor and mp3 codec
         # myPkgs.beets         # audio file metadata tagger
         firefox              # browser
+        chromium             # second browser for good measure
         cups                 # print tools, mainly for lp(1)
         pkgs.vuizvui.profpatsch.droopy # simple HTML upload server
         # electrum             # bitcoin client
@@ -207,6 +208,7 @@ in {
         poppler_utils        # pdfto*
         ranger               # CLI file browser
         remind               # calender & reminder program
+        taskwarrior tasksh   # task manager
         unfreeAndNonDistributablePkgs.steam # the one gaming platform
         youtube-dl           # download videos
         zathura              # pdf viewer
@@ -231,7 +233,7 @@ in {
         mu                   # mail indexing w/ emacs mode
       ];
       nixPkgs = [
-        nix-diff                  # structurally diff two derivations
+        # nix-diff                  # structurally diff two derivations
         nix-prefetch-scripts      # prefetch store paths from various destinations
         pkgs.vuizvui.taalo-build  # build derivation on taalo
       ];
@@ -242,7 +244,6 @@ in {
         (texlive.combine { inherit (texlive) scheme-small pdfjam; })
         # move script/nix-cache-binary to here
         cdb
-        taskwarrior tasksh
         myPkgs.zoomboxed
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
