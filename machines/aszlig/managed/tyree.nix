@@ -24,7 +24,7 @@
 
   environment.systemPackages = with pkgs; [
     aqbanking darktable digikam firefox gwenhywfar gphoto2 kgpg kmymoney krita
-    mosh python2Packages.weboob rawtherapee wget
+    mosh python3Packages.weboob rawtherapee wget
   ];
 
   fileSystems."/boot".device = "/dev/disk/by-uuid/A0D5-269D";
