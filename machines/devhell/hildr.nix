@@ -209,7 +209,6 @@
     horst
     ipmitool
     iw
-    kismet
     libva
     libvdpau-va-gl
     minicom
