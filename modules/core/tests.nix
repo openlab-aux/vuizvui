@@ -400,7 +400,7 @@ let
       path  = ["nixos" "installer" "simple"];
     }
     { check = elem "ext3" config.boot.supportedFilesystems
-           && config.nesting.clone != [];
+           && config.specialisation != {};
       path  = ["nixos" "installer" "simpleClone"];
     }
     { check = config.boot.loader.grub.device == "nodev"
@@ -409,7 +409,7 @@ let
     }
     { check = config.boot.loader.grub.device == "nodev"
            && config.boot.loader.grub.efiSupport
-           && config.nesting.clone != [];
+           && config.specialisation != {};
       path  = ["nixos" "installer" "simpleUefiGrubClone"];
     }
     { check = config.boot.loader.systemd-boot.enable;
@@ -640,9 +640,8 @@ let
     { check = config.services.neo4j.enable;
       path  = ["nixos" "neo4j"];
     }
-    { check = config.nesting.clone != []
-           || config.nesting.children != [];
-      path  = ["nixos" "nesting"];
+    { check = config.specialisation != {};
+      path  = ["nixos" "specialisation"];
     }
     { check = config.services.netdata.enable;
       path  = ["nixos" "netdata"];
