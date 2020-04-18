@@ -56,11 +56,13 @@ in {
             password-label-text = ❯
             show-input-cursor = false
             [greeter-theme]
+            border-color = "#3B4252"
             text-color = "#4C566A"
             window-color = "#3B4252"
-            border-width = 0px
             layout-space = 5
             password-background-color = "#3B4252"
+            border-width = 0px
+            password-border-width = 0px
           '';
         };
       };
