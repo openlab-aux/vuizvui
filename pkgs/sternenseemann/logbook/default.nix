@@ -1,25 +1,24 @@
-{ stdenv, ocaml, topkg, ocamlbuild, findlib, ocaml_lwt
-, jingoo, ptime, angstrom, astring, opam, cow
-, fetchgit }:
+{ lib, buildDunePackage, fetchFromGitHub
+, ocaml_lwt, jingoo, ptime, angstrom, astring, cow}:
 
-stdenv.mkDerivation rec {
-  version = "2017-02-18";
-  name = "ocaml${ocaml.version}-logbook-${version}";
+buildDunePackage rec {
+  version = "unstable-2020-04-23";
+  pname = "logbook";
 
-  src = fetchgit {
-    url    = "https://github.com/sternenseemann/logbook";
-    rev    = "1834ced22e4faf1e3afb3519febc176209099526";
-    sha256 = "1jq43n28s5k59hnl5xawzqvgmnknccanyvf6s8zwyfw3m60qsnd2";
+  src = fetchFromGitHub {
+    owner  = "sternenseemann";
+    repo   = pname;
+    rev    = "765267852f4baaa6dbb272370705f318cc562ea6";
+    sha256 = "057pcrk9ik673z6fbhbr4b2qxqvk0lrp1w9dpjipqr2slhxiikwf";
   };
 
-  buildInputs = [ ocaml findlib ocamlbuild topkg opam cow
-                  ocaml_lwt jingoo ptime angstrom astring
-                ];
+  buildInputs = [ cow ocaml_lwt jingoo ];
+  propagatedBuildInputs = [ ptime angstrom astring ];
 
-  inherit (topkg) buildPhase installPhase;
-  meta = with stdenv.lib; {
+  useDune2 = true;
+
+  meta = with lib; {
     description = "A tool for personal log files";
-    platforms = ocaml.meta.platforms;
     hydraPlatforms = [ "x86_64-linux" ];
     license = licenses.bsd3;
   };
