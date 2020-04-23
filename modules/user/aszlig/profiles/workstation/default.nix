@@ -46,7 +46,6 @@ in {
       pulseaudio.package = pkgs.pulseaudioFull;
       opengl = {
         driSupport32Bit = true;
-        s3tcSupport = true;
       };
     };
 
