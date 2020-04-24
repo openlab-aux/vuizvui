@@ -196,7 +196,7 @@ let
     { check = config.services.documize.enable;
       path  = ["nixos" "documize"];
     }
-    { check = config.services.dokuwiki.enable;
+    { check = config.services.dokuwiki != {};
       path  = ["nixos" "dokuwiki"];
     }
     { check = config.services.dovecot2.enable;
