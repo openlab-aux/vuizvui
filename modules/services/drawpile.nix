@@ -64,7 +64,7 @@ in {
       };
     };
 
-    networking.firewall.allowedUDPPorts = [ port ];
+    networking.firewall.allowedTCPPorts = [ port ];
 
   };
 
