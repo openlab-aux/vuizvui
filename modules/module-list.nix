@@ -9,6 +9,7 @@
   ./hardware/thinkpad.nix
   ./programs/gnupg
   ./programs/fish/fasd.nix
+  ./services/drawpile.nix
   ./services/postfix
   ./services/starbound.nix
   ./services/guix.nix
