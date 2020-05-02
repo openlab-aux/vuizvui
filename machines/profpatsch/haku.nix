@@ -100,9 +100,11 @@ in
       enable = true;
       configFile = ''
         [config]
-        sessionSizeLimit = 15MB
-        sessionCountLimit = 25
-        idleTimeLimit = 3h
+        serverTitle = bsalc
+        sessionSizeLimit = 200MB
+        sessionCountLimit = 1
+        persistence = true
+        idleTimeLimit = 0
         title = Welcome to the bsalc server!
       '';
     };
