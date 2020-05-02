@@ -95,6 +95,19 @@ in
       };
     };
 
+    # semi-tmp
+    vuizvui.services.drawpile = {
+      enable = true;
+      configFile = ''
+        [config]
+        sessionSizeLimit = 15MB
+        sessionCountLimit = 25
+        idleTimeLimit = 3h
+        title = Welcome to the bsalc server!
+      '';
+    };
+
+
     systemd.services.warpspeed =
       let user = config.users.users.rtorrent;
       in {
