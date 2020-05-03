@@ -182,7 +182,6 @@ in {
       ntfs3g
       ntfsprogs
       openssl
-      p7zip
       pamixer
       pandoc
       paperkey
