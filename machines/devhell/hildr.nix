@@ -75,10 +75,7 @@
     cpuFreqGovernor = "powersave";
   };
 
-  virtualisation.oci-containers = {
-    enable = false;
-    backend = "docker";
-  };
+  virtualisation.docker.enable = true;
 
   nix = {
     maxJobs = lib.mkDefault 4;
