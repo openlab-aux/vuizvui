@@ -61,7 +61,10 @@
     useNetworkd = true;
   };
 
-  virtualisation.docker.enable = false;
+  virtualisation.oci-containers = {
+    enable = false;
+    backend = "docker";
+  };
 
   nix = {
     maxJobs = lib.mkDefault 4;
