@@ -364,6 +364,13 @@ let
       rev = "67ca4dc4a0291e5d8c8da48bffc0f3d2c9739e7f";
       sha256 = "1insh39hzbynr6qxb215qxhpifl5m8i5i0d09a3b6v679i7s11i8";
     };
+
+    vim-css-color = fetchFromGitHub {
+      owner = "ap";
+      repo = "vim-css-color";
+      rev = "741dd18a35e251ededc0687eea9b8d100d3b83b8";
+      sha256 = "1mjwyznprhhfmwi1djyjgxkqv9bwima1ysxa9782rk198j2n87vs";
+    };
   };
 
   generic = ''
@@ -497,7 +504,11 @@ let
   installPlugin = name: plugin: let
     mkInst = targetDir: writeScript "install-plugin-file" ''
       #!${stdenv.shell}
-      exec install -m 0644 -vD "$1" "${targetDir}/$1"
+      if [ -e "${targetDir}/$1" ]; then
+        cat "$1" >> "${targetDir}/$1"
+      else
+        exec install -m 0644 -vD "$1" "${targetDir}/$1"
+      fi
     '';
 
     afterPath = "$out/share/vim/vimfiles";
