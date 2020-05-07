@@ -162,6 +162,7 @@ in {
         displayManager.defaultSession = "none+i3";
         displayManager.sessionCommands = ''
           ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
+            XTerm*termName:            xterm-256color
             XTerm*font:                vga
             XTerm*saveLines:           10000
             XTerm*bellIsUrgent:        true
