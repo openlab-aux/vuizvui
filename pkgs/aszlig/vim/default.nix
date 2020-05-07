@@ -303,11 +303,12 @@ let
       owner = "alex-ren";
       repo = "org.ats-lang.toolats";
       rev = "e0c5499dfa5c65b4aa3bf031247c768f826f3de8";
-      sha256 = "1wf8pr4pj660bxq00l9fhr07qm7mpy1jglmsyxzi9qq9pgb2avzy";
+      sha256 = "0g1qrq4f4gq0yrnlslrjz03m0997rd343b22w21w7359hydlqzax";
       extraPostFetch = ''
         mv -t "$out" "$out/org.ats-lang.toolats.vim/ftdetect" \
                      "$out/org.ats-lang.toolats.vim/syntax"
-        rm -rf "$out/org.ats-lang.toolats.vim"
+        rm -rf "$out/org.ats-lang.toolats"* \
+               "$out/README.md" "$out/release" "$out/.gitignore"
       '';
     };
 
