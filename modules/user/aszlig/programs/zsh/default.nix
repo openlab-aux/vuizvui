@@ -63,7 +63,7 @@ in {
       export KEYTIMEOUT=1
 
       bindkey -v
-      if [[ "$TERM" = xterm ]]; then
+      if [[ "$TERM" = xterm* ]]; then
         bindkey -v '\e[H' vi-beginning-of-line
         bindkey -v '\e[F' vi-end-of-line
 
