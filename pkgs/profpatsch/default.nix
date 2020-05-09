@@ -17,6 +17,8 @@ let
       };
     in builtins.listToAttrs (builtins.map f xs);
 
+  exactSource = import ./exact-source.nix;
+
   # various nix utils and fun experiments
   nixperiments =
     let
