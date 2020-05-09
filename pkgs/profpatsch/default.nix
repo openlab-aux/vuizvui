@@ -190,4 +190,8 @@ in rec {
     readDhallFileAsJson
     ;
 
+  inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline dhall buildDhallPackage; })
+    xdg-open
+    Prelude
+    ;
 }
