@@ -10,7 +10,7 @@ let Arg = < String : Text | Variable : Text >
 let CommandTemplate =
       λ(templates : Type) → { exe : Executable, args : templates → List Arg }
 
-let Command = CommandTemplate Text
+let Command = CommandTemplate Arg
 
 let mime =
       { text =
@@ -74,7 +74,7 @@ let mimeMatcher =
 
         let oneArg =
                 λ(exe : Executable)
-              → { exe = exe, args = λ(file : Text) → [ Arg.Variable file ] }
+              → { exe = exe, args = λ(file : Arg) → [ file ] }
 
         let m =
               λ(match : Mime) → λ(cmd : Command) → { match = match, cmd = cmd }
@@ -91,11 +91,11 @@ let mimeMatcher =
                 , cmd =
                   { exe = pkgs { package = "gnupg", binary = "gpg" }
                   , args =
-                        λ(file : Text)
+                        λ(file : Arg)
                       → [ Arg.String "--import"
                         , Arg.String "--import-options"
                         , Arg.String "show-only"
-                        , Arg.Variable file
+                        , file
                         ]
                   }
                 }

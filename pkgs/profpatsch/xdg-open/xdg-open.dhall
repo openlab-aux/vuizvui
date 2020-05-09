@@ -37,7 +37,7 @@ let shellEscapeCommand =
                         }
                         arg
                   )
-                  (cmd.args file)
+                  (cmd.args (config.Arg.Variable file))
             )
         : Text
 
@@ -73,6 +73,7 @@ let xdg-open =
           → write-dash
               "xdg-open"
               ''
+              set -e
               file="$1"
               mime=$(${bins.get-mime-type} "$file")
 
