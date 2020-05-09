@@ -184,4 +184,10 @@ in rec {
 
   buildDhallPackage = pkgs.callPackage ./dhall/build-dhall-package-improved.nix { inherit dhall; };
 
+  inherit (import ./importDhall.nix { inherit pkgs dhall-nix dhall-json exactSource; })
+    importDhall
+    importDhall2
+    readDhallFileAsJson
+    ;
+
 }
