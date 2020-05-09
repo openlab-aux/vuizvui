@@ -178,4 +178,6 @@ in rec {
       rev = "0db095732820cd27eccbe9ece97500dd292353de";
       sha256 = "05n76b781fgm5n7kqq1gpqfzshjfpadahxryxqrfvs3sjn3a6bvp";
     }}/dhall-flycheck.nix") {};
+  buildDhallPackage = pkgs.callPackage ./dhall/build-dhall-package-improved.nix { inherit dhall; };
+
 }
