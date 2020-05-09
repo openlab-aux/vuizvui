@@ -172,13 +172,14 @@ in rec {
   dhall-nix = easy-dhall-nix.dhall-nix-simple;
   dhall-json = easy-dhall-nix.dhall-json-simple;
 
-  dhall-flycheck = haskellPackages.callPackage
+  dhall-flycheck =
     (import "${pkgs.fetchFromGitHub {
       owner = "Profpatsch";
       repo = "dhall-flycheck";
-      rev = "0db095732820cd27eccbe9ece97500dd292353de";
-      sha256 = "05n76b781fgm5n7kqq1gpqfzshjfpadahxryxqrfvs3sjn3a6bvp";
-    }}/dhall-flycheck.nix") {};
+      rev = "f3b908b22d0803711e58378b5fa291b987d1c91";
+      sha256 = "1y9m4345da91rz6k1hc34ajlfrfglrw8mq725vr45a1fbrf3yzim";
+    }}/overlay.nix" pkgs pkgs).dhall-flycheck;
+
   buildDhallPackage = pkgs.callPackage ./dhall/build-dhall-package-improved.nix { inherit dhall; };
 
 }
