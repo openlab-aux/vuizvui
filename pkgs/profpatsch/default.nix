@@ -174,12 +174,13 @@ in rec {
   dhall-nix = easy-dhall-nix.dhall-nix-simple;
   dhall-json = easy-dhall-nix.dhall-json-simple;
 
+  # dhall-flycheck = (import /home/philip/kot/dhall/flycheck/overlay.nix pkgs pkgs).dhall-flycheck;
   dhall-flycheck =
     (import "${pkgs.fetchFromGitHub {
       owner = "Profpatsch";
       repo = "dhall-flycheck";
-      rev = "f3b908b22d0803711e58378b5fa291b987d1c91";
-      sha256 = "1y9m4345da91rz6k1hc34ajlfrfglrw8mq725vr45a1fbrf3yzim";
+      rev = "2ace6b38cec356d8821b3390b670d301d54623b";
+      sha256 = "0d6qjr245jmx1lvqdplvrshlkpfaqa46aizyhyb6hg37v8jq8rv7";
     }}/overlay.nix" pkgs pkgs).dhall-flycheck;
 
   buildDhallPackage = pkgs.callPackage ./dhall/build-dhall-package-improved.nix { inherit dhall; };
