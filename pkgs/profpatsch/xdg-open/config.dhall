@@ -35,8 +35,11 @@ let mime =
 
 let renderMime = λ(m : Mime) → 32
 
-let uriMimeGlobs =
-      [ { desc = "http link"
+let UriMimeGlob = { desc : Text, glob : List Text, mime : Mime }
+
+let uriMimeGlobs
+    : List UriMimeGlob
+    = [ { desc = "http link"
         , glob = [ "http://*", "https://*" ]
         , mime = mime.text.html
         }
@@ -63,21 +66,19 @@ let Special =
       }
 
 let mimeMatcher =
-        λ(pkgs : { package : Text, binary : Text } → Executable)
-      → λ(special : Special)
-      → let pkgSame =
-                λ(packageAndBinaryName : Text)
-              → pkgs
+      λ(pkgs : { package : Text, binary : Text } → Executable) →
+      λ(special : Special) →
+        let pkgSame =
+              λ(packageAndBinaryName : Text) →
+                pkgs
                   { package = packageAndBinaryName
                   , binary = packageAndBinaryName
                   }
 
         let oneArg =
-                λ(exe : Executable)
-              → { exe = exe, args = λ(file : Arg) → [ file ] }
+              λ(exe : Executable) → { exe, args = λ(file : Arg) → [ file ] }
 
-        let m =
-              λ(match : Mime) → λ(cmd : Command) → { match = match, cmd = cmd }
+        let m = λ(match : Mime) → λ(cmd : Command) → { match, cmd }
 
         in    [ { match = mime.mail-address, cmd = special.compose-mail-to }
               , { match = mime.text.html, cmd = special.open-in-browser }
@@ -91,8 +92,8 @@ let mimeMatcher =
                 , cmd =
                   { exe = pkgs { package = "gnupg", binary = "gpg" }
                   , args =
-                        λ(file : Arg)
-                      → [ Arg.String "--import"
+                      λ(file : Arg) →
+                        [ Arg.String "--import"
                         , Arg.String "--import-options"
                         , Arg.String "show-only"
                         , file
@@ -108,12 +109,13 @@ let mimeMatcher =
               ]
             : List MimeMatch
 
-in  { mimeMatcher = mimeMatcher
-    , uriMimeGlobs = uriMimeGlobs
-    , Executable = Executable
-    , Command = Command
-    , MimeMatch = MimeMatch
-    , Special = Special
-    , Mime = Mime
-    , Arg = Arg
+in  { mimeMatcher
+    , uriMimeGlobs
+    , UriMimeGlob
+    , Executable
+    , Command
+    , MimeMatch
+    , Special
+    , Mime
+    , Arg
     }
