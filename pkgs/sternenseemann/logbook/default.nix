@@ -2,14 +2,14 @@
 , ocaml_lwt, jingoo, ptime, angstrom, astring, cow}:
 
 buildDunePackage rec {
-  version = "unstable-2020-04-23";
+  version = "0.2";
   pname = "logbook";
 
   src = fetchFromGitHub {
     owner  = "sternenseemann";
     repo   = pname;
-    rev    = "765267852f4baaa6dbb272370705f318cc562ea6";
-    sha256 = "057pcrk9ik673z6fbhbr4b2qxqvk0lrp1w9dpjipqr2slhxiikwf";
+    rev    = "v${version}";
+    sha256 = "1x202546ivs46m1193bzlnkpi3mxjjs3c1hcrlnb21v5x4fjnd4m";
   };
 
   buildInputs = [ cow ocaml_lwt jingoo ];
