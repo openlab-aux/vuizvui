@@ -56,7 +56,7 @@
 
   # XXX Make networkd ignore virtual network interfaces
   systemd.network.networks."99-libvirt" = {
-    matchConfig.Name = "virbr* vnet* docker*";
+    matchConfig.Name = "virbr* vnet*";
     linkConfig.Unmanaged = true;
   };
 
@@ -74,8 +74,6 @@
     powertop.enable = true;
     cpuFreqGovernor = "powersave";
   };
-
-  virtualisation.docker.enable = true;
 
   nix = {
     maxJobs = lib.mkDefault 4;
@@ -203,7 +201,6 @@
   environment.systemPackages = with pkgs; [
     aircrackng
     cdrtools
-    docker
     dvdplusrwtools
     horst
     ipmitool

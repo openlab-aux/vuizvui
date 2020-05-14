@@ -61,8 +61,6 @@
     useNetworkd = true;
   };
 
-  virtualisation.docker.enable = false;
-
   nix = {
     maxJobs = lib.mkDefault 4;
     extraOptions = ''
