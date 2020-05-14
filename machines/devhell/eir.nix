@@ -239,7 +239,6 @@
     pmtools
     pmutils
     reaverwps
-    signal-desktop
     snort
     vaapiVdpau
     vdpauinfo

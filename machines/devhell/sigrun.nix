@@ -266,15 +266,7 @@
   nixpkgs.config.mpv.bs2bSupport = true;
 
   environment.systemPackages = with pkgs; [
-    #ipfs
-    #scummvm
-    abook
     canto-curses
-    cli-visualizer
     cmus
-    handbrake
-    hplip
-    nzbget
-    slrn
   ];
 }

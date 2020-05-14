@@ -211,7 +211,6 @@
     pmtools
     pmutils
     reaverwps
-    signal-desktop
     snort
     teams
     vaapiVdpau

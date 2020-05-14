@@ -76,7 +76,6 @@ in {
       bmon
       brave
       broot
-      cataclysm-dda
       ccrypt
       chromaprint
       cifs_utils
@@ -95,7 +94,6 @@ in {
       dos2unix
       duff
       e2fsprogs
-      enhanced-ctorrent
       ethtool
       fbida
       fd
