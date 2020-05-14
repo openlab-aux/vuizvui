@@ -210,6 +210,8 @@
     minicom
     pmtools
     pmutils
+    podman
+    podman-compose
     reaverwps
     snort
     teams
