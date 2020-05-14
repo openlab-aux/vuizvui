@@ -15,7 +15,7 @@ buildDunePackage rec {
   buildInputs = [ cow ocaml_lwt jingoo ];
   propagatedBuildInputs = [ ptime angstrom astring ];
 
-  patches = lib.optionals (!lib.versionAtLeast "1.3.0" jingoo.version) [ (fetchpatch {
+  patches = [ (fetchpatch {
     url = "https://github.com/sternenseemann/logbook/commit/d4ee40ada4bba55505cc55ab653e69fa5c6406e6.diff";
     sha256 = "0dj6q2h1pxcniypx14if4gnfq7bbghsig9g51n7z2mad0fsji4sa";
   }) ];
