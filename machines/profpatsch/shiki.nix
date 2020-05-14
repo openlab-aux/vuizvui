@@ -274,16 +274,16 @@ in {
       videoDrivers = [ "intel" ];
     };
 
-    fonts.fonts = with pkgs; [
+    fonts.fonts = [
       unfreeAndNonDistributablePkgs.corefonts
-      source-han-sans-japanese
-      source-han-sans-korean
-      source-han-sans-simplified-chinese
-      source-code-pro
-      hasklig
-      dejavu_fonts
-      ubuntu_font_family
-      league-of-moveable-type
+      pkgs.source-han-sans-japanese
+      pkgs.source-han-sans-korean
+      pkgs.source-han-sans-simplified-chinese
+      pkgs.source-code-pro
+      pkgs.hasklig
+      pkgs.dejavu_fonts
+      pkgs.ubuntu_font_family
+      pkgs.league-of-moveable-type
     ];
 
     services.printing = {
