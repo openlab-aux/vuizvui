@@ -206,6 +206,7 @@ in {
       screen
       scrot
       shntool
+      signal-desktop
       smartmontools
       sox
       speedtest-cli
@@ -215,10 +216,10 @@ in {
       stow
       strace
       sxiv
+      taizen
       taskell
       tasksh
       taskwarrior
-      taizen
       telnet
       termdown
       termite
