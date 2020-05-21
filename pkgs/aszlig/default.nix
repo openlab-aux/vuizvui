@@ -1,4 +1,4 @@
-{ callPackage, callPackage_i686, vim_configurable, xournal, gopass }:
+{ callPackage, callPackage_i686, vim_configurable, gopass }:
 
 {
   aacolorize = callPackage ./aacolorize { };
@@ -11,5 +11,4 @@
   psi = callPackage ./psi { };
   pvolctrl = callPackage ./pvolctrl { };
   vim = callPackage ./vim { vim = vim_configurable; };
-  xournal = callPackage ./xournal { inherit xournal; };
 }
