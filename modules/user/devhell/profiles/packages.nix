@@ -143,7 +143,6 @@ in {
       john
       jwhois
       keepassxc
-      keybase
       ldns
       lftp
       libarchive

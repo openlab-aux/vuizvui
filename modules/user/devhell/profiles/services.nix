@@ -25,7 +25,6 @@ in {
     location.provider = "geoclue2";
 
     services = {
-      keybase.enable = true;
       pcscd.enable = true;
       gpm.enable = true;
       openssh.enable = true;
