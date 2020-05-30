@@ -198,7 +198,10 @@
 
   nixpkgs.config.mpv.vaapiSupport = true;
 
-  programs.light.enable = true;
+  programs = {
+    light.enable = true;
+    wavemon.enable = true;
+  };
 
   environment.systemPackages = with pkgs; [
     aircrackng
@@ -219,7 +222,6 @@
     teams
     vaapiVdpau
     vdpauinfo
-    wavemon
     xbindkeys
   ];
 }
