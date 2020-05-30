@@ -70,17 +70,29 @@ in {
         enableCompletion = true;
       };
       bash = {
+        enable = true;
         enableCompletion = true;
-        promptInit = ''
-          # Provide a nice prompt.
-          PROMPT_COLOR="1;31m"
-          let $UID && PROMPT_COLOR="1;32m"
-          PS1="\n\[\033[$PROMPT_COLOR\][\u@\h:\w]\\$\[\033[0m\] "
-          if test "$TERM" = "xterm"; then
-            PS1="\[\033]2;\h:\u:\w\007\]$PS1"
-          fi
-          eval `dircolors ~/.dir_colors`
-        '';
+      };
+      iftop = {
+        enable = true;
+      };
+      iotop = {
+        enable = true;
+      };
+      less = {
+        enable = true;
+      };
+      screen = {
+        enable = true;
+      };
+      tmux = {
+        enable = true;
+      };
+      traceroute = {
+        enable = true;
+      };
+      wireshark = {
+        enable = true;
       };
     };
 

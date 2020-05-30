@@ -132,9 +132,7 @@ in {
       htop
       httpie
       i3lock-fancy
-      iftop
       imagemagick
-      iotop
       ipcalc
       iprange
       iptraf-ng
@@ -202,7 +200,6 @@ in {
       rstudio
       rsync
       safecopy
-      screen
       scrot
       shntool
       signal-desktop
@@ -226,7 +223,6 @@ in {
       testdisk
       tig
       tldr
-      tmux
       toilet
       transcode
       tree
@@ -263,7 +259,6 @@ in {
       which
       wipe
       wireguard
-      wireshark
       wordgrinder
       xfsprogs
       xlibs.xev
