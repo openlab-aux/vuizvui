@@ -70,7 +70,6 @@ in {
         enableCompletion = true;
       };
       bash = {
-        enable = true;
         enableCompletion = true;
       };
       iftop = {
