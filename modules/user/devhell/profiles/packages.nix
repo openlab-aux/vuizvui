@@ -200,6 +200,7 @@ in {
       rstudio
       rsync
       safecopy
+      screen
       scrot
       shntool
       signal-desktop

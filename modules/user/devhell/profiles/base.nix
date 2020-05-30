@@ -82,9 +82,6 @@ in {
       less = {
         enable = true;
       };
-      screen = {
-        enable = true;
-      };
       tmux = {
         enable = true;
       };
