@@ -23,7 +23,7 @@ Bit sizes are specified in 2^n increments, 1 to 9 (`n1`..`n9`, `i1`..`n9`).
 
 * Natural `1234` that fits in 32 bits (2^5): `n5:1234,`
 * Integer `-42` that fits in 8 bits (2^3): `i3:-42,`
-* Integer `23` that fits in 64 bits (2^6): `i64:23,`
+* Integer `23` that fits in 64 bits (2^6): `i6:23,`
 * Integer `-1` that fits in 512 bits (2^9): `i9:-1,`
 * Natural `0` that fits in 1 bit (2^1): `n1:0,`
 
