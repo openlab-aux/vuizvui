@@ -17,6 +17,20 @@ let
       };
     in builtins.listToAttrs (builtins.map f xs);
 
+  # Create a store path where the executable `exe`
+  # is linked to $out/bin/${name}.
+  # This is useful for e.g. including it as a “package”
+  # in `buildInputs` of a shell.nix.
+  #
+  # For example, if I have the exeutable /nix/store/…-hello,
+  # I can make it into /nix/store/…-binify-hello/bin/hello
+  # with `binify { exe = …; name = "hello" }`.
+  binify = { exe, name }:
+    pkgs.runCommandLocal "binify-${name}" {} ''
+      mkdir -p $out/bin
+      ln -sT ${lib.escapeShellArg exe} $out/bin/${lib.escapeShellArg name}
+    '';
+
   exactSource = import ./exact-source.nix;
 
   # various nix utils and fun experiments
@@ -154,7 +168,7 @@ in rec {
   inherit (import ./execline/e.nix { inherit pkgs writeExecline getBins; })
     e;
 
-  inherit getBins;
+  inherit getBins binify;
 
   inherit (import ./sandbox.nix {inherit pkgs writeExecline; })
     sandbox runInEmptyEnv;
