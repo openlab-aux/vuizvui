@@ -1,6 +1,7 @@
 extern crate nom;
 
 use std::collections::HashMap;
+use std::io::Write;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum T {
@@ -15,20 +16,70 @@ pub enum T {
     I6(i64),
     I7(i128),
     // Text
+    // TODO: make into &str
     Text(String),
     // Tags
     Sum(Tag),
+    // TODO: make into &str
     Record(HashMap<String, Box<T>>),
     List(Box<Vec<T>>),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Tag {
+    // TODO: make into &str
     pub tag: String,
     pub val: Box<T>
 }
 
-mod parsing {
+
+pub fn encode<W: Write>(w: &mut W, t: T) -> std::io::Result<()> {
+  let mut write_tag = |w: &mut W, tag: String, val: T| {
+      write!(w, "<{}:{}|", tag.len(), tag)?;
+      encode(w, val)?;
+      Ok(())
+  };
+  match t {
+      T::Unit => write!(w, "u,"),
+      T::N3(n) => write!(w, "n3:{},", n),
+      T::N6(n) => write!(w, "n6:{},", n),
+      T::N7(n) => write!(w, "n7:{},", n),
+      T::I3(i) => write!(w, "i3:{},", i),
+      T::I6(i) => write!(w, "i6:{},", i),
+      T::I7(i) => write!(w, "i7:{},", i),
+      T::Text(s) => write!(w, "t{}:{},", s.len(), s),
+      T::Sum(Tag{tag, val}) => write_tag(w, tag, *val),
+      T::Record(m) => {
+          write!(w, "{{")?;
+          for (k, v) in m {
+              write_tag(w, k, *v)?;
+          }
+          write!(w, "}}")
+      },
+      T::List(l) => {
+          write!(w, "[")?;
+          for v in *l {
+              encode(w, v)?;
+          };
+          write!(w, "]")
+      }
+  }
+}
+
+pub fn dict(d: Vec<(String, T)>) -> T {
+    T::Record(
+        d.into_iter()
+            .map(|(k,v)| (k, Box::new(v)))
+            // to ignore duplicate entries after the first
+            .rev()
+            .collect::<HashMap<_,_>>())
+}
+
+pub fn text(s: String) -> T {
+    T::Text(s)
+}
+
+mod parse {
     use super::{T, Tag};
 
     use std::str::FromStr;
