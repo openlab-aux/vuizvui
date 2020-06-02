@@ -140,6 +140,11 @@ in rec {
     ];
   });
 
+  inherit (import ./write-rust.nix { inherit pkgs runExeclineLocal getBins; })
+    writeRustSimple
+    writeRustSimpleLib
+    ;
+
   inherit (runExeclineFns)
     runExecline runExeclineLocal;
   inherit (writeExeclineFns)
