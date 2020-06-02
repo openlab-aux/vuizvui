@@ -1,4 +1,4 @@
-{ pkgs, writeRustSimpleBin }:
+{ pkgs, writeRustSimpleLib }:
 
 let
   version-check = pkgs.buildRustCrate {
@@ -23,7 +23,7 @@ let
     features = [ "std" "alloc" ];
   };
 
-  encode-rs-common = tests: writeRustSimpleBin "encode" {
+  encode-rs-common = tests: writeRustSimpleLib "encode" {
     dependencies = [ nom ];
     buildTests = tests;
     release = false;
@@ -32,8 +32,11 @@ let
 
   encode-rs-tests = encode-rs-common true;
 
+  encode-rs = encode-rs-common false;
+
 in {
   inherit
+   encode-rs
    encode-rs-tests
    ;
 }

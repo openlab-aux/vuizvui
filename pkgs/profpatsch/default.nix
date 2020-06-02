@@ -214,4 +214,9 @@ in rec {
     xdg-open
     Prelude
     ;
+
+  inherit (import ./encode { inherit pkgs writeRustSimpleLib; })
+    encode-rs
+    encode-rs-tests
+    ;
 }
