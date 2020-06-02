@@ -49,13 +49,15 @@ let
     ac = "🗲 " if charging else ""
     sft_remaining = seconds_to_sft(seconds_remaining)
     date = sub.run(["date", "+%d.%m. %a %T"], stdout=sub.PIPE).stdout.strip().decode()
+    dottime = sub.run(["date", "--utc", "+%H·%M"], stdout=sub.PIPE).stdout.strip().decode()
     sftdate = sub.run(["@sfttime@"], stdout=sub.PIPE).stdout.strip().decode()
-    notify = "BAT: {percent}% {ac}{charge}| {date} | {sftdate}".format(
+    notify = "BAT: {percent}% {ac}{charge}| {date} | {sftdate} | {dottime}".format(
       percent = int(bat*100),
       ac = ac,
       charge = "{} ".format(sft_remaining) if seconds_remaining else "",
       date = date,
-      sftdate = sftdate
+      sftdate = sftdate,
+      dottime = dottime
     )
     print(notify)
   '';
