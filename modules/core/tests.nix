@@ -3,6 +3,10 @@
 let
   inherit (lib) any elem;
 
+  isLatestKernel = config.boot.kernelPackages.kernel.version
+                == pkgs.linuxPackages_latest.kernel.version;
+  wgTestSuffix = "linux-${if isLatestKernel then "latest" else "5_4"}";
+
   whichNet = if config.networking.useNetworkd then "networkd" else "scripted";
 
   mkTest = attrs: if attrs.check then attrs.paths or [ attrs.path ] else [];
@@ -1060,21 +1064,21 @@ let
       path  = ["nixos" "virtualbox" "headless"];
     }
     { check = config.networking.wireguard.enable;
-      path  = ["nixos" "wireguard" "basic"];
+      path  = ["nixos" "wireguard" "basic-${wgTestSuffix}"];
     }
     { check = with config.networking.wireguard; enable
            && anyAttrs (i: i.generatePrivateKeyFile) interfaces;
-      path  = ["nixos" "wireguard" "generated"];
+      path  = ["nixos" "wireguard" "generated-${wgTestSuffix}"];
     }
     { check = let
         isEnabled = config.networking.wireguard.enable;
         usesNS = iface: iface.socketNamespace != null
               || iface.interfaceNamespace != null;
       in isEnabled && anyAttrs usesNS config.networking.wireguard.interfaces;
-      path  = ["nixos" "wireguard" "namespaces"];
+      path  = ["nixos" "wireguard" "namespaces-${wgTestSuffix}"];
     }
     { check = config.networking.wg-quick.interfaces != {};
-      path  = ["nixos" "wireguard" "wg-quick"];
+      path  = ["nixos" "wireguard" "wg-quick-${wgTestSuffix}"];
     }
     { check = config.services.wordpress != {};
       path  = ["nixos" "wordpress"];
