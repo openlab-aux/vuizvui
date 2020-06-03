@@ -1060,18 +1060,21 @@ let
       path  = ["nixos" "virtualbox" "headless"];
     }
     { check = config.networking.wireguard.enable;
-      path  = ["nixos" "wireguard"];
+      path  = ["nixos" "wireguard" "basic"];
     }
     { check = with config.networking.wireguard; enable
            && anyAttrs (i: i.generatePrivateKeyFile) interfaces;
-      path  = ["nixos" "wireguard-generated"];
+      path  = ["nixos" "wireguard" "generated"];
     }
     { check = let
         isEnabled = config.networking.wireguard.enable;
         usesNS = iface: iface.socketNamespace != null
               || iface.interfaceNamespace != null;
       in isEnabled && anyAttrs usesNS config.networking.wireguard.interfaces;
-      path  = ["nixos" "wireguard-namespaces"];
+      path  = ["nixos" "wireguard" "namespaces"];
+    }
+    { check = config.networking.wg-quick.interfaces != {};
+      path  = ["nixos" "wireguard" "wg-quick"];
     }
     { check = config.services.wordpress != {};
       path  = ["nixos" "wordpress"];
