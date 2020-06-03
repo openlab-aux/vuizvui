@@ -56,11 +56,13 @@ A tag (`<`) gives a value a name. The tag is UTF-8 encoded, starting with its le
 A record (`{`) is a concatenation of tags (`<`). It needs to be closed with `}`.
 If tag names repeat the later ones should be ignored. Ordering does not matter.
 
+Similar to text, records start with the length of their *whole encoded content*, in bytes. This makes it possible to treat their contents as opaque bytestrings.
+
 * There is no empty record. (TODO: make the empty record the unit type, remove `u,`?)
-* A record with one empty field, `foo`: `{<3:foo|u,}`
-* A record with two fields, `foo` and `x`: `{<3:foo|u,<1:x|t3:baz,}`
-* The same record: `{<1:x|t3:baz,<3:foo|u,}`
-* The same record (later occurences of fields are ignored): `{<1:x|t3:baz,<3:foo|u,<1:x|u,}`
+* A record with one empty field, `foo`: `{9:<3:foo|u,}`
+* A record with two fields, `foo` and `x`: `{21:<3:foo|u,<1:x|t3:baz,}`
+* The same record: `{21:<1:x|t3:baz,<3:foo|u,}`
+* The same record (later occurences of fields are ignored): `{28:<1:x|t3:baz,<3:foo|u,<1:x|u,}`
 
 ### sums (tagged unions)
 
@@ -70,10 +72,12 @@ Simply a tagged value. The tag marker `<` indicates it is a sum if it appears ou
 
 A list (`[`) imposes an ordering on a sequence of values. It needs to be closed with `]`. Values in it are simply concatenated.
 
-* The empty list: `[]`
-* The list with one element, the string `foo`: `[t3:foo,]`
-* The list with text `foo` followed by i3 `-42`: `[t3:foo,i3:-42,]`
-* The list with `Some` and `None` tags: `[<4:Some|t3:foo,<4None|u,<4None|u,]`
+Similar to records, lists start with the length of their whole encoded content.
+
+* The empty list: `[0:]`
+* The list with one element, the string `foo`: `[7:t3:foo,]`
+* The list with text `foo` followed by i3 `-42`: `[14:t3:foo,i3:-42,]`
+* The list with `Some` and `None` tags: `[33:<4:Some|t3:foo,<4None|u,<4None|u,]`
 
 ## motivation
 
