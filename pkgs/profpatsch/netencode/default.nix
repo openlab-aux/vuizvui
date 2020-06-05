@@ -23,20 +23,20 @@ let
     features = [ "std" "alloc" ];
   };
 
-  encode-rs-common = tests: writeRustSimpleLib "encode" {
+  netencode-rs-common = tests: writeRustSimpleLib "encode" {
     dependencies = [ nom ];
     buildTests = tests;
     release = false;
     verbose = true;
-  } ./encode.rs ;
+  } ./netencode.rs ;
 
-  encode-rs-tests = encode-rs-common true;
+  netencode-rs-tests = netencode-rs-common true;
 
-  encode-rs = encode-rs-common false;
+  netencode-rs = netencode-rs-common false;
 
 in {
   inherit
-   encode-rs
-   encode-rs-tests
+   netencode-rs
+   netencode-rs-tests
    ;
 }

@@ -215,8 +215,8 @@ in rec {
     Prelude
     ;
 
-  inherit (import ./encode { inherit pkgs writeRustSimpleLib; })
-    encode-rs
-    encode-rs-tests
+  inherit (import ./netencode { inherit pkgs writeRustSimpleLib; })
+    netencode-rs
+    netencode-rs-tests
     ;
 }
