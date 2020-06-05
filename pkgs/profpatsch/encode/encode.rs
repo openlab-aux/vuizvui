@@ -32,13 +32,13 @@ pub struct Tag {
     pub val: Box<T>
 }
 
+fn encode_tag<W: Write>(w: &mut W, tag: String, val: T) -> std::io::Result<()> {
+    write!(w, "<{}:{}|", tag.len(), tag)?;
+    encode(w, val)?;
+    Ok(())
+}
 
 pub fn encode<W: Write>(w: &mut W, t: T) -> std::io::Result<()> {
-  let mut write_tag = |w: &mut W, tag: String, val: T| {
-      write!(w, "<{}:{}|", tag.len(), tag)?;
-      encode(w, val)?;
-      Ok(())
-  };
   match t {
       T::Unit => write!(w, "u,"),
       T::N3(n) => write!(w, "n3:{},", n),
@@ -48,19 +48,23 @@ pub fn encode<W: Write>(w: &mut W, t: T) -> std::io::Result<()> {
       T::I6(i) => write!(w, "i6:{},", i),
       T::I7(i) => write!(w, "i7:{},", i),
       T::Text(s) => write!(w, "t{}:{},", s.len(), s),
-      T::Sum(Tag{tag, val}) => write_tag(w, tag, *val),
+      T::Sum(Tag{tag, val}) => encode_tag(w, tag, *val),
       T::Record(m) => {
-          write!(w, "{{")?;
+          let mut c = std::io::Cursor::new(vec![]);
           for (k, v) in m {
-              write_tag(w, k, *v)?;
+              encode_tag(&mut c, k, *v)?;
           }
+          write!(w, "{{{}:", c.get_ref().len())?;
+          w.write(c.get_ref())?;
           write!(w, "}}")
       },
       T::List(l) => {
-          write!(w, "[")?;
+          let mut c = std::io::Cursor::new(vec![]);
           for v in *l {
-              encode(w, v)?;
+              encode(&mut c, v)?;
           };
+          write!(w, "[{}:", c.get_ref().len())?;
+          w.write(c.get_ref())?;
           write!(w, "]")
       }
   }
@@ -186,8 +190,10 @@ mod parse {
     }
 
     fn list_t(s: &[u8]) -> IResult<&[u8], Vec<T>> {
-        let (s, (_, vec, _)) = tuple((
+        let (s, (_, _, _, vec, _)) = tuple((
             char('['),
+            usize_t,
+            char(':'),
             nom::multi::many0(t_t),
             char(']')
         ))(s)?;
@@ -195,8 +201,10 @@ mod parse {
     }
 
     fn record_t(s: &[u8]) -> IResult<&[u8], HashMap<String, Box<T>>> {
-        let (s, (_, map, _)) = tuple((
+        let (s, (_, _, _, map, _)) = tuple((
             char('{'),
+            usize_t,
+            char(':'),
             nom::multi::fold_many1(
                 tag_t,
                 HashMap::new(),
@@ -314,11 +322,11 @@ mod parse {
         #[test]
         fn test_list() {
             assert_eq!(
-                list_t("[]".as_bytes()),
+                list_t("[0:]".as_bytes()),
                 Ok(("".as_bytes(), vec![]))
             );
             assert_eq!(
-                list_t("[u,u,u,]".as_bytes()),
+                list_t("[6:u,u,u,]".as_bytes()),
                 Ok(("".as_bytes(), vec![
                     T::Unit,
                     T::Unit,
@@ -326,7 +334,7 @@ mod parse {
                 ]))
             );
             assert_eq!(
-                list_t("[u,[t3:foo,]u,]".as_bytes()),
+                list_t("[15:u,[7:t3:foo,]u,]".as_bytes()),
                 Ok(("".as_bytes(), vec![
                     T::Unit,
                     T::List(Box::new(vec![T::Text("foo".to_owned())])),
@@ -338,7 +346,7 @@ mod parse {
         #[test]
         fn test_record() {
             assert_eq!(
-                record_t("{<1:a|u,<1:b|u,<1:c|u,}".as_bytes()),
+                record_t("{21:<1:a|u,<1:b|u,<1:c|u,}".as_bytes()),
                 Ok(("".as_bytes(), vec![
                     ("a".to_owned(), Box::new(T::Unit)),
                     ("b".to_owned(), Box::new(T::Unit)),
@@ -347,7 +355,7 @@ mod parse {
             );
             // duplicated keys are ignored (first is taken)
             assert_eq!(
-                record_t("{<1:a|u,<1:b|u,<1:a|i1:-1,}".as_bytes()),
+                record_t("{25:<1:a|u,<1:b|u,<1:a|i1:-1,}".as_bytes()),
                 Ok(("".as_bytes(), vec![
                     ("a".to_owned(), Box::new(T::Unit)),
                     ("b".to_owned(), Box::new(T::Unit)),
@@ -375,7 +383,7 @@ mod parse {
             // { a: Unit
             // , foo: List <A: Unit | B: List i3> }
             assert_eq!(
-                t_t("{<1:a|u,<3:foo|[<1:A|u,<1:A|u,<1:B|[i3:127,]]}".as_bytes()),
+                t_t("{49:<1:a|u,<3:foo|[30:<1:A|u,<1:A|u,<1:B|[7:i3:127,]]}".as_bytes()),
                 Ok(("".as_bytes(), T::Record(vec![
                     ("a".to_owned(), Box::new(T::Unit)),
                     ("foo".to_owned(), Box::new(T::List(Box::new(vec![
