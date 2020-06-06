@@ -309,6 +309,7 @@ in stdenv.mkDerivation {
       ${lib.escapeShellArg downloadName})"
     header "downloading $name from $url"
     curl \
+      --location \
       --cacert ${lib.escapeShellArg "${cacert}/etc/ssl/certs/ca-bundle.crt"} \
       --fail --output "$out" "$url"
     stopNest
