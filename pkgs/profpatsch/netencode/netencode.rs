@@ -19,17 +19,47 @@ pub enum T {
     // TODO: make into &str
     Text(String),
     // Tags
-    Sum(Tag),
+    // TODO: make into &str
+    Sum(Tag<String, Box<T>>),
     // TODO: make into &str
     Record(HashMap<String, Box<T>>),
     List(Box<Vec<T>>),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub struct Tag {
+pub enum U<'a> {
+    Unit,
+    // Naturals
+    N3(u8),
+    N6(u64),
+    N7(u128),
+    // Integers
+    I3(i8),
+    I6(i64),
+    I7(i128),
+    // Text
+    Text(&'a [u8]),
+    // Tags
+    Sum(Tag<&'a str, Box<U<'a>>>),
+    Record(HashMap<&'a str, Box<U<'a>>>),
+    List(&'a [u8]),
+}
+
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub struct Tag<S, A> {
     // TODO: make into &str
-    pub tag: String,
-    pub val: Box<T>
+    pub tag: S,
+    pub val: A
+}
+
+impl<S, A> Tag<S, A> {
+    fn map<F, B>(self, f: F) -> Tag<S, B>
+        where F: Fn(A) -> B {
+          Tag {
+              tag: self.tag,
+              val: f(self.val)
+          }
+    }
 }
 
 fn encode_tag<W: Write>(w: &mut W, tag: String, val: T) -> std::io::Result<()> {
@@ -84,7 +114,7 @@ pub fn text(s: String) -> T {
 }
 
 mod parse {
-    use super::{T, Tag};
+    use super::{T, Tag, U};
 
     use std::str::FromStr;
     use std::ops::Neg;
@@ -95,7 +125,7 @@ mod parse {
     use nom::branch::{alt};
     use nom::character::complete::{digit1, char};
     use nom::sequence::{tuple};
-    use nom::combinator::{map, map_res, flat_map, opt};
+    use nom::combinator::{map, map_res, flat_map, map_parser, opt};
     use nom::error::{context, ErrorKind, ParseError};
 
     fn unit_t(s: &[u8]) -> IResult<&[u8], ()> {
@@ -110,6 +140,21 @@ mod parse {
                 map_res(digit1, |n| std::str::from_utf8(n)),
                 |s| s.parse::<usize>())
         )(s)
+    }
+
+    fn sized(begin: char, end: char) -> impl Fn(&[u8]) -> IResult<&[u8], &[u8]> {
+        move |s: &[u8]| {
+            let (s, (_, len, _)) = tuple((
+                char(begin),
+                usize_t,
+                char(':')
+            ))(s)?;
+            let (s, (res, _)) = tuple((
+                take(len),
+                char(end)
+            ))(s)?;
+            Ok((s, res))
+        }
     }
 
 
@@ -151,37 +196,35 @@ mod parse {
         )
     }
 
-    fn tag_t(s: &[u8]) -> IResult<&[u8], Tag> {
-        let (s, (_, len, _)) = tuple((
-            char('<'),
-            usize_t,
-            char(':'),
-        ))(s)?;
-        let (s, (tag, _, recurse)) = tuple((
-            take(len),
-            char('|'),
-            // recurses into the main parser
-            t_t
-        ))(s)?;
-        Ok((s, Tag {
-            tag: std::str::from_utf8(tag)
-                .map_err(|_| nom::Err::Failure((s, ErrorKind::Char)))
-                .map(|s| s.to_string())?,
-            val: Box::new(recurse)
-        }))
+    fn tag_t(s: &[u8]) -> IResult<&[u8], Tag<String, Box<T>>> {
+        // recurses into the main parser
+        map(tag_g(t_t),
+            |Tag {tag, val}|
+            Tag {
+                tag: tag.to_string(),
+                val: Box::new(val)
+            })(s)
+    }
+
+    fn tag_g<'a, P, O>(inner: P) -> impl Fn(&'a [u8]) -> IResult<&'a [u8], Tag<&'a str, O>>
+    where
+        P: Fn(&'a [u8]) -> IResult<&'a [u8], O>
+    {
+        move |s: &[u8]| {
+            let (s, tag) = sized('<', '|')(s)?;
+            let (s, val) = inner(s)?;
+            Ok((s, Tag {
+                tag: std::str::from_utf8(tag)
+                    .map_err(|_| nom::Err::Failure((s, ErrorKind::Char)))?,
+                val
+            }))
+
+        }
     }
 
     /// parse text scalar (`t5:hello,`)
     fn text(s: &[u8]) -> IResult<&[u8], T> {
-        let (s, (_, len, _)) = tuple((
-            char('t'),
-            usize_t,
-            char(':')
-        ))(s)?;
-        let (s, (res, _)) = tuple((
-            take(len),
-            char(',')
-        ))(s)?;
+        let (s, res) = text_g()(s)?;
         Ok((s, T::Text(
             std::str::from_utf8(res)
                 .map_err(|_| nom::Err::Failure((s, ErrorKind::Char)))
@@ -189,36 +232,93 @@ mod parse {
         )))
     }
 
-    fn list_t(s: &[u8]) -> IResult<&[u8], Vec<T>> {
-        let (s, (_, _, _, vec, _)) = tuple((
-            char('['),
-            usize_t,
-            char(':'),
-            nom::multi::many0(t_t),
-            char(']')
-        ))(s)?;
-        Ok((s, vec))
+    fn text_g() -> impl Fn(&[u8]) -> IResult<&[u8], &[u8]> {
+        sized('t', ',')
     }
 
-    fn record_t(s: &[u8]) -> IResult<&[u8], HashMap<String, Box<T>>> {
-        let (s, (_, _, _, map, _)) = tuple((
-            char('{'),
-            usize_t,
-            char(':'),
+    fn list_t(s: &[u8]) -> IResult<&[u8], Vec<T>> {
+        map_parser(list_g(), nom::multi::many0(t_t))(s)
+    }
+
+    fn list_g() -> impl Fn(&[u8]) -> IResult<&[u8], &[u8]> {
+        sized('[', ']')
+    }
+
+    fn skip() -> impl Fn(&[u8]) -> IResult<&[u8], ()> {
+        move |s: &[u8]| {
+            let (s, ()) = alt((
+                // TODO: only use the sized parsers here
+                map(text, |_| ()),
+                map(unit_t, |_| ()),
+                map(list_g(), |_| ()),
+                map(t_t, |_| ()),
+                // TODO: add rest of parsers
+            ))(s)?;
+            Ok((s, ()))
+        }
+    }
+
+    fn list_take<'a>(n: usize) -> impl Fn(&'a [u8]) -> IResult<&'a [u8], Vec<U<'a>>> {
+        map_parser(list_g(), nom::multi::many_m_n(n, n, u_u))
+    }
+
+    // fn record_get<'a>(key: usize
+
+    fn record_t<'a>(s: &'a [u8]) -> IResult<&'a [u8], HashMap<String, Box<T>>> {
+        let (s, hm) = record_g(t_t)(s)?;
+        Ok((s,
+            hm.into_iter().map(
+                |(k, v)| (k.to_string(), v)
+            ).collect::<HashMap<_,_>>()))
+    }
+
+    fn record_g<'a, P, O>(inner: P) -> impl Fn(&'a [u8]) -> IResult<&'a [u8], HashMap<&'a str, Box<O>>>
+    where
+        O: Clone,
+        P: Fn(&'a [u8]) -> IResult<&'a [u8], O>
+    {
+        map_parser(
+            sized('{', '}'),
             nom::multi::fold_many1(
-                tag_t,
+                tag_g(inner),
                 HashMap::new(),
-                |mut acc: HashMap<_, _>, Tag { tag, val }| {
+                |mut acc: HashMap<_, _>, Tag { tag, mut val }| {
                     // ignore duplicated tag names that appear later
                     if !acc.contains_key(&tag) {
-                        acc.insert(tag, val);
+                        acc.insert(tag, Box::new(val));
                     }
                     acc
                 }
-            ),
-            char('}')
-        ))(s)?;
-        Ok((s, map))
+            )
+        )
+    }
+
+    fn u_u(s: &[u8]) -> IResult<&[u8], U> {
+        alt((
+            map(text_g(), U::Text),
+            map(unit_t, |()| U::Unit),
+            map(tag_g(u_u), |t| U::Sum(t.map(Box::new))),
+            map(list_g(), U::List),
+            map(record_g(u_u), U::Record),
+
+            map(uint_t("n3"), |u| U::N3(u)),
+            map(uint_t("n6"), |u| U::N6(u)),
+            map(uint_t("n7"), |u| U::N7(u)),
+            map(int_t("i3"), |u| U::I3(u)),
+            map(int_t("i6"), |u| U::I6(u)),
+            map(int_t("i7"), |u| U::I7(u)),
+
+            // less common
+            map(uint_t("n1"), |u| U::N3(u)),
+            map(uint_t("n2"), |u| U::N3(u)),
+            map(uint_t("n4"), |u| U::N6(u)),
+            map(uint_t("n5"), |u| U::N6(u)),
+            map(int_t("i1"), |u| U::I3(u)),
+            map(int_t("i2"), |u| U::I3(u)),
+            map(int_t("i4"), |u| U::I6(u)),
+            map(int_t("i5"), |u| U::I6(u)),
+            // TODO: 8, 9 not supported
+        ))(s)
     }
 
     fn t_t(s: &[u8]) -> IResult<&[u8], T>  {
@@ -331,6 +431,13 @@ mod parse {
                     T::Unit,
                     T::Unit,
                     T::Unit,
+                ]))
+            );
+            assert_eq!(
+                list_take(2)("[6:u,u,u,]".as_bytes()),
+                Ok(("".as_bytes(), vec![
+                    U::Unit,
+                    U::Unit,
                 ]))
             );
             assert_eq!(
