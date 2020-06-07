@@ -15,6 +15,7 @@ let
     crosscode = callPackage ./crosscode.nix {};
     dungeons3 = callPackage ./dungeons3.nix {};
     epistory = callPackage ./epistory.nix { };
+    freedom-planet = callPackage ./freedom-planet.nix {};
     homm3 = callPackage ./homm3 {};
     kingdoms-and-castles = callPackage ./kingdoms-and-castles.nix {};
     overload = callPackage ./overload.nix {};
