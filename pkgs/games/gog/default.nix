@@ -16,9 +16,11 @@ let
     dungeons3 = callPackage ./dungeons3.nix {};
     epistory = callPackage ./epistory.nix { };
     freedom-planet = callPackage ./freedom-planet.nix {};
+    gibbous = callPackage ./gibbous.nix {};
     homm3 = callPackage ./homm3 {};
     hollow-knight = callPackage ./hollow-knight.nix {};
     kingdoms-and-castles = callPackage ./kingdoms-and-castles.nix {};
+    knights-and-bikes = callPackage ./knights-and-bikes.nix {};
     overload = callPackage ./overload.nix {};
     party-hard = callPackage ./party-hard.nix {};
     planescape-torment-enhanced-edition = callPackage ./planescape-torment-enhanced-edition.nix {};
