@@ -17,6 +17,7 @@ let
     epistory = callPackage ./epistory.nix { };
     freedom-planet = callPackage ./freedom-planet.nix {};
     homm3 = callPackage ./homm3 {};
+    hollow-knight = callPackage ./hollow-knight.nix {};
     kingdoms-and-castles = callPackage ./kingdoms-and-castles.nix {};
     overload = callPackage ./overload.nix {};
     party-hard = callPackage ./party-hard.nix {};
