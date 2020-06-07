@@ -12,16 +12,19 @@ _doPatchFmod() {
 
     case "$(objdump -f "$1" | sed -n -e 's/^architecture: *//p')" in
         i386:x86-64,*)
-            local addr="$(objdump -d "$1" | sed -n -e '
+            local addrs="$(objdump -d "$1" | sed -n -e '
                 /callq.*system@plt/s/^ *\([^:]\+\).*/\1/p
             ')"
 
-            # This is quite easy, just replace the system() call with XOR EAX
-            # so we get a return value of 0 and pad the rest with NOP.
-            local offset=$(("0x$addr"))
-            ( printf '\x31\xc0'     # XOR the EAX register
-              printf '\x90\x90\x90' # Fill with NOPs
-            ) | dd of="$1" obs=1 seek=$offset conv=notrunc status=none
+            local addr
+            for addr in $addrs; do
+                # This is quite easy, just replace the system() call with XOR
+                # EAX so we get a return value of 0 and pad the rest with NOP.
+                local offset=$(("0x$addr"))
+                ( printf '\x31\xc0'     # XOR the EAX register
+                  printf '\x90\x90\x90' # Fill with NOPs
+                ) | dd of="$1" obs=1 seek=$offset conv=notrunc status=none
+            done
             ;;
         i386,*)
             local relocSystem="$(readelf -r "$1" | sed -n -e '
