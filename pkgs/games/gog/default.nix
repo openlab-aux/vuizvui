@@ -19,6 +19,7 @@ let
     gibbous = callPackage ./gibbous.nix {};
     homm3 = callPackage ./homm3 {};
     hollow-knight = callPackage ./hollow-knight.nix {};
+    into-the-breach = callPackage ./into-the-breach.nix {};
     kingdoms-and-castles = callPackage ./kingdoms-and-castles.nix {};
     knights-and-bikes = callPackage ./knights-and-bikes.nix {};
     overload = callPackage ./overload.nix {};
