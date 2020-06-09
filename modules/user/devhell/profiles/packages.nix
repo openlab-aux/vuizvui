@@ -269,6 +269,7 @@ in {
       zbar
       zgrviewer
       zip
+      zstd
       zotero
       zsync
     ];
