@@ -19,7 +19,8 @@ with import ../lib;
   };
   profpatsch = {
     shiki = callMachine ./profpatsch/shiki.nix {};
-    haku   = callMachine ./profpatsch/haku.nix {};
+    haku = callMachine ./profpatsch/haku.nix {};
+    legosi = callMachine ./profpatsch/legosi.nix {};
     # mikiya = callMachine ./profpatsch/mikiya.nix {};
   };
   misc = {
