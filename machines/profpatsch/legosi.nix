@@ -42,5 +42,9 @@ in {
     users.users = {
       root.openssh.authorizedKeys.keys = [ myKey ];
     };
+
+    environment.systemPackages = [
+      pkgs.weechat
+    ];
   };
 }
