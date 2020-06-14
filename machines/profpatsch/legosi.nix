@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ modulesPath, config, pkgs, lib, ... }:
 
 let
   myLib  = import ./lib.nix  { inherit pkgs lib; };
@@ -9,7 +9,7 @@ let
 in {
   imports = [
     ./base-server.nix
-    <nixpkgs/nixos/modules/profiles/qemu-guest.nix>
+    "${modulesPath}/profiles/qemu-guest.nix"
   ];
 
   config = {
