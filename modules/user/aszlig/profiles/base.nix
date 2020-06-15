@@ -15,6 +15,7 @@ in {
       buildCores = 0;
       extraOptions = ''
         auto-optimise-store = true
+        experimental-features = nix-command flakes
       '';
     };
 
