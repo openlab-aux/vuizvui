@@ -43,8 +43,10 @@ in {
       root.openssh.authorizedKeys.keys = [ myKey ];
     };
 
-    environment.systemPackages = [
-      pkgs.weechat
-    ];
+    vuizvui.programs.profpatsch.weechat = {
+      enable = true;
+      authorizedKeys = [ myKey ];
+    };
+
   };
 }
