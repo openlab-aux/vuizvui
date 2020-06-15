@@ -47,6 +47,7 @@ pkgs: with pkgs; [
   nmap
   openssh
   openssl
+  p7zip
   pavucontrol
   posix_man_pages
   pulseaudioLight
@@ -71,7 +72,6 @@ pkgs: with pkgs; [
   surfraw
   vuizvui.taalo-build
   telnet
-  unar
   unzip
   valgrind
   vbindiff
