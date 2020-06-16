@@ -34,7 +34,6 @@ in {
     hardware = {
       enableAllFirmware = true;
       nitrokey.enable = true;
-      u2f.enable = true;
       opengl = {
         driSupport32Bit = true;
       };
