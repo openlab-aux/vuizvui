@@ -52,8 +52,10 @@ in {
 
     services.bitlbee = {
       enable = true;
-      authBackend = "pam";
-      authMode = "Closed";
+      authBackend = "storage";
+      # TODO: use a unix socket shared between the weechat and bitlbee
+      # So that I can leave this open and only the weechat can connect.
+      authMode = "Open";
       hostName = hostname;
       interface = "127.0.0.1";
       libpurple_plugins = [];
