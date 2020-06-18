@@ -238,15 +238,6 @@ in {
       vanilla-dmz
       vim_configurable
       virt-viewer
-      (virtinst.override {
-        python2Packages = python2Packages.override {
-          overrides = lib.const (super: {
-            routes = super.routes.overridePythonAttrs (lib.const {
-              doCheck = false;
-            });
-          });
-        };
-      })
       virtmanager
       vit
       vlc
