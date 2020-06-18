@@ -4,6 +4,8 @@ let
   myLib  = import ./lib.nix  { inherit pkgs lib; };
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
 
+  hostname = "legosi";
+
   myKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNMQvmOfon956Z0ZVdp186YhPHtSBrXsBwaCt0JAbkf/U/P+4fG0OROA++fHDiFM4RrRHH6plsGY3W6L26mSsCM2LtlHJINFZtVILkI26MDEIKWEsfBatDW+XNAvkfYEahy16P5CBtTVNKEGsTcPD+VDistHseFNKiVlSLDCvJ0vMwOykHhq+rdJmjJ8tkUWC2bNqTIH26bU0UbhMAtJstWqaTUGnB0WVutKmkZbnylLMICAvnFoZLoMPmbvx8efgLYY2vD1pRd8Uwnq9MFV1EPbkJoinTf1XSo8VUo7WCjL79aYSIvHmXG+5qKB9ed2GWbBLolAoXkZ00E4WsVp9H philip@nyx";
 
 in {
@@ -36,7 +38,7 @@ in {
     };
 
     networking = {
-      hostName = "legosi";
+      hostName = hostname;
     };
 
     users.users = {
@@ -48,5 +50,15 @@ in {
       authorizedKeys = [ myKey ];
     };
 
+    services.bitlbee = {
+      enable = true;
+      authBackend = "pam";
+      authMode = "Closed";
+      hostName = hostname;
+      interface = "127.0.0.1";
+      libpurple_plugins = [];
+      # documented example file: https://github.com/bitlbee/bitlbee/blob/master/bitlbee.conf
+      protocols = "jabber";
+    };
   };
 }
