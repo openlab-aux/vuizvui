@@ -15,6 +15,7 @@ in {
   ];
 
   config = {
+    vuizvui.modifyNixPath = false;
     nix.nixPath = [
       "vuizvui=/root/vuizvui"
       "nixpkgs=/root/nixpkgs"
