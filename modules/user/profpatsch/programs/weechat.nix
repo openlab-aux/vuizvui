@@ -32,15 +32,16 @@ let
         "$0" "$@"
     ];
 
-  startWeechatTmuxSession = writeExecline "start-weechat-tmux-session" {} [
-    "if" [
+  startWeechatTmuxSession = wrapper: writeExecline "start-weechat-tmux-session" {} [
+    "if" ([
       bins.tmux
         "new-session"
           # detach immediately
           "-d"
           "-s" sessionName
+    ] ++ wrapper ++ [
           bins.weechat
-    ]
+    ])
     (until { delaySec = 3; })
       # negate has-session
       "if" "-n" [
@@ -66,6 +67,12 @@ in
       description = "ssh keys that should be able to connect to the weechat tmux session";
       type = lib.types.listOf lib.types.str;
     };
+
+    wrapExecStart = lib.mkOption {
+      description = "bernstein-chaining command wrapped around weechat";
+      type = lib.types.listOf lib.types.str;
+      default = [];
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -78,6 +85,9 @@ in
         group = "weechat";
         home = weechatDataDir;
         openssh.authorizedKeys.keys = cfg.authorizedKeys;
+        # give this user access to the bitlbee group and socket
+        # TODO: should not be here I guess.
+        extraGroups = [ "bitlbee" ];
       };
     };
 
@@ -91,7 +101,7 @@ in
     systemd.services.weechat = {
       environment.WEECHAT_HOME = weechatDataDir;
       serviceConfig = {
-        ExecStart = startWeechatTmuxSession;
+        ExecStart = startWeechatTmuxSession cfg.wrapExecStart;
         Restart = "always";
         RestartSec = "3s";
         User = userName;
