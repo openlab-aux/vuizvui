@@ -35,4 +35,5 @@
   ./user/openlab/stackenblocken.nix
   ./user/profpatsch/programs/scanning.nix
   ./user/profpatsch/programs/weechat.nix
+  ./user/profpatsch/services/bitlbee.nix
 ]

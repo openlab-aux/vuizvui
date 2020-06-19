@@ -49,18 +49,10 @@ in {
       enable = true;
       authorizedKeys = [ myKey ];
     };
+    users.users.weechat.extraGroups = [ "bitlbee" ];
 
-    services.bitlbee = {
-      enable = true;
-      authBackend = "storage";
-      # TODO: use a unix socket shared between the weechat and bitlbee
-      # So that I can leave this open and only the weechat can connect.
-      authMode = "Open";
-      hostName = hostname;
-      interface = "127.0.0.1";
-      libpurple_plugins = [];
-      # documented example file: https://github.com/bitlbee/bitlbee/blob/master/bitlbee.conf
-      protocols = "jabber";
+    vuizvui.services.profpatsch.bitlbee = {
+       enable = true;
     };
   };
 }
