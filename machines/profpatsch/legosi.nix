@@ -49,11 +49,31 @@ in {
     vuizvui.programs.profpatsch.weechat = {
       enable = true;
       authorizedKeys = [ myKey ];
+      # redirect the bitlbee unix socket to a fake domain
+      # because
+      wrapExecStart = [
+        "${pkgs.ip2unix}/bin/ip2unix"
+        "-r"
+        "addr=1.2.3.4,port=6667,path=${config.vuizvui.services.profpatsch.bitlbee.socketFile}"
+      ];
     };
     users.users.weechat.extraGroups = [ "bitlbee" ];
 
     vuizvui.services.profpatsch.bitlbee = {
        enable = true;
     };
+
+    # services.nginx = {
+    #   enable = true;
+    #   virtualHosts.${"profpatsch.de"} = {
+    #     forceSSL = true;
+    #     enableACME = true;
+    #     locations."/" = {
+    #       index = "index.html";
+    #     };
+    #     serverAliases = [ "lojbanistan.de" ];
+    #   };
+    # };
+
   };
 }
