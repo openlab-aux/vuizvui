@@ -14,7 +14,7 @@ let
       User = bitlbeeUsername;
       AuthMode = "Open";
       AuthBackend = "storage";
-      ConfigDir = "/var/lib" + stateDir;
+      ConfigDir = "/var/lib/" + stateDir;
       Protocols = "jabber";
       # is this okay?
       CAFile = "/etc/ssl/certs/ca-certificates.crt";
