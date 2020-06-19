@@ -20,7 +20,7 @@ in {
       "vuizvui=/root/vuizvui"
       "nixpkgs=/root/nixpkgs"
       # todo: nicer?
-      "nixos-config=${pkgs.writetext "legosi-configuration.nix" ''
+      "nixos-config=${pkgs.writeText "legosi-configuration.nix" ''
         (import <vuizvui/machines>).profpatsch.legosi.config
       ''}"
     ];
