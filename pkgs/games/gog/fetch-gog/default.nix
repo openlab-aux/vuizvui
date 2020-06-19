@@ -4,8 +4,12 @@
 , email, password
 }:
 
-{ productId, downloadName, sha256, downloadType ? "installer", suffix ? "sh"
+{ productId
+, downloadName ? "en3installer0"
+, downloadType ? "installer"
+, suffix ? "sh"
 , name ? "${toString productId}-${downloadName}-${downloadType}.${suffix}"
+, sha256
 }:
 
 let

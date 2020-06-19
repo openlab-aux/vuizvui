@@ -9,11 +9,9 @@ buildGame rec {
 
   srcs = lib.singleton (fetchGog {
     productId = 1325604411;
-    downloadName = "en3installer0";
     sha256 = "141263g749k9h4741q8dyv7149n20zx50rhl0ny8ly6p4yw1spv7";
   }) ++ lib.optional ransomeUnbeeped (fetchGog {
     productId = 1858019230;
-    downloadName = "en3installer0";
     sha256 = "1cfll73qazm9nz40n963qvankqkznfjai9g88kgw6xcl40y8jrqn";
   });
 

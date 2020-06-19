@@ -9,7 +9,6 @@ buildGame {
 
   src = fetchGog {
     productId = 1132393016;
-    downloadName = "en3installer0";
     sha256 = "1plil37525l20j1fpk8726v6vh8rsny2x06msvd2q0900j8xlbl1";
   };
 

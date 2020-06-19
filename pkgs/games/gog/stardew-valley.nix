@@ -8,7 +8,6 @@ buildGame rec {
 
   src = fetchGog {
     productId = 1453375253;
-    downloadName = "en3installer0";
     sha256 = "1akqnawy2rzyxlkpjip6fa0isnzna131n09fr19i82qj9ywz2c1j";
   };
 

@@ -8,7 +8,6 @@ buildUnity {
 
   src = fetchGog {
     productId = 1964276929;
-    downloadName = "en3installer0";
     sha256 = "0p54dhd2j7zvc78444jnjmkjv7kf6sskbphxkj5vlxmfcrmbd2xq";
   };
 
