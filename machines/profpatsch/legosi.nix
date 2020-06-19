@@ -50,7 +50,7 @@ in {
       enable = true;
       authorizedKeys = [ myKey ];
       # redirect the bitlbee unix socket to a fake domain
-      # because
+      # because weechat is unable to connect to unix sockets.
       wrapExecStart = [
         "${pkgs.ip2unix}/bin/ip2unix"
         "-r"
