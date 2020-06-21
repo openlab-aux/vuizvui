@@ -219,4 +219,10 @@ in rec {
     netencode-rs
     netencode-rs-tests
     ;
+
+  inherit (import ./execline/el-semicolon.nix { inherit writeRustSimpleLib; })
+    el-semicolon
+    el-semicolon-tests
+    ;
+
 }
