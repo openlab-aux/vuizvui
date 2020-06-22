@@ -7,6 +7,8 @@ use std::io::Write;
 pub enum T {
     // Unit
     Unit,
+    // Boolean
+    N1(bool),
     // Naturals
     N3(u8),
     N6(u64),
@@ -29,6 +31,8 @@ pub enum T {
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum U<'a> {
     Unit,
+    // Boolean
+    N1(bool),
     // Naturals
     N3(u8),
     N6(u64),
@@ -71,6 +75,7 @@ fn encode_tag<W: Write>(w: &mut W, tag: String, val: T) -> std::io::Result<()> {
 pub fn encode<W: Write>(w: &mut W, t: T) -> std::io::Result<()> {
   match t {
       T::Unit => write!(w, "u,"),
+      T::N1(b) => if b { write!(w, "n1:1,") } else { write!(w, "n1:0,") },
       T::N3(n) => write!(w, "n3:{},", n),
       T::N6(n) => write!(w, "n6:{},", n),
       T::N7(n) => write!(w, "n7:{},", n),
@@ -113,7 +118,7 @@ pub fn text(s: String) -> T {
     T::Text(s)
 }
 
-mod parse {
+pub mod parse {
     use super::{T, Tag, U};
 
     use std::str::FromStr;
@@ -171,6 +176,13 @@ mod parse {
             ))(s)?;
             Ok((s, int))
         }
+    }
+
+    fn bool_t<'a>() -> impl Fn(&'a [u8]) -> IResult<&'a [u8], bool> {
+        context("bool", alt((
+            map(tag("n1:0,"), |_| false),
+            map(tag("n1:1,"), |_| true),
+        )))
     }
 
     fn int_t<'a, I: FromStr + Neg<Output=I>>(t: &'static str) -> impl Fn(&'a [u8]) -> IResult<&[u8], I> {
@@ -293,7 +305,7 @@ mod parse {
         )
     }
 
-    fn u_u(s: &[u8]) -> IResult<&[u8], U> {
+    pub fn u_u(s: &[u8]) -> IResult<&[u8], U> {
         alt((
             map(text_g(), U::Text),
             map(unit_t, |()| U::Unit),
@@ -301,6 +313,7 @@ mod parse {
             map(list_g(), U::List),
             map(record_g(u_u), U::Record),
 
+            map(bool_t(), |u| U::N1(u)),
             map(uint_t("n3"), |u| U::N3(u)),
             map(uint_t("n6"), |u| U::N6(u)),
             map(uint_t("n7"), |u| U::N7(u)),
@@ -309,7 +322,6 @@ mod parse {
             map(int_t("i7"), |u| U::I7(u)),
 
             // less common
-            map(uint_t("n1"), |u| U::N3(u)),
             map(uint_t("n2"), |u| U::N3(u)),
             map(uint_t("n4"), |u| U::N6(u)),
             map(uint_t("n5"), |u| U::N6(u)),
@@ -329,6 +341,7 @@ mod parse {
             map(list_t, |l| T::List(Box::new(l))),
             map(record_t, |p| T::Record(p)),
 
+            map(bool_t(), |u| T::N1(u)),
             // 8, 64 and 128 bit
             map(uint_t("n3"), |u| T::N3(u)),
             map(uint_t("n6"), |u| T::N6(u)),
@@ -338,7 +351,6 @@ mod parse {
             map(int_t("i7"), |u| T::I7(u)),
 
             // less common
-            map(uint_t("n1"), |u| T::N3(u)),
             map(uint_t("n2"), |u| T::N3(u)),
             map(uint_t("n4"), |u| T::N6(u)),
             map(uint_t("n5"), |u| T::N6(u)),
@@ -359,6 +371,18 @@ mod parse {
             assert_eq!(
                 unit_t("u,".as_bytes()),
                 Ok(("".as_bytes(), ()))
+            );
+        }
+
+        #[test]
+        fn test_parse_bool_t() {
+            assert_eq!(
+                bool_t()("n1:0,".as_bytes()),
+                Ok(("".as_bytes(), false))
+            );
+            assert_eq!(
+                bool_t()("n1:1,".as_bytes()),
+                Ok(("".as_bytes(), true))
             );
         }
 
@@ -490,12 +514,12 @@ mod parse {
             // { a: Unit
             // , foo: List <A: Unit | B: List i3> }
             assert_eq!(
-                t_t("{49:<1:a|u,<3:foo|[30:<1:A|u,<1:A|u,<1:B|[7:i3:127,]]}".as_bytes()),
+                t_t("{52:<1:a|u,<3:foo|[33:<1:A|u,<1:A|n1:1,<1:B|[7:i3:127,]]}".as_bytes()),
                 Ok(("".as_bytes(), T::Record(vec![
                     ("a".to_owned(), Box::new(T::Unit)),
                     ("foo".to_owned(), Box::new(T::List(Box::new(vec![
                         T::Sum(Tag { tag: "A".to_owned(), val: Box::new(T::Unit) }),
-                        T::Sum(Tag { tag: "A".to_owned(), val: Box::new(T::Unit) }),
+                        T::Sum(Tag { tag: "A".to_owned(), val: Box::new(T::N1(true)) }),
                         T::Sum(Tag { tag: "B".to_owned(), val: Box::new(T::List(Box::new(vec![T::I3(127)]))) }),
                     ]))))
                 ].into_iter().collect::<HashMap<String, Box<T>>>())))

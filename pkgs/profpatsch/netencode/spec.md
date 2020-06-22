@@ -31,7 +31,17 @@ An implementation can define the biggest numbers it supports, and has to throw a
 
 Floats are not supported, you can implement fixed-size decimals or ratios using integers.
 
+### booleans
+
+A boolean is represented as `n1`.
+
+* `n1:0,`: false
+* `n1:1,`: true
+
+TODO: should we add `f,` and `t,`?
+
 ### text
+
 
 Text (`t`) that *must* be encoded as UTF-8, starting with its length in bytes:
 
@@ -40,7 +50,7 @@ Text (`t`) that *must* be encoded as UTF-8, starting with its length in bytes:
 * The string `:,` (2 bytes): `t2::,,`
 * The empty sting `` (0 bytes): `t0:,`
 
-Binary data is not supported, it hinders human readability. Try to use structured data, or use a different format.
+TODO: add `b` for binary content. Even filesystem paths are not utf-8 encodable sometimes, yet the distinction of text with an encoding is useful, so we should keep `t` as is.
 
 ## tagged values
 

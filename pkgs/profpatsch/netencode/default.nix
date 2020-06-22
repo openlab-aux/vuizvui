@@ -23,12 +23,12 @@ let
     features = [ "std" "alloc" ];
   };
 
-  netencode-rs-common = tests: writeRustSimpleLib "encode" {
+  netencode-rs-common = tests: writeRustSimpleLib "netencode" {
     dependencies = [ nom ];
     buildTests = tests;
     release = false;
     verbose = true;
-  } ./netencode.rs ;
+  } ./netencode.rs;
 
   netencode-rs-tests = netencode-rs-common true;
 
