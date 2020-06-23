@@ -1,4 +1,4 @@
-{ stdenv, lib, pkgconfig, nix, boost, dash }:
+{ stdenv, lib, pkgconfig, closureInfo, nix, boost, dash }:
 
 drv: { paths ? {}, ... }@attrs:
 
@@ -30,31 +30,11 @@ in stdenv.mkDerivation ({
 
   inherit drv;
 
-  # writes files "sandbox-*" to the builder (see nix manual)
-  exportReferencesGraph =
-    [ "sandbox-closure" drv ] ++
-    lib.optionals allowBinSh [ "sandbox-binsh" dash ];
+  closureInfo = closureInfo {
+    rootPaths = lib.singleton drv ++ lib.optional allowBinSh dash;
+  };
 
   configurePhase = ''
-    # Reads the dependency closures and does … something? TODO: explain
-    runtimeDeps="$(sed -ne '
-      p; n; n
-
-      :cdown
-      /^0*$/b
-      :l; s/0\(X*\)$/X\1/; tl
-
-      s/^\(X*\)$/9\1/; tdone
-      ${lib.concatMapStrings (num: ''
-        s/${toString num}\(X*\)$/${toString (num - 1)}\1/; tdone
-      '') (lib.range 1 9)}
-
-      :done
-      y/X/9/
-      x; n; p; x
-      bcdown
-    ' ../sandbox-* | sort -u)"
-
     echo '#include "setup.h"' > params.c
     echo 'bool setup_app_paths(void) {' >> params.c
 
@@ -66,7 +46,7 @@ in stdenv.mkDerivation ({
         >> params.c
 
     '' else ''
-      for dep in $runtimeDeps; do
+      for dep in $(< "$closureInfo/store-paths"); do
         echo 'if (!bind_mount("'"$dep"'", true, true, true)) return false;' \
           >> params.c
       done
