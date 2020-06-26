@@ -323,6 +323,7 @@ pub mod parse {
     pub fn u_u(s: &[u8]) -> IResult<&[u8], U> {
         alt((
             map(text_g(), U::Text),
+            map(binary_g(), U::Binary),
             map(unit_t, |()| U::Unit),
             map(tag_g(u_u), |t| U::Sum(t.map(Box::new))),
             map(list_g(), U::List),
@@ -351,6 +352,7 @@ pub mod parse {
     fn t_t(s: &[u8]) -> IResult<&[u8], T>  {
         alt((
             text,
+            binary(),
             map(unit_t, |_| T::Unit),
             map(tag_t, |t| T::Sum(t)),
             map(list_t, |l| T::List(Box::new(l))),
