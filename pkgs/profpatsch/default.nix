@@ -225,4 +225,6 @@ in rec {
     el-semicolon-tests
     ;
 
+  netencode = import ./netencode/netencode.nix;
+
 }
