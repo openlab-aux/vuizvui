@@ -1,4 +1,4 @@
-# encode 0.1-unreleased
+# netencode 0.1-unreleased
 
 [bencode][] and [netstring][]-inspired pipe format that should be trivial to parse (100 lines of code or less), mostly human-decipherable for easy debugging, and support nested record and sum types.
 
@@ -42,7 +42,6 @@ TODO: should we add `f,` and `t,`?
 
 ### text
 
-
 Text (`t`) that *must* be encoded as UTF-8, starting with its length in bytes:
 
 * The string `hello world` (11 bytes): `t11:hello world,`
@@ -50,7 +49,20 @@ Text (`t`) that *must* be encoded as UTF-8, starting with its length in bytes:
 * The string `:,` (2 bytes): `t2::,,`
 * The empty sting `` (0 bytes): `t0:,`
 
-TODO: add `b` for binary content. Even filesystem paths are not utf-8 encodable sometimes, yet the distinction of text with an encoding is useful, so we should keep `t` as is.
+### binary
+:LOGBOOK:
+CLOCK: [2020-06-26 Fr 23:21]
+:END:
+
+Arbitrary binary strings (`b`) that can contain any data, starting with its length in bytes.
+
+* The ASCII string `hello world` as binary data (11 bytes): `b11:hello world,`
+* The empty binary string (0 bytes): `b0:,`
+* The bytestring with `^D` (1 byte): `b1:,`
+
+Since the binary strings are length-prefixd, they can contain `\0` and no escaping is required. Care has to be taken in languages with `\0`-terminated bytestrings.
+
+Use text (`t`) if you have utf-8 encoded data.
 
 ## tagged values
 

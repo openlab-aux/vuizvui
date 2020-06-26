@@ -20,6 +20,7 @@ pub enum T {
     // Text
     // TODO: make into &str
     Text(String),
+    Binary(Vec<u8>),
     // Tags
     // TODO: make into &str
     Sum(Tag<String, Box<T>>),
@@ -43,6 +44,7 @@ pub enum U<'a> {
     I7(i128),
     // Text
     Text(&'a [u8]),
+    Binary(&'a [u8]),
     // Tags
     Sum(Tag<&'a str, Box<U<'a>>>),
     Record(HashMap<&'a str, Box<U<'a>>>),
@@ -83,6 +85,11 @@ pub fn encode<W: Write>(w: &mut W, t: T) -> std::io::Result<()> {
       T::I6(i) => write!(w, "i6:{},", i),
       T::I7(i) => write!(w, "i7:{},", i),
       T::Text(s) => write!(w, "t{}:{},", s.len(), s),
+      T::Binary(s) => {
+          write!(w, "b{}:", s.len());
+          w.write(&s);
+          write!(w, ",")
+      },
       T::Sum(Tag{tag, val}) => encode_tag(w, tag, *val),
       T::Record(m) => {
           let mut c = std::io::Cursor::new(vec![]);
@@ -246,6 +253,14 @@ pub mod parse {
 
     fn text_g() -> impl Fn(&[u8]) -> IResult<&[u8], &[u8]> {
         sized('t', ',')
+    }
+
+    fn binary<'a>() -> impl Fn(&'a [u8]) -> IResult<&'a [u8], T> {
+        map(binary_g(), |b| T::Binary(b.to_owned()))
+    }
+
+    fn binary_g() -> impl Fn(&[u8]) -> IResult<&[u8], &[u8]> {
+        sized('b', ',')
     }
 
     fn list_t(s: &[u8]) -> IResult<&[u8], Vec<T>> {
@@ -440,6 +455,23 @@ pub mod parse {
             assert_eq!(
                 text("t9:今日は,".as_bytes()),
                 Ok(("".as_bytes(), T::Text("今日は".to_owned())))
+            );
+        }
+
+        #[test]
+        fn test_parse_binary() {
+            assert_eq!(
+                binary()("b5:hello,".as_bytes()),
+                Ok(("".as_bytes(), T::Binary(Vec::from("hello".to_owned()))))
+            );
+            assert_eq!(
+                binary()("b4:fo,".as_bytes()),
+                // TODO: way better parse error messages
+                Err(nom::Err::Error(("fo,".as_bytes(), nom::error::ErrorKind::Eof)))
+            );
+            assert_eq!(
+                binary()("b9:今日は,".as_bytes()),
+                Ok(("".as_bytes(), T::Binary(Vec::from("今日は".as_bytes()))))
             );
         }
 
