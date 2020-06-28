@@ -1,0 +1,96 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+ +---------------------------------------------------------------------------+
+ |                                                                           |
+ | Profpatsch                                                                |
+ | mail@profpatsch.de                                                        |
+ | Augsburg, Germany                                                         |
+ |                                                                           |
+ +---------------------------------------------------------------------------+
+
+ VALIDITY
+ ============================================================================
+ This information is current as of 2017-02-14. If in doubt, check:
+   http://profpatsch.de/id.txt
+ for an updated version.
+
+
+ CRYPTOGRAPHIC INFORMATION
+ =============================================================================
+
+ GPG KEY AND SIGNING POLICY
+ -----------------------------------------------------------------------------
+pub   4096R/22247CDF 2012-06-19
+      Key fingerprint = 4ACF D759 2710 266E 18CE  BB28 C5CF D08B 2224 7CDF
+uid                  Profpatsch <mail@profpatsch.de>
+uid                  Profpatsch (jabber@ccc) <profpatsch@jabber.ccc.de>
+uid                  Profpatsch (jabber@deshalbfrei) <profpatsch@deshalbfrei.org>
+uid                  Profpatsch (jabber@ola) <profpatsch@ola.wtf>
+sub   4096R/74FE6DF8 2012-06-19
+
+ You can find it at: http://profpatsch.de/key.asc
+
+ I have no key transition statements at this time.
+
+ Level 3 "I have done very careful checking" signatures by me indicate that:
+ * I personally know the subject of the key by that name, and have for some
+   time;
+ * I can readily recognise them; and
+ * I verified their key fingerprint in person.
+
+ Level 2 "I have done casual checking" signatures by me indicate that:
+ * I physically met this person, not by voice or video chat;
+ * they presented me with very difficult to forge evidence of their identity
+   (normally state issued photo identification) or are widely recognized by their
+   identity by their peers; and
+ * I verified their key fingerprint at that time.
+
+
+ XMPP ACCOUNTS, OTR FINGERPRINTS & LOGGING STATEMENTS
+ -----------------------------------------------------------------------------
+
+ Profpatsch@ola.wtf/jabber - DSA
+  B00BE5D6 C2798E45 CDE9C94F 8A90071D DC133E8D
+
+ Fallback accounts:
+ profpatsch@jabber.ccc.de
+ profpatsch@deshalbfrei.org
+
+ I generally LOG my OTR sessions (for backlog). Holler if you don’t want that.
+
+
+ HOW TO VERIFY THIS FILE
+ -----------------------------------------------------------------------------
+ 1) Import GPG key above (22247CDF)
+ 2)
+ $ curl http://profpatsch.de/id.txt > profpatsch.txt
+ $ gpg --verify profpatsch.txt
+
+
+ HOW TO SIGN THIS FILE
+ -----------------------------------------------------------------------------
+ $ gpg --clearsign id.txt
+
+
+ THANKS TO
+ -----------------------------------------------------------------------------
+ Johannes Führmann @weltraumpflege; from whom I blatantly stole this file. ;)
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJHBAEBCAAxFiEESs/XWScQJm4Yzrsoxc/QiyIkfN8FAlijDtATHG1haWxAcHJv
+ZnBhdHNjaC5kZQAKCRDFz9CLIiR830F8EACWeNr1v1orTtmS6EQc1Hi5g0+U22JD
+7HnDrUKjnSwzfOJ6SEHCKJ9qlUQBxOO5d6orpMtDvsOnvPzyhWyGutnLFJw4sKmD
+kGCeZdbURWKHDOTKVZCgOdHxpn2KRIxFArtYaQ09PzNGgNkJXfYkxnxXU0lEIbk7
+NKtXoisblf1FJLvIInEjbCaXqiDUifB5TeuSQzodwAcpziXQBjoXhVLimvoxhMWP
+732hts7OJf9SLtnBEFTHdIAciNQ1jl6dBxnZxPCWT1Sh+pwCfuEzbhsre8PjDvR1
+HVJmazwwp4wNq8chs2yuzjcdQ37XI5okLaob8PlyQ6iJl3/BOoLNnkaQiDrGYPt8
+wX5NkWe3TS4pqAxnIoCvDVecwfk7p6cWX47ZtVNIIA0er+R14LltvJh3IR7PovCB
+lLl8yJkNpWheA70F8aWjc5Xi/nnvz+uWo7iSXL+FUx6o6jGpREH4C0Yc4SAkBfTv
+8aSFOMuSv2V40EZE3Q12CTQDXrUmfWYn/2kBT5T0VfbFSDWibIwjcJRR4B2KtM2D
+/kI2kLUhN2GPqdG59n8wpKJ3g+hK1NA5wQ6kypdfYWWgyqbH2dMxbCQ1Tr2iq9oC
+DpX48YJolT8etzvpsNHlE7uKeH0h/Eas4+pTs7sLVVEW5Ljm5VYRQ5VrHAXYZ0uh
+jpDl4snBQ4LUFw==
+=Y79X
+-----END PGP SIGNATURE-----
