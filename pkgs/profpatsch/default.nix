@@ -210,7 +210,9 @@ in rec {
     readDhallFileAsJson
     ;
 
+  rust-deps = (import ./rust-deps.nix { inherit (pkgs) buildRustCrate; });
   inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline dhall buildDhallPackage; })
+
     xdg-open
     Prelude
     ;
@@ -220,9 +222,11 @@ in rec {
     netencode-rs-tests
     ;
 
-  inherit (import ./execline/el-semicolon.nix { inherit writeRustSimpleLib; })
+  inherit (import ./execline/default.nix { inherit pkgs writeRustSimpleLib rust-deps; })
     el-semicolon
     el-semicolon-tests
+    el-exec
+    el-substitute
     ;
 
   netencode = import ./netencode/netencode.nix;
