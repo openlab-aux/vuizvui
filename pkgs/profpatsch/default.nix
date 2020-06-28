@@ -168,13 +168,16 @@ in rec {
   inherit (import ./execline/e.nix { inherit pkgs writeExecline getBins; })
     e;
 
+  toNetstring = s:
+    "${toString (builtins.stringLength s)}:${s},";
+
   inherit getBins binify;
 
   inherit (import ./sandbox.nix {inherit pkgs writeExecline; })
     sandbox runInEmptyEnv;
 
   symlink = pkgs.callPackage ./execline/symlink.nix {
-    inherit runExecline;
+    inherit runExecline toNetstring;
   };
 
   importer = pkgs.callPackage ./execline/importer.nix {

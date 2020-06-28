@@ -1,4 +1,4 @@
-{ lib, s6-portable-utils, coreutils, runExecline }:
+{ lib, s6-portable-utils, coreutils, runExecline, toNetstring }:
 # DrvPath :: path relative to the derivation
 # AbsPath :: absolute path in the store
 #    Name
@@ -6,11 +6,6 @@
 # -> Drv
 name: links:
 
-let
-  toNetstring = s:
-    "${toString (builtins.stringLength s)}:${s},";
-
-in
 runExecline name {
   derivationArgs = {
     pathTuples = lib.concatMapStrings
