@@ -184,6 +184,12 @@ in rec {
     inherit symlink;
   };
 
+  inherit (import ./profpatsch.de { inherit pkgs lib toNetstring writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode; })
+    websiteStatic
+    record-get
+    importas-if
+    ;
+
 
   easy-dhall-nix = (import (pkgs.fetchFromGitHub {
     owner = "justinwoo";
