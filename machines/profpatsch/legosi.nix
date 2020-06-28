@@ -63,17 +63,20 @@ in {
        enable = true;
     };
 
-    # services.nginx = {
-    #   enable = true;
-    #   virtualHosts.${"profpatsch.de"} = {
-    #     forceSSL = true;
-    #     enableACME = true;
-    #     locations."/" = {
-    #       index = "index.html";
-    #     };
-    #     serverAliases = [ "lojbanistan.de" ];
-    #   };
-    # };
+    security.acme.acceptTerms = true;
+    security.acme.email = "mail@profpatsch.de";
+
+    services.nginx = {
+      enable = true;
+      virtualHosts.${"profpatsch.de"} = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          index = "index.html";
+          root = pkgs.vuizvui.profpatsch.websiteStatic;
+        };
+      };
+    };
 
   };
 }
