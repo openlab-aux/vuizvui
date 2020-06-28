@@ -40,7 +40,14 @@ in {
 
     networking = {
       hostName = hostname;
+
+      firewall = {
+        allowedTCPPorts = [
+          80 443
+        ];
+      };
     };
+
 
     users.users = {
       root.openssh.authorizedKeys.keys = [ myKey ];
