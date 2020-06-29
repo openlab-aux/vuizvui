@@ -1,4 +1,6 @@
-{ jsJquery, cssNormalize, cssMain, id_txt, cv_pdf }:
+{ jsJquery
+, cssNormalize, cssMain
+, id_txt, cv_pdf }:
 ''
 <!DOCTYPE html>
 <html>

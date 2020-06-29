@@ -9,14 +9,32 @@ let
     sha256 = "0gbfbfcbcpl8nq2shknsyz5pirf5wbnb54m3dynxs68x9y4sbxpp";
   };
 
+  quattrocento-latin = pkgs.fetchurl {
+    url = "https://fonts.gstatic.com/s/quattrocento/v11/OZpEg_xvsDZQL_LKIF7q4jP3w2j6.woff2";
+    sha256 = "161dzd0az6zw8js1q8ikf4yhm0h9zidc5wqlnsrpzw5npdzmbzbi";
+  };
+
+  open-sans-latin = pkgs.fetchurl {
+    url = "https://fonts.gstatic.com/s/opensans/v17/mem5YaGs126MiZpBA-UN_r8OUuhp.woff2";
+    sha256 = "1qj6qwajfjcs4l0mwj5lj7jdbc35y3rkqrsz2w41zcfzh8nywxzn";
+  };
+
   joinPath = lib.concatStringsSep "/";
 
   stderr-tee = writeExecline "stderr-tee" {} [
     "pipeline" [ bins.multitee "0-1,2" ] "$@"
   ];
 
+  applyTemplate = name: templateNix: deps:
+    pkgs.writeText name
+      (import templateNix
+        (lib.mapAttrs
+          # relative to the root of the webpage
+          (k: v: "/" + (joinPath (v.relativeDir ++ [ v.relativeFile ])))
+          deps));
+
   staticFiles =
-    let
+    rec {
       jsJquery = {
         relativeDir = [ "js" ];
         relativeFile = "jquery.js";
@@ -30,7 +48,22 @@ let
       cssMain = {
         relativeDir = [ "css" ];
         relativeFile = "main.css";
-        path = ./main.css;
+        path = applyTemplate "main.css" ./main.css.nix {
+          inherit
+            fontsQuattrocentoLatin
+            fontsOpenSansLatin
+            ;
+        };
+      };
+      fontsQuattrocentoLatin = {
+        relativeDir = [ "fonts" ];
+        relativeFile = "quattrocento-latin.woff2";
+        path = quattrocento-latin;
+      };
+      fontsOpenSansLatin = {
+        relativeDir = [ "fonts" ];
+        relativeFile = "open-sans-latin.woff2";
+        path = open-sans-latin;
       };
       cv_pdf = {
         relativeDir = [];
@@ -45,18 +78,12 @@ let
       index_html = {
         relativeDir = [];
         relativeFile = "index.html";
-        path = pkgs.writeText "index.html"
-          (import ./index.html.nix
-            (lib.mapAttrs
-              (k: v: joinPath (v.relativeDir ++ [ v.relativeFile ]))
-              {
-                inherit jsJquery cssNormalize cssMain;
-                inherit cv_pdf id_txt;
-              }));
+        path = applyTemplate "index.html" ./index.html.nix {
+          inherit jsJquery;
+          inherit cssNormalize cssMain;
+          inherit cv_pdf id_txt;
+        };
       };
-    in {
-      inherit jsJquery cssNormalize cssMain;
-      inherit cv_pdf id_txt index_html;
     };
 
   record-get = writeRustSimple "record-get" {
