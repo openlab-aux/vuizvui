@@ -1,0 +1,53 @@
+diff --git a/src/patchelf.cc b/src/patchelf.cc
+index ea6c6c0..d2d7d3b 100644
+--- a/src/patchelf.cc
++++ b/src/patchelf.cc
+@@ -1344,6 +1344,8 @@ void ElfFile<ElfFileParamNames>::removeNeeded(const std::set<std::string> & libs
+     auto shdrDynStr = findSection(".dynstr");
+     char * strTab = (char *) contents + rdi(shdrDynStr.sh_offset);
+ 
++    unsigned int verNeedNum = 0;
++
+     Elf_Dyn * dyn = (Elf_Dyn *) (contents + rdi(shdrDynamic.sh_offset));
+     Elf_Dyn * last = dyn;
+     for ( ; rdi(dyn->d_tag) != DT_NULL; dyn++) {
+@@ -1358,9 +1360,39 @@ void ElfFile<ElfFileParamNames>::removeNeeded(const std::set<std::string> & libs
+             }
+         } else
+             *last++ = *dyn;
++
++        if (rdi(dyn->d_tag) == DT_VERNEEDNUM)
++            verNeedNum = rdi(dyn->d_un.d_val);
+     }
+ 
+     memset(last, 0, sizeof(Elf_Dyn) * (dyn - last));
++
++    if (verNeedNum) {
++        auto shdrVersionR = findSection(".gnu.version_r");
++        Elf_Shdr & shdrVersionRStrings = shdrs[rdi(shdrVersionR.sh_link)];
++        char * verStrTab = (char *) contents + rdi(shdrVersionRStrings.sh_offset);
++        std::string versionRStringsSName = getSectionName(shdrVersionRStrings);
++
++        debug("found .gnu.version_r with %i entries, strings in %s\n", verNeedNum, versionRStringsSName.c_str());
++
++        Elf_Verneed * need = (Elf_Verneed *) (contents + rdi(shdrVersionR.sh_offset));
++        Elf_Verneed * last = need;
++
++        while (verNeedNum > 0) {
++            char * file = verStrTab + rdi(need->vn_file);
++
++            if (libs.find(file) != libs.end()) {
++                debug("removing .gnu.version_r entry for '%s'\n", file);
++                // Relative offset, so all we need to do here is punch a hole.
++                last->vn_next += need->vn_next;
++                changed = true;
++            }
++
++            last = need;
++            need = (Elf_Verneed *) (((char *) need) + rdi(need->vn_next));
++            --verNeedNum;
++        }
++    }
+ }
+ 
+ template<ElfFileParams>

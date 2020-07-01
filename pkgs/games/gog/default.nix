@@ -12,6 +12,8 @@ let
     };
 
     albion = callPackage_i686 ./albion {};
+    baldurs-gate = (callPackage ./baldurs-gate {}).bg1ee;
+    baldurs-gate-2 = (callPackage ./baldurs-gate {}).bg2ee;
     crosscode = callPackage ./crosscode.nix {};
     dungeons3 = callPackage ./dungeons3.nix {};
     epistory = callPackage ./epistory.nix { };
