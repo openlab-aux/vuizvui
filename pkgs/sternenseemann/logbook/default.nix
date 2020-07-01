@@ -12,9 +12,6 @@ buildDunePackage rec {
     sha256 = "05iwma3vv4v2b3nkb1n1fkfj1gbixw04r8rxdnm468zhf7i7z9gj";
   };
 
-  # fix for angstrom < 0.14
-  postPatch = "sed -i s/~consume:All// src/logbook.ml";
-
   buildInputs = [ cow ocaml_lwt jingoo ];
   propagatedBuildInputs = [ ptime angstrom astring ];
 
