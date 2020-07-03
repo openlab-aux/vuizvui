@@ -1,4 +1,4 @@
-{ pkgs, getBins, importDhall2, writeExecline, dhall, buildDhallPackage, writeRustSimple, rust-deps }:
+{ pkgs, getBins, importDhall2, writeExecline, dhall, buildDhallPackage, writeRustSimple, el-exec }:
 
 let
   lib = pkgs.lib;
@@ -123,8 +123,8 @@ let
     };
 
   mini-url = writeRustSimple "mini-url" {
-    dependencies = [ rust-deps.libc rust-deps.errno ];
-    buildInputs = [ pkgs.skalibs pkgs.execline ];
+    dependencies = [ el-exec ];
+    buildInputs = [ pkgs.skalibs ];
     release = false;
     # buildTests = true;
     verbose = true;
