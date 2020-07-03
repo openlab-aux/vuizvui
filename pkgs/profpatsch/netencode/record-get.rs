@@ -6,7 +6,7 @@ use std::io::Read;
 use std::ffi::{CString, OsStr};
 use std::os::unix::ffi::{OsStringExt, OsStrExt};
 use el_semicolon::{el_semicolon, Arg};
-use netencode::{U};
+use netencode::{U, encode};
 use netencode::parse::{u_u};
 
 fn main() {
@@ -30,9 +30,16 @@ fn main() {
                         // only set if it appears in the block of values.
                         // If the block is empty, don’t filter.
                         if vars.is_empty() || vars.contains(&key.as_bytes()) {
+                            // TODO this is a super unprincipled special casing of some values
+                            // We should have a way of destructuring stuff
                             match *val {
                                 U::Binary(b) => std::env::set_var(key, OsStr::from_bytes(b)),
-                                _ => panic!("the value of {:?} was not a binary value!", key)
+                                U::Text(t) => std::env::set_var(key, OsStr::from_bytes(t)),
+                                u => {
+                                    let mut c = std::io::Cursor::new(vec![]);
+                                    encode(&mut c, u);
+                                    std::env::set_var(key, OsStr::from_bytes(&c.into_inner()))
+                                }
                             }
                         }
                     }

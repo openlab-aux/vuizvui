@@ -47,7 +47,7 @@ pub enum U<'a> {
     Binary(&'a [u8]),
     // Tags
     Sum(Tag<&'a str, Box<U<'a>>>),
-    Record(HashMap<&'a str, Box<U<'a>>>),
+    Record(Vec<(&'a str, Box<U<'a>>)>),
     List(&'a [u8]),
 }
 
@@ -68,30 +68,34 @@ impl<S, A> Tag<S, A> {
     }
 }
 
-fn encode_tag<W: Write>(w: &mut W, tag: String, val: T) -> std::io::Result<()> {
+fn encode_tag<W: Write>(w: &mut W, tag: &str, val: U) -> std::io::Result<()> {
     write!(w, "<{}:{}|", tag.len(), tag)?;
     encode(w, val)?;
     Ok(())
 }
 
-pub fn encode<W: Write>(w: &mut W, t: T) -> std::io::Result<()> {
-  match t {
-      T::Unit => write!(w, "u,"),
-      T::N1(b) => if b { write!(w, "n1:1,") } else { write!(w, "n1:0,") },
-      T::N3(n) => write!(w, "n3:{},", n),
-      T::N6(n) => write!(w, "n6:{},", n),
-      T::N7(n) => write!(w, "n7:{},", n),
-      T::I3(i) => write!(w, "i3:{},", i),
-      T::I6(i) => write!(w, "i6:{},", i),
-      T::I7(i) => write!(w, "i7:{},", i),
-      T::Text(s) => write!(w, "t{}:{},", s.len(), s),
-      T::Binary(s) => {
+pub fn encode<W: Write>(w: &mut W, u: U) -> std::io::Result<()> {
+  match u {
+      U::Unit => write!(w, "u,"),
+      U::N1(b) => if b { write!(w, "n1:1,") } else { write!(w, "n1:0,") },
+      U::N3(n) => write!(w, "n3:{},", n),
+      U::N6(n) => write!(w, "n6:{},", n),
+      U::N7(n) => write!(w, "n7:{},", n),
+      U::I3(i) => write!(w, "i3:{},", i),
+      U::I6(i) => write!(w, "i6:{},", i),
+      U::I7(i) => write!(w, "i7:{},", i),
+      U::Text(s) => {
+          write!(w, "t{}:", s.len());
+          w.write(&s);
+          write!(w, ",")
+      }
+      U::Binary(s) => {
           write!(w, "b{}:", s.len());
           w.write(&s);
           write!(w, ",")
       },
-      T::Sum(Tag{tag, val}) => encode_tag(w, tag, *val),
-      T::Record(m) => {
+      U::Sum(Tag{tag, val}) => encode_tag(w, tag, *val),
+      U::Record(m) => {
           let mut c = std::io::Cursor::new(vec![]);
           for (k, v) in m {
               encode_tag(&mut c, k, *v)?;
@@ -100,25 +104,12 @@ pub fn encode<W: Write>(w: &mut W, t: T) -> std::io::Result<()> {
           w.write(c.get_ref())?;
           write!(w, "}}")
       },
-      T::List(l) => {
-          let mut c = std::io::Cursor::new(vec![]);
-          for v in *l {
-              encode(&mut c, v)?;
-          };
-          write!(w, "[{}:", c.get_ref().len())?;
-          w.write(c.get_ref())?;
+      U::List(l) => {
+          write!(w, "[{}:", l.len())?;
+          w.write(l)?;
           write!(w, "]")
       }
   }
-}
-
-pub fn dict(d: Vec<(String, T)>) -> T {
-    T::Record(
-        d.into_iter()
-            .map(|(k,v)| (k, Box::new(v)))
-            // to ignore duplicate entries after the first
-            .rev()
-            .collect::<HashMap<_,_>>())
 }
 
 pub fn text(s: String) -> T {
@@ -289,17 +280,18 @@ pub mod parse {
         map_parser(list_g(), nom::multi::many_m_n(n, n, u_u))
     }
 
-    // fn record_get<'a>(key: usize
-
     fn record_t<'a>(s: &'a [u8]) -> IResult<&'a [u8], HashMap<String, Box<T>>> {
-        let (s, hm) = record_g(t_t)(s)?;
+        let (s, r) = record_g(t_t)(s)?;
         Ok((s,
-            hm.into_iter().map(
-                |(k, v)| (k.to_string(), v)
-            ).collect::<HashMap<_,_>>()))
+            r.into_iter()
+            // ignore duplicated tag names that appear later
+            // by reverting the vector now
+            .rev()
+            .map(|(k, v)| (k.to_string(), v))
+            .collect::<HashMap<_,_>>()))
     }
 
-    fn record_g<'a, P, O>(inner: P) -> impl Fn(&'a [u8]) -> IResult<&'a [u8], HashMap<&'a str, Box<O>>>
+    fn record_g<'a, P, O>(inner: P) -> impl Fn(&'a [u8]) -> IResult<&'a [u8], Vec<(&'a str, Box<O>)>>
     where
         O: Clone,
         P: Fn(&'a [u8]) -> IResult<&'a [u8], O>
@@ -308,12 +300,9 @@ pub mod parse {
             sized('{', '}'),
             nom::multi::fold_many1(
                 tag_g(inner),
-                HashMap::new(),
-                |mut acc: HashMap<_, _>, Tag { tag, mut val }| {
-                    // ignore duplicated tag names that appear later
-                    if !acc.contains_key(&tag) {
-                        acc.insert(tag, Box::new(val));
-                    }
+                Vec::new(),
+                |mut acc: Vec<_>, Tag { tag, mut val }| {
+                    acc.push((tag, Box::new(val)));
                     acc
                 }
             )
