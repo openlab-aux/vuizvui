@@ -186,7 +186,6 @@ in rec {
 
   inherit (import ./profpatsch.de { inherit pkgs lib toNetstring writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode; })
     websiteStatic
-    record-get
     importas-if
     ;
 
@@ -226,9 +225,10 @@ in rec {
     Prelude
     ;
 
-  inherit (import ./netencode { inherit pkgs writeRustSimpleLib; })
+  inherit (import ./netencode { inherit pkgs writeRustSimpleLib writeRustSimple el-semicolon el-exec; })
     netencode-rs
     netencode-rs-tests
+    record-get
     ;
 
   inherit (import ./execline/default.nix { inherit pkgs writeRustSimpleLib rust-deps; })

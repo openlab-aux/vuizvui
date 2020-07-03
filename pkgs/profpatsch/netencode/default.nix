@@ -1,4 +1,4 @@
-{ pkgs, writeRustSimpleLib }:
+{ pkgs, writeRustSimpleLib, writeRustSimple, el-semicolon, el-exec }:
 
 let
   version-check = pkgs.buildRustCrate {
@@ -34,9 +34,18 @@ let
 
   netencode-rs = netencode-rs-common false;
 
+  record-get = writeRustSimple "record-get" {
+    dependencies = [ netencode-rs el-semicolon el-exec ];
+    # TODO: for some reason the skarnet linker flag
+    # is propagated by the link target is not?
+    buildInputs = [ pkgs.skalibs ];
+  } ./record-get.rs;
+
+
 in {
   inherit
    netencode-rs
    netencode-rs-tests
+   record-get
    ;
 }
