@@ -219,10 +219,11 @@ in rec {
     ;
 
   rust-deps = (import ./rust-deps.nix { inherit (pkgs) buildRustCrate; });
-  inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline dhall buildDhallPackage; })
 
+  inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline dhall buildDhallPackage writeRustSimple rust-deps; })
     xdg-open
     Prelude
+    mini-url
     ;
 
   inherit (import ./netencode { inherit pkgs writeRustSimpleLib writeRustSimple el-semicolon el-exec; })

@@ -1,4 +1,4 @@
-{ pkgs, getBins, importDhall2, writeExecline, dhall, buildDhallPackage }:
+{ pkgs, getBins, importDhall2, writeExecline, dhall, buildDhallPackage, writeRustSimple, rust-deps }:
 
 let
   lib = pkgs.lib;
@@ -122,9 +122,18 @@ let
         ;
     };
 
+  mini-url = writeRustSimple "mini-url" {
+    dependencies = [ rust-deps.libc rust-deps.errno ];
+    buildInputs = [ pkgs.skalibs pkgs.execline ];
+    release = false;
+    # buildTests = true;
+    verbose = true;
+  } ./mini-url.rs;
+
 in {
   inherit
     xdg-open
     Prelude
+    mini-url
     ;
 }
