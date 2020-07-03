@@ -220,10 +220,17 @@ in rec {
 
   rust-deps = (import ./rust-deps.nix { inherit (pkgs) buildRustCrate; });
 
-  inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline dhall buildDhallPackage writeRustSimple el-exec; })
+  inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline dhall buildDhallPackage runExeclineLocal netencode-rs writeRustSimple record-get el-exec; })
     xdg-open
+    config
     Prelude
+    httparse
+    get-http-content-type
+    read-headers-and-follow-redirect
     mini-url
+    assert-printf
+    as-stdin
+    printenv
     ;
 
   inherit (import ./netencode { inherit pkgs writeRustSimpleLib writeRustSimple el-semicolon el-exec; })

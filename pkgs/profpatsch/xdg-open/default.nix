@@ -1,9 +1,25 @@
-{ pkgs, getBins, importDhall2, writeExecline, dhall, buildDhallPackage, writeRustSimple, el-exec }:
+{ pkgs, getBins,
+importDhall2,
+writeExecline,
+dhall,
+buildDhallPackage,
+runExeclineLocal,
+writeRustSimple,
+netencode-rs,
+record-get,
+el-exec
+}:
 
 let
   lib = pkgs.lib;
   bins = getBins pkgs.libnotify [ "notify-send" ]
       // getBins pkgs.file [ "file" ]
+      // getBins pkgs.coreutils [ "printf" "ln" "echo" ]
+      // getBins pkgs.fdtools [ "multitee" ]
+      // getBins pkgs.s6 [ "s6-ioconnect" ]
+      // getBins pkgs.s6-portable-utils [ "s6-test" ]
+      // getBins pkgs.s6-networking [ "s6-tcpclient" ]
+      // getBins pkgs.netcat-openbsd [ "nc" ]
       // getBins pkgs.dmenu [ "dmenu" "dmenu_path" ]
       # TODO: make sure these are the ones from the environment
       // getBins pkgs.emacs [ "emacsclient" ]
@@ -122,6 +138,119 @@ let
         ;
     };
 
+  httparse = pkgs.buildRustCrate {
+    pname = "httparse";
+    version = "1.3.4";
+    crateName = "httparse";
+    sha256 = "0dggj4s0cq69bn63q9nqzzay5acmwl33nrbhjjsh5xys8sk2x4jw";
+  };
+
+  stderr-tee = writeExecline "stderr-tee" {} [
+    "pipeline" [ bins.multitee "0-1,2" ] "$@"
+  ];
+
+  stderr-prog = writeExecline "stderr-prog" {} [
+    "foreground" [ bins.echo "$@" ]
+    "$@"
+  ];
+
+  http-request = writeExecline "http-request-for-url" { } [
+    "importas" "-i" "protocol" "protocol"
+    "ifelse" [ bins.s6-test "$protocol" "=" "http" ] [ (http-https-request false) ]
+    "ifelse" [ bins.s6-test "$protocol" "=" "https" ] [ (http-https-request true) ]
+    eprintf "protocol \${protocol} not supported"
+  ];
+
+  http-https-request = isHttps: writeExecline "http-https-request" { } ([
+    "multisubstitute" [
+      "importas" "-ui" "port" "port"
+      "importas" "-ui" "host" "host"
+      "importas" "-ui" "path" "path"
+    ]
+    "pipeline" [
+      bins.printf (lib.concatStringsSep "\r\n" [
+      ''HEAD %s HTTP/1.1''
+      ''Host: %s''
+      ''User-Agent: lol''
+      ''Accept: */*''
+      ""
+      ""
+      ]) "$path" "$host"
+    ]
+    bins.nc
+  ] ++ lib.optional isHttps "-c" ++ [
+      "-N" "$host" "$port"
+  ]);
+
+  printenv = writeRustSimple "printenv" {}
+    (pkgs.writeText "printenv.rs" ''
+      use std::io::Write;
+      use std::os::unix::ffi::OsStrExt;
+      fn main() -> std::io::Result<()> {
+        let usage = || {
+          eprintln!("usage: printenv VAR");
+          std::process::exit(1)
+        };
+        let mut args = std::env::args_os();
+        let _ = args.next().unwrap_or_else(usage);
+        let var = args.next().unwrap_or_else(usage);
+        match std::env::var_os(&var) {
+          None => {
+            let mut err = std::io::stderr();
+            err.write_all("env variable ".as_bytes())?;
+            err.write_all(var.as_bytes())?;
+            err.write_all(" does not exist\n".as_bytes())?;
+          },
+          Some(stuff) => std::io::stdout().write_all(stuff.as_bytes())?
+        }
+        Ok(())
+      }
+    '');
+
+  assert-printf = writeExecline "assert-printf" { argMode = "env"; } [
+    "ifelse" [ "runblock" "2" ]
+    [ "runblock" "-r" "2" ]
+    "fdmove" "-c" "1" "2"
+    "runblock" "1" bins.printf
+  ];
+
+  as-stdin = writeExecline "as-stdin" { readNArgs = 1; } [
+    "pipeline" [ printenv "$1" ] "$@"
+  ];
+
+  read-headers-and-follow-redirect = writeExecline "read-headers-and-follow-redirect" { readNArgs = 1; }
+    (let go = writeExecline "go" {} [
+      "pipeline" [ http-request ]
+      "pipeline" [ read-http ]
+      record-get [ "status" "status-text" "headers" ]
+      "importas" "-ui" "status" "status"
+      # TODO: a test util for netencode values
+      "ifelse" [ bins.s6-test "$status" "=" "n6:301," ]
+      # retry the redirection location
+      [ as-stdin "headers"
+        record-get [ "Location" ]
+        "importas" "-ui" "Location" "Location"
+        "export" "host" "$Location"
+        "if" [ "echo" "redirected to \${Location}" ]
+        # save path, which would be overwritten by mini-url
+        "importas" "old-path" "path"
+        mini-url "$Location"
+        "export" "path" "$old-path"
+        "$0"
+      ]
+      printenv "headers"
+    ];
+    in [
+      mini-url "$1"
+      go
+    ]);
+
+
+  read-http = writeRustSimple "read-http" {
+    dependencies = [ httparse netencode-rs ];
+    buildInputs = [ pkgs.skalibs ];
+  } ./read-http.rs;
+
   mini-url = writeRustSimple "mini-url" {
     dependencies = [ el-exec ];
     buildInputs = [ pkgs.skalibs ];
@@ -130,10 +259,18 @@ let
     verbose = true;
   } ./mini-url.rs;
 
+  eprintf = writeExecline "eprintf" {} [
+    "fdmove" "-c" "1" "2" bins.printf "%s" "$@"
+  ];
+
 in {
   inherit
     xdg-open
     Prelude
+    read-headers-and-follow-redirect
     mini-url
+    assert-printf
+    as-stdin
+    printenv
     ;
 }

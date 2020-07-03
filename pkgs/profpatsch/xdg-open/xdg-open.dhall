@@ -91,6 +91,10 @@ let xdg-open =
 
                     set -e
                     file="$1"
+                    mime=
+
+                    # match on protocols
+                    # if you want to match files reliably, start with file://
                     case "$file" in
                     ${prettyLines
                         { indent = 2
