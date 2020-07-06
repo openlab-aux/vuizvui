@@ -184,7 +184,7 @@ in rec {
     inherit symlink;
   };
 
-  inherit (import ./profpatsch.de { inherit pkgs lib toNetstring writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode; })
+  inherit (import ./profpatsch.de { inherit pkgs lib toNetstring writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode record-get; })
     websiteStatic
     importas-if
     ;

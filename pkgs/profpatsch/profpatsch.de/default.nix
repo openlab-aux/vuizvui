@@ -1,4 +1,4 @@
-{ pkgs, lib, toNetstring, writeExecline, runExecline, getBins, writeRustSimple, netencode-rs, el-semicolon, el-substitute, el-exec, netencode }:
+{ pkgs, lib, toNetstring, writeExecline, runExecline, getBins, writeRustSimple, netencode-rs, el-semicolon, el-substitute, el-exec, netencode, record-get }:
 
 let
   bins = getBins pkgs.coreutils [ "ln" "mkdir" "echo" "printenv" "cat" "env" ]
@@ -83,6 +83,11 @@ let
           inherit cssNormalize cssMain;
           inherit cv_pdf id_txt;
         };
+      };
+      toc = {
+        relativeDir = [];
+        relativeFile = "toc";
+        path = ./toc.txt;
       };
     };
 
