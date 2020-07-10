@@ -116,6 +116,8 @@ in {
       git
       gitinspector
       glow
+      gnome3.adwaita-icon-theme
+      gnome3.defaultIconTheme
       gnufdisk
       gnumake
       gnupg
@@ -128,6 +130,7 @@ in {
       gstreamer
       hdparm
       hexedit
+      hicolor-icon-theme
       hplipWithPlugin
       htop
       httpie
@@ -261,8 +264,8 @@ in {
       zbar
       zgrviewer
       zip
-      zstd
       zotero
+      zstd
       zsync
     ];
   };
