@@ -179,6 +179,7 @@ in {
       nmap
       ntfs3g
       ntfsprogs
+      oneshot
       openssl
       p7zip
       pamixer
