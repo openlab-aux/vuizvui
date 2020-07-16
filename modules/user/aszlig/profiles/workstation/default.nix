@@ -79,6 +79,7 @@ in {
       rerere.enabled = true;
       rerere.autoupdate = true;
       commit.gpgsign = true;
+      pull.rebase = false;
 
       alias.backport = let
         release = "14.04";
