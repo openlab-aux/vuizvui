@@ -82,6 +82,11 @@ let
           inherit jsJquery;
           inherit cssNormalize cssMain;
           inherit cv_pdf id_txt;
+          # preloading
+          inherit
+            fontsQuattrocentoLatin
+            fontsOpenSansLatin
+            ;
         };
       };
       toc = {

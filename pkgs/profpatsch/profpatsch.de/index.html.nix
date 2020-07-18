@@ -1,6 +1,8 @@
 { jsJquery
 , cssNormalize, cssMain
-, id_txt, cv_pdf }:
+, id_txt, cv_pdf
+, fontsQuattrocentoLatin, fontsOpenSansLatin
+}:
 ''
 <!DOCTYPE html>
 <html>
@@ -11,9 +13,17 @@
     <meta name="description" content="Oh the things you’ll see …">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="preload" href="${jsJquery}" as="script">
+    <link rel="preload" href="${cssNormalize}" as="style">
+    <link rel="preload" href="${cssMain}" as="style">
+    <!-- TODO: the font type is a magic string here -->
+    <link rel="preload" href="${fontsQuattrocentoLatin}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="${fontsOpenSansLatin}" as="font" type="font/woff2" crossorigin>
+
     <link rel="stylesheet" href="${cssNormalize}">
     <link rel="stylesheet" href="${cssMain}">
 
+    <!-- TODO: get rid of jquery -->
     <script src="${jsJquery}"></script>
   </head>
   <body>
