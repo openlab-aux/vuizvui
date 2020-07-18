@@ -1,18 +1,21 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+- -----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
  +---------------------------------------------------------------------------+
  |                                                                           |
  | Profpatsch                                                                |
  | mail@profpatsch.de                                                        |
- | Augsburg, Germany                                                         |
+ | Augsburg, Germany / Paris, France                                         |
  |                                                                           |
  +---------------------------------------------------------------------------+
 
  VALIDITY
  ============================================================================
- This information is current as of 2017-02-14. If in doubt, check:
-   http://profpatsch.de/id.txt
+ This information is current as of 2020-07-18. If in doubt, check:
+   https://profpatsch.de/id.txt
  for an updated version.
 
 
@@ -50,12 +53,7 @@ sub   4096R/74FE6DF8 2012-06-19
  XMPP ACCOUNTS, OTR FINGERPRINTS & LOGGING STATEMENTS
  -----------------------------------------------------------------------------
 
- Profpatsch@ola.wtf/jabber - DSA
-  B00BE5D6 C2798E45 CDE9C94F 8A90071D DC133E8D
-
- Fallback accounts:
- profpatsch@jabber.ccc.de
- profpatsch@deshalbfrei.org
+ profpatsch@headcounter.org
 
  I generally LOG my OTR sessions (for backlog). Holler if you don’t want that.
 
@@ -79,18 +77,18 @@ sub   4096R/74FE6DF8 2012-06-19
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJHBAEBCAAxFiEESs/XWScQJm4Yzrsoxc/QiyIkfN8FAlijDtATHG1haWxAcHJv
-ZnBhdHNjaC5kZQAKCRDFz9CLIiR830F8EACWeNr1v1orTtmS6EQc1Hi5g0+U22JD
-7HnDrUKjnSwzfOJ6SEHCKJ9qlUQBxOO5d6orpMtDvsOnvPzyhWyGutnLFJw4sKmD
-kGCeZdbURWKHDOTKVZCgOdHxpn2KRIxFArtYaQ09PzNGgNkJXfYkxnxXU0lEIbk7
-NKtXoisblf1FJLvIInEjbCaXqiDUifB5TeuSQzodwAcpziXQBjoXhVLimvoxhMWP
-732hts7OJf9SLtnBEFTHdIAciNQ1jl6dBxnZxPCWT1Sh+pwCfuEzbhsre8PjDvR1
-HVJmazwwp4wNq8chs2yuzjcdQ37XI5okLaob8PlyQ6iJl3/BOoLNnkaQiDrGYPt8
-wX5NkWe3TS4pqAxnIoCvDVecwfk7p6cWX47ZtVNIIA0er+R14LltvJh3IR7PovCB
-lLl8yJkNpWheA70F8aWjc5Xi/nnvz+uWo7iSXL+FUx6o6jGpREH4C0Yc4SAkBfTv
-8aSFOMuSv2V40EZE3Q12CTQDXrUmfWYn/2kBT5T0VfbFSDWibIwjcJRR4B2KtM2D
-/kI2kLUhN2GPqdG59n8wpKJ3g+hK1NA5wQ6kypdfYWWgyqbH2dMxbCQ1Tr2iq9oC
-DpX48YJolT8etzvpsNHlE7uKeH0h/Eas4+pTs7sLVVEW5Ljm5VYRQ5VrHAXYZ0uh
-jpDl4snBQ4LUFw==
-=Y79X
+iQJHBAEBCAAxFiEESs/XWScQJm4Yzrsoxc/QiyIkfN8FAl8TL0wTHG1haWxAcHJv
+ZnBhdHNjaC5kZQAKCRDFz9CLIiR83zPHEACS7WWtgYRbgF9f8lJttlB/WzDDRzvM
+tCjPB/RGS5FD/qdBJIwuSuXfgz4yUQWhyprJrLPSEJu66x3z2apbvViFpnoP3oBl
+xBoz1tp8EXvs9vEkp4N02PY/CoPFxPvIY+JmWPk+cUdg8GMkDW+NBLmN4tNBL2cv
+4k+AlHYG90O2f/VctskcWVgtjR3C/oJoyfbzVk1bc2uxezLSbQ1UQ2bA6m7vAd4A
+szaZaR0dhJAuQRdvZYgihOiRVW2/cxPgLrFAzZQ40K9SQUql4ELZMtcEZpD7vu+w
+CwIgL6TtB6lL//0pOtQvl3ngcPzJXJi+d2ohqDDobATtAeWNvbhBjiN/T46Jtb3U
+6UvlXDywZh3R7QpNdhKW+6QHEepHfVH75XkfMQRvo30iawYi/oHjlo4d45ojPGSA
+HcbkCMFABA+X8V0O3ao7hq4Cd8vpLy4Cs8hYG+eIwe7C3e/2DSnWK3Ea/HT/ASaw
+/rMI6pygdL6RP6Qh5E/mAJ+wZbqyFfn88vuYdYqhkqbmxnuD0adO3YhWNC0RifQy
+bKT0MujzOp6nF4s0P9an7XuPLgA8Gq08y/R+6X9EQvu0FiiJ49vk8kn04orY1xYy
+Lt+ikNcz/IYwZsLDYraVZpCoOe3kXjYR7oZOIeX6it/jUNR1E0CrrJJJr467YpaD
+LevLsl5ReWT2jQ==
+=nic3
 -----END PGP SIGNATURE-----
