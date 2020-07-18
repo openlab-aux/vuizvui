@@ -40,6 +40,11 @@ let
         relativeFile = "jquery.js";
         path = jquery;
       };
+      jsTalkies = {
+        relativeDir = [ "js" ];
+        relativeFile = "talkies.js";
+        path = ./talkies.js;
+      };
       cssNormalize = {
         relativeDir = [ "css" ];
         relativeFile = "normalize.css";
@@ -79,7 +84,7 @@ let
         relativeDir = [];
         relativeFile = "index.html";
         path = applyTemplate "index.html" ./index.html.nix {
-          inherit jsJquery;
+          inherit jsJquery jsTalkies;
           inherit cssNormalize cssMain;
           inherit cv_pdf id_txt;
           # preloading

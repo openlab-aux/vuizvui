@@ -1,4 +1,4 @@
-{ jsJquery
+{ jsJquery, jsTalkies
 , cssNormalize, cssMain
 , id_txt, cv_pdf
 , fontsQuattrocentoLatin, fontsOpenSansLatin
@@ -21,6 +21,7 @@
     <link rel="icon" href="data:,">
 
     <link rel="preload" href="${jsJquery}" as="script">
+    <link rel="preload" href="${jsTalkies}" as="script">
     <link rel="preload" href="${cssNormalize}" as="style">
     <link rel="preload" href="${cssMain}" as="style">
     <!-- TODO: the font type is a magic string here -->
@@ -31,6 +32,7 @@
     <link rel="stylesheet" href="${cssMain}">
 
     <!-- TODO: get rid of jquery -->
+    <script src="${jsTalkies}"></script>
     <script src="${jsJquery}"></script>
   </head>
   <body>
@@ -39,49 +41,7 @@
       <h1>Profpatsch</h1>
       <h2>
         <script>
-         talkies = [
-             { talk: "Oh the things you’ll see …" },
-             { talk: "I’ll manage." },
-             { talk: "Spurdo Spärde sprölölö",
-               hover: "bydon xDDDD" },
-             { talk: "Where is Jessica Hyde?" },
-             { talk: "Wie talkst du eigentlich?",
-               hover: "Du Splasher" },
-             { talk: "See you Space Cowboy",
-               hover: "bang",
-               link: "https://www.youtube.com/watch?v=juxjTAqB9Fs" },
-             { talk: "STACKENBLOCKEN",
-               hover: "21:45",
-               link: "https://www.youtube.com/watch?v=d6wd78jMHDk" },
-             { talk: "Don’t lose your waaaaaaay",
-               hover: "I haven’t actually seen KlK …" },
-             { talk: "STOP RIGHT THERE CRIMINAL SCUM",
-               hover: "Let me tell you a story about my past …" },
-             { talk: "Ich zähl bis zehn und mach die Augen wieder auf",
-               hover: "Rivo Drei – Von Vorne" },
-             { talk: "It’s so ironic when your makeup runs",
-               hover: "blackest_eyes& trains& sound_of_muzak& prodigal" },
-             { talk: "It’s time now, my time now. Give me my, give me my wings",
-               hover: "Should you see your Maker’s face tonight // Look ’em in the eye, look ’em in the eye // And tell ’em // Never lived a lie, never took a life // But surely saved one // Hallelluja // It’s time for you to bring me home",
-               link: "https://www.youtube.com/watch?v=7Ajx-ABtbVM"
-             },
-             { talk: "{-# LANGUAGE ImplicitProtolude #-}" },
-             { talk: "overfull hbox" }
-         ];
-         var talkie = talkies[Math.floor(Math.random()*talkies.length)];
-         var elem = null;
-         var title = "";
-         if (talkie.hasOwnProperty("hover")) { title = 'title="'+talkie.hover+'"'; }
-         if (talkie.hasOwnProperty("link")) {
-             elem = function(content, attrs) {
-                 return '<a href="'+talkie.link+'" '+attrs+' >'+content+'</a>';
-             };
-         } else {
-             elem = function(content, attrs) {
-                 return '<span '+attrs+'>'+content+'</span>';
-             };
-         }
-         $('#title h2').append(elem(talkie.talk, title));
+          appendTalkies($('#title h2'));
         </script>
         <noscript>
           Oh the things you’ll see …
