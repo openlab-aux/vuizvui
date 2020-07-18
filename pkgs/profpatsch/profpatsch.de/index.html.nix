@@ -13,6 +13,13 @@
     <meta name="description" content="Oh the things you’ll see …">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!--
+    prevent favicon request, based on answers in
+    https://stackoverflow.com/questions/1321878/how-to-prevent-favicon-ico-requests
+    TODO: create favicon
+    -->
+    <link rel="icon" href="data:,">
+
     <link rel="preload" href="${jsJquery}" as="script">
     <link rel="preload" href="${cssNormalize}" as="style">
     <link rel="preload" href="${cssMain}" as="style">
