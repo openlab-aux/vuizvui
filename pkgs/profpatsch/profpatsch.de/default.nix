@@ -80,6 +80,11 @@ let
         relativeFile = "id.txt";
         path = ./id.txt;
       };
+      key_asc = {
+        relativeDir = [];
+        relativeFile = "key.asc";
+        path = ./key.asc;
+      };
       index_html = {
         relativeDir = [];
         relativeFile = "index.html";
