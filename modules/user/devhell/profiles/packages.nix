@@ -233,6 +233,7 @@ in {
       transcode
       tree
       tty-clock
+      ugrep
       units
       unrar
       unzip
