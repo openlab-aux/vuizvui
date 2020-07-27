@@ -57,7 +57,11 @@ in {
   };
 
   environment.systemPackages = [
-    pkgs.gpodder
+    (pkgs.gpodder.overrideAttrs (drv: {
+      propagatedBuildInputs = (drv.propagatedBuildInputs or []) ++ [
+        pkgs.python3Packages.youtube-dl
+      ];
+    }))
     pkgs.paperwork
   ];
 
