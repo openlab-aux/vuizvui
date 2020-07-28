@@ -11,6 +11,7 @@ pkgs: with pkgs; [
   chromium
   dash
   dos2unix
+  entr
   fd
   feh
   ffmpeg
