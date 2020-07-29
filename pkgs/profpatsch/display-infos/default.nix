@@ -46,7 +46,7 @@ let
           seconds_remaining += 3600 * now / current_rate
 
     bat = round( now/full, 2 )
-    ac = "🗲 " if charging else ""
+    ac = "⚡ " if charging else ""
     sft_remaining = seconds_to_sft(seconds_remaining)
     date = sub.run(["date", "+%d.%m. %a %T"], stdout=sub.PIPE).stdout.strip().decode()
     dottime = sub.run(["date", "--utc", "+%H·%M"], stdout=sub.PIPE).stdout.strip().decode()
