@@ -62,7 +62,7 @@ func buildManOutput(drvAttr string) (string, error) {
 		`with import <nixpkgs> {}; %s.man or %s.doc or %s.out or %s`,
 		drvAttr, drvAttr, drvAttr, drvAttr)
 
-	nixBuild := exec.Command("nix-build", "-E", nixExpr)
+	nixBuild := exec.Command("nix-build", "--no-out-link", "-E", nixExpr)
 	nixBuild.Stderr = os.Stderr
 	pipe, err := nixBuild.StdoutPipe()
 	if err != nil { return "", fmt.Errorf("could not access stdout of nix-build: %s", err) }
