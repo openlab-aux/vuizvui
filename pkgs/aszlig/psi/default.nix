@@ -23,22 +23,21 @@ in stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "psi-im";
     repo = "psi";
-    rev = "f1ca4cc0d45d0c1981fd2abd5da40182bbd8c5fb";
-    sha256 = "170g3dlpd8hp9g4j4y28l8y2xhgsmfay4m7dknvd9vanxd7s42ks";
+    rev = "23c1e3ffa5c33ecf7a7d8064a319b49422bb9469";
+    sha256 = "044npsb5xs25a4ybsk9a6advpdamzb3da19w9lj6q660p19syjar";
     fetchSubmodules = true;
   };
 
   plugins = fetchFromGitHub {
     owner = "psi-im";
     repo = "plugins";
-    rev = "5dc21909fc46c4780e1f4d23c56bf4be94802912";
-    sha256 = "0bxlsmwisc22m8y0py1ms69fyqspyx1a1zcjh6m51c4vmzskfr7a";
+    rev = "c430f74e2e0063ece73e4bcd5ce0430d7259e050";
+    sha256 = "05m8980c5ssnm6wpmcd1hz6glh0p3i1g8vipnfv31rrfw5wh97m3";
   };
 
   patches = [
     ./disable-xep-0232.patch
     ./darkstyle.patch
-    ./disable-jingle.patch
     (substituteAll {
       src = ./config.patch;
       inherit jid resource;
@@ -46,7 +45,7 @@ in stdenv.mkDerivation rec {
   ];
 
   preConfigure = ''
-    cp --no-preserve=all -rt src/plugins "$plugins"/*
+    cp --no-preserve=all -rt plugins "$plugins"/*
   '';
 
   cmakeFlags = [
