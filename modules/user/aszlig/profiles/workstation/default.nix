@@ -52,10 +52,18 @@ in {
     fonts = {
       enableFontDir = true;
       enableGhostscriptFonts = true;
-      fonts = [
-        pkgs.dosemu_fonts
-        pkgs.liberation_ttf
-      ];
+      fontconfig.useEmbeddedBitmaps = true;
+      # TODO: Switch to nixpkgs version once version 2.0 lands.
+      fonts = lib.singleton (pkgs.fetchzip {
+        name = "oldschool-pc-font-pack-2.0";
+        url = "https://int10h.org/oldschool-pc-fonts/download/"
+            + "oldschool_pc_font_pack_v2.0_ttf.zip";
+        sha256 = "0z0fw6ni7iq806y4m83xrfx46r14xxxql09ch2gxjqi062awqyh8";
+        postFetch= ''
+          mkdir -p $out/share/fonts/truetype
+          unzip -j $downloadedFile \*.ttf -d "$out/share/fonts/truetype"
+        '';
+      });
     };
 
     vuizvui.user.aszlig.services.i3.enable = true;
@@ -164,7 +172,9 @@ in {
         displayManager.sessionCommands = ''
           ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
             XTerm*termName:            xterm-256color
-            XTerm*font:                vga
+            XTerm*faceName:            MxPlus IBM VGA 8x16
+            XTerm*faceSize:            12
+            XTerm*renderFont:          true
             XTerm*saveLines:           10000
             XTerm*bellIsUrgent:        true
             XTerm*background:          black
