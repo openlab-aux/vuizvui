@@ -18,7 +18,7 @@ let
 
 in stdenv.mkDerivation rec {
   name = "psi-${version}";
-  version = "2.0git20200208aszlig";
+  version = "2.0git20200802aszlig";
 
   src = fetchFromGitHub {
     owner = "psi-im";
