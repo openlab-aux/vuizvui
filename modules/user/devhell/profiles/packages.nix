@@ -140,6 +140,7 @@ in {
       iprange
       iptraf-ng
       ipv6calc
+      irssi
       jfsutils
       john
       jwhois
@@ -252,7 +253,6 @@ in {
       vscodium
       w3m
       wavpack
-      weechat
       wget
       which
       wipe
