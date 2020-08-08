@@ -1,4 +1,4 @@
-{ callPackage, callPackage_i686, vim_configurable, gopass }:
+{ callPackage, callPackage_i686, vim_configurable, gopass, mutt }:
 
 {
   aacolorize = callPackage ./aacolorize { };
@@ -8,6 +8,7 @@
   grandpa = callPackage ./grandpa { };
   librxtx_java = callPackage ./librxtx-java { };
   lockdev = callPackage ./lockdev { };
+  mutt = callPackage ./mutt { inherit mutt; };
   psi = callPackage ./psi { };
   pvolctrl = callPackage ./pvolctrl { };
   vim = callPackage ./vim { vim = vim_configurable; };

@@ -40,7 +40,7 @@ pkgs: with pkgs; [
   mmv
   mosh
   mtr
-  mutt
+  vuizvui.aszlig.mutt
   ncdu
   netrw
   nix-prefetch-scripts
