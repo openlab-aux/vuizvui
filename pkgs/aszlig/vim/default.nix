@@ -392,7 +392,6 @@ let
     set softtabstop=4
     set shiftwidth=4
     set textwidth=79
-    set termencoding=ascii
     set backspace=indent,eol,start
     set background=dark
     set mouse=
