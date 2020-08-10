@@ -122,7 +122,6 @@ in {
       gnumake
       gnupg
       gopass
-      gotop
       gpgme
       gpodder
       gptfdisk
@@ -262,6 +261,7 @@ in {
       xlibs.xev
       xscreensaver
       youtube-dl
+      ytop
       zathura
       zbar
       zgrviewer
