@@ -97,6 +97,7 @@ in {
     fonts = {
       fontconfig = {
         enable = true;
+        useEmbeddedBitmaps = true;
       };
       enableGhostscriptFonts = true;
       fonts = with pkgs; [
@@ -125,6 +126,7 @@ in {
         tt2020
         ttf_bitstream_vera
         ubuntu_font_family
+        ultimate-oldschool-pc-font-pack
         unifont
         vistafonts
         wqy_microhei
