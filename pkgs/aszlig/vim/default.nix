@@ -371,6 +371,13 @@ let
       rev = "741dd18a35e251ededc0687eea9b8d100d3b83b8";
       sha256 = "1mjwyznprhhfmwi1djyjgxkqv9bwima1ysxa9782rk198j2n87vs";
     };
+
+    fluent = fetchFromGitHub {
+      owner = "projectfluent";
+      repo = "fluent.vim";
+      rev = "2278e05ec7fbb48e06b5d26319385e1c09325760";
+      sha256 = "0hp8jjr4xpw73pkfpbxpjnr49cvjyksymvj748zaxjznkvizmyxc";
+    };
   };
 
   generic = ''
