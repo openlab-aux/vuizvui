@@ -198,7 +198,7 @@ in {
         pkgs.vuizvui.profpatsch.droopy # simple HTML upload server
         # electrum             # bitcoin client
         emacs                # pretty neat operating system i guess
-        feh                  # brother of meh, displays images in a meh way, but fast
+        imv                  # young brother of feh and less meh
         filezilla            # FTP GUI business-ready interface framework
         gimp                 # graphics
         inkscape             # vector graphics

@@ -86,7 +86,7 @@ let mimeMatcher =
               , { match = mime.text.any, cmd = special.open-in-editor }
               , { match = mime.image.gif, cmd = special.open-in-browser }
               , { match = mime.image.svg, cmd = oneArg (pkgSame "inkscape") }
-              , { match = mime.image.any, cmd = oneArg (pkgSame "feh") }
+              , { match = mime.image.any, cmd = oneArg (pkgSame "imv") }
               , { match = mime.pdf, cmd = oneArg (pkgSame "zathura") }
               , { match = mime.pgp-key
                 , cmd =
