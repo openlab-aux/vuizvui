@@ -44,8 +44,6 @@ in {
     vuizvui.user.aszlig.programs.zsh.enable = true;
     vuizvui.enableGlobalNixpkgsConfig = true;
 
-    services.nixosManual.showManual = false;
-
     services.journald.extraConfig = ''
       MaxRetentionSec=3month
     '';
