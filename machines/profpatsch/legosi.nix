@@ -16,14 +16,22 @@ in {
 
   config = {
     vuizvui.modifyNixPath = false;
-    nix.nixPath = [
-      "vuizvui=/root/vuizvui"
-      "nixpkgs=/root/nixpkgs"
-      # todo: nicer?
-      "nixos-config=${pkgs.writeText "legosi-configuration.nix" ''
-        (import <vuizvui/machines>).profpatsch.legosi.config
-      ''}"
-    ];
+    nix = {
+      nixPath = [
+        "vuizvui=/root/vuizvui"
+        "nixpkgs=/root/nixpkgs"
+        # todo: nicer?
+        "nixos-config=${pkgs.writeText "legosi-configuration.nix" ''
+          (import <vuizvui/machines>).profpatsch.legosi.config
+        ''}"
+      ];
+
+      extraOptions = ''
+        auto-optimise-store = true
+        min-free = ${toString (3 * 1024 * 1024 * 1024)}
+      '';
+
+    };
 
     vuizvui.user.profpatsch.server.sshPort = 7001;
 
