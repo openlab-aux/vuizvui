@@ -557,10 +557,6 @@ let
     { check = config.services.memcached.enable;
       path  = ["nixos" "memcached"];
     }
-    { check = config.services.mesos.master.enable
-           || config.services.mesos.slave.enable;
-      path  = ["nixos" "mesos"];
-    }
     { check = config.services.metabase.enable;
       path  = ["nixos" "metabase"];
     }
