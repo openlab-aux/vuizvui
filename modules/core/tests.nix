@@ -545,9 +545,6 @@ let
     { check = config.services.mailcatcher.enable;
       path  = ["nixos" "mailcatcher"];
     }
-    { check = config.services.mathics.enable;
-      path  = ["nixos" "mathics"];
-    }
     { check = config.services.matomo.enable;
       path  = ["nixos" "matomo"];
     }
