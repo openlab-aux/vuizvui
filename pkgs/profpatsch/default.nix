@@ -222,10 +222,7 @@ in rec {
 
   inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline dhall buildDhallPackage runExeclineLocal netencode-rs writeRustSimple record-get el-exec; })
     xdg-open
-    config
     Prelude
-    httparse
-    get-http-content-type
     read-headers-and-follow-redirect
     mini-url
     assert-printf
