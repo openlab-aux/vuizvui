@@ -21,7 +21,7 @@ let
   bins = getBins pkgs.tmux [ "tmux" ]
     // getBins pkgs.weechat [ "weechat" ]
     // getBins pkgs.dash [ "dash" ]
-    // getBins pkgs.s6-portable-utils [ "s6-sleep" ]
+    // getBins pkgs.s6-portable-utils [ "s6-sleep" "s6-test" ]
     // getBins pkgs.mosh [ "mosh-server" ]
     ;
 
@@ -51,7 +51,11 @@ let
   ];
 
   attachWeechatTmuxSession = writeExecline "attach-weechat-tmux-session" {} [
-    # make sure that we can use mosh here
+    "importas" "-u" "-D" "" "what" "SSH_ORIGINAL_COMMAND"
+    # if the user passes "ssh" as argv, it will call tmux directly
+    "ifelse" [ bins.s6-test "$what" "=" "ssh" ]
+    [ bins.tmux "attach-session" "-t" sessionName ]
+    # if not, it uses the mosh-server (default)
     bins.mosh-server "--"
       bins.tmux
         "attach-session"
