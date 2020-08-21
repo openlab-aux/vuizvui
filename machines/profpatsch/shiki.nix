@@ -274,17 +274,32 @@ in {
       videoDrivers = [ "intel" ];
     };
 
-    fonts.fonts = [
-      unfreeAndNonDistributablePkgs.corefonts
-      pkgs.source-han-sans-japanese
-      pkgs.source-han-sans-korean
-      pkgs.source-han-sans-simplified-chinese
-      pkgs.source-code-pro
-      pkgs.hasklig
-      pkgs.dejavu_fonts
-      pkgs.ubuntu_font_family
-      pkgs.league-of-moveable-type
-    ];
+    fonts = {
+      fonts = [
+        unfreeAndNonDistributablePkgs.corefonts
+        pkgs.source-han-sans-japanese
+        pkgs.source-han-sans-korean
+        pkgs.source-han-sans-simplified-chinese
+        pkgs.source-code-pro
+        pkgs.hasklig
+        pkgs.dejavu_fonts
+        pkgs.ubuntu_font_family
+        pkgs.league-of-moveable-type
+        pkgs.noto-fonts-emoji
+        # pkgs.zbalermorna
+      ];
+
+      enableDefaultFonts = true;
+      fontconfig = {
+        enable = true;
+        defaultFonts = {
+          monospace = [ "Source Code Pro" ];
+          serif = [ "Liberation Serif" ];
+          sansSerif = [ "Liberation Sans" ];
+          emoji = [ "Noto Color Emoji" "Noto Emoji" ];
+        };
+      };
+    };
 
     services.printing = {
       enable = true;
