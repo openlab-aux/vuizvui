@@ -33,11 +33,13 @@ in {
       geoclue2.enable = true;
       redshift.enable = true;
 
-      compton = {
+      picom = {
         enable = true;
         vSync = true;
         backend = "glx";
-        settings = { inactive-dim = 0.2; };
+        settings = { 
+          inactive-dim = 0.2;
+        };
       };
     };
 
