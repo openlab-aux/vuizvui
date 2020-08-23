@@ -188,6 +188,7 @@ in {
       pbzip2
       pciutils
       pigz
+      pipr
       pixz
       polybar
       posix_man_pages
