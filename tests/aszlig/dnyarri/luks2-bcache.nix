@@ -37,33 +37,32 @@
     uuid1 = "07b821b9-0912-4f03-9ebc-89f41704caff";
     uuid2 = "d140fd40-bb3c-48b5-98e0-b75878dbce66";
   in ''
-    $machine->waitForUnit('multi-user.target');
+    # fmt: off
+    machine.wait_for_unit('multi-user.target')
 
-    $machine->nest('setting up LUKS2 and bcache backing devices', sub {
-      $machine->succeed('dd if=/dev/urandom of=/dev/vdb bs=1 count=200');
+    with machine.nested('setting up LUKS2 and bcache backing devices'):
+      machine.succeed('dd if=/dev/urandom of=/dev/vdb bs=1 count=200')
 
-      $machine->succeed('make-bcache -B /dev/vdc');
-      $machine->succeed('make-bcache -B /dev/vdd');
+      machine.succeed('make-bcache -B /dev/vdc')
+      machine.succeed('make-bcache -B /dev/vdd')
 
-      $machine->waitUntilSucceeds(
+      machine.wait_until_succeeds(
         '[ $(echo /dev/bcache[0-9]* | wc -w) -eq 2 ]'
-      );
-      my $bcache1 = $machine->succeed('ls -1 /dev/bcache[0-9]* | head -n1');
-      chomp $bcache1;
-      my $bcache2 = $machine->succeed('ls -1 /dev/bcache[0-9]* | tail -n1');
-      chomp $bcache2;
+      )
+      bcache1 = machine.succeed('ls -1 /dev/bcache[0-9]* | head -n1').strip()
+      bcache2 = machine.succeed('ls -1 /dev/bcache[0-9]* | tail -n1').strip()
 
-      $machine->succeed(
-        "${luksFormat} $bcache1 --uuid ${uuid1} /dev/vdb",
-        "cryptsetup open $bcache1 l1 --key-file=/dev/vdb",
-      );
+      machine.succeed(
+        f"${luksFormat} {bcache1} --uuid ${uuid1} /dev/vdb",
+        f"cryptsetup open {bcache1} l1 --key-file=/dev/vdb",
+      )
 
-      $machine->succeed(
-        "${luksFormat} $bcache2 --uuid ${uuid2} /dev/vdb",
-        "cryptsetup open $bcache2 l2 --key-file=/dev/vdb",
-      );
+      machine.succeed(
+        f"${luksFormat} {bcache2} --uuid ${uuid2} /dev/vdb",
+        f"cryptsetup open {bcache2} l2 --key-file=/dev/vdb",
+      )
 
-      $machine->succeed(
+      machine.succeed(
         'mkfs.btrfs -L testfs -m raid1 -d raid1 /dev/mapper/l1 /dev/mapper/l2',
         'btrfs dev scan',
         'mkdir /mnt-test',
@@ -72,61 +71,53 @@
         'umount /mnt-test',
         'cryptsetup close l1',
         'cryptsetup close l2',
-      );
-    });
+      )
 
-    $machine->nest('rebooting into new configuration', sub {
-      $machine->shutdown;
-      $newmachine->{stateDir} = $machine->{stateDir};
-      $newmachine->waitForUnit('multi-user.target');
-    });
+    with machine.nested('rebooting into new configuration'):
+      machine.shutdown()
+      newmachine.state_dir = machine.state_dir
+      newmachine.wait_for_unit('multi-user.target')
 
-    my $bcache1 =
-      $newmachine->succeed('cd /dev; ls -1 bcache[0-9]* | head -n1');
-    chomp $bcache1;
-    my $bcache2 =
-      $newmachine->succeed('cd /dev; ls -1 bcache[0-9]* | tail -n1');
-    chomp $bcache2;
+    bcache1 = newmachine.succeed(
+      'cd /dev; ls -1 bcache[0-9]* | head -n1'
+    ).strip()
+    bcache2 = newmachine.succeed(
+      'cd /dev; ls -1 bcache[0-9]* | tail -n1'
+    ).strip()
 
-    $machine->nest('attaching bcache cache device', sub {
-      my $csetuuid = $newmachine->succeed(
+    with machine.nested('attaching bcache cache device'):
+      csetuuid = newmachine.succeed(
         'make-bcache -C /dev/vde | sed -n -e "s/^Set UUID:[^a-f0-9]*//p"'
-      );
-      chomp $csetuuid;
+      ).strip()
 
-      $newmachine->nest('wait for cache device to appear', sub {
-        $newmachine->waitUntilSucceeds("test -e /sys/fs/bcache/$csetuuid");
-      });
+      with newmachine.nested('wait for cache device to appear'):
+        newmachine.wait_until_succeeds(f"test -e /sys/fs/bcache/{csetuuid}")
 
-      $newmachine->succeed(
-        "echo $csetuuid > /sys/block/$bcache1/bcache/attach",
-        "echo writeback > /sys/block/$bcache1/bcache/cache_mode",
-        "echo $csetuuid > /sys/block/$bcache2/bcache/attach",
-        "echo writeback > /sys/block/$bcache2/bcache/cache_mode"
-      );
-    });
+      newmachine.succeed(
+        f"echo {csetuuid} > /sys/block/{bcache1}/bcache/attach",
+        f"echo writeback > /sys/block/{bcache1}/bcache/cache_mode",
+        f"echo {csetuuid} > /sys/block/{bcache2}/bcache/attach",
+        f"echo writeback > /sys/block/{bcache2}/bcache/cache_mode",
+      )
 
-    $machine->nest('write random files to test file system', sub {
-      $newmachine->succeed(
-        'for i in $(seq 100); do'.
-        ' dd if=/dev/urandom of="/test/randfile.$i" bs=1 count=100;'.
-        ' sha256sum "/test/randfile.$i" > "/test/randfile.$i.sha256"; '.
+    with machine.nested('write random files to test file system'):
+      newmachine.succeed(
+        'for i in $(seq 100); do'
+        ' dd if=/dev/urandom of="/test/randfile.$i" bs=1 count=100;'
+        ' sha256sum "/test/randfile.$i" > "/test/randfile.$i.sha256"; '
         'done'
-      );
-    });
+      )
 
-    $machine->nest('reboot to clear disk buffers', sub {
-      $newmachine->shutdown;
-      $newmachine->waitForUnit('multi-user.target');
-    });
+    with machine.nested('reboot to clear disk buffers'):
+      newmachine.shutdown()
+      newmachine.wait_for_unit('multi-user.target')
 
-    $machine->nest('verifying contents of random files created earlier', sub {
-      $newmachine->succeed(
-        'for i in $(seq 100); do'.
-        ' sha256sum "/test/randfile.$i" | cmp - "/test/randfile.$i.sha256"'.
-        ' || exit 1; '.
+    with machine.nested('verifying contents of random files created earlier'):
+      newmachine.succeed(
+        'for i in $(seq 100); do'
+        ' sha256sum "/test/randfile.$i" | cmp - "/test/randfile.$i.sha256"'
+        ' || exit 1; '
         'done'
-      );
-    });
+      )
   '';
 }

@@ -42,30 +42,28 @@ in {
   };
 
   testScript = ''
-    $machine->waitForUnit("sshd.service");
-    $machine->succeed("ssh-keygen -t ed25519 -f /root/id_ed25519 -N '''");
-    my $cmd = 'mkdir -p ~/.ssh && cat > ~/.ssh/authorized_keys';
-    $machine->succeed("su -c 'umask 0077; $cmd' alice < /root/id_ed25519.pub");
+    # fmt: off
+    from shlex import quote
 
-    $machine->waitForX;
+    machine.wait_for_unit("sshd.service")
+    machine.succeed("ssh-keygen -t ed25519 -f /root/id_ed25519 -N '''")
+    cmd = 'mkdir -p ~/.ssh && cat > ~/.ssh/authorized_keys'
+    machine.succeed(f"su -c 'umask 0077; {cmd}' alice < /root/id_ed25519.pub")
 
-    sub ssh ($) {
-      my $esc = $_[0] =~ s/'/'\\${"'"}'/gr;
-      return "ssh -q -i /root/id_ed25519".
-             " -o StrictHostKeyChecking=no".
-             " alice\@127.0.0.1 -- '$esc'";
-    }
+    machine.wait_for_x()
 
-    sub xsu ($) {
-      my $esc = $_[0] =~ s/'/'\\${"'"}'/gr;
-      return "DISPLAY=:0 su alice -c '$esc'";
-    }
+    def ssh(cmd: str) -> str:
+      return "ssh -q -i /root/id_ed25519 -o StrictHostKeyChecking=no" \
+             f" alice@127.0.0.1 -- {quote(cmd)}"
 
-    $machine->nest("import snakeoil key", sub {
-      $machine->succeed(ssh "${cliTestWithPassphrase ''
+    def xsu(cmd: str) -> str:
+      return f"DISPLAY=:0 su alice -c {quote(cmd)}"
+
+    with machine.nested("import snakeoil key"):
+      machine.succeed(ssh("${cliTestWithPassphrase ''
         gpg --import ${./snakeoil.asc}
-      ''}");
-      $machine->succeed(ssh "${mkExpect ''
+      ''}"))
+      machine.succeed(ssh("${mkExpect ''
         expect gpg>
         send trust\r
         expect decision?
@@ -74,63 +72,59 @@ in {
         send y\r
         expect gpg>
         send save\r
-      '' "gpg --edit-key ECC15FE1"}");
-    });
+      '' "gpg --edit-key ECC15FE1"}"))
 
-    subtest "test SSH agent support", sub {
-      $machine->succeed(ssh 'ssh-keygen -t ed25519 -f ~/testkey -N ""');
-      $machine->succeed(ssh '${mkExpect ''
+    with subtest("test SSH agent support"):
+      machine.succeed(ssh('ssh-keygen -t ed25519 -f ~/testkey -N ""'))
+      machine.succeed(ssh('${mkExpect ''
         expect -regexp ---+.*Please.enter
         send supersecret\r
         expect -regexp ---+.*Please.re-en
         send supersecret\r
-      '' "ssh-add ~/testkey"}');
+      '' "ssh-add ~/testkey"}'))
 
-      $machine->succeed("umask 0077; $cmd < ~alice/testkey.pub");
-      $machine->succeed(ssh 'rm ~/testkey*');
+      machine.succeed(f"umask 0077; {cmd} < ~alice/testkey.pub")
+      machine.succeed(ssh('rm ~/testkey*'))
 
-      $machine->succeed(ssh 'ssh -o StrictHostKeyChecking=no root@127.0.0.1'.
-                            ' touch /i_have_thu_powarr');
-      $machine->succeed("test -e /i_have_thu_powarr");
+      machine.succeed(ssh(
+        'ssh -o StrictHostKeyChecking=no root@127.0.0.1'
+        ' touch /i_have_thu_powarr'
+      ))
+      machine.succeed("test -e /i_have_thu_powarr")
 
-      $machine->succeed(ssh "systemctl --user reload gpg-agent");
+      machine.succeed(ssh("systemctl --user reload gpg-agent"))
 
-      $machine->succeed(ssh "${cliTestWithPassphrase ''
+      machine.succeed(ssh("${cliTestWithPassphrase ''
         ssh -o StrictHostKeyChecking=no root@127.0.0.1 \
           touch /i_still_have_thu_powarr
-      ''}");
-      $machine->succeed("test -e /i_still_have_thu_powarr");
-    };
+      ''}"))
+      machine.succeed("test -e /i_still_have_thu_powarr")
 
-    subtest "socket persists after restart", sub {
-      $machine->succeed(ssh 'test -e "$SSH_AUTH_SOCK"');
-      $machine->succeed(ssh 'systemctl --user stop gpg-agent.service');
-      $machine->succeed(ssh 'test -e "$SSH_AUTH_SOCK"');
-    };
+    with subtest("socket persists after restart"):
+      machine.succeed(ssh('test -e "$SSH_AUTH_SOCK"'))
+      machine.succeed(ssh('systemctl --user stop gpg-agent.service'))
+      machine.succeed(ssh('test -e "$SSH_AUTH_SOCK"'))
 
-    subtest "test from SSH", sub {
-      $machine->execute(ssh "systemctl --user reload gpg-agent");
-      $machine->succeed(ssh "${cliTestWithPassphrase ''
+    with subtest("test from SSH"):
+      machine.execute(ssh("systemctl --user reload gpg-agent"))
+      machine.succeed(ssh("${cliTestWithPassphrase ''
         echo encrypt me > to_encrypt
         gpg -sea -r ECC15FE1 to_encrypt
         rm to_encrypt
-      ''}");
-      $machine->succeed(ssh "${cliTest ''
+      ''}"))
+      machine.succeed(ssh("${cliTest ''
         [ "$(gpg -d to_encrypt.asc)" = "encrypt me" ]
-      ''}");
-    };
+      ''}"))
 
-    subtest "test from X", sub {
-      $machine->execute(ssh "systemctl --user reload gpg-agent");
-      my $pid = $machine->succeed(xsu
+    with subtest("test from X"):
+      machine.execute(ssh("systemctl --user reload gpg-agent"))
+      pid = machine.succeed(xsu(
         'echo encrypt me | gpg -sea -r ECC15FE1 > encrypted_x.asc & echo $!'
-      );
-      chomp $pid;
-      $machine->waitForText(qr/[Pp]assphrase/);
-      $machine->screenshot("passphrase_dialog");
-      $machine->sendChars("supersecret\n");
-      $machine->waitUntilFails("kill -0 $pid");
-      $machine->succeed(xsu '[ "$(gpg -d encrypted_x.asc)" = "encrypt me" ]');
-    };
+      )).strip()
+      machine.wait_for_text('(?i)[Pp]assphrase')
+      machine.screenshot("passphrase_dialog")
+      machine.send_chars("supersecret\n")
+      machine.wait_until_fails(f"kill -0 {pid}")
+      machine.succeed(xsu('[ "$(gpg -d encrypted_x.asc)" = "encrypt me" ]'))
   '';
 }

@@ -9,7 +9,7 @@ testFun:
 
   pkgs = import nixpkgsPath { inherit system; };
 
-  testLib = import "${nixpkgsPath}/nixos/lib/testing.nix" {
+  testLib = import "${nixpkgsPath}/nixos/lib/testing-python.nix" {
     inherit pkgs system;
   };
 

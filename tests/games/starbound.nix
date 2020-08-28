@@ -10,10 +10,9 @@ let
     '';
     escapeScreenshot = pkgs.lib.replaceStrings ["-"] ["_"];
   in ''
-    $client->nest("${description}", sub {
-      $client->screenshot("before_${escapeScreenshot name}");
-      $client->succeed("${pkgs.xdotool}/bin/xdotool '${xdoFile}'");
-    });
+    with client.nested("${description}"):
+      client.screenshot("before_${escapeScreenshot name}")
+      client.succeed("${pkgs.xdotool}/bin/xdotool '${xdoFile}'")
   '';
 
   clickAt = name: x: y: xdo {
@@ -68,22 +67,22 @@ in {
   };
 
   testScript = ''
-    $server->waitForUnit("starbound.service");
+    # fmt: off
+    server.wait_for_unit("starbound.service")
 
-    $client->nest("waiting for client to start up", sub {
-      $client->waitForX;
-      $client->succeed("starbound >&2 &");
-      $client->waitForText(qr/options/i);
-    });
+    with client.nested("waiting for client to start up"):
+      client.wait_for_x()
+      client.succeed("starbound >&2 &")
+      client.wait_for_text('(?i)options')
 
     ${clickAt "join-game" 100 560}
-    $client->waitForText(qr/select/i);
+    client.wait_for_text('(?i)select')
     ${clickAt "new-character" 460 220}
-    $client->waitForText(qr/randomise/i);
+    client.wait_for_text('(?i)randomise')
     ${clickAt "create-character" 600 625}
-    $client->waitForText(qr/select/i);
+    client.wait_for_text('(?i)select')
     ${clickAt "use-character" 460 220}
-    $client->waitForText(qr/ser[vu]er/i);
+    client.wait_for_text('(?i)ser[vu]er')
 
     ${clickAt "server-address" 460 322}
     ${typeText "server-address" "192.168.0.1"}
@@ -96,8 +95,8 @@ in {
 
     ${clickAt "join-server" 495 420}
 
-    $client->waitForText(qr/graduation/i);
-    $client->sleep(30);
-    $client->screenshot("client");
+    client.wait_for_text('(?i)graduation')
+    client.sleep(30)
+    client.screenshot("client")
   '';
 }

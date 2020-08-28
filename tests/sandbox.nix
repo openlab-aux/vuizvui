@@ -120,21 +120,22 @@
   };
 
   testScript = ''
-    $machine->waitForUnit('multi-user.target');
-    $machine->succeed('su - -c "xvfb-run gtk-launch test" foo >&2');
-    $machine->waitForFile('/home/foo/.cache/xdg/done');
+    # fmt: off
+    machine.wait_for_unit('multi-user.target')
+    machine.succeed('su - -c "xvfb-run gtk-launch test" foo >&2')
+    machine.wait_for_file('/home/foo/.cache/xdg/done')
 
-    $machine->succeed('test -d /home/foo/existing');
-    $machine->succeed('grep -qF foo /home/foo/existing/bar');
-    $machine->fail('test -d /home/foo/nonexisting');
+    machine.succeed('test -d /home/foo/existing')
+    machine.succeed('grep -qF foo /home/foo/existing/bar')
+    machine.fail('test -d /home/foo/nonexisting')
 
-    $machine->succeed('grep -qF XDG1 /home/foo/.local/share/xdg/1');
-    $machine->succeed('grep -qF XDG2 /home/foo/.config/xdg/2');
-    $machine->succeed('grep -qF XDG3 /home/foo/.cache/xdg/3');
+    machine.succeed('grep -qF XDG1 /home/foo/.local/share/xdg/1')
+    machine.succeed('grep -qF XDG2 /home/foo/.config/xdg/2')
+    machine.succeed('grep -qF XDG3 /home/foo/.cache/xdg/3')
 
-    $machine->succeed('test "$(< /home/foo/.cache/xdg/procpids)" = /proc/1');
-    $machine->succeed('test "$(< /home/foo/.cache/xdg/ownpid)" = 1');
+    machine.succeed('test "$(< /home/foo/.cache/xdg/procpids)" = /proc/1')
+    machine.succeed('test "$(< /home/foo/.cache/xdg/ownpid)" = 1')
 
-    $machine->succeed('test "$(su -c test-sandbox2 foo)" = "/bin/sh works"');
+    machine.succeed('test "$(su -c test-sandbox2 foo)" = "/bin/sh works"')
   '';
 }

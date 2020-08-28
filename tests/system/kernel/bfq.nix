@@ -8,7 +8,8 @@
   };
 
   testScript = ''
-    $machine->execute('tail /sys/block/*/queue/scheduler >&2');
-    $machine->succeed('grep -HF "[bfq]" /sys/block/sda/queue/scheduler');
+    # fmt: off
+    machine.execute('tail /sys/block/*/queue/scheduler >&2')
+    machine.succeed('grep -HF "[bfq]" /sys/block/sda/queue/scheduler')
   '';
 }
