@@ -245,4 +245,8 @@ in rec {
 
   netencode = import ./netencode/netencode.nix;
 
+  inherit (import ./lru.nix { inherit pkgs writeRustSimple; })
+    lru-dir
+    ;
+
 }
