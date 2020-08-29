@@ -73,11 +73,14 @@ in
       pkgs.vuizvui.profpatsch.warpspeed # trivial http file server
     ];
 
+    users.groups.data-seeding = {};
+
     users.users = {
       root.openssh.authorizedKeys.keys = [ myKey ];
 
       rtorrent = {
         isNormalUser = true;
+        extraGroups = [ "data-seeding" ];
       };
       vorstand = {
         isNormalUser = true;
