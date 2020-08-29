@@ -69,7 +69,6 @@ in
     };
 
     environment.systemPackages = with pkgs; [
-      rtorrent                          # bittorrent client
       mktorrent                         # torrent file creator
       pkgs.vuizvui.profpatsch.warpspeed # trivial http file server
     ];
