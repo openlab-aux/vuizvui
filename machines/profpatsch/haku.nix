@@ -38,8 +38,19 @@ in
     nix.maxJobs = 2;
     vuizvui.modifyNixPath = false;
     nix.nixPath = [
-      "vuizvui=/root/vuizvui"
-      "nixpkgs=/root/nixpkgs"
+      "nixpkgs=${with pkgs.vuizvui.profpatsch; filterSourceGitignoreWith {
+          gitignoreLines =
+            readGitignoreFile "${toString pkgs.path}/.gitignore";
+          globMap = glob:
+            # filter out the non-rooted file globs,
+            # because those take forever to filter
+            # (10(!) seconds evaluation time in my test).
+            if (!glob.isDir && !glob.isRooted)
+            then null
+            else glob;
+        } pkgs.path}"
+      # TODO?
+      # "vuizvui=/root/vuizvui"
       # TODO: nicer?
       "nixos-config=${pkgs.writeText "haku-configuration.nix" ''
         (import <vuizvui/machines>).profpatsch.haku.config
