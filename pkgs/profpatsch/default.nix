@@ -39,8 +39,8 @@ let
       src = pkgs.fetchFromGitHub {
         owner = "Profpatsch";
         repo = "nixperiments";
-        rev = "519cddb867af054f242cb318ea0c61efe56a2471";
-        sha256 = "1i11yr2q40l2ghccn5lydp3dbag8m7y9vl456ghzygyz48jzavf9";
+        rev = "e04abced1a4fef7ad63f67ec621f6484226ed104";
+        sha256 = "1if9szjj1g1l5n31pmbiyp5f3llwl6xlqxklc6g2xf4rq59d2d6w";
       };
     in import src { nixpkgs = pkgs; };
 
@@ -104,8 +104,6 @@ let
 
 in rec {
   inherit (nixperiments)
-    # filterSource by parsing a .gitignore file
-    filterSourceGitignore
     # canonical pattern matching primitive
     match
     # generate an option parser for scripts
@@ -114,6 +112,12 @@ in rec {
     drvSeq drvSeqL withTests
     # using the nix evaluator as a json transformation runtime
     json2json json2string;
+
+  inherit (nixperiments.filterSourceGitignore)
+    # filterSource by parsing a .gitignore file
+    filterSourceGitignoreWith
+    readGitignoreFile
+    ;
 
   backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
   display-infos = callPackage ./display-infos { inherit sfttime; };
