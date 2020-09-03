@@ -1,9 +1,9 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
 let
   cfg = config.vuizvui.programs.gnupg;
+
+  inherit (lib) versionAtLeast getVersion mkIf types mkOption;
 
   hasXdgSupport = versionAtLeast (getVersion cfg.package) "2.1.13";
   isDefaultHome = cfg.homeDir == ".gnupg";
@@ -35,7 +35,7 @@ let
     inherit pinentryWrapper;
   } ''
     cc -Wall -shared -std=c11 \
-      ${optionalString withSupervisor "-DSUPERVISOR_SUPPORT=1"} \
+      ${lib.optionalString withSupervisor "-DSUPERVISOR_SUPPORT=1"} \
       -DLIBSYSTEMD=\"${pkgs.systemd.lib}/lib/libsystemd.so\" \
       -DPINENTRY_WRAPPER=\"$pinentryWrapper\" \
       $(pkg-config --cflags libsystemd) -ldl \
@@ -51,7 +51,7 @@ let
 
 in {
   options.vuizvui.programs.gnupg = {
-    enable = mkEnableOption "support for GnuPG";
+    enable = lib.mkEnableOption "support for GnuPG";
 
     homeDir = mkOption {
       type = types.addCheck types.str (d: builtins.substring 0 1 d != "/");
@@ -66,7 +66,7 @@ in {
       type = types.package;
       default = pkgs.gnupg;
       defaultText = "pkgs.gnupg";
-      example = literalExample "pkgs.gnupg21";
+      example = lib.literalExample "pkgs.gnupg21";
       description = ''
         The GnuPG package to use for running the agent and make available in
         <option>environment.systemPackages</option>.
@@ -74,20 +74,20 @@ in {
     };
 
     agent = {
-      enable = mkEnableOption "support for the GnuPG agent";
+      enable = lib.mkEnableOption "support for the GnuPG agent";
 
       pinentry.program = mkOption {
         type = types.path;
         default = "${pkgs.pinentry_gtk2}/bin/pinentry";
         defaultText = "\${pkgs.pinentry_gtk2}/bin/pinentry";
-        example = literalExample "\${pkgs.pinentry_qt}/bin/pinentry";
+        example = lib.literalExample "\${pkgs.pinentry_qt}/bin/pinentry";
         description = "The pinentry program to use to ask for passphrases.";
       };
 
-      sshSupport = mkEnableOption "GnuPG agent support for SSH";
+      sshSupport = lib.mkEnableOption "GnuPG agent support for SSH";
 
       scdaemon = {
-        enable = mkEnableOption "GnuPG agent with Smartcard daemon";
+        enable = lib.mkEnableOption "GnuPG agent with Smartcard daemon";
 
         program = mkOption {
           type = types.path;
@@ -95,16 +95,16 @@ in {
           defaultText = let
             configPath = "config.vuizvui.programs.gnupg";
           in "\${${configPath}.package}/libexec/scdaemon";
-          example = literalExample "\${pkgs.my_shiny_scdaemon}/bin/scdaemon";
+          example = lib.literalExample "\${pkgs.my_scdaemon}/bin/scdaemon";
           description = "The program to use for the Smartcard daemon";
         };
       };
     };
   };
 
-  config = mkMerge [
+  config = lib.mkMerge [
     (mkIf cfg.enable {
-      vuizvui.requiresTests = singleton ["vuizvui" "programs" "gnupg"];
+      vuizvui.requiresTests = lib.singleton ["vuizvui" "programs" "gnupg"];
       environment.systemPackages = [ cfg.package ];
     })
     (mkIf (cfg.enable && !isDefaultHome) {
@@ -125,7 +125,7 @@ in {
           (if hasSupervisorSupport
            then "--supervised"
            else "--no-detach --daemon")
-        ] ++ optional cfg.agent.sshSupport "--enable-ssh-support");
+        ] ++ lib.optional cfg.agent.sshSupport "--enable-ssh-support");
 
         serviceConfig.ExecReload = toString [
           "${cfg.package}/bin/gpg-connect-agent"
@@ -137,7 +137,7 @@ in {
       systemd.user.sockets.gpg-agent-main = {
         wantedBy = [ "sockets.target" ];
         description = "Main Socket For GnuPG Agent";
-        listenStreams = singleton "${sockDir}/S.gpg-agent";
+        listenStreams = lib.singleton "${sockDir}/S.gpg-agent";
         socketConfig = let
           sockName = if hasSupervisorSupport then "std" else "main";
         in agentSocketConfig sockName;
@@ -147,7 +147,7 @@ in {
       systemd.user.sockets.gnupg-scdaemon = {
         wantedBy = [ "sockets.target" ];
         description = "GnuPG Smartcard Daemon Socket";
-        listenStreams = singleton "${sockDir}/S.scdaemon";
+        listenStreams = lib.singleton "${sockDir}/S.scdaemon";
         socketConfig = {
           FileDescriptorName = "scdaemon";
           SocketMode = "0600";
@@ -173,11 +173,11 @@ in {
       systemd.user.sockets.gpg-agent-ssh = {
         wantedBy = [ "sockets.target" ];
         description = "SSH Socket For GnuPG Agent";
-        listenStreams = singleton "${sockDir}/S.gpg-agent.ssh";
+        listenStreams = lib.singleton "${sockDir}/S.gpg-agent.ssh";
         socketConfig = agentSocketConfig "ssh";
       };
 
-      assertions = singleton {
+      assertions = lib.singleton {
         assertion = !config.programs.ssh.startAgent;
         message = toString [
           "You cannot use the GnuPG agent with SSH support in addition to the"
