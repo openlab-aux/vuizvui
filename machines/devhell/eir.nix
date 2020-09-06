@@ -261,20 +261,16 @@
   };
 
   environment.systemPackages = with pkgs; [
-    aircrackng
     cdrtools
     dvdplusrwtools
     glxinfo
     horst
     iw
-    kismet
     libva
     libvdpau-va-gl
     minicom
     pmtools
     pmutils
-    reaverwps
-    snort
     vaapiVdpau
     vdpauinfo
     xbindkeys
