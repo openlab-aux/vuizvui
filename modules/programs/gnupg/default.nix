@@ -36,7 +36,7 @@ let
   } ''
     cc -Wall -shared -std=c11 \
       ${lib.optionalString withSupervisor "-DSUPERVISOR_SUPPORT=1"} \
-      -DLIBSYSTEMD=\"${pkgs.systemd.lib}/lib/libsystemd.so\" \
+      -DLIBSYSTEMD=\"${lib.getLib pkgs.systemd}/lib/libsystemd.so\" \
       -DPINENTRY_WRAPPER=\"$pinentryWrapper\" \
       $(pkg-config --cflags libsystemd) -ldl \
       "${./agent-wrapper.c}" -o "$out" -fPIC
