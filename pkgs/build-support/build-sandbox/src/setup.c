@@ -850,8 +850,7 @@ bool setup_sandbox(void)
             close(sync_pipe[0]);
             _exit(write_maps(parent_pid) ? 0 : 1);
         default:
-            if (unshare(CLONE_NEWNS | CLONE_NEWUSER | CLONE_NEWPID |
-                        CLONE_NEWUTS | CLONE_NEWIPC) == -1) {
+            if (unshare(CLONE_NEWNS | CLONE_NEWUSER | EXTRA_NS_FLAGS) == -1) {
                 perror("unshare");
                 if (write(sync_pipe[1], "X", 1) == -1)
                     perror("signal child exit");

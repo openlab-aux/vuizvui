@@ -6,6 +6,8 @@ CFLAGS = -g -Wall -std=gnu11 -DFS_ROOT_DIR=\"$(out)\"
 CXXFLAGS = -g -Wall -std=c++14 `pkg-config --cflags nix-main`
 LDFLAGS = -Wl,--copy-dt-needed-entries `pkg-config --libs nix-main`
 
+CFLAGS += -DEXTRA_NS_FLAGS="$(EXTRA_NS_FLAGS)"
+
 ifdef FULL_NIX_STORE
 CFLAGS += -DFULL_NIX_STORE
 else

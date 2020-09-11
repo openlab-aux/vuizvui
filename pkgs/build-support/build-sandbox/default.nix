@@ -16,6 +16,25 @@ let
   # TODO: get rid of nix & pkg-config if this is enabled (in the Makefile)
   fullNixStore = attrs.fullNixStore or false;
 
+  # The mount and user namespaces are needed for this functionality, so these
+  # namespaces are always enabled.
+  #
+  # However, the following namespaces can be enabled/disabled:
+  # +----------------+---------+--------------------------------------+
+  # | Attribute path | Default | Isolates                             |
+  # +----------------+---------+--------------------------------------+
+  # | namespaces.pid |  true   | Process IDs                          |
+  # | namespaces.uts |  true   | Hostname and NIS domain name         |
+  # | namespaces.ipc |  true   | System V IPC, POSIX message queues   |
+  # | namespaces.net |  false  | Network devices, stacks, ports, etc. |
+  # +----------------+---------+--------------------------------------+
+  extraNamespaceFlags = let
+    flags = lib.optional (attrs.namespaces.pid or true) "CLONE_NEWPID"
+         ++ lib.optional (attrs.namespaces.uts or true) "CLONE_NEWUTS"
+         ++ lib.optional (attrs.namespaces.ipc or true) "CLONE_NEWIPC"
+         ++ lib.optional (attrs.namespaces.net or false) "CLONE_NEWNET";
+  in if flags == [] then "0" else lib.concatStringsSep "|" flags;
+
   # Create code snippets for params.c to add extra_mount() calls.
   mkExtraMountParams = isRequired: lib.concatMapStringsSep "\n" (extra: let
     escaped = lib.escape ["\\" "\""] extra;
@@ -80,8 +99,8 @@ in stdenv.mkDerivation ({
 
   nativeBuildInputs = [ pkgconfig ];
   buildInputs = [ boost nix ];
-  makeFlags = [ "BINDIR=${drv}/bin" ]
+  makeFlags = [ "BINDIR=${drv}/bin" "EXTRA_NS_FLAGS=${extraNamespaceFlags}" ]
            ++ lib.optional allowBinSh "BINSH_EXECUTABLE=${dash}/bin/dash"
            ++ lib.optional fullNixStore "FULL_NIX_STORE=1";
 
-} // removeAttrs attrs [ "paths" "allowBinSh" ])
+} // removeAttrs attrs [ "namespaces" "paths" "allowBinSh" ])

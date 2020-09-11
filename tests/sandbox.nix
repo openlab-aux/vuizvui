@@ -17,6 +17,20 @@
     services.xserver.enable = true;
     systemd.services.display-manager.enable = false;
 
+    systemd.sockets.netnstest = {
+      description = "Host Socket for Testing Network Namespaces";
+      requiredBy = [ "sockets.target" ];
+
+      socketConfig.ListenStream = "3000";
+      socketConfig.Accept = true;
+    };
+
+    systemd.services."netnstest@" = {
+      description = "Host Service for Testing Network Namespaces";
+      serviceConfig.StandardInput = "socket";
+      serviceConfig.ExecStart = "${pkgs.coreutils}/bin/tee /tmp/netns.log";
+    };
+
     environment.systemPackages = let
       mkNestedLinksTo = drv: let
         mkLink = name: to: pkgs.runCommandLocal name { inherit to; } ''
@@ -115,6 +129,12 @@
         # Another /bin/sh just to be sure :-)
         /bin/sh -c 'echo /bin/sh works'
       '') { allowBinSh = true; })
+
+      (pkgs.vuizvui.buildSandbox (pkgs.writeScriptBin "test-sandbox3" ''
+        #!${pkgs.stdenv.shell}
+        echo hello network | ${pkgs.netcat-openbsd}/bin/nc -N 127.0.0.1 3000 \
+          || echo netcat has failed
+      '') { namespaces.net = true; })
     ];
     users.users.foo.isNormalUser = true;
   };
@@ -137,5 +157,10 @@
     machine.succeed('test "$(< /home/foo/.cache/xdg/ownpid)" = 1')
 
     machine.succeed('test "$(su -c test-sandbox2 foo)" = "/bin/sh works"')
+
+    machine.succeed('su -c "echo root netns | nc -N 127.0.0.1 3000" foo')
+    machine.succeed('test "$(su -c test-sandbox3 foo)" = "netcat has failed"')
+    machine.fail('grep -F "hello network" /tmp/netns.log')
+    machine.succeed('grep -F "root netns" /tmp/netns.log')
   '';
 }
