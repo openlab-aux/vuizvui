@@ -135,6 +135,11 @@
         echo hello network | ${pkgs.netcat-openbsd}/bin/nc -N 127.0.0.1 3000 \
           || echo netcat has failed
       '') { namespaces.net = true; })
+
+      (pkgs.vuizvui.buildSandbox (pkgs.writeScriptBin "test-sandbox4" ''
+        #!${pkgs.stdenv.shell}
+        test $$ -gt 5 && echo no pid namespace
+      '') { namespaces.pid = false; })
     ];
     users.users.foo.isNormalUser = true;
   };
@@ -162,5 +167,7 @@
     machine.succeed('test "$(su -c test-sandbox3 foo)" = "netcat has failed"')
     machine.fail('grep -F "hello network" /tmp/netns.log')
     machine.succeed('grep -F "root netns" /tmp/netns.log')
+
+    machine.succeed('test "$(su -c test-sandbox4 foo)" = "no pid namespace"')
   '';
 }

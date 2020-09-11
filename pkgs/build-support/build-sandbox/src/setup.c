@@ -769,13 +769,18 @@ static bool setup_chroot(void)
     if (!bind_mount("/dev", false, false, false))
         return false;
 
-    if (!makedirs(FS_ROOT_DIR "/proc", false))
-        return false;
+#if (EXTRA_NS_FLAGS) & CLONE_NEWPID
+        if (!makedirs(FS_ROOT_DIR "/proc", false))
+            return false;
 
-    if (mount("none", FS_ROOT_DIR "/proc", "proc", 0, NULL) == -1) {
-        perror("mount /proc");
-        return false;
-    }
+        if (mount("none", FS_ROOT_DIR "/proc", "proc", 0, NULL) == -1) {
+            perror("mount /proc");
+            return false;
+        }
+#else
+        if (!bind_mount("/proc", false, false, false))
+            return false;
+#endif
 
     if (!bind_mount("/sys", false, false, false))
         return false;
