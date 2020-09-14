@@ -3,19 +3,20 @@
 {
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.initrd.luks.devices = [
-    { name = "00vault";
+  boot.initrd.luks.devices = {
+    "00vault" = {
       device = "/dev/disk/by-uuid/a70f4ff8-e463-42fa-8148-6783dd352f96";
-    }
-    { name = "shakti-swap";
+    };
+    shakti-swap = {
       device = "/dev/disk/by-uuid/69f3a774-c796-4dbd-a38b-32f019d05e7c";
       keyFile = "/dev/mapper/00vault";
-    }
-    { name = "shakti-root";
+    };
+    shakti-root = {
       device = "/dev/disk/by-uuid/8a67bdf9-08bb-4214-b728-88cf1c2ee206";
       keyFile = "/dev/mapper/00vault";
-    }
-  ];
+    };
+  };
+
   boot.initrd.postDeviceCommands = lib.mkAfter ''
     cryptsetup luksClose /dev/mapper/00vault
   '';

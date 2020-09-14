@@ -11,10 +11,10 @@ in {
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
-  boot.initrd.luks.devices =
-    [ { name = "schnurrkadse";
-        device = "/dev/disk/by-uuid/544529b8-81cb-4e8e-9b6b-44f828ea2a7b";
-        preLVM = true; } ];
+  boot.initrd.luks.devices.schnurrkadse = {
+    device = "/dev/disk/by-uuid/544529b8-81cb-4e8e-9b6b-44f828ea2a7b";
+    preLVM = true;
+  };
 
   fileSystems."/" =
     { device = "/dev/mapper/schnurrkadse-root";

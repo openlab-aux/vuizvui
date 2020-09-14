@@ -11,10 +11,7 @@ let
   };
 
   systemDevice = "/dev/disk/by-id/ata-MKNSSDCR60GB-DX_MKN1140A0000025162";
-  systemPartition = {
-    name = "mikiya-root";
-    device = "/dev/disk/by-uuid/56910867-ed83-438a-b67c-c057e662c89e";
-  };
+  systemPartition = "/dev/disk/by-uuid/56910867-ed83-438a-b67c-c057e662c89e";
   rootDevice = "/dev/mapper/mikiya-root";
 
   raidDevices = lib.imap (mkDevice "raid") [
@@ -51,7 +48,7 @@ in {
           ];
 
         # decrypt root device
-        luks.devices = [systemPartition];
+        luks.devices.mikiya-root.device = systemPartition;
       };
 
     };

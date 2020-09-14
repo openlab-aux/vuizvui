@@ -10,7 +10,7 @@ in {
   boot.blacklistedKernelModules = [ "nouveau" "nvidia" ];
   boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" ];
   boot.kernelModules = [ "kvm-intel" ];
-  boot.initrd.luks.devices = [ { device = "/dev/sda2"; name = "crypted"; } ];
+  boot.initrd.luks.devices.crypted.device = "/dev/sda2";
 
   fileSystems."/" = {
     device = "/dev/dm-0";

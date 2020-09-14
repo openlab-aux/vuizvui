@@ -13,19 +13,19 @@
   };
 
   boot.initrd = {
-    luks.devices = [
-      { name = "00vault";
+    luks.devices = {
+      "00vault" = {
         device = "/dev/disk/by-uuid/812f19f1-9096-4367-b2e4-0c9537c52a67";
-      }
-      { name = "tishtushi-swap";
+      };
+      tishtushi-swap = {
         device = "/dev/disk/by-uuid/2934df87-5fda-4b2e-9f3b-c4c96f571407";
         keyFile = "/dev/mapper/00vault";
-      }
-      { name = "tishtushi-root";
+      };
+      tishtushi-root = {
         device = "/dev/disk/by-uuid/cf65f144-9205-40a5-a239-b660695a6740";
         keyFile = "/dev/mapper/00vault";
-      }
-    ];
+      };
+    };
     postDeviceCommands = lib.mkAfter ''
       cryptsetup luksClose /dev/mapper/00vault
     '';

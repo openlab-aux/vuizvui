@@ -383,7 +383,7 @@ let
     { check = config.boot.loader.grub.version == 1;
       path  = ["nixos" "installer" "grub1"];
     }
-    { check = config.boot.initrd.luks.devices != [];
+    { check = config.boot.initrd.luks.devices != {};
       paths = [
         ["nixos" "installer" "luksroot"]
         ["nixos" "installer" "luksroot-format1"]
