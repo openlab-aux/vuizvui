@@ -130,6 +130,7 @@ in {
 
   services.xserver.videoDrivers = [ "ati" ];
   services.xserver.xrandrHeads = [ "DVI-0" "HDMI-0" ];
+  services.xserver.wacom.enable = true;
 
   vuizvui.user.aszlig.services.i3.workspaces."1" = {
     label = "XMPP";
