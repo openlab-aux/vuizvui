@@ -126,7 +126,6 @@ in {
       gpodder
       gptfdisk
       graphviz
-      gstreamer
       hdparm
       hexedit
       hicolor-icon-theme
