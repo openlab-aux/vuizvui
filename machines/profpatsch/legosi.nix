@@ -95,6 +95,8 @@ in {
 
     services.nginx = {
       enable = true;
+      recommendedGzipSettings = true;
+      recommendedOptimisation = true;
       virtualHosts.${"profpatsch.de"} = {
         forceSSL = true;
         enableACME = true;
