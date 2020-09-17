@@ -1,4 +1,4 @@
-{ jsJquery, jsTalkies
+{ jsTalkies
 , cssNormalize, cssMain
 , id_txt, cv_pdf
 , fontsQuattrocentoLatin, fontsOpenSansLatin
@@ -20,7 +20,6 @@
     -->
     <link rel="icon" href="data:,">
 
-    <link rel="preload" href="${jsJquery}" as="script">
     <link rel="preload" href="${jsTalkies}" as="script">
     <link rel="preload" href="${cssNormalize}" as="style">
     <link rel="preload" href="${cssMain}" as="style">
@@ -31,9 +30,7 @@
     <link rel="stylesheet" href="${cssNormalize}">
     <link rel="stylesheet" href="${cssMain}">
 
-    <!-- TODO: get rid of jquery -->
     <script src="${jsTalkies}"></script>
-    <script src="${jsJquery}"></script>
   </head>
   <body>
 
@@ -41,7 +38,7 @@
       <h1>Profpatsch</h1>
       <h2>
         <script>
-          appendTalkies($('#title h2'));
+          appendTalkies(document.querySelector('#title h2'));
         </script>
         <noscript>
           Oh the things you’ll see …
@@ -68,6 +65,8 @@
       <p>On another note, you can find me practically everywhere under my nick (Github, G+, several mailinglists, SO, &amp;c.)
 
       <p>There you go. Cya!</p>
+
+
     </main>
   </body>
 </html>

@@ -1,4 +1,4 @@
-function appendTalkies(jquery_element) {
+function appendTalkies(append_to_element) {
     talkies = [
         { talk: "Oh the things you’ll see …" },
         { talk: "I’ll manage." },
@@ -149,5 +149,5 @@ function appendTalkies(jquery_element) {
             return '<span '+attrs+'>'+content+'</span>';
         };
     }
-    $(jquery_element).append(elem(talkie.talk, title));
+    append_to_element.innerHTML = elem(talkie.talk, title);
 }

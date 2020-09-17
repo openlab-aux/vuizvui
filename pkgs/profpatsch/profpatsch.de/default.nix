@@ -4,11 +4,6 @@ let
   bins = getBins pkgs.coreutils [ "ln" "mkdir" "echo" "printenv" "cat" "env" ]
     // getBins pkgs.fdtools [ "multitee" ];
 
-  jquery = pkgs.fetchurl {
-    url = "https://code.jquery.com/jquery-3.5.1.min.js";
-    sha256 = "0gbfbfcbcpl8nq2shknsyz5pirf5wbnb54m3dynxs68x9y4sbxpp";
-  };
-
   quattrocento-latin = pkgs.fetchurl {
     url = "https://fonts.gstatic.com/s/quattrocento/v11/OZpEg_xvsDZQL_LKIF7q4jP3w2j6.woff2";
     sha256 = "161dzd0az6zw8js1q8ikf4yhm0h9zidc5wqlnsrpzw5npdzmbzbi";
@@ -35,11 +30,6 @@ let
 
   staticFiles =
     rec {
-      jsJquery = {
-        relativeDir = [ "js" ];
-        relativeFile = "jquery.js";
-        path = jquery;
-      };
       jsTalkies = {
         relativeDir = [ "js" ];
         relativeFile = "talkies.js";
@@ -89,7 +79,7 @@ let
         relativeDir = [];
         relativeFile = "index.html";
         path = applyTemplate "index.html" ./index.html.nix {
-          inherit jsJquery jsTalkies;
+          inherit jsTalkies;
           inherit cssNormalize cssMain;
           inherit cv_pdf id_txt;
           # preloading
