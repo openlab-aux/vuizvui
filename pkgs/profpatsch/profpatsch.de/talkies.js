@@ -134,7 +134,12 @@ function appendTalkies(append_to_element) {
         { talk: "trap 'rm -r \"$tmp\"' EXIT" },
         { talk: "👁👄👁",
           hover: "It is what it is",
-          link: "https://xn--mp8hai.fm/statement" }
+          link: "https://xn--mp8hai.fm/statement" },
+        { talk: "For more information please re-read",
+          hover: "Whatever you do, don’t.",
+          link: "https://scarfolk.blogspot.com/" },
+        { talk: "Live und in Farbe" },
+        { talk: "Glob Star" }
     ];
     var talkie = talkies[Math.floor(Math.random()*talkies.length)];
     var elem = null;
