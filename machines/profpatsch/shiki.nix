@@ -339,6 +339,22 @@ in {
 
     ################
     # User services
+    vuizvui.services.profpatsch.dunst = {
+      enable = true;
+      settings = {
+        global = {
+          font = "Sans 18";
+          markup = "full";
+          padding = 3;
+          horizontal_padding = 3;
+        };
+      };
+      iconTheme = {
+        package = pkgs.gnome3.adwaita-icon-theme;
+        name = "Adwaita";
+      };
+    };
+
     systemd.user = lib.mkMerge [
 
       (lib.mkIf config.vuizvui.programs.gnupg.enable {
@@ -390,21 +406,6 @@ in {
         };
       }
 
-      ({
-        services.dunst = {
-          description = "dunst libnotify daemon";
-          serviceConfig = {
-            Type = "dbus";
-            BusName = "org.freedesktop.Notifications";
-            ExecStart =
-              let config = pkgs.writeText "dunst.conf" (lib.generators.toINI {} {});
-              in "${lib.getBin pkgs.dunst}/bin/dunst --config ${config}";
-            Restart = "on-failure";
-          };
-          partOf = [ "graphical-session.target" ];
-          wantedBy = [ "graphical-session.target" ];
-        };
-      })
 
       ({
       #   services.pyrnotify-ssh-connection = {

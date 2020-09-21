@@ -36,4 +36,5 @@
   ./user/profpatsch/programs/scanning.nix
   ./user/profpatsch/programs/weechat.nix
   ./user/profpatsch/services/bitlbee.nix
+  ./user/profpatsch/services/dunst.nix
 ]
