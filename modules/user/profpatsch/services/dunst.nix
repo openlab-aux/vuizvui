@@ -72,6 +72,7 @@ in {
 
     vuizvui.services.profpatsch.dunst.settings = {
       global = {
+        icon_position = "left";
         icon_path = let
           theme = cfg.iconTheme;
 
@@ -89,6 +90,7 @@ in {
             "places"
             "status"
             "stock"
+            "legacy"
           ];
         in lib.concatMapStringsSep ":"
             (category: "${cfg.iconTheme.package}/share/icons/${theme.name}/${themeSize}/${category}")
