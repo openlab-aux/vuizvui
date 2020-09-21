@@ -4,6 +4,18 @@ let
   myLib  = import ./lib.nix  { inherit pkgs lib; };
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib unfreeAndNonDistributablePkgs; };
 
+  lock-screen = pkgs.writers.writeDashBin "lock-screen" ''
+    set -e
+    revert() {
+      ${pkgs.xorg.xset}/bin/xset dpms 0 0 0
+    }
+    trap revert HUP INT TERM EXIT
+    ${pkgs.xorg.xset}/bin/xset +dpms dpms 2 2 2
+    ${pkgs.i3lock}/bin/i3lock \
+      --nofork \
+      --color=000000
+  '';
+
 in {
 
   imports = [
@@ -147,9 +159,7 @@ in {
         networkmanagerapplet # for nm-connection-editor
       ];
       xPkgs = [
-        dunst             # notification daemon (interfaces with libnotify)
-        # TODO: replace by xscreensaver or i3lock
-        alock             # lock screen
+        lock-screen       # lock screen
         libnotify         # notification library
         xclip             # clipboard thingy
         xorg.xkill        # X11 application kill
