@@ -92,6 +92,7 @@ in {
       di
       dmidecode
       dos2unix
+      duf
       duff
       e2fsprogs
       ethtool
