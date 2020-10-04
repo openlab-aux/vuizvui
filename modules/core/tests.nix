@@ -7,8 +7,6 @@ let
                 == pkgs.linuxPackages_latest.kernel.version;
   wgTestSuffix = "linux-${if isLatestKernel then "latest" else "5_4"}";
 
-  whichNet = if config.networking.useNetworkd then "networkd" else "scripted";
-
   mkTest = attrs: if attrs.check then attrs.paths or [ attrs.path ] else [];
 
   anyAttrs = pred: cfg: any lib.id (lib.mapAttrsToList (lib.const pred) cfg);
@@ -59,16 +57,9 @@ let
     }
     { check = config.vuizvui.createISO;
       paths = [
-        ["nixos" "boot" "biosCdrom"]
         ["nixos" "boot" "biosNetboot"]
-        ["nixos" "boot" "biosUsb"]
-        ["nixos" "boot" "uefiCdrom"]
         ["nixos" "boot" "uefiNetboot"]
-        ["nixos" "boot" "uefiUsb"]
       ];
-    }
-    { check = true;
-      path  = ["nixos" "boot-stage1"];
     }
     { check = config.services.borgbackup.jobs != {}
            || config.services.borgbackup.repos != {};
@@ -98,9 +89,6 @@ let
     }
     { check = config.services.cfssl.enable;
       path  = ["nixos" "cfssl"];
-    }
-    { check = hasPackage pkgs.chromium;
-      path  = ["nixos" "chromium"];
     }
     { check = config.services.cjdns.enable;
       path  = ["nixos" "cjdns"];
@@ -132,14 +120,6 @@ let
     { check = config.boot.enableContainers
            && anyAttrs (i: i.localAddress != []) config.containers;
       path  = ["nixos" "containers-hosts"];
-    }
-    { check = config.boot.enableContainers;
-      path  = ["nixos" "containers-imperative"];
-    }
-    { check = config.boot.enableContainers
-           && anyAttrs (i: i.hostAddress  != null
-                        || i.localAddress != null) config.containers;
-      path  = ["nixos" "containers-ip"];
     }
     { check = config.boot.enableContainers
            && anyAttrs (i: i.macvlans != []) config.containers;
@@ -178,10 +158,7 @@ let
       path  = ["nixos" "dnscrypt-proxy2"];
     }
     { check = config.virtualisation.docker.enable;
-      paths = [
-        ["nixos" "docker"]
-        ["nixos" "docker-tools"]
-      ];
+      path  = ["nixos" "docker-tools"];
     }
     { check = config.virtualisation.oci-containers.containers != {};
       path  = ["nixos" "oci-containers"];
@@ -206,9 +183,6 @@ let
     { check = config.services.dovecot2.enable;
       path  = ["nixos" "dovecot"];
     }
-    { check = config.security.pam.enableEcryptfs;
-      path  = ["nixos" "ecryptfs"];
-    }
     { check = config.services.ejabberd.enable;
       path  = ["nixos" "ejabberd"];
     }
@@ -216,9 +190,6 @@ let
            || config.services.elasticsearch.enable
            || config.services.kibana.enable;
       path  = ["nixos" "elk"];
-    }
-    { check = true;
-      path  = ["nixos" "env"];
     }
     { check = config.services.etcd.enable;
       paths = [
@@ -232,12 +203,6 @@ let
     { check = config.services.ferm.enable;
       path  = ["nixos" "ferm"];
     }
-    { check = hasPackage pkgs.firefox;
-      path  = ["nixos" "firefox"];
-    }
-    { check = config.networking.firewall.enable;
-      path  = ["nixos" "firewall"];
-    }
     { check = config.programs.fish.enable;
       path  = ["nixos" "fish"];
     }
@@ -246,9 +211,6 @@ let
     }
     { check = config.services.fluentd.enable;
       path  = ["nixos" "fluentd"];
-    }
-    { check = config.fonts.enableDefaultFonts;
-      path  = ["nixos" "fontconfig-default-fonts"];
     }
     { check = config.services.freeswitch.enable;
       path  = ["nixos" "freeswitch"];
@@ -279,11 +241,7 @@ let
       path  = ["nixos" "glusterfs"];
     }
     { check = config.services.xserver.desktopManager.gnome3.enable;
-      paths = [
-        ["nixos" "gnome3"]
-        ["nixos" "gnome3-xorg"]
-        ["nixos" "installed-tests"]
-      ];
+      path  = ["nixos" "installed-tests"];
     }
     { check = config.services.gocd-agent.enable;
       path  = ["nixos" "gocd-agent"];
@@ -323,16 +281,6 @@ let
     { check = config.services.haproxy.enable;
       path  = ["nixos" "haproxy"];
     }
-    { check = config.security.apparmor.enable
-           || config.security.forcePageTableIsolation
-           || config.security.hideProcessInformation
-           || config.security.lockKernelModules
-           || config.security.protectKernelImage;
-      path  = ["nixos" "hardened"];
-    }
-    { check = true;
-      path  = ["nixos" "hibernate"];
-    }
     { check = config.services.hitch.enable;
       path  = ["nixos" "hitch"];
     }
@@ -344,9 +292,6 @@ let
     }
     { check = config.services.hydra.enable;
       path  = ["nixos" "hydra"];
-    }
-    { check = config.services.xserver.windowManager.i3.enable;
-      path  = ["nixos" "i3wm"];
     }
     { check = config.services.icingaweb2.enable;
       path  = ["nixos" "icingaweb2"];
@@ -369,13 +314,6 @@ let
     { check = config.boot.initrd.network.ssh.enable;
       path  = ["nixos" "initrd-network-ssh"];
     }
-    { check = elem "btrfs" config.boot.supportedFilesystems;
-      paths = [
-        ["nixos" "installer" "btrfsSimple"]
-        ["nixos" "installer" "btrfsSubvols"]
-        ["nixos" "installer" "btrfsSubvolDefault"]
-      ];
-    }
     { check = anyAttrs (f: f.encrypted.enable) config.fileSystems
            || lib.any (s: s.encrypted.enable) config.swapDevices;
       path  = ["nixos" "installer" "encryptedFSWithKeyfile"];
@@ -385,23 +323,9 @@ let
     }
     { check = config.boot.initrd.luks.devices != {};
       paths = [
-        ["nixos" "installer" "luksroot"]
         ["nixos" "installer" "luksroot-format1"]
         ["nixos" "installer" "luksroot-format2"]
       ];
-    }
-    { check = true;
-      path  = ["nixos" "installer" "lvm"];
-    }
-    { check = config.fileSystems ? "/boot";
-      path  = ["nixos" "installer" "separateBoot"];
-    }
-    { check = config.fileSystems ? "/boot"
-           && config.fileSystems."/boot".fsType == "vfat";
-      path  = ["nixos" "installer" "separateBootFat"];
-    }
-    { check = elem "ext3" config.boot.supportedFilesystems;
-      path  = ["nixos" "installer" "simple"];
     }
     { check = elem "ext3" config.boot.supportedFilesystems
            && config.specialisation != {};
@@ -416,23 +340,8 @@ let
            && config.specialisation != {};
       path  = ["nixos" "installer" "simpleUefiGrubClone"];
     }
-    { check = config.boot.loader.systemd-boot.enable;
-      path  = ["nixos" "installer" "simpleUefiSystemdBoot"];
-    }
-    { check = config.boot.loader.grub.fsIdentifier == "label";
-      path  = ["nixos" "installer" "simpleLabels"];
-    }
-    { check = config.boot.loader.grub.fsIdentifier == "provided";
-      path  = ["nixos" "installer" "simpleProvided"];
-    }
-    { check = config.boot.initrd.mdadmConf != "";
-      path  = ["nixos" "installer" "swraid"];
-    }
     { check = elem "zfs" config.boot.supportedFilesystems;
       path  = ["nixos" "installer" "zfsroot"];
-    }
-    { check = config.networking.enableIPv6;
-      path  = ["nixos" "ipv6"];
     }
     { check = config.services.jackett.enable;
       path  = ["nixos" "jackett"];
@@ -473,30 +382,6 @@ let
            == pkgs.linuxPackages_testing.kernel.version;
       path  = ["nixos" "kernel-testing"];
     }
-    { check = config.console.keyMap              == "azerty/fr"
-           || config.services.xserver.layout     == "fr";
-      path  = ["nixos" "keymap" "azerty"];
-    }
-    { check = config.console.keyMap              == "colemak/colemak"
-           || config.services.xserver.xkbVariant == "colemak";
-      path  = ["nixos" "keymap" "colemak"];
-    }
-    { check = config.console.keyMap              == "dvorak"
-           || config.services.xserver.layout     == "dvorak";
-      path  = ["nixos" "keymap" "dvorak"];
-    }
-    { check = config.console.keyMap              == "dvp"
-           || config.services.xserver.xkbVariant == "dvp";
-      path  = ["nixos" "keymap" "dvp"];
-    }
-    { check = config.console.keyMap              == "neo"
-           || config.services.xserver.xkbVariant == "neo";
-      path  = ["nixos" "keymap" "neo"];
-    }
-    { check = config.console.keyMap              == "de"
-           || config.services.xserver.layout     == "de";
-      path  = ["nixos" "keymap" "qwertz"];
-    }
     { check = config.services.knot.enable;
       path  = ["nixos" "knot"];
     }
@@ -510,10 +395,6 @@ let
         ["nixos" "kubernetes" "rbac" "multinode"]
       ];
     }
-    { check = config.boot.kernelPackages.kernel.version
-           == pkgs.linuxPackages_latest.kernel.version;
-      path  = ["nixos" "latestKernel" "login"];
-    }
     { check = config.services.openldap.enable
            || config.users.ldap.enable;
       path  = ["nixos" "ldap"];
@@ -524,14 +405,8 @@ let
     { check = config.services.lidarr.enable;
       path  = ["nixos" "lidarr"];
     }
-    { check = config.services.xserver.displayManager.lightdm.enable;
-      path  = ["nixos" "lightdm"];
-    }
     { check = config.services.limesurvey.enable;
       path  = ["nixos" "limesurvey"];
-    }
-    { check = true;
-      path  = ["nixos" "login"];
     }
     { check = config.services.loki.enable;
       path  = ["nixos" "loki"];
@@ -569,9 +444,6 @@ let
     { check = config.services.minidlna.enable;
       path  = ["nixos" "minidlna"];
     }
-    { check = true;
-      path  = ["nixos" "misc"];
-    }
     { check = config.services.moinmoin.enable;
       path  = ["nixos" "moinmoin"];
     }
@@ -597,9 +469,6 @@ let
            || config.services.munin-cron.enable;
       path  = ["nixos" "munin"];
     }
-    { check = true;
-      path  = ["nixos" "mutableUsers"];
-    }
     { check = config.services.mxisd.enable;
       path  = ["nixos" "mxisd"];
     }
@@ -616,21 +485,6 @@ let
     { check = config.services.nagios.enable;
       path  = ["nixos" "nagios"];
     }
-    { check = config.networking.nat.enable
-           && config.networking.firewall.enable;
-      path  = ["nixos" "nat" "firewall"];
-    }
-    { check = with config.networking; let
-        isIptables = nat.enable || firewall.enable;
-        hasConntrack = firewall.connectionTrackingModules != []
-                    || firewall.autoLoadConntrackHelpers;
-      in isIptables && hasConntrack;
-      path  = ["nixos" "nat" "firewall-conntrack"];
-    }
-    { check = config.networking.nat.enable
-           && !config.networking.firewall.enable;
-      path  = ["nixos" "nat" "standalone"];
-    }
     { check = config.services.ndppd.enable;
       path  = ["nixos" "ndppd"];
     }
@@ -642,47 +496,6 @@ let
     }
     { check = config.services.netdata.enable;
       path  = ["nixos" "netdata"];
-    }
-    { check = config.networking.bonds != {};
-      path  = ["nixos" "networking" whichNet "bond"];
-    }
-    { check = config.networking.bridges != {};
-      path  = ["nixos" "networking" whichNet "bridge"];
-    }
-    { check = anyAttrs (i: i.useDHCP == true) config.networking.interfaces;
-      path  = ["nixos" "networking" whichNet "dhcpOneIf"];
-    }
-    { check = config.networking.useDHCP;
-      path  = ["nixos" "networking" whichNet "dhcpSimple"];
-    }
-    { check = true;
-      path  = ["nixos" "networking" whichNet "loopback"];
-    }
-    { check = config.networking.macvlans != {};
-      path  = ["nixos" "networking" whichNet "macvlan"];
-    }
-    { check = let
-        hasPrivacy = iface: iface.tempAddress == "default"
-                         || iface.tempAddress == "enabled";
-      in anyAttrs hasPrivacy config.networking.interfaces;
-      path  = ["nixos" "networking" whichNet "privacy"];
-    }
-    { check = anyAttrs (i: i.ipv4.routes != [] || i.ipv6.routes != [])
-              config.networking.interfaces;
-      path  = ["nixos" "networking" whichNet "routes"];
-    }
-    { check = config.networking.sits != {};
-      path  = ["nixos" "networking" whichNet "sit"];
-    }
-    { check = anyAttrs (i: i.ipv4.addresses != [])
-              config.networking.interfaces;
-      path  = ["nixos" "networking" whichNet "static"];
-    }
-    { check = anyAttrs (i: i.virtual) config.networking.interfaces;
-      path  = ["nixos" "networking" whichNet "virtual"];
-    }
-    { check = config.networking.vlans != {};
-      path  = ["nixos" "networking" whichNet "vlan"];
     }
     { check = with config.networking.proxy; any (val: val != null)
             [ default allProxy ftpProxy httpProxy httpsProxy noProxy
@@ -703,12 +516,6 @@ let
     }
     { check = config.services.nexus.enable;
       path  = ["nixos" "nexus"];
-    }
-    { check = elem "nfs" config.boot.supportedFilesystems;
-      paths = [
-        ["nixos" "nfs3"]
-        ["nixos" "nfs4"]
-      ];
     }
     { check = config.services.nghttpx.enable;
       path  = ["nixos" "nghttpx"];
@@ -746,9 +553,6 @@ let
     { check = config.services.opensmtpd.enable;
       path  = ["nixos" "opensmtpd"];
     }
-    { check = config.services.openssh.enable;
-      path  = ["nixos" "openssh"];
-    }
     { check = config.services.orangefs.client.enable
            || config.services.orangefs.server.enable;
       path  = ["nixos" "orangefs"];
@@ -772,9 +576,6 @@ let
     { check = config.security.pam.u2f.enable;
       path  = ["nixos" "pam-u2f"];
     }
-    { check = config.services.xserver.desktopManager.pantheon.enable;
-      path  = ["nixos" "pantheon"];
-    }
     { check = config.services.paperless.enable;
       path  = ["nixos" "paperless"];
     }
@@ -787,13 +588,6 @@ let
     }
     { check = config.services.pgmanage.enable;
       path  = ["nixos" "pgmanage"];
-    }
-    { check = config.services.httpd.enable
-           && config.services.httpd.enablePHP;
-      path  = ["nixos" "php-pcre"];
-    }
-    { check = config.services.xserver.desktopManager.plasma5.enable;
-      path  = ["nixos" "plasma5"];
     }
     { check = config.programs.plotinus.enable;
       path  = ["nixos" "plotinus"];
@@ -817,25 +611,6 @@ let
     }
     { check = config.services.pppd.enable;
       path  = ["nixos" "pppd"];
-    }
-    { check = config.networking.usePredictableInterfaceNames
-           && !config.networking.useNetworkd;
-      path  = ["nixos" "predictable-interface-names" "predictable"];
-    }
-    { check = config.networking.usePredictableInterfaceNames
-           && config.networking.useNetworkd;
-      path  = ["nixos" "predictable-interface-names" "predictableNetworkd"];
-    }
-    { check = !config.networking.usePredictableInterfaceNames
-           && !config.networking.useNetworkd;
-      path  = ["nixos" "predictable-interface-names" "unpredictable"];
-    }
-    { check = !config.networking.usePredictableInterfaceNames
-           && config.networking.useNetworkd;
-      path  = ["nixos" "predictable-interface-names" "unpredictableNetworkd"];
-    }
-    { check = config.services.printing.enable;
-      path  = ["nixos" "printing"];
     }
     { check = config.services.prometheus.enable;
       path  = ["nixos" "prometheus"];
@@ -866,10 +641,6 @@ let
     { check = with config.services.prosody; enable
            && builtins.match ".*MySQL.*" extraConfig != null;
       path  = ["nixos" "prosodyMysql"];
-    }
-    { check = config.services.httpd.enable
-           && elem "proxy_balancer" config.services.httpd.extraModules;
-      path  = ["nixos" "proxy"];
     }
     { check = config.services.quagga.ospf.enable;
       path  = ["nixos" "quagga"];
@@ -916,20 +687,15 @@ let
     { check = config.services.sanoid.enable;
       path  = ["nixos" "sanoid"];
     }
-    { check = config.services.xserver.displayManager.sddm.enable;
-      paths = [
-        ["nixos" "sddm" "default"]
-        ["nixos" "sddm" "autoLogin"]
-      ];
+    { check = config.services.xserver.displayManager.sddm.enable
+           && config.services.xserver.displayManager.autoLogin.enable;
+      paths = ["nixos" "sddm" "autoLogin"];
     }
     { check = config.services.shiori.enable;
       path  = ["nixos" "shiori"];
     }
     { check = hasPackage pkgs.signal-desktop;
       path  = ["nixos" "signal-desktop"];
-    }
-    { check = true;
-      path  = ["nixos" "simple"];
     }
     { check = config.services.slurm.enableStools
            || config.services.slurm.client.enable
@@ -957,9 +723,6 @@ let
     }
     { check = config.security.sudo.enable;
       path  = ["nixos" "sudo"];
-    }
-    { check = true;
-      path  = ["nixos" "switchTest"];
     }
     { check = config.services.sympa.enable;
       path  = ["nixos" "sympa"];
@@ -1027,9 +790,6 @@ let
     { check = config.services.trickster.enable;
       path  = ["nixos" "trickster"];
     }
-    { check = config.services.udisks2.enable;
-      path  = ["nixos" "udisks2"];
-    }
     { check = config.services.miniupnpd.enable
            || hasPackage pkgs.miniupnpc_2;
       path  = ["nixos" "upnp"];
@@ -1081,9 +841,6 @@ let
     }
     { check = config.services.xserver.xautolock.enable;
       path  = ["nixos" "xautolock"];
-    }
-    { check = config.services.xserver.desktopManager.xfce.enable;
-      path  = ["nixos" "xfce"];
     }
     { check = config.services.xserver.windowManager.xmonad.enable;
       path  = ["nixos" "xmonad"];
