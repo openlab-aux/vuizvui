@@ -211,6 +211,7 @@ in {
       shntool
       signal-desktop
       smartmontools
+      smos
       sox
       speedtest-cli
       spek
