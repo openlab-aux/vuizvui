@@ -69,6 +69,7 @@ in {
       aspellDicts.de
       aspellDicts.en
       axel
+      bat
       bc
       bcal
       beets
