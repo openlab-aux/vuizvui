@@ -209,6 +209,7 @@ in {
       signal-desktop
       smartmontools
       smos
+      so
       sox
       speedtest-cli
       spek
