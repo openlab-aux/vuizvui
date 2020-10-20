@@ -54,9 +54,6 @@ in {
     };
 
     environment.systemPackages = with pkgs; [
-      #electricsheep
-      #ntopng
-      #texlive.combined.scheme-small
       abook
       accountsservice
       ag
@@ -75,6 +72,7 @@ in {
       beets
       binutils
       bmon
+      bottom
       brave
       broot
       ccrypt
@@ -97,7 +95,6 @@ in {
       duff
       e2fsprogs
       ethtool
-      fbida
       fd
       fdupes
       feh
@@ -144,7 +141,6 @@ in {
       jfsutils
       john
       jwhois
-      keepassxc
       ldns
       lftp
       libarchive
@@ -264,7 +260,6 @@ in {
       xlibs.xev
       xscreensaver
       youtube-dl
-      ytop
       zathura
       zbar
       zgrviewer
