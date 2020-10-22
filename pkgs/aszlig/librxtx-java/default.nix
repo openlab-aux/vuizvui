@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, fetchpatch, unzip, jdk, lockdev }:
+{ stdenv, fetchurl, fetchpatch, unzip, autoreconfHook, jdk, lockdev }:
 
 stdenv.mkDerivation rec {
   name = "rxtx-${version}";
@@ -14,7 +14,7 @@ stdenv.mkDerivation rec {
 
   patches = let
     baseurl = "https://sources.debian.net/data/main/"
-            + "r/rxtx/2.2pre2-13/debian/patches";
+            + "r/rxtx/2.2pre2+dfsg1-2/debian/patches";
   in [
     (fetchpatch {
       url = "${baseurl}/fhs_lock_buffer_overflow_fix.patch";
@@ -28,8 +28,14 @@ stdenv.mkDerivation rec {
       url = "${baseurl}/format_security.patch";
       sha256 = "0adg7y9ak4xvgyswdhx6fsxq8jlb8y55xl3s6l0p8w0mfrhw7ysk";
     })
+    (fetchpatch {
+      url = "${baseurl}/java10-compatibility.patch";
+      sha256 = "05yzgjiyfb98q8444vx1qv1h81rr9d310q54dnnq18miciz4za7y";
+    })
   ];
 
+  preAutoreconf = "rm *.m4";
+  nativeBuildInputs = [ autoreconfHook ];
   buildInputs = [ unzip jdk lockdev ];
 
   NIX_CFLAGS_COMPILE = "-DUTS_RELEASE=\"3.8.0\"";
