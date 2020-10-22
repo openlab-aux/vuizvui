@@ -675,9 +675,6 @@ let
     { check = config.services.rsyslogd.enable;
       path  = ["nixos" "rsyslogd"];
     }
-    { check = true;
-      path  = ["nixos" "runInMachine"];
-    }
     { check = config.networking.rxe.enable;
       path  = ["nixos" "rxe"];
     }
