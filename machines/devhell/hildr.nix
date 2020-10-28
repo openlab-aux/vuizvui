@@ -157,7 +157,6 @@
     displayManager.sessionCommands = ''
       ${pkgs.xbindkeys}/bin/xbindkeys &
       ${pkgs.nitrogen}/bin/nitrogen --restore &
-      ${pkgs.xscreensaver}/bin/xscreensaver -no-splash &
       ${pkgs.rofi}/bin/rofi &
       ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
         Xft.dpi:                     96
