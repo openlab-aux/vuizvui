@@ -150,6 +150,7 @@ in {
       lxc
       lynx
       macchanger
+      maim
       manpages
       mediainfo
       mkvtoolnix
@@ -204,7 +205,6 @@ in {
       rsync
       safecopy
       screen
-      scrot
       shntool
       signal-desktop
       smartmontools
