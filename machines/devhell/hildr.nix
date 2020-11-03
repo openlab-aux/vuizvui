@@ -2,6 +2,7 @@
 
 {
   vuizvui.user.devhell.profiles.base.enable = true;
+  vuizvui.user.devhell.programs.vim.enable = false;
   vuizvui.system.kernel.bfq.enable = true;
 
   boot = {
