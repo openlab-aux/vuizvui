@@ -259,7 +259,6 @@ in {
       wordgrinder
       xfsprogs
       xlibs.xev
-      xscreensaver
       youtube-dl
       zathura
       zbar
