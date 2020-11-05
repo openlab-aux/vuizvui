@@ -39,6 +39,7 @@ let
       "set history=500
       "set backspace=indent,eol,start
       set nu
+      set cursorline
 
       " indentLine Settings
       let g:indentLine_char_list = ['|', '¦', '┆', '┊']
