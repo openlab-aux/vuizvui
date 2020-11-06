@@ -15,6 +15,7 @@ let
         indentLine
         lightline-vim
         limelight-vim
+        sleuth
         vim-nix
         vim-sensible
         vim-signify
