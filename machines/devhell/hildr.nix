@@ -222,8 +222,6 @@
     '';
   };
 
-  virtualisation.podman.enable = true;
-
   #### Machine-specific packages configuration ####
 
   vuizvui.user.devhell.profiles.packages.enable = true;
@@ -247,8 +245,6 @@
     minicom
     pmtools
     pmutils
-    podman
-    podman-compose
     reaverwps
     snort
     teams

@@ -188,6 +188,8 @@ in {
       pigz
       pipr
       pixz
+      podman
+      podman-compose
       polybar
       posix_man_pages
       powertop

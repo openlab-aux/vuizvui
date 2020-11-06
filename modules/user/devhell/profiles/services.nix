@@ -20,6 +20,7 @@ in {
         enable = true;
         qemuPackage = pkgs.qemu_kvm;
       };
+      podman.enable = true;
     };
 
     location.provider = "geoclue2";
