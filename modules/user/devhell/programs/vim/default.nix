@@ -17,28 +17,29 @@ let
         limelight-vim
         sleuth
         vim-nix
-        vim-sensible
         vim-signify
       ];
       opt = [ ];
     };
     vimrcConfig.customRC = ''
-      "set nocompatible
-      "set showcmd
-      "set showmatch
-      "set ignorecase
-      "set smartcase
-      "set incsearch
-      "set smarttab
-      "set expandtab
-      "set smartindent
-      "set ruler
-      "set tabstop=4
-      "set softtabstop=4
-      "set textwidth=79
-      "set background=dark
-      "set history=500
-      "set backspace=indent,eol,start
+      set nocompatible
+      set showcmd
+      set showmatch
+      set ignorecase
+      set smartcase
+      set incsearch
+      set modeline
+      set smarttab
+      set expandtab
+      set smartindent
+      set ruler
+      set tabstop=4
+      set softtabstop=4
+      set shiftwidth=4
+      set textwidth=79
+      set background=dark
+      set history=500
+      set backspace=indent,eol,start
       set nu
       set cursorline
 
