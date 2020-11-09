@@ -221,7 +221,6 @@ in {
       strace
       sxiv
       taizen
-      taskell
       tasksh
       taskwarrior
       telnet
