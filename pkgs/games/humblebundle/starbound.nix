@@ -1,11 +1,11 @@
-{ stdenv, fetchHumbleBundle, unzip, fetchurl, writeText, SDL2, libGLU_combined
+{ stdenv, fetchHumbleBundle, unzip, fetchurl, writeText, SDL2, libGLU, libGL
 , xorg, makeDesktopItem
 }:
 
 let
   binaryDeps = {
     starbound.deps = [
-      SDL2 libGLU_combined xorg.libX11 xorg.libICE xorg.libSM xorg.libXext
+      SDL2 libGLU libGL xorg.libX11 xorg.libICE xorg.libSM xorg.libXext
     ];
     starbound.needsBootconfig = true;
 
@@ -27,7 +27,7 @@ let
     icon = fetchurl {
       url = "http://i1305.photobucket.com/albums/s544/ClockworkBarber/"
           + "logo_zps64c4860d.png";
-      sha256 = "11fiiy0vcxzix1j81732cjh16wi48k4vag040vmbhad50ps3mg0q";
+      sha256 = "1zmpmpp0856vis71b1na402js8mnc7g89r8lv0safyk4y9khwm4q";
     };
     comment = "An extraterrestrial sandbox adventure game";
     desktopName = "Starbound";
@@ -265,16 +265,19 @@ let
     int SteamAPI_Init(void) {
       return 0;
     }
+
+    void SteamAPI_RegisterCallback(void *dummy1, int dummy2) {}
+    void SteamAPI_RunCallbacks(void) {}
   '';
 
 in stdenv.mkDerivation rec {
   name = "starbound-${version}";
-  version = "1.3.3";
+  version = "1.4.4";
 
   src = fetchHumbleBundle {
     name = "starbound-linux-${version}.zip";
     machineName = "starbound_linux";
-    md5 = "91decc3a8fa9cd0be08952422f5adb39";
+    md5 = "3e9b86e622afbf72f78b160cbb65708b";
   };
 
   outputs = [ "out" "lib" "assets" ];
@@ -282,7 +285,7 @@ in stdenv.mkDerivation rec {
   nativeBuildInputs = [ unzip ];
 
   buildPhase = with stdenv.lib; ''
-    cc -Werror -shared "${preloaderSource}" -o preload.so -ldl -fPIC \
+    cc -Wall -shared "${preloaderSource}" -o preload.so -ldl -fPIC \
       -DSTARBOUND_ASSET_DIR="\"$assets\""
     ${concatStrings (mapAttrsToList patchBinary binaryDeps)}
     patchelf --remove-needed libsteam_api.so patched/starbound

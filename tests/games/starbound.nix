@@ -10,9 +10,8 @@ let
     '';
     escapeScreenshot = pkgs.lib.replaceStrings ["-"] ["_"];
   in ''
-    with client.nested("${description}"):
-      client.screenshot("before_${escapeScreenshot name}")
-      client.succeed("${pkgs.xdotool}/bin/xdotool '${xdoFile}'")
+    client.screenshot("before_${escapeScreenshot name}")
+    client.succeed("${pkgs.xdotool}/bin/xdotool '${xdoFile}'")
   '';
 
   clickAt = name: x: y: xdo {
@@ -38,7 +37,7 @@ in {
   enableOCR = true;
 
   nodes = {
-    server = {
+    server = { lib, ... }: {
       vuizvui.services.starbound = {
         enable = true;
         # Use a different dataDir than the default to make
@@ -47,12 +46,14 @@ in {
         users.alice.password = "secret";
       };
       virtualisation.memorySize = 2047;
-      networking.interfaces.eth1.ipAddress = "192.168.0.1";
-      networking.interfaces.eth1.prefixLength = 24;
+      networking.interfaces.eth1.ipv4.addresses = lib.singleton {
+        address = "192.168.0.1";
+        prefixLength = 24;
+      };
       networking.firewall.enable = false;
     };
 
-    client = { pkgs, ... }: {
+    client = { lib, pkgs, ... }: {
       imports = [
         "${nixpkgsPath}/nixos/tests/common/x11.nix"
       ];
@@ -60,8 +61,10 @@ in {
       environment.systemPackages = [
         pkgs.vuizvui.games.humblebundle.starbound
       ];
-      networking.interfaces.eth1.ipAddress = "192.168.0.2";
-      networking.interfaces.eth1.prefixLength = 24;
+      networking.interfaces.eth1.ipv4.addresses = lib.singleton {
+        address = "192.168.0.2";
+        prefixLength = 24;
+      };
       networking.firewall.enable = false;
     };
   };
@@ -70,10 +73,9 @@ in {
     # fmt: off
     server.wait_for_unit("starbound.service")
 
-    with client.nested("waiting for client to start up"):
-      client.wait_for_x()
-      client.succeed("starbound >&2 &")
-      client.wait_for_text('(?i)options')
+    client.wait_for_x()
+    client.succeed("starbound >&2 &")
+    client.wait_for_text('(?i)options')
 
     ${clickAt "join-game" 100 560}
     client.wait_for_text('(?i)select')
