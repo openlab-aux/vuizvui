@@ -34,6 +34,7 @@ let
     stardew-valley = callPackage ./stardew-valley.nix {};
     sunless-skies = callPackage ./sunless-skies.nix {};
     the-longest-journey = callPackage ./the-longest-journey {};
+    the-longing = callPackage ./the-longing.nix {};
     thimbleweed-park = callPackage ./thimbleweed-park.nix {};
     war-for-the-overworld = callPackage ./war-for-the-overworld.nix {};
     warcraft2 = callPackage ./warcraft2 {};
