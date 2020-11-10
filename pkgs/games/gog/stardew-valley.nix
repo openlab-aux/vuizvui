@@ -4,11 +4,11 @@
 
 buildGame rec {
   name = "stardew-valley-${version}";
-  version = "1.3.33";
+  version = "1.4.5";
 
   src = fetchGog {
     productId = 1453375253;
-    sha256 = "1akqnawy2rzyxlkpjip6fa0isnzna131n09fr19i82qj9ywz2c1j";
+    sha256 = "0w30wfmy1mpgn0r05927gchs448dcf9h43qvi6pssng1y36zqw0p";
   };
 
   nativeBuildInputs = [ makeWrapper ];
@@ -39,7 +39,7 @@ buildGame rec {
     cp -rv monoconfig "$out/libexec/stardew-valley/StardewValley.exe.config"
     cp -rvt "$out/libexec/stardew-valley" StardewValley.exe \
       MonoGame.Framework.dll* BmFont.dll xTile.dll Lidgren.Network.dll \
-      GalaxyCSharp.dll
+      GalaxyCSharp.dll StardewValley.GameData.dll
     ln -s "$out/share/stardew-valley" "$out/libexec/stardew-valley/Content"
 
     install -vD "lib$bitSuffix/libGalaxy$bitSuffix.so" \
