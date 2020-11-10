@@ -19,7 +19,7 @@ let
     ];
   };
 
-  bcacheMode = "writearound";
+  bcacheMode = "writethrough";
 
   bcacheStart = ''
     for i in /sys/block/bcache[0-9]*/bcache/cache_mode; do
