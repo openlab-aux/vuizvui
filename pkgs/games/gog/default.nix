@@ -12,6 +12,8 @@ let
     };
 
     albion = callPackage_i686 ./albion {};
+    alwas-awakening = callPackage ./alwas-awakening.nix {};
+    alwas-legacy = callPackage ./alwas-legacy.nix {};
     baldurs-gate = (callPackage ./baldurs-gate {}).bg1ee;
     baldurs-gate-2 = (callPackage ./baldurs-gate {}).bg2ee;
     crosscode = callPackage ./crosscode.nix {};
