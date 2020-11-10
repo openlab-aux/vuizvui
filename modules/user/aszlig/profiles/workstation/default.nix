@@ -50,7 +50,7 @@ in {
     };
 
     fonts = {
-      enableFontDir = true;
+      fontDir.enable = true;
       enableGhostscriptFonts = true;
       fontconfig.useEmbeddedBitmaps = true;
       # TODO: Switch to nixpkgs version once version 2.0 lands.
