@@ -246,6 +246,7 @@ in {
       virt-viewer
       virtmanager
       vit
+      vivid
       vlc
       vlock
       vorbisTools
