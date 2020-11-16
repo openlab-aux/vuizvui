@@ -225,7 +225,6 @@ in {
       taskwarrior
       telnet
       termdown
-      termite
       termshark
       testdisk
       tig
