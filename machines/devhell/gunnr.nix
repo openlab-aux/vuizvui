@@ -87,6 +87,13 @@
 
   vuizvui.user.devhell.profiles.services.enable = true;
 
+  services = {
+    printing = {
+      enable = true;
+      drivers = [ pkgs.foo2zjs pkgs.hplip ];
+    };
+  };
+
   services.zfs.autoScrub.enable = true;
 
   services.xserver = {
