@@ -113,6 +113,7 @@ in {
       ghostscript
       ghostwriter
       git
+      gitAndTools.gh
       gitinspector
       glow
       gnome3.adwaita-icon-theme
