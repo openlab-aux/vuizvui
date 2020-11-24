@@ -378,6 +378,13 @@ let
       rev = "2278e05ec7fbb48e06b5d26319385e1c09325760";
       sha256 = "0hp8jjr4xpw73pkfpbxpjnr49cvjyksymvj748zaxjznkvizmyxc";
     };
+
+    godot = fetchFromGitHub {
+      owner = "habamax";
+      repo = "vim-godot";
+      rev = "e38845b4042d2351c47cd63f8705fd51c97acb4f";
+      sha256 = "1k3val0ibriwcv5jdyq95sgxgkz54r15gpylbhns5934zvaakpj1";
+    };
   };
 
   generic = ''
