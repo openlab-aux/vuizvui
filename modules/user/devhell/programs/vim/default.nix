@@ -10,7 +10,6 @@ let
         ale
         awesome-vim-colorschemes
         delimitMate
-        dracula-vim
         goyo-vim
         i3config-vim
         indentLine
@@ -22,7 +21,7 @@ let
         vim-nix
         vim-signify
       ];
-      opt = [ ];
+      opt = [ vimtex ];
     };
     vimrcConfig.customRC = ''
       set nocompatible
@@ -57,8 +56,8 @@ let
 
       " indentLine Settings
       let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-      let g:indentLine_setColors=1
-      let g:indentLine_fileTypeExclude=['help', 'main', 'vimfiler', 'json']
+      let g:indentLine_setColors = 1
+      let g:indentLine_fileTypeExclude = ['help', 'main', 'vimfiler', 'json']
       let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit',
       \ 'help', 'markdown', 'leaderGuide']
 
@@ -69,6 +68,12 @@ let
       " lightline Settings
       let g:lightline = {'colorscheme': 'deus'}
       set noshowmode
+
+      " vimtex Settings
+      let g:tex_flavor = 'latex'
+
+      " Autoload
+      autocmd FileType tex :packadd vimtex
     '';
   };
 
