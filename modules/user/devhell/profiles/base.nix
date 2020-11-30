@@ -136,31 +136,20 @@ in {
       };
       enableGhostscriptFonts = true;
       fonts = with pkgs; [
-        cascadia-code
         clearlyU
         cm_unicode
         corefonts
         cozette
-        dejavu_fonts
         dosemu_fonts
-        fira-code
         font-awesome
         freefont_ttf
         google-fonts
-        hack-font
-        inconsolata
         junicode
-        powerline-fonts
+        nerdfonts
         proggyfonts
         siji
-        source-code-pro
-        source-sans-pro
-        source-serif-pro
-        terminus_font
         tewi-font
         tt2020
-        ttf_bitstream_vera
-        ubuntu_font_family
         ultimate-oldschool-pc-font-pack
         unifont
         vistafonts
