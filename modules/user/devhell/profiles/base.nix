@@ -141,12 +141,10 @@ in {
         corefonts
         cozette
         dosemu_fonts
-        font-awesome
         freefont_ttf
         google-fonts
         junicode
         nerdfonts
-        proggyfonts
         siji
         tewi-font
         tt2020
