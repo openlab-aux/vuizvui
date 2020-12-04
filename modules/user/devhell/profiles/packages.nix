@@ -167,7 +167,6 @@ in {
       ncmpcpp
       neofetch
       neomutt
-      neovim
       nethack
       nethogs
       netrw
@@ -242,6 +241,7 @@ in {
       usbutils
       valgrind
       vanilla-dmz
+      vuizvui.devhell.vim
       virt-viewer
       virtmanager
       vit
