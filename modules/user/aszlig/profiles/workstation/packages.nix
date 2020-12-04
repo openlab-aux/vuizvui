@@ -44,7 +44,6 @@ pkgs: with pkgs; [
   ncdu
   netrw
   nix-prefetch-scripts
-  nixops
   nmap
   openssh
   openssl
