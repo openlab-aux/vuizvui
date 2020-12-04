@@ -242,7 +242,6 @@ in {
       usbutils
       valgrind
       vanilla-dmz
-      vim_configurable
       virt-viewer
       virtmanager
       vit
