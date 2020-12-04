@@ -16,23 +16,37 @@ let
     sha256 = "1qrmp3ibvgzwh2v1qfrfh8xiwvj0kbhj1bm17bjx7zpmnb8byz3m";
   };
 
+  usrsctp = stdenv.mkDerivation {
+    pname = "usrsctp";
+    version = "git20201119";
+
+    src = fetchFromGitHub {
+      owner = "sctplab";
+      repo = "usrsctp";
+      rev = "a17109528c75d01f6372d5c30851a639684c6e99";
+      sha256 = "0dqacva05zrp4wzkbafqgpzrr7bvca4dl81w7r3azglvncpxwgjg";
+    };
+
+    nativeBuildInputs = [ cmake ];
+  };
+
 in stdenv.mkDerivation rec {
   name = "psi-${version}";
-  version = "2.0git20200802aszlig";
+  version = "2.0git20201123aszlig";
 
   src = fetchFromGitHub {
     owner = "psi-im";
     repo = "psi";
-    rev = "23c1e3ffa5c33ecf7a7d8064a319b49422bb9469";
-    sha256 = "044npsb5xs25a4ybsk9a6advpdamzb3da19w9lj6q660p19syjar";
+    rev = "aec005072fee81ef1247c6162d18b9c7572fdb31";
+    sha256 = "1a7xb403qz07fyi1zj2a6fpy7c9v4ilfbqf1mw131714szc0nrrc";
     fetchSubmodules = true;
   };
 
   plugins = fetchFromGitHub {
     owner = "psi-im";
     repo = "plugins";
-    rev = "c430f74e2e0063ece73e4bcd5ce0430d7259e050";
-    sha256 = "05m8980c5ssnm6wpmcd1hz6glh0p3i1g8vipnfv31rrfw5wh97m3";
+    rev = "b613be9a7d8e91356385466cc33d3906efc1e63b";
+    sha256 = "0kqpspyx18kqd7lw21hh25bfkw66nbnpm9jr3xisyfrva7w5w0s8";
   };
 
   patches = [
@@ -64,6 +78,7 @@ in stdenv.mkDerivation rec {
     libsForQt5.qca-qt5
     libsignal-protocol-c
     libtidy
+    usrsctp
     qt5.qtbase
     qt5.qtmultimedia
     qt5.qtwebengine
