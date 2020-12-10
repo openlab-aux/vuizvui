@@ -59,6 +59,7 @@ in {
       htop
       iotop
       moreutils
+      vuizvui.aszlig.nlast
       psmisc
       unfreePkgs.unrar
       unzip

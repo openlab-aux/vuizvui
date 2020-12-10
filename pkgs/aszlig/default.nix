@@ -9,6 +9,7 @@
   librxtx_java = callPackage ./librxtx-java { };
   lockdev = callPackage ./lockdev { };
   mutt = callPackage ./mutt { inherit mutt; };
+  nlast = callPackage ./nlast { };
   psi = callPackage ./psi { };
   pvolctrl = callPackage ./pvolctrl { };
   vim = callPackage ./vim { vim = vim_configurable; };
