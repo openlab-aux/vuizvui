@@ -3,7 +3,7 @@
 
 stdenv.mkDerivation rec {
   name = "pico-8-${version}";
-  version = "0.1.12c";
+  version = "0.2.1b";
 
   src = fetchHumbleBundle {
     name = "pico8_linux";
@@ -13,8 +13,8 @@ stdenv.mkDerivation rec {
       "i686-linux"   = "32-bit";
     }.${stdenv.system};
     md5 = {
-      "x86_64-linux" = "8d4fbe66ceb1528987841a6743f132db";
-      "i686-linux"   = "1e8633fb52c18e803ff7eebe6ddc76f9";
+      "x86_64-linux" = "8fb79431e139ea431eba739bb687ff8a";
+      "i686-linux"   = "8e1c9033cd1a066890e7624207824948";
     }.${stdenv.system};
   };
 
