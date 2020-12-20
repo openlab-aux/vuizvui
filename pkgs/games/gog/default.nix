@@ -21,6 +21,7 @@ let
     epistory = callPackage ./epistory.nix { };
     freedom-planet = callPackage ./freedom-planet.nix {};
     gibbous = callPackage ./gibbous.nix {};
+    graveyard-keeper = callPackage ./graveyard-keeper.nix {};
     homm3 = callPackage ./homm3 {};
     hollow-knight = callPackage ./hollow-knight.nix {};
     into-the-breach = callPackage ./into-the-breach.nix {};
