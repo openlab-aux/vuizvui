@@ -1,0 +1,13 @@
+diff --git a/src/tools/advwidget/advwidget.cpp b/src/tools/advwidget/advwidget.cpp
+index c1f896e2..c4c6ca83 100644
+--- a/src/tools/advwidget/advwidget.cpp
++++ b/src/tools/advwidget/advwidget.cpp
+@@ -216,7 +216,7 @@ void GAdvancedWidget::Private::doFlash(bool yes)
+ 
+ #else
+ 
+-    QApplication::alert(parentWidget_, yes ? 0 : 1);
++    QApplication::alert(parentWidget_, 0);
+ 
+ #endif
+ }

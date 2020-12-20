@@ -52,6 +52,7 @@ in stdenv.mkDerivation rec {
   patches = [
     ./disable-xep-0232.patch
     ./darkstyle.patch
+    ./keep-urgency-hint.patch
     (substituteAll {
       src = ./config.patch;
       inherit jid resource;
