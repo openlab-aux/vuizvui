@@ -22,7 +22,6 @@
   ./user/aszlig/profiles/workstation
   ./user/aszlig/programs/git
   ./user/aszlig/programs/mpv
-  ./user/aszlig/programs/taskwarrior
   ./user/aszlig/programs/zsh
   ./user/aszlig/services/i3
   ./user/aszlig/services/vlock

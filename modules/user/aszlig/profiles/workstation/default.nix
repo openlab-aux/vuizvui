@@ -71,7 +71,6 @@ in {
     vuizvui.user.aszlig.services.vlock.user = "aszlig";
 
     vuizvui.user.aszlig.programs.mpv.enable = true;
-    vuizvui.user.aszlig.programs.taskwarrior.enable = true;
 
     vuizvui.user.aszlig.programs.git.enable = true;
     vuizvui.user.aszlig.programs.git.config = {
