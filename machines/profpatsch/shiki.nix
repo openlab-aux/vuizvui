@@ -255,6 +255,10 @@ in {
         (texlive.combine { inherit (texlive) scheme-small pdfjam; })
         # move script/nix-cache-binary to here
         cdb
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.e;
+          name = "e";
+        })
         myPkgs.zoomboxed
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
