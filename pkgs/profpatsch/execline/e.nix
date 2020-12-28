@@ -22,15 +22,26 @@ let
         "foreground" [ bins.execlineb "-Pc" "$cmd" ]
       ] ++ prompt);
 
-  # TODO: should definitely still pass a command line to rlwrap, because then it keeps the history!
-  e = writeExecline "e" { argMode = "env"; } [
+  e = pkgs.writers.writeDash "e" ''
+    set -e
     # if there is no argument, we start the shell, else we call execlineb directly
-    "ifelse" [ "importas" "#" "#" bins.s6-test "$#" "=" "0" ]
-    [ shell ]
-    # call execlineb with the arguments as script
-    "backtick" "-i" "cmd" [ "dollarat" "-d" " " ]
-    "importas" "-ui" "cmd" "cmd"
-    bins.execlineb "-Pc" "$cmd"
-  ];
+    if [ $# -eq 0 ]; then
+      ${shell}
+    else
+      cmd=
+      # substitute "[" and "]" to execline’s "{" and "}"
+      for arg in "$@"; do
+        if [ "$arg" = "[" ]; then
+          cmd="$cmd {"
+        else if [ "$arg" = "]" ]; then
+          cmd="$cmd }"
+        else
+          cmd="$cmd $arg"
+        fi; fi
+      done
+      # call execlineb with the arguments as script
+      ${bins.execlineb} -Pc "$cmd"
+    fi
+  '';
 
 in { inherit e; }
