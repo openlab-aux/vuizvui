@@ -19,6 +19,7 @@ let
     crosscode = callPackage ./crosscode.nix {};
     dungeons3 = callPackage ./dungeons3.nix {};
     epistory = callPackage ./epistory.nix { };
+    factorio = callPackage ./factorio {};
     freedom-planet = callPackage ./freedom-planet.nix {};
     gibbous = callPackage ./gibbous.nix {};
     graveyard-keeper = callPackage ./graveyard-keeper.nix {};
