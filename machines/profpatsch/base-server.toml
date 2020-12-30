@@ -1,0 +1,26 @@
+[module]
+type = "nixos-config"
+version = "0.0.1"
+
+[[imports]]
+module = "./base.nix"
+
+[configVariables]
+server = [ "vuizvui", "user", "profpatsch", "server" ]
+
+[programs.mosh]
+enable = true
+
+[services.openssh]
+enable = true
+
+  [[services.openssh.listenAddresses]]
+  addr = "0.0.0.0"
+  port._configVariable.server = "sshPort"
+
+[networking.firewall]
+enable = true
+allowPing = true
+
+[[networking.firewall.allowedTCPPorts]]
+_configVariable.server = "sshPort"

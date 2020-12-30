@@ -1,36 +1,43 @@
 { config, pkgs, lib, ... }:
 
 let
-  cfg = config.vuizvui.user.profpatsch.server;
+  cfgImports = (import ../../pkgs/profpatsch/nixos-toml-modules.nix { inherit lib; }).readAnyToml ./base-server.toml
+    config;
 
 in
 {
-  imports = [
-    ./base.nix
-  ];
+  inherit (cfgImports) imports;
 
-  options.vuizvui.user.profpatsch.server.sshPort = lib.mkOption {
-    description = "ssh port";
-    # TODO: replace with types.intBetween https://github.com/NixOS/nixpkgs/pull/27239
-    type = with lib.types; addCheck int (x: x >= 0 && x <= 65535);
-    default = 6879;
-  };
+  # TODO: cannot read options from pkgs because it would lead to an infinite recursion
+  # in the module system, since the pkgs passed into this module already requires all options.
+  options = ((import ../../pkgs/profpatsch/nixos-toml-modules.nix { inherit lib; }).readAnyToml ./base-server-options.toml).options
+    ;
 
-  config = {
+  config = cfgImports.config;
 
-    programs.mosh.enable = true;
 
-    services.openssh = {
-      enable = true;
-      listenAddresses = [ { addr = "0.0.0.0"; port = cfg.sshPort; } ];
-    };
+  # options.vuizvui.user.profpatsch.server.sshPort = lib.traceValSeqN 3 (lib.mkOption {
+  #   description = "ssh port";
+  #   # TODO: replace with types.intBetween https://github.com/NixOS/nixpkgs/pull/27239
+  #   type = with lib.types; addCheck int (x: x >= 0 && x <= 65535);
+  #   default = 6879;
+  # });
 
-    networking.firewall = {
-      enable = true;
-      allowPing = true;
-      allowedTCPPorts = [ cfg.sshPort ];
-    };
+  # config = {
 
-  };
+  #   programs.mosh.enable = true;
+
+  #   services.openssh = {
+  #     enable = true;
+  #     listenAddresses = [ { addr = "0.0.0.0"; port = cfg.sshPort; } ];
+  #   };
+
+  #   networking.firewall = {
+  #     enable = true;
+  #     allowPing = true;
+  #     allowedTCPPorts = [ cfg.sshPort ];
+  #   };
+
+  # };
 
 }
