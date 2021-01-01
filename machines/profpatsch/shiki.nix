@@ -7,10 +7,12 @@ let
   lock-screen = pkgs.writers.writeDashBin "lock-screen" ''
     set -e
     revert() {
+      # never turn off the screen (disable dpms)
       ${pkgs.xorg.xset}/bin/xset dpms 0 0 0
     }
     trap revert HUP INT TERM EXIT
-    ${pkgs.xorg.xset}/bin/xset +dpms dpms 2 2 2
+    # turn off the screen after 5 seconds of inactivity
+    ${pkgs.xorg.xset}/bin/xset +dpms dpms 5 5 5
     ${pkgs.i3lock}/bin/i3lock \
       --nofork \
       --color=000000
