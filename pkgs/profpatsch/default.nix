@@ -169,6 +169,8 @@ in rec {
     writeExecline writeExeclineBin;
   inherit (import ./execline/runblock.nix { inherit pkgs; })
     runblock;
+  inherit (import ./execline/nixecline.nix { inherit writeExecline; })
+    backtick;
   inherit (import ./execline/e.nix { inherit pkgs writeExecline getBins; })
     e;
 
@@ -191,6 +193,10 @@ in rec {
   inherit (import ./profpatsch.de { inherit pkgs lib toNetstring writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode record-get; })
     websiteStatic
     importas-if
+    ;
+
+  inherit (import ./nix-tools.nix { inherit pkgs getBins writeExecline runblock backtick; })
+    nix-run
     ;
 
 

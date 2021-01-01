@@ -259,6 +259,10 @@ in {
           exe = pkgs.vuizvui.profpatsch.e;
           name = "e";
         })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.nix-run;
+          name = "nix-run";
+        })
         myPkgs.zoomboxed
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
