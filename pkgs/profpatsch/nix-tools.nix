@@ -1,7 +1,7 @@
 { pkgs, writeExecline, backtick, runblock, getBins }:
 
 let
-  bins = getBins pkgs.nix [ "nix-build" ];
+  bins = getBins pkgs.nix [ "nix-build" "nix-instantiate" ];
 
   nix-run = writeExecline "nix-run" { argMode = "env"; } [
     (backtick {
@@ -11,8 +11,13 @@ let
     runblock "-r" "2" "exec" "$storepath"
   ];
 
+  nix-eval = writeExecline "nix-eval" {} [
+    bins.nix-instantiate "--eval" "--strict" "$@"
+  ];
+
 in {
   inherit
     nix-run
+    nix-eval
     ;
 }

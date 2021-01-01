@@ -197,6 +197,7 @@ in rec {
 
   inherit (import ./nix-tools.nix { inherit pkgs getBins writeExecline runblock backtick; })
     nix-run
+    nix-eval
     ;
 
 
