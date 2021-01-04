@@ -109,7 +109,7 @@ in {
   # services, so we don't get large amounts of nonsense on the caching device.
   systemd.services = let
     scrubServiceUnits = let
-      mkName = fs: "btrfs-scrub-${utils.escapeSystemdPath fs}.service";
+      mkName = fs: "btrfs-scrub-${utils.escapeSystemdPath fs}";
     in map mkName config.services.btrfs.autoScrub.fileSystems;
   in lib.genAttrs scrubServiceUnits (lib.const {
     preStart = bcacheStop;
