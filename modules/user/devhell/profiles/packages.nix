@@ -140,7 +140,6 @@ in {
       ipv6calc
       irssi
       jfsutils
-      john
       jwhois
       ldns
       lftp
@@ -162,7 +161,6 @@ in {
       mpc_cli
       mpv
       msmtp
-      mtr
       ncdu
       ncmpcpp
       neofetch
@@ -203,11 +201,9 @@ in {
       reptyr
       ripgrep
       rofi
-      rstudio
       rsync
       safecopy
       screen
-      shntool
       signal-desktop
       smartmontools
       smos
@@ -244,7 +240,6 @@ in {
       vuizvui.devhell.vim
       virt-viewer
       virtmanager
-      vit
       vivid
       vlc
       vlock
