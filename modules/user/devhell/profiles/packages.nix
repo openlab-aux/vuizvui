@@ -188,7 +188,6 @@ in {
       pixz
       podman
       podman-compose
-      polybar
       posix_man_pages
       powertop
       profanity
