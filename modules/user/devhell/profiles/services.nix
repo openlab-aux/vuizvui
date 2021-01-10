@@ -38,8 +38,13 @@ in {
         enable = true;
         vSync = true;
         backend = "glx";
+        experimentalBackends = true;
+        fade = true;
+        fadeDelta = 1;
+        shadow = true;
         settings = { 
           inactive-dim = 0.2;
+          unredir-if-possible = false;
         };
       };
     };
