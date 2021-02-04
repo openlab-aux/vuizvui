@@ -42,6 +42,14 @@ in {
     # Enables drivers, acpi, power management
     vuizvui.hardware.thinkpad.enable = true;
 
+    # the kernel OOM is not good enough without swap,
+    # and I don’t like swap. This kills the most hoggy
+    # processes when the system goes under a free space limit
+    services.earlyoom = {
+      enable = true;
+      freeMemThreshold = 5; # <5% free
+    };
+
     ###################
     # Graphical System
 
