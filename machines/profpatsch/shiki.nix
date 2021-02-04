@@ -212,9 +212,9 @@ in {
         emacs                # pretty neat operating system i guess
         imv                  # young brother of feh and less meh
         filezilla            # FTP GUI business-ready interface framework
-        gimp                 # graphics
+        # gimp                 # graphics
         inkscape             # vector graphics
-        libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
+        # libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         myPkgs.mumble
         myPkgs.mpv           # you are my sun and my stars, and you play my stuff.
         pass                 # standard unix password manager
@@ -249,7 +249,7 @@ in {
       nixPkgs = [
         # nix-diff                  # structurally diff two derivations
         nix-prefetch-scripts      # prefetch store paths from various destinations
-        pkgs.vuizvui.taalo-build  # build derivation on taalo
+        # pkgs.vuizvui.taalo-build  # build derivation on taalo
       ];
       tmpPkgs = [
         # TODO needs user service
@@ -270,7 +270,7 @@ in {
           exe = pkgs.vuizvui.profpatsch.nix-eval;
           name = "nix-eval";
         })
-        myPkgs.zoomboxed
+        # myPkgs.zoomboxed
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
     ++ programmingTools ++ documentation
