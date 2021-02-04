@@ -177,7 +177,7 @@ in {
         # myPkgs.fast-init             # fast-init of haskell projects
         # gitAndTools.git-annex        # version controlled binary file storage
         # gitAndTools.git-dit          # decentral issue tracking for git
-        # gitAndTools.git-hub          # lightweight GitHub integration
+        github-cli                   # official github cli
 
         # TODO: move to user config
         direnv

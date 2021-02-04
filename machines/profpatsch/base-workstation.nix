@@ -131,6 +131,7 @@ in {
         stow              # dotfile management
         traceroute        # trace ip routes
         wirelesstools     # iwlist (wifi scan)
+        gitFull           # git with send-email
       ];
       # minimal set of gui applications
       guiPkgs = [
