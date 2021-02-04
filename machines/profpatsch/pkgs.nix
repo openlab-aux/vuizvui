@@ -45,6 +45,8 @@ let
     allowBinSh = true;
   };
 
+  mumble = pkgs.mumble.override { speechdSupport = true; };
+
 in
 { inherit
     mpv
@@ -53,5 +55,6 @@ in
     # fast-init
     pyrnotify
     zoomboxed
+    mumble
     ;
 }

@@ -215,6 +215,7 @@ in {
         gimp                 # graphics
         inkscape             # vector graphics
         libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
+        myPkgs.mumble
         myPkgs.mpv           # you are my sun and my stars, and you play my stuff.
         pass                 # standard unix password manager
         picard               # jean-luc, music tagger
