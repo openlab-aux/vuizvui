@@ -39,6 +39,7 @@ in
       htop              # top replacement
       nmap              # stats about clients in the network
       rsync             # file syncing tool
+      strace            # tracing syscalls
       tmux              # detachable terminal multiplexer
       wget              # the other URL file fetcher
       myPkgs.vim        # slight improvement over vi
@@ -49,7 +50,7 @@ in
     i18n = {
       defaultLocale = "en_US.UTF-8";
       extraLocaleSettings = {
-        LC_TIME = "de_DE.UTF-8"; #"en_DK.UTF-8";
+        LC_TIME = "de_DE.UTF-8";
       };
     };
 
