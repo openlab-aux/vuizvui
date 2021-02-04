@@ -368,7 +368,7 @@ in {
       enable = true;
       settings = {
         global = {
-          font = "Sans 18";
+          font = "Sans 14";
           markup = "full";
           padding = 3;
           horizontal_padding = 3;
@@ -427,7 +427,7 @@ in {
           serviceConfig = {
             Restart = "no";
             ExecStart = "${pkgs.notmuch}/bin/notmuch new";
-            };
+          };
         };
       }
 
