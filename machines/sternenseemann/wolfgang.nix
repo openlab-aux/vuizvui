@@ -66,8 +66,8 @@ in {
       ];
     };
     # nat networking for virtual machines / containers
-    # TODO: remove when I don't have to deal with such
-    #       stuff @ work anymore
+    # TODO(sterni): remove when I don't have to deal
+    #               with such stuff @ work anymore
     nat = {
       enable = true;
       internalInterfaces = [ "ve-+" ];

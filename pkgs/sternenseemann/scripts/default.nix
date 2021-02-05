@@ -1,4 +1,4 @@
-# TODO(sternenseemann): port to dash
+# TODO(sterni): port to dash
 { lib, writeBashBin, writeText, getBins
 , libnotify
 , borgbackup, cryptsetup
