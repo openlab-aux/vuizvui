@@ -119,6 +119,10 @@ in rec {
     readGitignoreFile
     ;
 
+  inherit (import ./deploy.nix { inherit pkgs getBins; })
+    deploy
+    ;
+
   backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
   display-infos = callPackage ./display-infos { inherit sfttime; };
   git-commit-index = callPackage ./git-commit-index { inherit script; };

@@ -270,6 +270,10 @@ in {
           exe = pkgs.vuizvui.profpatsch.nix-eval;
           name = "nix-eval";
         })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.deploy;
+          name = "deploy";
+        })
         # myPkgs.zoomboxed
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
