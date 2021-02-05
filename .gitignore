@@ -1,0 +1,3 @@
+# nix-build symlinks
+result-*
+result
