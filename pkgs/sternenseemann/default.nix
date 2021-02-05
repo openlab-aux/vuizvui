@@ -70,5 +70,12 @@ in
     };
   };
 
+  texlive = pkgs.texlive.combine {
+    inherit (pkgs.texlive)
+      scheme-medium minted titlesec units collection-bibtexextra wrapfig
+      libertine enumitem dashrule ifmtarg xstring xgreek adjustbox
+      collectbox csquotes biblatex-philosophy quoting breakurl;
+  };
+
   unicode_clock = python3Packages.callPackage ./unicode_clock { };
 }
