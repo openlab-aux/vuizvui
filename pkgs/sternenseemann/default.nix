@@ -6,6 +6,7 @@ let
     fetchurl
     fetchFromGitHub
     ocamlPackages
+    python3Packages
     writers
     haskell
     ;
@@ -31,6 +32,8 @@ in
   inherit (haskellPackages) emoji-generic;
 
   logbook = ocamlPackages.callPackage ./logbook { };
+
+  t = python3Packages.callPackage ./t { };
 
   tep = callPackage ./tep {
     inherit (haskellPackages)
