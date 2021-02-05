@@ -3,6 +3,7 @@
 let
   inherit (pkgs)
     callPackage
+    dontRecurseIntoAttrs
     fetchurl
     fetchFromGitHub
     ocamlPackages
@@ -34,7 +35,7 @@ let
 
 in
 
-{
+lib.fix (self: {
   inherit (haskellPackages) emoji-generic;
 
   logbook = ocamlPackages.callPackage ./logbook { };
@@ -53,6 +54,13 @@ in
       ${old.postInstall}
       cp "contrib/dmenu/passmenu" "$out/bin/"
     '';
+  });
+
+  # don't bother hydra with trivial text substitution
+  scripts = dontRecurseIntoAttrs (callPackage ./scripts {
+    inherit (writers) writeBashBin;
+    inherit (self) shakti;
+    inherit getBins;
   });
 
   shakti = callPackage ./shakti { };
@@ -78,4 +86,4 @@ in
   };
 
   unicode_clock = python3Packages.callPackage ./unicode_clock { };
-}
+})
