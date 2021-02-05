@@ -1,4 +1,4 @@
-{ stdenv, makeWrapper, bc }:
+{ stdenv, lib, makeWrapper, bc }:
 
 stdenv.mkDerivation {
   name = "sfttime";
@@ -9,6 +9,6 @@ stdenv.mkDerivation {
   installPhase = ''
     install -D ${./sfttime.sh} $out/bin/sfttime
     wrapProgram $out/bin/sfttime \
-      --prefix PATH : ${stdenv.lib.makeBinPath [ bc ]}
+      --prefix PATH : ${lib.makeBinPath [ bc ]}
   '';
 }

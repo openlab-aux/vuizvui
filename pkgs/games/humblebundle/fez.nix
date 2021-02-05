@@ -1,8 +1,8 @@
-{ stdenv, fetchHumbleBundle, unzip, mono, openal, SDL2 }:
+{ stdenv, lib, fetchHumbleBundle, unzip, mono, openal, SDL2 }:
 
 let
   version = "1.0.2";
-  usVersion = stdenv.lib.replaceChars ["."] ["_"] version;
+  usVersion = lib.replaceChars ["."] ["_"] version;
 in stdenv.mkDerivation rec {
   name = "fez-${version}";
   version = "09152013";
@@ -22,7 +22,7 @@ in stdenv.mkDerivation rec {
   buildPhase = ''
     patchelf \
       --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-      --set-rpath "${stdenv.lib.makeLibraryPath [ mono openal SDL2 ]}" \
+      --set-rpath "${lib.makeLibraryPath [ mono openal SDL2 ]}" \
       FEZ.bin.x86_64
   '';
 

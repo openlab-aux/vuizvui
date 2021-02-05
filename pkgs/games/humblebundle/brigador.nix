@@ -1,9 +1,9 @@
-{ stdenv, fetchurl, makeWrapper, fetchHumbleBundle, writeText
+{ stdenv, lib, fetchurl, makeWrapper, fetchHumbleBundle, writeText
 , SDL2, libGL, glew, freeimage
 }:
 
 let
-  oldGLEW = glew.overrideDerivation (stdenv.lib.const rec {
+  oldGLEW = glew.overrideDerivation (lib.const rec {
     name = "glew-1.12.0";
     src = fetchurl {
       url = "mirror://sourceforge/glew/${name}.tgz";
@@ -40,7 +40,7 @@ in stdenv.mkDerivation {
         return call(buf, __VA_ARGS__); \
       }
 
-    ${stdenv.lib.concatMapStrings (fun: ''
+    ${lib.concatMapStrings (fun: ''
       FILE *${fun}(const char *path, const char *mode) {
         static FILE *(*_${fun}) (const char *, const char *) = NULL;
         if (_${fun} == NULL) _${fun} = dlsym(RTLD_NEXT, "${fun}");
@@ -63,8 +63,8 @@ in stdenv.mkDerivation {
   '';
 
   patchPhase = let
-    fmodRpath = stdenv.lib.makeLibraryPath [ "$out" stdenv.cc.cc ];
-    rpath = stdenv.lib.makeLibraryPath [ "$out" SDL2 libGL oldGLEW freeimage ];
+    fmodRpath = lib.makeLibraryPath [ "$out" stdenv.cc.cc ];
+    rpath = lib.makeLibraryPath [ "$out" SDL2 libGL oldGLEW freeimage ];
   in ''
     for fmod in lib/libfmod*.so*; do
       patchelf --set-rpath "${fmodRpath}" "$fmod"

@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, unzip, SDL2, libGL, writeText, makeWrapper }:
+{ stdenv, lib, fetchHumbleBundle, unzip, SDL2, libGL, writeText, makeWrapper }:
 
 stdenv.mkDerivation rec {
   name = "guacamelee-${version}";
@@ -27,8 +27,8 @@ stdenv.mkDerivation rec {
   buildInputs = [ makeWrapper ];
 
   buildPhase = let
-    rpath = stdenv.lib.makeLibraryPath [ SDL2 stdenv.cc.cc libGL ];
-    fmodRpath = stdenv.lib.makeLibraryPath [ stdenv.cc.cc ];
+    rpath = lib.makeLibraryPath [ SDL2 stdenv.cc.cc libGL ];
+    fmodRpath = lib.makeLibraryPath [ stdenv.cc.cc ];
   in ''
     gcc -Werror -shared "$preloader" -o preloader.so -ldl \
       -DDATA=\"$out/share/guacamelee\"

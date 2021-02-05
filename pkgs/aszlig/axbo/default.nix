@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, fetchFromGitHub, jdk, jre, ant, makeWrapper
+{ stdenv, lib, fetchurl, fetchFromGitHub, jdk, jre, ant, makeWrapper
 , commonsLogging, librxtx_java
 }:
 
@@ -33,7 +33,7 @@ stdenv.mkDerivation rec {
     "swingx-all-1.6.4"
   ];
 
-  installPhase = with stdenv.lib; let
+  installPhase = with lib; let
     classpath = makeSearchPath "share/java/\\*" [
       "$out"
       commonsLogging

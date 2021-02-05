@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, makeWrapper
+{ stdenv, lib, fetchHumbleBundle, makeWrapper
 , SDL, libGL, zlib, openal, libvorbis, xorg, fontconfig, freetype, libogg
 }:
 
@@ -16,7 +16,7 @@ stdenv.mkDerivation rec {
   buildInputs = [ makeWrapper ];
 
   patchPhase = let
-    rpath = stdenv.lib.makeLibraryPath [
+    rpath = lib.makeLibraryPath [
       SDL libGL zlib openal libvorbis fontconfig freetype stdenv.cc.cc libogg
       xorg.libX11 xorg.libXft xorg.libXinerama xorg.libXext xorg.libXpm
     ];

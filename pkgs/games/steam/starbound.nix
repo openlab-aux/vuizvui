@@ -1,4 +1,4 @@
-{ stdenv, fetchSteam, fetchurl, writeText, SDL, libGL, jq, makeDesktopItem
+{ stdenv, lib, fetchSteam, fetchurl, writeText, SDL, libGL, jq, makeDesktopItem
 , flavor ? "stable"
 }:
 
@@ -8,12 +8,12 @@ let
       name = f name;
       inherit value;
     };
-  in stdenv.lib.mapAttrs' rename;
+  in lib.mapAttrs' rename;
 
   darwinize = renameAttrs (bin: "Starbound.app/Contents/MacOS/${bin}");
   winize = renameAttrs (bin: "${bin}.exe");
 
-  mkOsBinaryDeps = with stdenv.lib;
+  mkOsBinaryDeps = with lib;
     if stdenv.system == "x86_64-darwin" then darwinize
     else if elem stdenv.system [ "i686-cygwin" "x86_64-cygwin" ] then winize
     else id;
@@ -87,7 +87,7 @@ let
 
     hasBootconfigArg = attrs.hasBootconfigArg or false;
 
-    bootconfigArgs = with stdenv.lib; let
+    bootconfigArgs = with lib; let
       mkArg = opt: val: "-${opt} \"${val}\"";
     in " " + (concatStringsSep " " (mapAttrsToList mkArg {
       bootconfig = "$XDG_DATA_HOME/${settingsDir}/sbboot.config";
@@ -159,7 +159,7 @@ let
     chmod +x "patched/$(basename "${bin}")"
     patchelf \
       --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-      --set-rpath "${stdenv.lib.makeLibraryPath (attrs.deps or [])}" \
+      --set-rpath "${lib.makeLibraryPath (attrs.deps or [])}" \
       "patched/$(basename "${bin}")"
     if ldd "patched/$(basename "${bin}")" | grep -F 'not found'; then
       exit 1;
@@ -174,7 +174,7 @@ in stdenv.mkDerivation {
 
   inherit binpath upstream;
 
-  buildPhase = with stdenv.lib;
+  buildPhase = with lib;
     concatStrings (mapAttrsToList patchBinary binaryDeps);
 
   doCheck = true;
@@ -198,7 +198,7 @@ in stdenv.mkDerivation {
     sed -e 's,//.*,,' "${upstream}/${binpath}/sbboot.config" \
       | "${jq}/bin/jq" -s '.[0] * .[1]' - "${staticBootOverrides}" \
       > "$out/etc/sbboot.config"
-    ${stdenv.lib.concatStrings (stdenv.lib.mapAttrsToList mkProg binaryDeps)}
+    ${lib.concatStrings (lib.mapAttrsToList mkProg binaryDeps)}
     install -m 0644 -vD "${desktopItem}/share/applications/starbound.desktop" \
       "$out/share/applications/starbound.desktop"
   '';

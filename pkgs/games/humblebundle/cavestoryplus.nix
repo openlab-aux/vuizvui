@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, makeWrapper, SDL, libGL }:
+{ stdenv, lib, fetchHumbleBundle, makeWrapper, SDL, libGL }:
 
 stdenv.mkDerivation rec {
   name = "cave-story-plus-${version}";
@@ -14,7 +14,7 @@ stdenv.mkDerivation rec {
   buildInputs = [ makeWrapper ];
 
   patchPhase = let
-    rpath = stdenv.lib.makeLibraryPath [
+    rpath = lib.makeLibraryPath [
       SDL "$out" stdenv.cc.cc libGL
     ];
   in ''

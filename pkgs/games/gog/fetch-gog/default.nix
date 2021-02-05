@@ -170,7 +170,7 @@ let
     '';
   };
 
-  mkPyStr = str: "'${stdenv.lib.escape ["'" "\\"] (toString str)}'";
+  mkPyStr = str: "'${lib.escape ["'" "\\"] (toString str)}'";
 
   fetcher = writeText "fetch-gog.py" ''
     import sys, socket, time

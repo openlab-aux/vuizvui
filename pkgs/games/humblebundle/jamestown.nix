@@ -1,10 +1,10 @@
-{ stdenv, fetchHumbleBundle, unzip, pkgsi686Linux, expect, makeWrapper
+{ stdenv, lib, fetchHumbleBundle, unzip, pkgsi686Linux, expect, makeWrapper
 , SDL, openal
 }:
 
 let
   version = "1.0.2";
-  usVersion = stdenv.lib.replaceChars ["."] ["_"] version;
+  usVersion = lib.replaceChars ["."] ["_"] version;
 in stdenv.mkDerivation rec {
   name = "jamestown-${version}";
 
@@ -37,7 +37,7 @@ in stdenv.mkDerivation rec {
   '';
 
   installPhase = let
-    rpath = stdenv.lib.makeLibraryPath [ SDL openal ];
+    rpath = lib.makeLibraryPath [ SDL openal ];
   in ''
     libexec="$out/libexec/jamestown"
     install -vD Jamestown-amd64 "$libexec/jamestown"

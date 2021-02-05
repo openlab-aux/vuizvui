@@ -1,4 +1,4 @@
-{ stdenv, curl, cacert, writeText, writeScript, fetchFromGitHub, fetchpatch
+{ stdenv, lib, curl, cacert, writeText, writeScript, fetchFromGitHub, fetchpatch
 , python, python3, pythonPackages
 
 # Dependencies for the captcha solver
@@ -34,7 +34,7 @@ let
       waitForResponse();
     '';
 
-    escapeCString = stdenv.lib.replaceStrings ["\"" "\n"] ["\\\"" "\\n"];
+    escapeCString = lib.replaceStrings ["\"" "\n"] ["\\\"" "\\n"];
 
     application = writeText "captcha.cc" ''
       #include <QApplication>
@@ -136,7 +136,7 @@ let
     propagatedBuildInputs = [ pythonPackages.requests ];
   };
 
-  pyStr = str: "'${stdenv.lib.escape ["'" "\\"] str}'";
+  pyStr = str: "'${lib.escape ["'" "\\"] str}'";
 
   getDownloadURL = writeText "gethburl.py" ''
     import socket, sys, time, humblebundle

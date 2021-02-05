@@ -45,7 +45,7 @@ let
     in import src { nixpkgs = pkgs; };
 
   testing = import ./testing {
-    inherit stdenv lib;
+    inherit lib;
     inherit (runExeclineFns) runExecline;
     inherit (pkgs) runCommandLocal;
     bin = getBins pkgs.s6PortableUtils [ "s6-touch" "s6-echo" ];

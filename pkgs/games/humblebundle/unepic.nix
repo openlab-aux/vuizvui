@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, unzip, makeWrapper, SDL2, SDL2_mixer, zlib }:
+{ stdenv, lib, fetchHumbleBundle, unzip, makeWrapper, SDL2, SDL2_mixer, zlib }:
 
 let
   version = "1.50.5";
@@ -22,7 +22,7 @@ in stdenv.mkDerivation rec {
   buildInputs = [ unzip makeWrapper ];
 
   installPhase = let
-    rpath = stdenv.lib.makeLibraryPath [ SDL2 SDL2_mixer zlib stdenv.cc.cc ];
+    rpath = lib.makeLibraryPath [ SDL2 SDL2_mixer zlib stdenv.cc.cc ];
   in ''
     dest="$out/opt/games/unepic"
     exe="$dest/unepic${arch}"

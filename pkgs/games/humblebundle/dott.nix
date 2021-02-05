@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, libGL, libpulseaudio, alsaLib, libudev
+{ stdenv, lib, fetchHumbleBundle, libGL, libpulseaudio, alsaLib, libudev
 , writeText
 }:
 
@@ -41,7 +41,7 @@ stdenv.mkDerivation rec {
     }
   '';
 
-  rpath = stdenv.lib.makeLibraryPath [
+  rpath = lib.makeLibraryPath [
     libGL stdenv.cc.cc libpulseaudio alsaLib.out libudev
   ];
 

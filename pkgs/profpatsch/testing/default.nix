@@ -1,4 +1,4 @@
-{ stdenv, runCommandLocal, lib
+{ runCommandLocal, lib
 , runExecline, bin }:
 
 let

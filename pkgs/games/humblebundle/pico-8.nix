@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, SDL2, unzip, xorg, libudev, alsaLib, dbus
+{ stdenv, lib, fetchHumbleBundle, SDL2, unzip, xorg, libudev, alsaLib, dbus
 , libpulseaudio, libdrm, libvorbis, json_c }:
 
 stdenv.mkDerivation rec {
@@ -25,7 +25,7 @@ stdenv.mkDerivation rec {
   phases = [ "unpackPhase" "buildPhase" "installPhase" ];
 
   buildPhase = let
-    rpath = stdenv.lib.makeLibraryPath [
+    rpath = lib.makeLibraryPath [
       stdenv.cc.cc SDL2 xorg.libXxf86vm xorg.libXcursor xorg.libXi
       xorg.libXrandr libudev alsaLib dbus
       libpulseaudio libdrm libvorbis json_c

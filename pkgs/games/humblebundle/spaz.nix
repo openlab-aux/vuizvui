@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
   dontStrip = true;
 
   buildPhase = let
-    libs = pkgsi686Linux.stdenv.lib.makeLibraryPath [
+    libs = pkgsi686Linux.lib.makeLibraryPath [
       pkgsi686Linux.stdenv.cc.cc pkgsi686Linux.SDL
     ];
   in ''
@@ -27,7 +27,7 @@ stdenv.mkDerivation rec {
   '';
 
   installPhase = let
-    libs = pkgsi686Linux.stdenv.lib.makeLibraryPath [
+    libs = pkgsi686Linux.lib.makeLibraryPath [
       pkgsi686Linux.libGL pkgsi686Linux.openal pkgsi686Linux.alsaPlugins
     ];
   in ''

@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, makeWrapper, unzip, mono, SDL2, libGL, openal
+{ stdenv, lib, fetchHumbleBundle, makeWrapper, unzip, mono, SDL2, libGL, openal
 , pulseaudio
 }:
 
@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
   buildInputs = [ unzip makeWrapper ];
 
   installPhase = let
-    rpath = stdenv.lib.makeLibraryPath [ SDL2 libGL openal pulseaudio ];
+    rpath = lib.makeLibraryPath [ SDL2 libGL openal pulseaudio ];
     monoNoLLVM = mono.override { withLLVM = false; };
   in ''
     mkdir -p "$out/lib"

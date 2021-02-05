@@ -1,4 +1,4 @@
-{ stdenv, runCommand, writeText, fetchFromGitHub, buildDotnetPackage
+{ stdenv, lib, runCommand, writeText, fetchFromGitHub, buildDotnetPackage
 , username, password
 }:
 
@@ -65,18 +65,18 @@ let
     # without that nasty wrapper.
     makeWrapperArgs = let
       mkMono = name: path: "${path}/lib/dotnet/${name}";
-      paths = stdenv.lib.mapAttrsToList mkMono {
+      paths = lib.mapAttrsToList mkMono {
         inherit SteamKit2 protobuf-net;
       };
-      monoPath = stdenv.lib.concatStringsSep ":" paths;
+      monoPath = lib.concatStringsSep ":" paths;
     in [ "--prefix MONO_PATH : \"${monoPath}\"" ];
   };
 
   fileListFile = let
-    content = stdenv.lib.concatStringsSep "\n" fileList;
+    content = lib.concatStringsSep "\n" fileList;
   in writeText "steam-file-list-${name}.txt" content;
 
-in with stdenv.lib; runCommand "${name}-src" {
+in with lib; runCommand "${name}-src" {
   buildInputs = [ DepotDownloader ];
   inherit username password appId depotId manifestId;
   preferLocalBuild = true;

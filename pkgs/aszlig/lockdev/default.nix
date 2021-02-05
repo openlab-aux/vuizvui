@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, perl }:
+{ stdenv, lib, fetchurl, perl }:
 
 let
   baseurl = "ftp://ftp.debian.org/debian/pool/main/l/lockdev/";
@@ -8,7 +8,7 @@ in stdenv.mkDerivation rec {
 
   buildInputs = [ perl ];
 
-  patches = stdenv.lib.singleton (fetchurl {
+  patches = lib.singleton (fetchurl {
     url = baseurl + "lockdev_1.0.3-1.5.diff.gz";
     sha256 = "1l3pq1nfb5qx3i91cjaiz3c53368gw6m28a5mv9391n5gmsdmi3r";
   });

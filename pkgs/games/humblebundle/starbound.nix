@@ -1,4 +1,4 @@
-{ stdenv, fetchHumbleBundle, unzip, fetchurl, writeText, SDL2, libGLU, libGL
+{ stdenv, lib, fetchHumbleBundle, unzip, fetchurl, writeText, SDL2, libGLU, libGL
 , xorg, makeDesktopItem
 }:
 
@@ -39,7 +39,7 @@ let
     mkdir -p "patched/$(dirname "${bin}")"
     cp -t "patched/$(dirname "${bin}")" "linux/${bin}"
     chmod +x "patched/$(basename "${bin}")"
-    ${stdenv.lib.optionalString (attrs.needsBootconfig or false) ''
+    ${lib.optionalString (attrs.needsBootconfig or false) ''
       for offset in $(
         grep -abz '^sbinit\.config''$' "patched/$(basename "${bin}")" \
           | cut -d: -f1 -z | xargs -0
@@ -55,7 +55,7 @@ let
     ''}
     patchelf \
       --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-      --set-rpath "${stdenv.lib.makeLibraryPath (attrs.deps or [])}" \
+      --set-rpath "${lib.makeLibraryPath (attrs.deps or [])}" \
       "patched/$(basename "${bin}")"
     if ldd "patched/$(basename "${bin}")" | grep -F 'not found' \
        | grep -v 'libstarbound-preload\.so\|libsteam_api\.so'; then
@@ -284,7 +284,7 @@ in stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ unzip ];
 
-  buildPhase = with stdenv.lib; ''
+  buildPhase = with lib; ''
     cc -Wall -shared "${preloaderSource}" -o preload.so -ldl -fPIC \
       -DSTARBOUND_ASSET_DIR="\"$assets\""
     ${concatStrings (mapAttrsToList patchBinary binaryDeps)}
@@ -315,7 +315,7 @@ in stdenv.mkDerivation rec {
   installPhase = ''
     install -vsD preload.so "$lib/lib/libstarbound-preload.so"
 
-    ${stdenv.lib.concatStrings (stdenv.lib.mapAttrsToList (bin: attrs: let
+    ${lib.concatStrings (lib.mapAttrsToList (bin: attrs: let
       basename = builtins.baseNameOf bin;
     in ''
       install -vD "patched/${basename}" "$out/bin/${attrs.name or basename}"
