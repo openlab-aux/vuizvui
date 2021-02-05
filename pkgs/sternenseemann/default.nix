@@ -33,6 +33,8 @@ in
 
   logbook = ocamlPackages.callPackage ./logbook { };
 
+  shakti = callPackage ./shakti { };
+
   t = python3Packages.callPackage ./t { };
 
   tep = callPackage ./tep {
