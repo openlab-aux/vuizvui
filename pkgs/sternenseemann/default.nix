@@ -1,4 +1,4 @@
-{ pkgs, lib }:
+{ pkgs, lib, profpatsch }:
 
 let
   inherit (pkgs)
@@ -10,6 +10,12 @@ let
     writers
     haskell
     ;
+
+  inherit (profpatsch)
+    getBins
+    ;
+
+  bins = getBins pkgs.bemenu [ "bemenu" ];
 
   haskellPackages = pkgs.haskellPackages.override {
     overrides = self: super: {
@@ -32,6 +38,22 @@ in
   inherit (haskellPackages) emoji-generic;
 
   logbook = ocamlPackages.callPackage ./logbook { };
+
+  pass = (pkgs.pass.override {
+    waylandSupport = true;
+    x11Support = false;
+  }).overrideAttrs (old: {
+    patches = old.patches ++ [ ./patches/passmenu-wayland.patch ];
+    postPatch = ''
+      ${old.postPatch}
+      substituteInPlace "contrib/dmenu/passmenu" \
+        --replace "bemenu" "'${bins.bemenu} -l10'"
+    '';
+    postInstall = ''
+      ${old.postInstall}
+      cp "contrib/dmenu/passmenu" "$out/bin/"
+    '';
+  });
 
   shakti = callPackage ./shakti { };
 

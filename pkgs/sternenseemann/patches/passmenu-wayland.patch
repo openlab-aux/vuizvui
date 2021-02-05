@@ -1,0 +1,50 @@
+diff --git a/contrib/dmenu/README.md b/contrib/dmenu/README.md
+index 9d54fb4..c5d0191 100644
+--- a/contrib/dmenu/README.md
++++ b/contrib/dmenu/README.md
+@@ -4,6 +4,8 @@ clipboard without having to open up a terminal window if you don't already have
+ one open. If `--type` is specified, the password is typed using [xdotool][]
+ instead of copied to the clipboard.
+ 
++On wayland [bemenu][] is used to replace dmenu.
++
+ # Usage
+ 
+     passmenu [--type] [dmenu arguments...]
+@@ -11,3 +13,4 @@ instead of copied to the clipboard.
+ [dmenu]: http://tools.suckless.org/dmenu/
+ [xdotool]: http://www.semicomplete.com/projects/xdotool/
+ [pass]: http://www.zx2c4.com/projects/password-store/
++[bemenu]: https://github.com/Cloudef/bemenu
+diff --git a/contrib/dmenu/passmenu b/contrib/dmenu/passmenu
+index 83268bc..0eee575 100755
+--- a/contrib/dmenu/passmenu
++++ b/contrib/dmenu/passmenu
+@@ -8,12 +8,26 @@ if [[ $1 == "--type" ]]; then
+ 	shift
+ fi
+ 
++if [[ -n $WAYLAND_DISPLAY ]]; then
++	if [[ $typeit -eq 0 ]]; then
++		dmenu=bemenu
++	else
++		echo "Error: --type is not supported on wayland" >&2
++		exit 1
++	fi
++elif [[ -n $DISPLAY ]]; then
++	dmenu=dmenu
++else
++	echo "Error: No Wayland or X11 display detected" >&2
++	exit 1
++fi
++
+ prefix=${PASSWORD_STORE_DIR-~/.password-store}
+ password_files=( "$prefix"/**/*.gpg )
+ password_files=( "${password_files[@]#"$prefix"/}" )
+ password_files=( "${password_files[@]%.gpg}" )
+ 
+-password=$(printf '%s\n' "${password_files[@]}" | dmenu "$@")
++password=$(printf '%s\n' "${password_files[@]}" | $dmenu "$@")
+ 
+ [[ -n $password ]] || exit
+ 
