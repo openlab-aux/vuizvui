@@ -24,6 +24,9 @@ with import ../lib;
     legosi = callMachine ./profpatsch/legosi.nix {};
     # mikiya = callMachine ./profpatsch/mikiya.nix {};
   };
+  sternenseemann = {
+    wolfgang = callMachine ./sternenseemann/wolfgang.nix {};
+  };
   misc = {
     mailserver = callMachine ./misc/mailserver.nix {};
   };
