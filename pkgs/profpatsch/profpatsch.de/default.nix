@@ -120,7 +120,7 @@ let
       None => std::process::exit(1),
       // If it does, continue
       Some(val) =>
-        el_exec::xpathexec0(
+        el_exec::xmexec0(
           &el_substitute::simple_substitute_argv(
             &vec![el_substitute::Subst {
               var: &as_var,

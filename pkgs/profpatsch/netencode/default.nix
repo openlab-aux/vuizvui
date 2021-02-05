@@ -35,10 +35,9 @@ let
   netencode-rs = netencode-rs-common false;
 
   record-get = writeRustSimple "record-get" {
-    dependencies = [ netencode-rs el-semicolon el-exec ];
+    dependencies = [ netencode-rs el-semicolon ];
     # TODO: for some reason the skarnet linker flag
     # is propagated by the link target is not?
-    buildInputs = [ pkgs.skalibs ];
   } ./record-get.rs;
 
 

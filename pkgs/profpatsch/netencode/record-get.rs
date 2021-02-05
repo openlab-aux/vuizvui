@@ -1,10 +1,10 @@
 extern crate netencode;
 extern crate el_semicolon;
-extern crate el_exec;
 
 use std::io::Read;
 use std::ffi::{CString, OsStr};
 use std::os::unix::ffi::{OsStringExt, OsStrExt};
+use std::os::unix::process::{CommandExt};
 use el_semicolon::{el_semicolon, Arg};
 use netencode::{U, encode};
 use netencode::parse::{u_u};
@@ -43,11 +43,8 @@ fn main() {
                             }
                         }
                     }
-                    let mut p : Vec<CString> = vec![];
-                    for arg in prog {
-                        p.push(CString::new(*arg).unwrap());
-                    }
-                    el_exec::xpathexec0(&p);
+                    let env: Vec<(&[u8], &[u8])> = vec![];
+                    exec_into_args("record-get", prog, env)
                 },
                 Ok(_) => {
                     eprintln!("not a record!");
@@ -60,4 +57,37 @@ fn main() {
             }
         }
     }
+}
+
+pub fn exec_into_args<'a, 'b, Args, Arg, Env, Key, Val>(current_prog_name: &str, args: Args, env_additions: Env) -> !
+where
+    Args: IntoIterator<Item = Arg>,
+    Arg: AsRef<[u8]>,
+    Env: IntoIterator<Item = (Key, Val)>,
+    Key: AsRef<[u8]>,
+    Val: AsRef<[u8]>,
+{
+    // TODO: is this possible without collecting into a Vec first, just leaving it an IntoIterator?
+    let args = args.into_iter().collect::<Vec<Arg>>();
+    let mut args = args.iter().map(|v| OsStr::from_bytes(v.as_ref()));
+    let prog = args.nth(0).expect(&format!("{}: first argument must be an executable", current_prog_name));
+    // TODO: same here
+    let env = env_additions.into_iter().collect::<Vec<(Key, Val)>>();
+    let env = env.iter().map(|(k,v)| (OsStr::from_bytes(k.as_ref()), OsStr::from_bytes(v.as_ref())));
+    let err = std::process::Command::new(prog).args(args).envs(env).exec();
+    die_missing_executable(current_prog_name, format!("exec failed: {:?}, while trying to execing into {:?}", err, prog));
+}
+
+/// Exit 127 to signify a missing executable.
+pub fn die_missing_executable<S>(current_prog_name: &str, msg: S) -> !
+where S: AsRef<str>
+{
+    die_with(127, current_prog_name, msg)
+}
+
+fn die_with<S>(status: i32, current_prog_name: &str, msg: S) -> !
+where S: AsRef<str>
+{
+    eprintln!("{}: {}", current_prog_name, msg.as_ref());
+    std::process::exit(status)
 }
