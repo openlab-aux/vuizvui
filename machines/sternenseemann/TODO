@@ -1,0 +1,3 @@
+[ ] get screen capture with wayland to work
+[ ] port sway configuration into a somewhat generic module
+[ ] use gpg-agent module?

@@ -70,7 +70,7 @@ in
     };
 
     environment.sessionVariables = {
-      # TODO get screen capture working in firefox
+      # TODO(sterni) get screen capture working in firefox
       XDG_SESSION_TYPE = "wayland";
       XDG_CURRENT_DESKTOP = "sway";
       MOZ_ENABLE_WAYLAND = "1";
@@ -199,7 +199,7 @@ in
         }
       '';
       "xdg/i3status/config".text = ''
-        # TODO replace i3status?
+        # TODO(sterni) replace i3status?
         general {
           output_format = "i3bar"
           colors = true
@@ -290,7 +290,7 @@ in
     environment.variables = {
       XKB_DEFAULT_LAYOUT = "de";
       XKB_DEFAULT_VARIANT = "neo";
-      # TODO user env?
+      # TODO(sterni) user env?
       SWAYSOCK = "/run/user/${toString config.users.users.lukas.uid}/sway.sock";
     };
 

@@ -1,5 +1,5 @@
-# TODO split out common stuff for personal computers
-#      when I have a non-laptop one
+# TODO(sterni): split out common stuff for personal
+#               computers when I have a non-laptop one
 { config, lib, pkgs, ... }:
 
 {
