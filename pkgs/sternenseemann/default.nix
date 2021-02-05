@@ -47,4 +47,6 @@ in
       sha256 = "0n6d31533l1gnb1sxz8z486kv6rsggcpxyiq8wc1ald8l89c6g4f";
     };
   };
+
+  unicode_clock = python3Packages.callPackage ./unicode_clock { };
 }
