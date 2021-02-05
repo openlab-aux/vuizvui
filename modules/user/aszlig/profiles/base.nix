@@ -75,9 +75,6 @@ in {
     };
 
     nixpkgs.overlays = lib.singleton (lib.const (super: {
-      beets = super.beets.override {
-        enableAlternatives = true;
-      };
       netrw = super.netrw.override {
         checksumType = "mhash";
       };
