@@ -31,19 +31,19 @@ in {
       pkgs.git
       pkgs.htop
       pkgs.inkscape
-      (unfreeAndNonDistributablePkgs.kdeApplications.ark.override {
+      (unfreeAndNonDistributablePkgs.plasma5Packages.ark.override {
         unfreeEnableUnrar = true;
         inherit (unfreePkgs) unrar;
       })
-      pkgs.kdeApplications.gwenview
-      pkgs.kdeApplications.kaddressbook
-      pkgs.kdeApplications.kate
-      pkgs.kdeApplications.kdepim-addons
-      pkgs.kdeApplications.kleopatra
-      pkgs.kdeApplications.kmail
-      pkgs.kdeApplications.kontact
-      pkgs.kdeApplications.korganizer
-      pkgs.kdeApplications.okular
+      pkgs.plasma5Packages.gwenview
+      pkgs.plasma5Packages.kaddressbook
+      pkgs.plasma5Packages.kate
+      pkgs.plasma5Packages.kdepim-addons
+      pkgs.plasma5Packages.kleopatra
+      pkgs.plasma5Packages.kmail
+      pkgs.plasma5Packages.kontact
+      pkgs.plasma5Packages.korganizer
+      pkgs.plasma5Packages.okular
       pkgs.libreoffice
       pkgs.mpv
       pkgs.skanlite
