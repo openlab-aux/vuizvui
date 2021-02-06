@@ -1,7 +1,12 @@
 { pkgs ? import (import ../nixpkgs-path.nix) {} }:
 
 let
-  inherit (pkgs.lib) callPackageWith;
+  inherit (pkgs.lib)
+    callPackageWith
+    recurseIntoAttrs
+    dontRecurseIntoAttrs
+    ;
+
   callPackage = callPackageWith (pkgs // self.vuizvui);
   callPackage_i686 = callPackageWith (pkgs.pkgsi686Linux // self.vuizvui);
 
@@ -10,7 +15,7 @@ let
     pkgsi686Linux = pkgs.pkgsi686Linux // self.vuizvui;
   };
 
-  self.vuizvui = pkgs.recurseIntoAttrs {
+  self.vuizvui = recurseIntoAttrs {
     mkChannel = callPackage ./build-support/channel.nix { };
     buildSandbox = callPackage ./build-support/build-sandbox {};
     lazy-packages = callPackage ./build-support/lazy-packages {};
@@ -30,5 +35,7 @@ let
     openlab = callPackageScope ./openlab;
     profpatsch = callPackageScope ./profpatsch;
     sternenseemann = callPackageScope ./sternenseemann;
+
+    tvl = dontRecurseIntoAttrs (callPackage ./tvl { });
   };
 in self.vuizvui

@@ -1,4 +1,4 @@
-{ stdenv, lib, pkgs, sternenseemann, lazy-packages }:
+{ stdenv, lib, pkgs, sternenseemann, tvl, lazy-packages }:
 
 let
   inherit (pkgs) callPackage;
@@ -106,41 +106,7 @@ let
 
   writeExeclineFns = callPackage ./execline/write-execline.nix {};
 
-  # # Fetch the tvl source at commit, and replac the nixpkgs version it depends
-  # # on with the given nixpkgsPath.
-  importTvl = { tvlCommit, tvlSha256, nixpkgsPath }:
-    let
-      bins = getBins pkgs.gawk [ "gawk" ]
-          // getBins pkgs.coreutils [ "cp" ];
-      gawkScript = ''
-        # patch out emacs overlay (requires fetching the overlay with builtins.fetchTarball)
-        /depot.third_party.overlays.emacs/ { sub("^", "#") }
-        1 { print }
-      '';
-      src = pkgs.fetchgit {
-        url = "https://code.tvl.fyi/depot.git";
-        rev = tvlCommit;
-        sha256 = tvlSha256;
-      };
-      prepareSource = runExeclineFns.runExeclineLocalNoSeqL "prepare-tvl" {} [
-        "importas" "out" "out"
-        "if" [ bins.cp "--no-preserve=mode" "-r" src "$out" ]
-        bins.gawk "-i" "inplace" gawkScript "\${out}/third_party/nixpkgs/default.nix"
-      ];
-    in import prepareSource {
-      nixpkgsBisectPath = nixpkgsPath;
-    };
-
-
 in rec {
-  # tvl = import /home/philip/depot {};
-  tvl =
-    importTvl {
-      tvlCommit = "72b46e8fe80d9c8c708602387b4d46cce6bb266d"; # 2022-02-28
-      tvlSha256 = "sha256-uWrsbMWe3CZVlsstMrJB4HP3tzU8GgFB7VAsanUBI2g=";
-      nixpkgsPath = pkgs.path;
-    };
-
 
   inherit (nixperiments)
     # canonical pattern matching primitive
@@ -250,7 +216,7 @@ in rec {
   };
 
   inherit (import ./profpatsch.de {
-    inherit pkgs tvl lib
+    inherit pkgs lib tvl
       toNetstring toNetstringList writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode record-get;
   })
     websiteStatic
