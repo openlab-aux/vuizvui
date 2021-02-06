@@ -38,6 +38,8 @@ in
 lib.fix (self: {
   inherit (haskellPackages) emoji-generic;
 
+  lib = callPackage ./lib { };
+
   logbook = ocamlPackages.callPackage ./logbook { };
 
   pass = (pkgs.pass.override {
