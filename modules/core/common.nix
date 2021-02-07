@@ -70,5 +70,9 @@ with lib;
         rootChannelsPath
       ] ++ optional config.vuizvui.enableGlobalNixpkgsConfig nixpkgsConfig;
     in mkIf config.vuizvui.modifyNixPath (mkOverride 90 nixPath);
+
+    # the vuizvui channel doesn't provide a programs.sqlite database, so
+    # command-not-found will just result in errors
+    programs.command-not-found.enable = lib.mkDefault false;
   };
 }
