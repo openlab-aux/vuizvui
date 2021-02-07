@@ -3,6 +3,12 @@
 let
   i686Games = false;
   avahi = false;
+
+  browser = rec {
+    pkg = pkgs.firefox-wayland;
+    bin = "${pkg}/bin/firefox";
+  };
+
 in {
   imports = [
     ./base-laptop.nix
@@ -107,10 +113,14 @@ in {
     networkmanagerapplet       # for nm-connection-ediotr
     imv zathura
     gnome3.nautilus
-    firefox-wayland
+    browser.pkg
     # TODO(sterni) depot.users.sterni.clhs-lookup
     hunspell
   ] ++ (with hunspellDicts; [ de-de en-gb-large en-us ]);
+
+  environment.variables = {
+    BROWSER = browser.bin;
+  };
 
   services.tor = {
     enable = true;

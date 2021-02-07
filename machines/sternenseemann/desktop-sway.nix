@@ -95,7 +95,7 @@ in
         };
 
         mouse = {
-          alternate-scroll-mode = "no";
+          alternate-scroll-mode = "yes";
         };
 
         scrollback = {
@@ -115,5 +115,12 @@ in
       grim slurp screenshot      # screenshots
       mako                       # notifications
     ];
+
+    programs.fish.shellAliases = {
+      "hdmi2-above" = ''
+        sway output HDMI-A-2 position 0 0 && sway output eDP-1 position 0 1440
+      '';
+      "workspace-move" = "sway move workspace output";
+    };
   };
 }
