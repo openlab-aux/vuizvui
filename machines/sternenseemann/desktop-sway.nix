@@ -258,8 +258,8 @@ in
           scrollback-up-page = "Control+Shift+Page_Up";
           scrollback-down-page = "Control+Shift+Page_Down";
           search-start = "Control+Shift+F";
-          font-increase = "Control+Shift+plus";
-          font-decrease = "Control+Shift+minus";
+          font-increase = "Control+Shift+b";
+          font-decrease = "Control+Shift+t";
           font-reset = "Control+Shift+0";
           pipe-visible = {
             bind = "Control+Shift+e";
