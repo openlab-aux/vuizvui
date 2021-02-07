@@ -39,7 +39,7 @@
       acpi
       zip unzip
       stow
-      neovim silver-searcher
+      silver-searcher
       mosh
       nmap
       ffmpeg graphicsmagick

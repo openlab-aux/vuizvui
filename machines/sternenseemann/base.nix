@@ -1,6 +1,16 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+
+  inherit (pkgs.vuizvui.profpatsch)
+    getBins
+    ;
+
+  bins = (getBins pkgs.neovim [ "nvim" ])
+      // (getBins pkgs.less [ "less" ])
+      ;
+
+in {
   config = {
     boot.cleanTmpDir = true;
 
@@ -18,8 +28,16 @@
       defaultLocale = "en_US.UTF-8";
     };
 
-    programs.fish.enable = true;
-    programs.fish.vendor.completions.enable = true;
+    programs.fish = {
+      enable = true;
+      vendor.completions.enable = true;
+      shellAliases = {
+        "sd" = "systemctl";
+      };
+      shellInit = ''
+        set -x fish_greeting ""
+      '';
+    };
 
     documentation = {
       enable = true;
@@ -32,6 +50,13 @@
       mandoc man-pages
       git
       file htop psmisc tmux
+      neovim
     ];
+
+    environment.variables = {
+      EDITOR = bins.nvim;
+      VISUAL = bins.nvim;
+      PAGER = "${bins.less} -R";
+    };
   };
 }
