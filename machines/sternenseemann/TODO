@@ -1,3 +1,5 @@
-[ ] get screen capture with wayland to work
-[ ] port sway configuration into a somewhat generic module
+[x] get screen capture with wayland to work
+[x] port sway configuration into a somewhat generic module
+[ ] mako module
 [ ] use gpg-agent module?
+[ ] documentation.man without man-db, but with mandoc

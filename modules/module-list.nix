@@ -38,4 +38,5 @@
   ./user/profpatsch/programs/weechat.nix
   ./user/profpatsch/services/bitlbee.nix
   ./user/profpatsch/services/dunst.nix
+  ./user/sternenseemann/services/sway.nix
 ]
