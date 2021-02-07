@@ -100,11 +100,16 @@ in {
     audacity
     signal-desktop tdesktop discord
     multimc
-    vuizvui.sternenseemann.t
-    hunspell
     vuizvui.profpatsch.nman
+    vuizvui.sternenseemann.tep
+    vuizvui.sternenseemann.t
+    xdg_utils                  # xdg-open etc.
+    networkmanagerapplet       # for nm-connection-ediotr
+    imv zathura
+    gnome3.nautilus
     firefox-wayland
     # TODO(sterni) depot.users.sterni.clhs-lookup
+    hunspell
   ] ++ (with hunspellDicts; [ de-de en-gb-large en-us ]);
 
   services.tor = {
