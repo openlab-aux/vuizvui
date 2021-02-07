@@ -4,8 +4,8 @@ let
   utilsSrc = fetchFromGitHub {
     owner = "Profpatsch";
     repo = "utils.hs";
-    rev = "163ca78213a9fd0ecaa015051cb95d66d7019343";
-    sha256 = "0bvw5ps9v9a64q445jxlcfn2l43mkg061hm3n150kkfwzr13vdm8";
+    rev = "f53264978042d8041831a3ac3766aa1dfdc60b57";
+    sha256 = "18mxcbi6cv81y3jvp9lrfp793vayvd9llpkcjh5szb8vi1kizrgy";
   };
   version = "git";
 
