@@ -11,8 +11,6 @@
   config = {
     console.keyMap = "neo";
 
-    hardware.enableRedistributableFirmware = lib.mkDefault true;
-
     hardware.bluetooth.enable = lib.mkDefault true;
     services.blueman.enable = true;
 
@@ -25,18 +23,12 @@
 
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 
-    services.tlp.enable = lib.mkDefault true;
-
-    hardware.trackpoint = lib.mkDefault {
-      enable = true;
-      emulateWheel = true;
-    };
+    vuizvui.hardware.thinkpad.enable = lib.mkDefault true;
 
     environment.systemPackages = with pkgs; [
       tree
       lowdown
       lynx sacc
-      acpi
       zip unzip
       stow
       silver-searcher
