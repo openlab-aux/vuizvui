@@ -66,6 +66,7 @@ in {
       aspellDicts.de
       aspellDicts.en
       axel
+      bandwhich
       bat
       bc
       bcal
@@ -115,6 +116,7 @@ in {
       git
       gitAndTools.gh
       gitinspector
+      gitui
       glow
       gnome3.adwaita-icon-theme
       gnome3.defaultIconTheme
@@ -141,6 +143,7 @@ in {
       irssi
       jfsutils
       jwhois
+      kmon
       ldns
       lftp
       libarchive
@@ -215,9 +218,9 @@ in {
       stow
       strace
       sxiv
-      taizen
       tasksh
       taskwarrior
+      taskwarrior-tui
       telnet
       termdown
       termshark
@@ -234,9 +237,7 @@ in {
       unzip
       urlview
       usbutils
-      valgrind
       vanilla-dmz
-      vuizvui.devhell.vim
       virt-viewer
       virtmanager
       vivid
@@ -245,6 +246,7 @@ in {
       vorbisTools
       vorbisgain
       vscodium
+      vuizvui.devhell.vim
       w3m
       wavpack
       wget
@@ -257,11 +259,9 @@ in {
       youtube-dl
       zathura
       zbar
-      zgrviewer
       zip
       zotero
       zstd
-      zsync
     ];
   };
 }
