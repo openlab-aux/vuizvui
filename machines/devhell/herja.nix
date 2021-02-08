@@ -19,17 +19,24 @@
       kernelModules = [ "fuse" ];
     };
 
-    kernelModules = [ "kvm-amd" ];
-    extraModulePackages = [ ];
+    kernelModules = [ "kvm-amd" "acpi_call" ];
+    kernelParams = [ "acpi_backlight=native" ];
+    extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
   };
 
   hardware = {
     cpu.amd.updateMicrocode = true;
+    enableRedistributableFirmware = true;
+    trackpoint = {
+      enable = true;
+      emulateWheel = true;
+    };
     opengl = {
       enable = true;
       extraPackages = [ pkgs.libvdpau-va-gl pkgs.vaapiVdpau pkgs.amdvlk ];
     };
   };
+
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/34c21c91-6722-427d-882b-6da0e2f57f50";
@@ -110,26 +117,9 @@
     };
   };
 
-#  services.actkbd = {
-#    enable = true;
-#    bindings = [
-#      { keys = [ 224 ]; events = [ "key" ]; command = "${pkgs.light}/bin/light -U 5"; }
-#      { keys = [ 225 ]; events = [ "key" ]; command = "${pkgs.light}/bin/light -A 5"; }
-#    ];
-#  };
-
-  services.acpid = {
-    enable = true;
-#    lidEventCommands = ''
-#      LID="/proc/acpi/button/lid/LID/state"
-#      state=`cat $LID | ${pkgs.gawk}/bin/awk '{print $2}'`
-#      case "$state" in
-#        *open*) ;;
-#        *close*) systemctl suspend ;;
-#        *) logger -t lid-handler "Failed to detect lid state ($state)" ;;
-#      esac
-#    '';
-  };
+  services.tlp.enable = true;
+  services.illum.enable = true;
+  services.fwupd.enable = true;
 
   services.xserver = {
     enable = true;
@@ -138,8 +128,10 @@
 
     libinput = {
       enable = true;
-      disableWhileTyping = true;
-      middleEmulation = true;
+      touchpad = {
+        disableWhileTyping = true;
+        middleEmulation = true;
+      };
     };
 #    synaptics = {
 #      enable = true;
@@ -181,6 +173,7 @@
 
   environment.systemPackages = with pkgs; [
     aircrackng
+    fwupd
     horst
     ipmitool
     iw
