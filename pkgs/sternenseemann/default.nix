@@ -33,6 +33,10 @@ let
     };
   };
 
+  # temporarily vendor the fixed fetchcvs builder
+  # from nixpkgs master
+  fetchcvs = callPackage ./fetchcvs { };
+
 in
 
 lib.fix (self: {
@@ -41,6 +45,23 @@ lib.fix (self: {
   lib = callPackage ./lib { };
 
   logbook = ocamlPackages.callPackage ./logbook { };
+
+  mandoc = pkgs.mandoc.overrideAttrs (old: rec {
+    src = fetchcvs {
+      sha256 = "19cqasw7fjsmhshs5khxrv8w3vdhf8xadls70l0gzqn7cyjmgsb9";
+      date = "2021-02-07";
+      cvsRoot = "anoncvs@mandoc.bsd.lv:/cvs";
+      module = "mandoc";
+    };
+    version = "unstable-${src.date}"; # actually early but idc
+    # fix makewhatis(1) skipping all man pages that
+    # are symlinks to /nix/store
+    patches = [ ./patches/mandoc-nix-store.patch ];
+    patchFlags = [ "-p0" ];
+    preConfigure = old.preConfigure + ''
+      echo NIXSTOREDIR="$(dirname "$out")" >> configure.local
+    '';
+  });
 
   pass = (pkgs.pass.override {
     waylandSupport = true;
