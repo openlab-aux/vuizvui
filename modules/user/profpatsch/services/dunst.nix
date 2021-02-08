@@ -48,6 +48,12 @@ in {
     settings = lib.mkOption {
       type = with lib.types; attrsOf (attrsOf eitherStrBoolIntList);
       default = { };
+      description = ''
+        Settings for the dunst daemon which are directly translated
+        to the used <literal>dunstrc</literal> config file. See
+        <link xlink:href="https://github.com/dunst-project/dunst/blob/v${pkgs.dunst.version}/dunstrc" />
+        for a list of available options.
+      '';
     };
 
     iconTheme = lib.mkOption {
