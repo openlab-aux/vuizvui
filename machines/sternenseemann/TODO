@@ -3,3 +3,4 @@
 [ ] mako module
 [ ] use gpg-agent module?
 [ ] documentation.man without man-db, but with mandoc
+[ ] fix jackline notification callback

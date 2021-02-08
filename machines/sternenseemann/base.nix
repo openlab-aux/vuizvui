@@ -45,12 +45,17 @@ in {
     documentation = {
       enable = true;
       dev.enable = true;
-      man.enable = true;
+      man.enable = false;
+    };
+
+    vuizvui.user.sternenseemann.documentation.mandoc = {
+      enable = true;
+      generateCaches = true;
     };
 
     environment.systemPackages = with pkgs; [
       curl wget
-      mandoc man-pages
+      man-pages
       git
       file htop psmisc tmux
       neovim
