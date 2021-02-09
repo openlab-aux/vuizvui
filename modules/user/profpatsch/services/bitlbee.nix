@@ -3,7 +3,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.vuizvui.services.profpatsch.bitlbee;
+  cfg = config.vuizvui.user.profpatsch.services.bitlbee;
   bitlbeeUsername = "bitlebee";
   stateDir = "bitlbee";
 
@@ -29,7 +29,7 @@ in
 
   options = {
 
-    vuizvui.services.profpatsch.bitlbee = {
+    vuizvui.user.profpatsch.services.bitlbee = {
 
       enable = lib.mkEnableOption "bitlbee";
 

@@ -36,7 +36,9 @@ When writing modules, make sure to categorize them accordingly:
 </table>
 
 If a module is highly specific to your own configuration, use the same
-categories but put them under `user/$category/$module`.
+categories but put them under `user/$username/$category/$module`.
+Their configuration options should be named
+`vuizvui.user."${username}".*` accordingly.
 
 Don't forget to add your module to `module-list.nix`, but make sure you have
 options in place to disable them by default.

@@ -4,7 +4,7 @@
 { pkgs, lib, config, ... }:
 
 let
-  cfg = config.vuizvui.services.profpatsch.dunst;
+  cfg = config.vuizvui.user.profpatsch.services.dunst;
 
   eitherStrBoolIntList = with lib.types;
     either str (either bool (either int (listOf str)));
@@ -42,7 +42,7 @@ let
   themeSize = "32x32";
 
 in {
-  options.vuizvui.services.profpatsch.dunst = {
+  options.vuizvui.user.profpatsch.services.dunst = {
     enable = lib.mkEnableOption "dunst libnotify server";
 
     settings = lib.mkOption {
@@ -70,7 +70,7 @@ in {
     };
 
 
-    vuizvui.services.profpatsch.dunst.settings = {
+    vuizvui.user.profpatsch.services.dunst.settings = {
       global = {
         icon_position = "left";
         icon_path = let
