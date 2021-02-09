@@ -60,6 +60,9 @@ in {
       EDITOR = bins.nvim;
       VISUAL = bins.nvim;
       PAGER = "${bins.less} -R";
+      # git-diff without the extra options passed to less
+      GIT_PAGER = bins.less;
+      LESS = "-R";
     };
   };
 }
