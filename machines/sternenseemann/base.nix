@@ -18,6 +18,9 @@ in {
     nix.extraOptions = "gc-keep-derivations = false";
     nixpkgs.config.allowUnfree = true;
 
+    # doesn't work with vuizvui atm
+    programs.command-not-found.enable = false;
+
     services.journald.extraConfig = lib.mkDefault "SystemMaxUse=500M";
 
     console.keyMap = lib.mkDefault "de-latin1";
