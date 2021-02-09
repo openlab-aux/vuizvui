@@ -23,11 +23,12 @@ let
 
   screenshot = pkgs.writers.writeDashBin "screenshot" ''
     if [ "$1" != "full" ]; then
-      additionalOpts='-g "$(${bins.slurp})"'
+      additionalOpts="-g '$(${bins.slurp})'"
+    else
       shift
     fi
 
-    ${bins.grim} $additionalOpts -c -t png
+    $SHELL -c "${bins.grim} $additionalOpts $@"
   '';
 
   defaultFont = "Bitstream Vera Sans Mono";
