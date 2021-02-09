@@ -8,7 +8,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.vuizvui.programs.profpatsch.weechat;
+  cfg = config.vuizvui.user.profpatsch.programs.weechat;
   weechatDataDir = "/var/lib/weechat";
   sessionName = "weechat";
   userName = "weechat";
@@ -64,7 +64,7 @@ let
 in
 
 {
-  options.vuizvui.programs.profpatsch.weechat = {
+  options.vuizvui.user.profpatsch.programs.weechat = {
     enable = lib.mkEnableOption "weechat";
 
     authorizedKeys = lib.mkOption {

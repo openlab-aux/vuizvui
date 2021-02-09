@@ -368,7 +368,7 @@ in {
 
     ################
     # User services
-    vuizvui.services.profpatsch.dunst = {
+    vuizvui.user.profpatsch.services.dunst = {
       enable = true;
       settings = {
         global = {
