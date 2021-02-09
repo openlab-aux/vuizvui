@@ -173,6 +173,7 @@ in {
       netrw
       netsniff-ng
       nitrogen
+      nixfmt
       nixops
       nload
       nmap
