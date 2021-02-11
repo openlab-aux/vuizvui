@@ -154,6 +154,8 @@ in {
 
     security.pam.services.swaylock = {};
 
+    hardware.opengl.enable = true;
+
     environment.etc = {
       "sway/config".text = ''
         # correct DPI after hotplugging

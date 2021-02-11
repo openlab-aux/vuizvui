@@ -127,7 +127,9 @@ in rec {
   display-infos = callPackage ./display-infos { inherit sfttime; };
   git-commit-index = callPackage ./git-commit-index { inherit script; };
   nix-http-serve = callPackage ./nix-http-serve {};
-  nman = callPackage ./nman {};
+  nman = callPackage ./nman {
+    inherit writeRustSimpleBin;
+  };
   sfttime = callPackage ./sfttime {};
   show-qr-code = callPackage ./show-qr-code {};
   warpspeed = callPackage ./warpspeed {
@@ -164,6 +166,7 @@ in rec {
 
   inherit (import ./write-rust.nix { inherit pkgs runExeclineLocal getBins; })
     writeRustSimple
+    writeRustSimpleBin
     writeRustSimpleLib
     ;
 
