@@ -93,7 +93,6 @@ in {
     nix.readOnlyStore = true;
     nix.useSandbox = true;
 
-    nixpkgs.config.chromium.enablePepperFlash = true;
     nixpkgs.config.pulseaudio = true;
 
     programs.bash.enableCompletion = true;
