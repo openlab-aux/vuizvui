@@ -40,6 +40,8 @@ fn mktemp(suffix: &str) -> std::io::Result<TempDir> {
     }
 }
 
+// TODO(sterni): distinguish between cmd not found and cmd failure
+// TODO(sterni): track helpful error context in this enum
 enum NmanError {
     NoTempDir,
     Instantiate,
@@ -50,16 +52,29 @@ enum NmanError {
     Usage,
 }
 
-// TODO(sterni): return 127 for cmd not found
-fn nman_error_exit_code(err: NmanError) -> i32 {
-    match err {
-        NmanError::NoTempDir => 9,
-        NmanError::Instantiate => 10,
-        NmanError::Build => 11,
-        NmanError::Man => 12,
-        NmanError::NotFound => 1,
-        NmanError::NixParseError => 69, // EX_SOFTWARE
-        NmanError::Usage => 64, // EX_USAGE
+impl NmanError {
+    fn code(&self) -> i32 {
+        match self {
+            NmanError::NoTempDir => 9,
+            NmanError::Instantiate => 10,
+            NmanError::Build => 11,
+            NmanError::Man => 12,
+            NmanError::NotFound => 1,
+            NmanError::NixParseError => 69, // EX_SOFTWARE
+            NmanError::Usage => 64, // EX_USAGE
+        }
+    }
+
+    fn msg(&self) -> &str {
+        match self {
+            NmanError::NoTempDir => "failed to create temporary directory",
+            NmanError::Instantiate => "failure evaluating the attribute",
+            NmanError::Build => "failed to realise derivation",
+            NmanError::Man => "couldn't open man page using man(1)",
+            NmanError::NotFound => "desired man page could not be found",
+            NmanError::NixParseError => "nix executable produced unexpected output",
+            NmanError::Usage => "usage error",
+        }
     }
 }
 
@@ -248,7 +263,10 @@ fn main() -> std::io::Result<()> {
                 match open_man_page(attr, section, page) {
                     Ok(_) => Ok(()),
                     // TODO(sterni): print error message
-                    Err(t) => std::process::exit(nman_error_exit_code(t)),
+                    Err(t) => {
+                        println!("error: {}", t.msg());
+                        std::process::exit(t.code())
+                    },
                 },
         }
     }
@@ -281,7 +299,7 @@ fn main() -> std::io::Result<()> {
             // TODO(sterni): stderr
             println!("usage error: {}", msg);
             dispatch_action(&args[0], CliAction::Usage);
-            std::process::exit(nman_error_exit_code(NmanError::Usage));
+            std::process::exit(NmanError::Usage.code());
         },
     }
 }
