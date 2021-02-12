@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
-use std::ffi::{OsStr,OsString};
+use std::ffi::OsStr;
 use std::io::{Error, ErrorKind, self, Write};
-use std::os::unix::ffi::{OsStrExt, OsStringExt};
+use std::os::unix::ffi::OsStrExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command,ExitStatus};
 
@@ -127,11 +127,15 @@ fn build_man_page(drv: DrvWithOutput, section: &str, page: &str, tempdir: &TempD
         return Err(NmanError::Build);
     }
 
-    // trailing newline
-    build.stdout.pop();
+    // get the first line of the output, usually only one line
+    // is printed, but this way we also get rid of the trailing '\n'
+    // TODO(sterni): use the !out suffix for default output drvs to
+    //               prevent nix from realising all drv outputs.
+    let first_path = build.stdout.split(|c| char::from(*c) == '\n')
+                          .next().ok_or(NmanError::Build)?;
 
     // TODO(sterni): 😑😑😑😑😑😑😑😑😑😑😑
-    let mut path = PathBuf::from(OsString::from_vec(build.stdout))
+    let mut path = PathBuf::from(OsStr::from_bytes(first_path))
                        .join("share/man")
                        .join(format!("man{}", section))
                        .join(page);
