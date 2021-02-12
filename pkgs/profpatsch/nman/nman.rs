@@ -40,7 +40,6 @@ fn mktemp(suffix: &str) -> std::io::Result<TempDir> {
     }
 }
 
-// TODO(sterni): distinguish between cmd not found and cmd failure
 // TODO(sterni): track helpful error context in this enum
 enum NmanError {
     NoTempDir,
@@ -50,6 +49,7 @@ enum NmanError {
     NotFound,
     NixParseError,
     Usage,
+    Execution,
 }
 
 impl NmanError {
@@ -62,6 +62,7 @@ impl NmanError {
             NmanError::NotFound => 1,
             NmanError::NixParseError => 69, // EX_SOFTWARE
             NmanError::Usage => 64, // EX_USAGE
+            NmanError::Execution => 127, // like bash
         }
     }
 
@@ -74,6 +75,7 @@ impl NmanError {
             NmanError::NotFound => "desired man page could not be found",
             NmanError::NixParseError => "nix executable produced unexpected output",
             NmanError::Usage => "usage error",
+            NmanError::Execution => "Couldn't execute required command",
         }
     }
 }
@@ -136,7 +138,7 @@ fn build_man_page(drv: DrvWithOutput, section: &str, page: &str, tempdir: &TempD
                             .arg(tempdir.as_ref().join("build-result"))
                             .arg("--indirect")
                             .output()
-                            .map_err(|_| NmanError::Build)?;
+                            .map_err(|_| NmanError::Execution)?;
 
     if !build.status.success() {
         return Err(NmanError::Build);
@@ -182,7 +184,7 @@ fn open_man_page(attr: &str, section: &str, page: &str) -> Result<(), NmanError>
                        .arg(tmpdir.as_ref().join("instantiation-result"))
                        .arg("--indirect")
                        .output()
-                       .map_err(|_| NmanError::Instantiate)?;
+                       .map_err(|_| NmanError::Execution)?;
 
     if !inst.status.success() {
         return Err(NmanError::Instantiate);
@@ -219,7 +221,8 @@ fn open_man_page(attr: &str, section: &str, page: &str) -> Result<(), NmanError>
 
                 return match res {
                     Ok(true) => Ok(()),
-                    _ => Err(NmanError::Man),
+                    Ok(false) => Err(NmanError::Man),
+                    Err(_) => Err(NmanError::Execution),
                 };
             },
         }
