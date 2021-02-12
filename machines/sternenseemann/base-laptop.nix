@@ -26,7 +26,7 @@
     vuizvui.hardware.thinkpad.enable = lib.mkDefault true;
 
     environment.systemPackages = with pkgs; [
-      tree
+      lr
       lowdown
       lynx sacc
       zip unzip
