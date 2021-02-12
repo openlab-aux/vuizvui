@@ -164,11 +164,10 @@ fn build_man_page(drv: DrvWithOutput, section: &str, page: &str, tempdir: &TempD
     let first_path = build.stdout.split(|c| char::from(*c) == '\n')
                           .next().ok_or(NmanError::Build)?;
 
-    // TODO(sterni): 😑😑😑😑😑😑😑😑😑😑😑
-    let mut path = PathBuf::from(OsStr::from_bytes(first_path))
-                       .join("share/man")
-                       .join(format!("man{}", section))
-                       .join(page);
+    let mut path = PathBuf::from(OsStr::from_bytes(first_path));
+    path.push("share/man");
+    path.push(format!("man{}", section));
+    path.push(page);
 
     path.set_extension(format!("{}.gz", section));
 
