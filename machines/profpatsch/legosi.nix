@@ -18,12 +18,8 @@ in {
     vuizvui.modifyNixPath = false;
     nix = {
       nixPath = [
-        "vuizvui=/root/vuizvui"
-        "nixpkgs=/root/nixpkgs"
-        # todo: nicer?
-        "nixos-config=${pkgs.writeText "legosi-configuration.nix" ''
-          (import <vuizvui/machines>).profpatsch.legosi.config
-        ''}"
+        # cop out, if you really need a tool locally on the server, just use latest unstable
+        "nixpkgs=https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz"
       ];
 
       extraOptions = ''
