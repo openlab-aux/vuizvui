@@ -150,9 +150,6 @@ in {
 
     time.timeZone = "Europe/Paris";
 
-    # bounded journal size
-    services.journald.extraConfig = "SystemMaxUse=50M";
-
     vuizvui.programs.fish.fasd.enable = true;
 
     ########

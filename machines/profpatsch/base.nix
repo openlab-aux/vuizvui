@@ -15,6 +15,9 @@ in
     # /tmp should never be depended on
     boot.cleanTmpDir = true;
 
+    # bounded journal size
+    services.journald.extraConfig = "SystemMaxUse=500M";
+
     programs.bash = {
       interactiveShellInit = ''
         alias c='vim /root/vuizvui/machines/profpatsch'
