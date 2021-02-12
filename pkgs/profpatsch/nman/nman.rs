@@ -30,7 +30,10 @@ fn mktemp(suffix: &str) -> std::io::Result<TempDir> {
 
     if mktemp.status.success() {
         // remove trailing newline
-        mktemp.stdout.pop();
+        if mktemp.stdout.ends_with(b"\n") {
+            mktemp.stdout.pop();
+        }
+
         Ok(TempDir {
             inner: mktemp.stdout
         })
