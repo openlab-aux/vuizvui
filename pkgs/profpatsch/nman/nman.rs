@@ -1,5 +1,4 @@
-use std::cmp::Ordering;
-use std::ffi::OsStr;
+use std::ffi::{OsStr, OsString};
 use std::io::{Error, ErrorKind, self, Write};
 use std::os::unix::ffi::OsStrExt;
 use std::path::{Path, PathBuf};
@@ -100,6 +99,19 @@ struct DrvWithOutput<'a> {
     rendered: &'a [u8],
 }
 
+impl DrvWithOutput<'_> {
+    fn render(&self) -> OsString {
+        match self.output {
+            DrvOutput::Out => {
+                let mut r = OsStr::from_bytes(self.rendered).to_os_string();
+                r.push("!out");
+                r
+            }
+            _ => OsStr::from_bytes(self.rendered).to_os_string(),
+        }
+    }
+}
+
 fn parse_output<'a>(output: &'a [u8]) -> DrvOutput<'a> {
     match output {
         b"out" => DrvOutput::Out,
@@ -133,7 +145,7 @@ fn parse_drv_path<'a>(drv_path: &'a [u8]) -> Option<DrvWithOutput<'a>> {
 fn build_man_page(drv: DrvWithOutput, section: &str, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError> {
     let mut build = Command::new("nix-store")
                             .arg("--realise")
-                            .arg(OsStr::from_bytes(drv.rendered))
+                            .arg(drv.render())
                             .arg("--add-root")
                             .arg(tempdir.as_ref().join("build-result"))
                             .arg("--indirect")
@@ -146,8 +158,6 @@ fn build_man_page(drv: DrvWithOutput, section: &str, page: &str, tempdir: &TempD
 
     // get the first line of the output, usually only one line
     // is printed, but this way we also get rid of the trailing '\n'
-    // TODO(sterni): use the !out suffix for default output drvs to
-    //               prevent nix from realising all drv outputs.
     let first_path = build.stdout.split(|c| char::from(*c) == '\n')
                           .next().ok_or(NmanError::Build)?;
 
