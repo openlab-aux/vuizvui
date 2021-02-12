@@ -57,14 +57,16 @@ enum NmanError {
 impl NmanError {
     fn code(&self) -> i32 {
         match self {
-            NmanError::NoTempDir => 9,
-            NmanError::Instantiate => 10,
-            NmanError::Build => 11,
-            NmanError::Man => 12,
+            // expected errors
             NmanError::NotFound => 1,
-            NmanError::NixParseError => 69, // EX_SOFTWARE
-            NmanError::Usage => 64, // EX_USAGE
-            NmanError::Execution => 127, // like bash
+            // most likely due to attribute missing
+            NmanError::Instantiate => 1,
+            // missing executable
+            NmanError::Execution => 127,
+            // user error, EX_USAGE (sysexits.h)
+            NmanError::Usage => 64,
+            // everything else is an unexpected error
+            _ => 101
         }
     }
 
