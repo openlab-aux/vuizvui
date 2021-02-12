@@ -278,9 +278,8 @@ fn main() -> std::io::Result<()> {
             CliAction::Man(attr, section, page) =>
                 match open_man_page(attr, section, page) {
                     Ok(_) => Ok(()),
-                    // TODO(sterni): print error message
                     Err(t) => {
-                        println!("error: {}", t.msg());
+                        eprintln!("error: {}", t.msg());
                         std::process::exit(t.code())
                     },
                 },
@@ -312,8 +311,7 @@ fn main() -> std::io::Result<()> {
     match action {
         Ok(action) => dispatch_action(&args[0], action),
         Err(msg) => {
-            // TODO(sterni): stderr
-            println!("usage error: {}", msg);
+            eprintln!("usage error: {}", msg);
             dispatch_action(&args[0], CliAction::Usage);
             std::process::exit(NmanError::Usage.code());
         },
