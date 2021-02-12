@@ -86,9 +86,9 @@ impl NmanError {
 enum DrvOutput<'a> {
     Man,
     DevMan,
+    Out,
     Doc,
     DevDoc,
-    Out,
     Info,
     Dev,
     Bin,
