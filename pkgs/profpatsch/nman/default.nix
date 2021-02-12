@@ -1,14 +1,8 @@
-{ lib, runCommand, go }:
+{ lib, writeRustSimpleBin }:
 
-runCommand "nman" {
-  meta = with lib; {
-    description = "Invoke manpage in temporary nix-shell";
-    license = licenses.gpl3;
+writeRustSimpleBin "nman" {
+  meta = {
+    license = lib.licenses.gpl3Only;
+    description = "Open man page in a temporary nix-shell";
   };
-} ''
-    mkdir cache
-    env GOCACHE="$PWD/cache" \
-      ${lib.getBin go}/bin/go build -o nman ${./nman.go}
-    install -D nman $out/bin/nman
-''
-
+} ./nman.rs
