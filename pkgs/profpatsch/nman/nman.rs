@@ -42,27 +42,26 @@ fn mktemp(suffix: &str) -> std::io::Result<TempDir> {
     }
 }
 
-// TODO(sterni): track helpful error context in this enum
-enum NmanError {
+enum NmanError<'a> {
     NoTempDir,
-    Instantiate,
-    Build,
+    Instantiate(&'a str, Vec<u8>),
+    Build(OsString, Vec<u8>),
     Man,
-    NotFound,
-    NixParseError,
+    NotFound(&'a str, &'a str),
+    ParseError(&'a str),
     Usage,
-    Execution,
+    Execution(&'a str),
 }
 
-impl NmanError {
+impl NmanError<'_> {
     fn code(&self) -> i32 {
         match self {
             // expected errors
-            NmanError::NotFound => 1,
+            NmanError::NotFound(_, _) => 1,
             // most likely due to attribute missing
-            NmanError::Instantiate => 1,
+            NmanError::Instantiate(_, _) => 1,
             // missing executable
-            NmanError::Execution => 127,
+            NmanError::Execution(_) => 127,
             // user error, EX_USAGE (sysexits.h)
             NmanError::Usage => 64,
             // everything else is an unexpected error
@@ -70,16 +69,21 @@ impl NmanError {
         }
     }
 
-    fn msg(&self) -> &str {
+    fn msg(&self) -> String {
         match self {
-            NmanError::NoTempDir => "failed to create temporary directory",
-            NmanError::Instantiate => "failure evaluating the attribute",
-            NmanError::Build => "failed to realise derivation",
-            NmanError::Man => "couldn't open man page using man(1)",
-            NmanError::NotFound => "desired man page could not be found",
-            NmanError::NixParseError => "nix executable produced unexpected output",
-            NmanError::Usage => "usage error",
-            NmanError::Execution => "Couldn't execute required command",
+            NmanError::NoTempDir => String::from("failed to create temporary directory"),
+            NmanError::Instantiate(attr, stderr) =>
+                format!("could not instantiate \"{}\". nix-instantiate reported:\n{}", attr,
+                        std::str::from_utf8(&stderr).unwrap_or("<invalid utf-8>")),
+            NmanError::Build(drv_path, stderr) =>
+                format!("failed to build \"{}\". nix-store reported:\n{}",
+                        drv_path.to_str().unwrap_or("<invalid utf-8>"),
+                        std::str::from_utf8(&stderr).unwrap_or("<malformed utf-8>")),
+            NmanError::Man => String::from("man failed while opening while opening man page"),
+            NmanError::NotFound(page, sec) => format!("man page {}({}) could not be found", page, sec),
+            NmanError::ParseError(exec) => format!("could not parse output of {}", exec),
+            NmanError::Execution(exec) => format!("could not execute {}", exec),
+            NmanError::Usage => String::from("usage error"),
         }
     }
 }
@@ -147,7 +151,7 @@ fn parse_drv_path<'a>(drv_path: &'a [u8]) -> Option<DrvWithOutput<'a>> {
     }
 }
 
-fn build_man_page(drv: DrvWithOutput, section: &str, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError> {
+fn build_man_page<'a>(drv: DrvWithOutput, section: &str, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
     let mut build = Command::new("nix-store")
                             .arg("--realise")
                             .arg(drv.render())
@@ -155,16 +159,17 @@ fn build_man_page(drv: DrvWithOutput, section: &str, page: &str, tempdir: &TempD
                             .arg(tempdir.as_ref().join("build-result"))
                             .arg("--indirect")
                             .output()
-                            .map_err(|_| NmanError::Execution)?;
+                            .map_err(|_| NmanError::Execution("nix-store"))?;
 
     if !build.status.success() {
-        return Err(NmanError::Build);
+        return Err(NmanError::Build(drv.render(), build.stderr));
     }
 
     // get the first line of the output, usually only one line
     // is printed, but this way we also get rid of the trailing '\n'
     let first_path = build.stdout.split(|c| char::from(*c) == '\n')
-                          .next().ok_or(NmanError::Build)?;
+                          .next().filter(|l| l.len() > 0)
+                          .ok_or(NmanError::ParseError("nix-store"))?;
 
     let mut path = PathBuf::from(OsStr::from_bytes(first_path));
     path.push("share/man");
@@ -188,7 +193,7 @@ fn build_man_page(drv: DrvWithOutput, section: &str, page: &str, tempdir: &TempD
     }
 }
 
-fn open_man_page(attr: &str, section: &str, page: &str) -> Result<(), NmanError> {
+fn open_man_page<'a>(attr: &'a str, section: &'a str, page: &'a str) -> Result<(), NmanError<'a>> {
     let tmpdir = mktemp("-nman").map_err(|_| NmanError::NoTempDir)?;
     let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
     let inst = Command::new("nix-instantiate")
@@ -198,15 +203,19 @@ fn open_man_page(attr: &str, section: &str, page: &str) -> Result<(), NmanError>
                        .arg(tmpdir.as_ref().join("instantiation-result"))
                        .arg("--indirect")
                        .output()
-                       .map_err(|_| NmanError::Execution)?;
+                       .map_err(|_| NmanError::Execution("nix-instantiate"))?;
 
     if !inst.status.success() {
-        return Err(NmanError::Instantiate);
+        return Err(NmanError::Instantiate(attr, inst.stderr));
     }
 
     let mut drvs: Vec<DrvWithOutput> =
             inst.stdout.split(|c| char::from(*c) == '\n')
                 .filter_map(parse_drv_path).collect();
+
+    if drvs.len() <= 0 {
+        return Err(NmanError::ParseError("nix-instantiate"));
+    }
 
     // the sort order is such that the outputs where we
     // expect the man page to be are checked first.
@@ -216,10 +225,6 @@ fn open_man_page(attr: &str, section: &str, page: &str) -> Result<(), NmanError>
     // TODO(sterni): change sorting depending on section:
     //               "3" and "3p" should prioritize DevMan
     drvs.sort_unstable_by(|a, b| a.output.cmp(&b.output));
-
-    if drvs.len() <= 0 {
-        return Err(NmanError::NixParseError);
-    }
 
     for drv in drvs {
         let man_file = build_man_page(drv, section, page, &tmpdir)?;
@@ -236,13 +241,13 @@ fn open_man_page(attr: &str, section: &str, page: &str) -> Result<(), NmanError>
                 return match res {
                     Ok(true) => Ok(()),
                     Ok(false) => Err(NmanError::Man),
-                    Err(_) => Err(NmanError::Execution),
+                    Err(_) => Err(NmanError::Execution("man")),
                 };
             },
         }
     }
 
-    Err(NmanError::NotFound)
+    Err(NmanError::NotFound(page, section))
 }
 
 fn parse_man_section(section: &str) -> Result<&str, &str> {
@@ -280,7 +285,11 @@ fn main() -> std::io::Result<()> {
                 match open_man_page(attr, section, page) {
                     Ok(_) => Ok(()),
                     Err(t) => {
-                        eprintln!("error: {}", t.msg());
+                        let msg = t.msg();
+                        eprint!("error: {}", msg);
+                        if !msg.ends_with("\n") {
+                            eprint!("\n");
+                        }
                         std::process::exit(t.code())
                     },
                 },
