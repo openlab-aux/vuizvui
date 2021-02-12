@@ -10,18 +10,22 @@ let
   deploy = pkgs.writers.writeDash "deploy-machine-profpatsch" ''
     set -e
     MACHINE="''${1?please set machine as first argument}"
-    OUT_LINK="system-$MACHINE"
+    HOME="''${HOME?please make sure HOME is set}"
+    VUIZVUI="$HOME/vuizvui"
+    OUT_LINK="$VUIZVUI/system-$MACHINE"
 
     ${bins.nix-build} \
       --show-trace \
       --out-link "$OUT_LINK" \
       -I "nixpkgs=$HOME/nixpkgs" \
       -A "machines.profpatsch.$MACHINE.build" \
-      "$HOME/vuizvui"
+      "$VUIZVUI"
 
     ${bins.nix-copy-closure} \
       --to "ssh://$MACHINE?compress=true" \
+      --use-substitutes \
       "$OUT_LINK"
+
 
     ${bins.ssh} \
       "root@$MACHINE" \
