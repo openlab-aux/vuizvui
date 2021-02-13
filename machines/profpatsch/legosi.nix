@@ -6,6 +6,13 @@ let
 
   hostname = "legosi";
 
+  gpgPublicKeyring = pkgs.runCommandLocal "keyring" {} ''
+    export GNUPGHOME=.
+    ${pkgs.gnupg}/bin/gpg --import ${../../pkgs/profpatsch/profpatsch.de/key.asc}
+    cp ./pubring.kbx $out
+  '';
+  gpgPublicKeyId = "4ACFD7592710266E18CEBB28C5CFD08B22247CDF";
+
   myKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNMQvmOfon956Z0ZVdp186YhPHtSBrXsBwaCt0JAbkf/U/P+4fG0OROA++fHDiFM4RrRHH6plsGY3W6L26mSsCM2LtlHJINFZtVILkI26MDEIKWEsfBatDW+XNAvkfYEahy16P5CBtTVNKEGsTcPD+VDistHseFNKiVlSLDCvJ0vMwOykHhq+rdJmjJ8tkUWC2bNqTIH26bU0UbhMAtJstWqaTUGnB0WVutKmkZbnylLMICAvnFoZLoMPmbvx8efgLYY2vD1pRd8Uwnq9MFV1EPbkJoinTf1XSo8VUo7WCjL79aYSIvHmXG+5qKB9ed2GWbBLolAoXkZ00E4WsVp9H philip@nyx";
 
 in {
@@ -62,6 +69,43 @@ in {
         address = "fe80::1";
         interface = "ens3";
       };
+    };
+
+    services.duplicity = {
+      enable = true;
+
+      root = "/";
+      # exclude all the system-related dirs
+      exclude = [
+        "/bin"
+        "/boot"
+        "/dev"
+        "/nix"
+        "/proc"
+        "/run"
+        "/sys"
+        "/tmp"
+        "/usr"
+        # /var/lib is what we want because it contains all services,
+        # but let’s be generous and keep everthing in /var except log
+        "/var/log"
+      ];
+
+      targetUrl = "b2://000efe88f7148a00000000003@profpatsch-legosi/";
+
+      # this uses the internal stateDirectory of the duplicity module
+      # Has to be set manually once of course.
+      secretFile = "/var/lib/duplicity/secrets";
+
+      extraFlags = [
+        "--verbosity" "notice"
+        "--full-if-older-than" "60D"
+        "--num-retries" "3"
+        # I hate GPG from the bottom of my heart
+        "--encrypt-key" gpgPublicKeyId
+        "--gpg-options" "--keyring ${gpgPublicKeyring} --trust-model always"
+      ];
+
     };
 
 
