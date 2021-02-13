@@ -264,4 +264,6 @@ in rec {
     lru-dir
     ;
 
+
+  backup = import ./backup { inherit pkgs writeExecline getBins backtick; };
 }
