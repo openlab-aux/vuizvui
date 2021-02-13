@@ -33,6 +33,12 @@ let
     };
   };
 
+  rust = callPackage ./rust {
+    inherit (profpatsch)
+      writeRustSimpleLib
+      ;
+  };
+
 in
 
 lib.fix (self: {
@@ -74,6 +80,11 @@ lib.fix (self: {
       cp "contrib/dmenu/passmenu" "$out/bin/"
     '';
   });
+
+  inherit (rust)
+    temp
+    temp-tests
+    ;
 
   # don't bother hydra with trivial text substitution
   scripts = dontRecurseIntoAttrs (callPackage ./scripts {
