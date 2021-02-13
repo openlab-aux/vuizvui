@@ -10,6 +10,7 @@ let
 
 in {
   aszlig.dnyarri.luks2-bcache = callTest ./aszlig/dnyarri/luks2-bcache.nix;
+  aszlig.programs.flameshot = callTest aszlig/programs/flameshot.nix;
   aszlig.programs.psi = callTest aszlig/programs/psi.nix;
   games = {
     starbound = callTest ./games/starbound.nix;

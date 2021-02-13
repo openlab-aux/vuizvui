@@ -1,0 +1,47 @@
+diff --git a/src/utils/confighandler.cpp b/src/utils/confighandler.cpp
+index ee50acb..8a92e08 100644
+--- a/src/utils/confighandler.cpp
++++ b/src/utils/confighandler.cpp
+@@ -22,9 +22,8 @@
+ #include <algorithm>
+ 
+ ConfigHandler::ConfigHandler()
+-{
+-    m_settings.setDefaultFormat(QSettings::IniFormat);
+-}
++  : m_settings("@configFile@", QSettings::IniFormat)
++{}
+ 
+ QVector<CaptureToolButton::ButtonType> ConfigHandler::getButtons()
+ {
+@@ -55,9 +54,7 @@ QVector<CaptureToolButton::ButtonType> ConfigHandler::getButtons()
+                 << CaptureToolButton::TYPE_UNDO << CaptureToolButton::TYPE_REDO
+                 << CaptureToolButton::TYPE_COPY << CaptureToolButton::TYPE_SAVE
+                 << CaptureToolButton::TYPE_EXIT
+-                << CaptureToolButton::TYPE_IMAGEUPLOADER
+-                << CaptureToolButton::TYPE_OPEN_APP
+-                << CaptureToolButton::TYPE_PIN << CaptureToolButton::TYPE_TEXT
++                << CaptureToolButton::TYPE_TEXT
+                 << CaptureToolButton::TYPE_CIRCLECOUNT;
+     }
+ 
+@@ -119,7 +116,8 @@ void ConfigHandler::setUserColors(const QVector<QColor>& l)
+ 
+ QString ConfigHandler::savePathValue()
+ {
+-    return m_settings.value(QStringLiteral("savePath")).toString();
++    return m_settings.value(QStringLiteral("savePath")).toString()
++        .replace("$HOME", QDir::homePath());
+ }
+ 
+ void ConfigHandler::setSavePath(const QString& savePath)
+@@ -390,7 +388,8 @@ void ConfigHandler::setSaveAfterCopy(const bool save)
+ 
+ QString ConfigHandler::saveAfterCopyPathValue()
+ {
+-    return m_settings.value(QStringLiteral("saveAfterCopyPath")).toString();
++    return m_settings.value(QStringLiteral("saveAfterCopyPath")).toString()
++        .replace("$HOME", QDir::homePath());
+ }
+ 
+ void ConfigHandler::setSaveAfterCopyPath(const QString& path)

@@ -117,6 +117,10 @@ in
         inherit (pkgs.xorg) xsetroot;
         inherit wsConfig barConfig;
 
+        # XXX: Decouple this by making the i3 bindsym directives available to
+        #      the NixOS module system.
+        flameshot = config.vuizvui.user.aszlig.programs.flameshot.package;
+
         lockall = pkgs.writeScript "lockvt.sh" ''
           #!${pkgs.stdenv.shell}
           "${pkgs.socat}/bin/socat" - UNIX-CONNECT:/run/console-lock.sock \

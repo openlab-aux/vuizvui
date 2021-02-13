@@ -21,6 +21,7 @@
   ./user/aszlig/profiles/base.nix
   ./user/aszlig/profiles/managed.nix
   ./user/aszlig/profiles/workstation
+  ./user/aszlig/programs/flameshot
   ./user/aszlig/programs/git
   ./user/aszlig/programs/mpv
   ./user/aszlig/programs/zsh
