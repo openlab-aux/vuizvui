@@ -1,46 +1,10 @@
+extern crate temp;
+
 use std::ffi::{OsStr, OsString};
-use std::io::{Error, ErrorKind, self, Write};
 use std::os::unix::ffi::OsStrExt;
-use std::path::{Path, PathBuf};
-use std::process::{Command,ExitStatus};
-
-struct TempDir {
-    inner: Vec<u8>,
-}
-
-impl AsRef<Path> for TempDir {
-    fn as_ref(&self) -> &Path {
-        OsStr::from_bytes(&self.inner[..]).as_ref()
-    }
-}
-
-impl Drop for TempDir {
-    fn drop(&mut self) {
-        std::fs::remove_dir_all(self.as_ref());
-        std::fs::remove_dir(self.as_ref());
-    }
-}
-
-fn mktemp(suffix: &str) -> std::io::Result<TempDir> {
-    let mut mktemp = Command::new("mktemp")
-                    .arg("-d")
-                    .arg("--suffix")
-                    .arg(suffix)
-                    .output()?;
-
-    if mktemp.status.success() {
-        // remove trailing newline
-        if mktemp.stdout.ends_with(b"\n") {
-            mktemp.stdout.pop();
-        }
-
-        Ok(TempDir {
-            inner: mktemp.stdout
-        })
-    } else {
-        Err(Error::new(ErrorKind::Other, "mktemp exited with a non-zero status"))
-    }
-}
+use std::path::PathBuf;
+use std::process::Command;
+use temp::TempDir;
 
 enum NmanError<'a> {
     NoTempDir,
@@ -194,7 +158,7 @@ fn build_man_page<'a>(drv: DrvWithOutput, section: &str, page: &str, tempdir: &T
 }
 
 fn open_man_page<'a>(attr: &'a str, section: &'a str, page: &'a str) -> Result<(), NmanError<'a>> {
-    let tmpdir = mktemp("-nman").map_err(|_| NmanError::NoTempDir)?;
+    let tmpdir = TempDir::new("nman").map_err(|_| NmanError::NoTempDir)?;
     let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
     let inst = Command::new("nix-instantiate")
                        .arg("-E")

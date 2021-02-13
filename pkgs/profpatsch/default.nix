@@ -1,4 +1,4 @@
-{ stdenv, lib, pkgs }:
+{ stdenv, lib, pkgs, sternenseemann }:
 
 let
   inherit (pkgs) callPackage;
@@ -129,6 +129,7 @@ in rec {
   nix-http-serve = callPackage ./nix-http-serve {};
   nman = callPackage ./nman {
     inherit writeRustSimpleBin;
+    inherit (sternenseemann) temp;
   };
   sfttime = callPackage ./sfttime {};
   show-qr-code = callPackage ./show-qr-code {};
