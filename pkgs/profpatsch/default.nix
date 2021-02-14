@@ -252,9 +252,8 @@ in rec {
     record-get
     ;
 
-  inherit (import ./execline/default.nix { inherit pkgs writeRustSimpleLib rust-deps; })
+  inherit (import ./execline/default.nix { inherit pkgs writeRustSimpleLib testRustSimple rust-deps; })
     el-semicolon
-    el-semicolon-tests
     el-exec
     el-substitute
     ;

@@ -1,14 +1,11 @@
-{ pkgs, writeRustSimpleLib, rust-deps }:
+{ pkgs, writeRustSimpleLib, testRustSimple, rust-deps }:
 
 let
-  el-semicolon-common = tests: writeRustSimpleLib "el_semicolon" {
-    buildTests = tests;
-    release = false;
-    verbose = true;
-  } ./el_semicolon.rs;
-
-  el-semicolon-tests = el-semicolon-common true;
-  el-semicolon = el-semicolon-common false;
+  el-semicolon = testRustSimple
+    (writeRustSimpleLib "el_semicolon" {
+      release = false;
+      verbose = true;
+    } ./el_semicolon.rs);
 
   el-exec = writeRustSimpleLib "el_exec" {
     dependencies = [ rust-deps.libc ];
@@ -27,7 +24,6 @@ let
 in {
   inherit
     el-semicolon
-    el-semicolon-tests
     el-exec
     el-substitute
     ;
