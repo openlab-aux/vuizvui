@@ -36,6 +36,7 @@ let
   rust = callPackage ./rust {
     inherit (profpatsch)
       writeRustSimpleLib
+      testRustSimple
       ;
   };
 
@@ -83,7 +84,6 @@ lib.fix (self: {
 
   inherit (rust)
     temp
-    temp-tests
     ;
 
   # don't bother hydra with trivial text substitution
