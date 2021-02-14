@@ -162,9 +162,10 @@ in rec {
     ];
   });
 
-  inherit (import ./write-rust.nix { inherit pkgs runExeclineLocal getBins; })
+  inherit (import ./write-rust.nix { inherit pkgs runExeclineLocal getBins drvSeqL; })
     writeRustSimple
     writeRustSimpleLib
+    testRustSimple
     ;
 
   inherit (runExeclineFns)
