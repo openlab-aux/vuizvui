@@ -6,6 +6,17 @@ use std::path::PathBuf;
 use std::process::Command;
 use temp::TempDir;
 
+/// Represents all errors that can occurr in `nman`.
+/// The inner structure of this type is rather messy
+/// as it is highly specific to the location it may
+/// occurr, so whatever is most efficient is passed
+/// back.
+///
+/// The common interface is `err.msg()` for building
+/// an user facing error message for an `NmanError`
+/// and `err.code()` for returning a descriptive
+/// exit code for the occurred error (not that it
+/// really matters for an interactive tool).
 enum NmanError<'a> {
     IO,
     Instantiate(&'a str, Vec<u8>),
@@ -53,6 +64,15 @@ impl NmanError<'_> {
     }
 }
 
+/// Represents an output of a Nix derivation.
+/// These can theoretically be any strings,
+/// but are limited to the first 9 options
+/// in `nixpkgs` by convention.
+///
+/// The main purpose of parsing derivation
+/// outputs is to order them from most
+/// likely to least likely to contain man
+/// pages to save on realizing store paths.
 #[derive(PartialEq, PartialOrd, Eq, Ord)]
 enum DrvOutput<'a> {
     Man,
@@ -67,6 +87,9 @@ enum DrvOutput<'a> {
     Other(&'a [u8]),
 }
 
+/// A derivation represented as a path
+/// coupled with a parsed [`DrvOutput`]
+/// for sorting purposes.
 struct DrvWithOutput<'a> {
     path: &'a [u8],
     output: DrvOutput<'a>,
@@ -86,6 +109,9 @@ impl DrvWithOutput<'_> {
     }
 }
 
+/// Convert a string (Nix strings may be arbitrary bytes)
+/// into a parsed [`DrvOutput`]. No sanity checking is
+/// done, anything strange is pased into [`DrvOutput::Other`].
 fn parse_output<'a>(output: &'a [u8]) -> DrvOutput<'a> {
     match output {
         b"out" => DrvOutput::Out,
@@ -99,6 +125,9 @@ fn parse_output<'a>(output: &'a [u8]) -> DrvOutput<'a> {
     }
 }
 
+/// Parse a line of the output of `nix-instantiate`, of the form:
+/// `/nix/store/<drv file>[!<output>]` into a [`DrvWithOutput`]
+/// structure.
 fn parse_drv_path<'a>(drv_path: &'a [u8]) -> Option<DrvWithOutput<'a>> {
     let mut split = drv_path.split(|c| char::from(*c) == '!');
     let path = split.next().filter(|s| s.len() > 0)?;
@@ -116,6 +145,16 @@ fn parse_drv_path<'a>(drv_path: &'a [u8]) -> Option<DrvWithOutput<'a>> {
     }
 }
 
+/// Realises the given derivation output using `nix-store --realise` and
+/// checks if the man page described by `section` and `page` can be found
+/// within it. If that is the case, the path to is returned. If it can't
+/// be found, `None` is returned. `Err` is only used to describe unrecoverable
+/// errors.
+///
+/// `section == None` indicates that the section is not given. `build_man_page`
+/// then searches all man section directories for any matching page. If multiple
+/// matches exist, the one with an alphanumerically lower section is preferred,
+/// e. g. section 1 is preferred over section 3.
 fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
     let mut build = Command::new("nix-store")
                             .arg("--realise")
@@ -195,8 +234,18 @@ fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tem
     Ok(None)
 }
 
+/// This function implements the main operation of `nman`:
+/// It instantiates the given attribute to get all outputs
+/// of the described derivation and checks the outputs
+/// for the desired man page using `build_man_page`.
+/// Finally the man page is opened using `man(1)`.
+/// Both GNU's `man-db` and OpenBSD's `mandoc` work
+/// (any man implementation that implements `-l` should
+/// for that matter).
 fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> Result<(), NmanError<'a>> {
     let tmpdir = TempDir::new("nman").map_err(|_| NmanError::IO)?;
+    // TODO(sterni): allow selecting other base package sets,
+    //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
     let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
     let inst = Command::new("nix-instantiate")
                        .arg("-E")
@@ -252,6 +301,10 @@ fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> 
     Err(NmanError::NotFound(page, section))
 }
 
+/// Check if a string describes a man section,
+/// i. e. is a number or "3p" (Perl Developer's
+/// manual). Used to distinguish between man pages
+/// and manual sections on the command line.
 fn parse_man_section(section: &str) -> Result<&str, &str> {
     match section {
         "3p" => Ok(section),
@@ -263,6 +316,7 @@ fn parse_man_section(section: &str) -> Result<&str, &str> {
 }
 
 enum CliAction<'a> {
+    /// print help
     Usage,
     /// attribute, section, page
     Man(&'a str, Option<&'a str>, &'a str),
