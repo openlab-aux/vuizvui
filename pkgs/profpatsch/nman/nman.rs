@@ -109,20 +109,23 @@ impl<'a> DrvOutput<'a> {
 /// coupled with a parsed [`DrvOutput`]
 /// for sorting purposes.
 struct DrvWithOutput<'a> {
+    /// The original derivation path as printed
+    /// by `nix-instantiate` _including_ the output
+    /// indicator if `output` is not [`DrvOutput::Out`]
     path: &'a [u8],
+    /// The parsed output of `path` for sorting purposes
     output: DrvOutput<'a>,
-    rendered: &'a [u8],
 }
 
 impl DrvWithOutput<'_> {
     fn render(&self) -> OsString {
         match self.output {
             DrvOutput::Out => {
-                let mut r = OsStr::from_bytes(self.rendered).to_os_string();
+                let mut r = OsStr::from_bytes(self.path).to_os_string();
                 r.push("!out");
                 r
             }
-            _ => OsStr::from_bytes(self.rendered).to_os_string(),
+            _ => OsStr::from_bytes(self.path).to_os_string(),
         }
     }
 }
@@ -133,16 +136,15 @@ impl<'a> DrvWithOutput<'a> {
     /// structure.
     fn parse(drv_path: &'a [u8]) -> Option<Self> {
         let mut split = drv_path.split(|c| char::from(*c) == '!');
-        let path = split.next().filter(|s| s.len() > 0)?;
+        let _ = split.next().filter(|s| s.len() > 0)?;
         let output = split.next()
             .map(DrvOutput::parse)
             .unwrap_or(DrvOutput::Out);
 
         match split.next() {
             None => Some(DrvWithOutput {
-                path: path,
+                path: drv_path,
                 output: output,
-                rendered: drv_path,
             }),
             Some(_) => None,
         }
