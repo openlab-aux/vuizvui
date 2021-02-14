@@ -104,6 +104,7 @@ in {
       file
       firefox
       flac
+      flameshot
       focuswriter
       fortune
       freerdpUnstable
