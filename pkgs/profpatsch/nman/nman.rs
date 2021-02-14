@@ -7,11 +7,11 @@ use std::process::Command;
 use temp::TempDir;
 
 enum NmanError<'a> {
-    NoTempDir,
+    IO,
     Instantiate(&'a str, Vec<u8>),
     Build(OsString, Vec<u8>),
     Man,
-    NotFound(&'a str, &'a str),
+    NotFound(&'a str, Option<&'a str>),
     ParseError(&'a str),
     Usage,
     Execution(&'a str),
@@ -35,7 +35,8 @@ impl NmanError<'_> {
 
     fn msg(&self) -> String {
         match self {
-            NmanError::NoTempDir => String::from("failed to create temporary directory"),
+            // TODO(sterni): make more descriptive
+            NmanError::IO => String::from("unexpected IO error"),
             NmanError::Instantiate(attr, stderr) =>
                 format!("could not instantiate \"{}\". nix-instantiate reported:\n{}", attr,
                         std::str::from_utf8(&stderr).unwrap_or("<invalid utf-8>")),
@@ -44,7 +45,7 @@ impl NmanError<'_> {
                         drv_path.to_str().unwrap_or("<invalid utf-8>"),
                         std::str::from_utf8(&stderr).unwrap_or("<malformed utf-8>")),
             NmanError::Man => String::from("man failed while opening while opening man page"),
-            NmanError::NotFound(page, sec) => format!("man page {}({}) could not be found", page, sec),
+            NmanError::NotFound(page, sec) => format!("man page {}({}) could not be found", page, sec.unwrap_or("?")),
             NmanError::ParseError(exec) => format!("could not parse output of {}", exec),
             NmanError::Execution(exec) => format!("could not execute {}", exec),
             NmanError::Usage => String::from("usage error"),
@@ -115,7 +116,7 @@ fn parse_drv_path<'a>(drv_path: &'a [u8]) -> Option<DrvWithOutput<'a>> {
     }
 }
 
-fn build_man_page<'a>(drv: DrvWithOutput, section: &str, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
+fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
     let mut build = Command::new("nix-store")
                             .arg("--realise")
                             .arg(drv.render())
@@ -137,28 +138,65 @@ fn build_man_page<'a>(drv: DrvWithOutput, section: &str, page: &str, tempdir: &T
 
     let mut path = PathBuf::from(OsStr::from_bytes(first_path));
     path.push("share/man");
-    path.push(format!("man{}", section));
-    path.push(page);
 
-    path.set_extension(format!("{}.gz", section));
+    // no share/man, no man pages
+    if !path.exists() {
+        return Ok(None);
+    }
 
-    if path.exists() {
-        Ok(Some(path))
-    } else {
-        // check for uncompressed man page if the derivation
-        // has no / a custom fixupPhase
-        path.set_extension(section);
+    // expected sub directory of share/man or, if no section
+    // is given, all potential sub directories
+    let mut section_dirs: Vec<OsString> =
+        match section {
+            Some(s) => vec!(OsString::from(format!("man{}", s))),
+            None => {
+                std::fs::read_dir(path.as_path())
+                    .map_err(|_| NmanError::IO)?
+                    .filter_map(|entry| entry.ok())
+                    .map(|entry| entry.file_name())
+                    .collect()
+            },
+        };
 
-        if path.exists() {
-            Ok(Some(path))
-        } else {
-            Ok(None)
+    // sorting should be ascending in terms of numerics,
+    // apart from that, not many requirements
+    section_dirs.sort();
+
+    const EXTENSIONS: [&str; 2] = [ ".gz", "" ];
+
+    for dir in section_dirs {
+        // separate "man" prefix from section indicator,
+        // while validating the particular sub directory
+        match dir.to_str().map(|d| d.split_at(3)) {
+            Some((_, "")) => continue,
+            Some(("man", s)) => {
+                // we have a valid man dir, check if it contains our page
+                path.push(dir.as_os_str());
+                path.push(page);
+
+                // for nix we almost always have .{section}.gz as extension,
+                // but traditionally plain .{section} is common and possible
+                for ext in EXTENSIONS.iter() {
+                    path.set_extension(format!("{}{}", s, ext));
+
+                    if path.exists() {
+                        return Ok(Some(path));
+                    }
+                }
+
+                // reset the PathBuf if we didn't find anything
+                path.pop(); // page
+                path.pop(); // section directory
+            },
+            _ => continue,
         }
     }
+
+    Ok(None)
 }
 
-fn open_man_page<'a>(attr: &'a str, section: &'a str, page: &'a str) -> Result<(), NmanError<'a>> {
-    let tmpdir = TempDir::new("nman").map_err(|_| NmanError::NoTempDir)?;
+fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> Result<(), NmanError<'a>> {
+    let tmpdir = TempDir::new("nman").map_err(|_| NmanError::IO)?;
     let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
     let inst = Command::new("nix-instantiate")
                        .arg("-E")
@@ -226,16 +264,8 @@ fn parse_man_section(section: &str) -> Result<&str, &str> {
 
 enum CliAction<'a> {
     Usage,
-    // attribute, section, page
-    // TODO(sterni): section should be an option type, so we can implement
-    //               the search logic as man(1) does. Also worth considering
-    //               would be to not find the man page ourselves, but to just
-    //               set MANPATH and let man(1) do the searching. Use case
-    //               would be to allow
-    //                  nman libunwind unw_apply_reg_state
-    //              to work like
-    //                  nman libunwind 3 unw_apply_reg_state
-    Man(&'a str, &'a str, &'a str),
+    /// attribute, section, page
+    Man(&'a str, Option<&'a str>, &'a str),
 }
 
 fn main() -> std::io::Result<()> {
@@ -264,13 +294,13 @@ fn main() -> std::io::Result<()> {
             std::env::args().partition(|s| s.starts_with("-"));
 
     let mut action : Result<CliAction, &str> = match args.len() {
-        2 => Ok(CliAction::Man(&args[1], "1", &args[1])),
+        2 => Ok(CliAction::Man(&args[1], None, &args[1])),
         3 => Ok(match parse_man_section(&args[2]) {
-            Ok(sec) => CliAction::Man(&args[1], sec, &args[1]),
-            Err(_) => CliAction::Man(&args[1], "1", &args[2]),
+            Ok(s) => CliAction::Man(&args[1], Some(s), &args[1]),
+            Err(_) => CliAction::Man(&args[1], None, &args[2]),
         }),
         4 => parse_man_section(&args[2])
-                .map(|s| CliAction::Man(&args[1], s, &args[3])),
+                .map(|s| CliAction::Man(&args[1], Some(s), &args[3])),
         _ => Err("Unexpected number of arguments"),
     };
 
