@@ -87,6 +87,24 @@ enum DrvOutput<'a> {
     Other(&'a [u8]),
 }
 
+impl<'a> DrvOutput<'a> {
+    /// Convert a string (Nix strings may be arbitrary bytes)
+    /// into a parsed [`DrvOutput`]. No sanity checking is
+    /// done, anything strange is pased into [`DrvOutput::Other`].
+    fn parse(output: &'a [u8]) -> Self {
+        match output {
+            b"out" => DrvOutput::Out,
+            b"bin" => DrvOutput::Bin,
+            b"lib" => DrvOutput::Lib,
+            b"man" => DrvOutput::Man,
+            b"dev" => DrvOutput::Dev,
+            b"devdoc" => DrvOutput::DevDoc,
+            b"devman" => DrvOutput::DevMan,
+            _ => DrvOutput::Other(output),
+        }
+    }
+}
+
 /// A derivation represented as a path
 /// coupled with a parsed [`DrvOutput`]
 /// for sorting purposes.
@@ -109,39 +127,25 @@ impl DrvWithOutput<'_> {
     }
 }
 
-/// Convert a string (Nix strings may be arbitrary bytes)
-/// into a parsed [`DrvOutput`]. No sanity checking is
-/// done, anything strange is pased into [`DrvOutput::Other`].
-fn parse_output<'a>(output: &'a [u8]) -> DrvOutput<'a> {
-    match output {
-        b"out" => DrvOutput::Out,
-        b"bin" => DrvOutput::Bin,
-        b"lib" => DrvOutput::Lib,
-        b"man" => DrvOutput::Man,
-        b"dev" => DrvOutput::Dev,
-        b"devdoc" => DrvOutput::DevDoc,
-        b"devman" => DrvOutput::DevMan,
-        _ => DrvOutput::Other(output),
-    }
-}
+impl<'a> DrvWithOutput<'a> {
+    /// Parse a line of the output of `nix-instantiate`, of the form:
+    /// `/nix/store/<drv file>[!<output>]` into a [`DrvWithOutput`]
+    /// structure.
+    fn parse(drv_path: &'a [u8]) -> Option<Self> {
+        let mut split = drv_path.split(|c| char::from(*c) == '!');
+        let path = split.next().filter(|s| s.len() > 0)?;
+        let output = split.next()
+            .map(DrvOutput::parse)
+            .unwrap_or(DrvOutput::Out);
 
-/// Parse a line of the output of `nix-instantiate`, of the form:
-/// `/nix/store/<drv file>[!<output>]` into a [`DrvWithOutput`]
-/// structure.
-fn parse_drv_path<'a>(drv_path: &'a [u8]) -> Option<DrvWithOutput<'a>> {
-    let mut split = drv_path.split(|c| char::from(*c) == '!');
-    let path = split.next().filter(|s| s.len() > 0)?;
-    let output = split.next()
-                      .map(parse_output)
-                      .unwrap_or(DrvOutput::Out);
-
-    match split.next() {
-        None => Some(DrvWithOutput {
-            path: path,
-            output: output,
-            rendered: drv_path,
-        }),
-        Some(_) => None,
+        match split.next() {
+            None => Some(DrvWithOutput {
+                path: path,
+                output: output,
+                rendered: drv_path,
+            }),
+            Some(_) => None,
+        }
     }
 }
 
@@ -262,7 +266,7 @@ fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> 
 
     let mut drvs: Vec<DrvWithOutput> =
             inst.stdout.split(|c| char::from(*c) == '\n')
-                .filter_map(parse_drv_path).collect();
+                .filter_map(DrvWithOutput::parse).collect();
 
     if drvs.len() <= 0 {
         return Err(NmanError::ParseError("nix-instantiate"));
