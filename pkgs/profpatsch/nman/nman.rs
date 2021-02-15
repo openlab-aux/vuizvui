@@ -212,7 +212,7 @@ fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tem
     for dir in section_dirs {
         // separate "man" prefix from section indicator,
         // while validating the particular sub directory
-        match dir.to_str().map(|d| d.split_at(3)) {
+        match dir.to_str().filter(|d| d.len() > 3).map(|d| d.split_at(3)) {
             Some((_, "")) => continue,
             Some(("man", s)) => {
                 // we have a valid man dir, check if it contains our page
