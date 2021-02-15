@@ -14,6 +14,20 @@ let
   vuizvuiShortRev = vuizvuiSrc.shortRev or "abcdefg";
   vuizvuiVersion = "pre${toString vuizvuiRevCount}.${vuizvuiShortRev}";
 
+  # version of the nixos-unstable channel to get programs.sqlite from.
+  # Use pkgs.sternenseemann.vuizvui-update-programs-sqlite to update.
+  programsSqliteVersion = "21.05pre270709.6b1057b452c";
+  programsSqliteSha256 = "1qa3jir0r4mqijw694hi3dba34n1chisha01fzmvsfk4bgc98xqc";
+  programsSqlite = pkgsUpstream.fetchurl {
+    name = "programs.sqlite-${programsSqliteVersion}";
+    url = "https://releases.nixos.org/nixos/unstable/nixos-${programsSqliteVersion}/nixexprs.tar.xz";
+    sha256 = programsSqliteSha256;
+    downloadToTemp = true;
+    postFetch = ''
+      tar -xOJf $downloadedFile nixos-${programsSqliteVersion}/programs.sqlite > "$out"
+    '';
+  };
+
   vuizvui = let
     patchedVuizvui = (import nixpkgs {}).stdenv.mkDerivation {
       name = "vuizvui-${vuizvuiVersion}";
@@ -23,6 +37,12 @@ let
       installPhase = ''
         cp -r --no-preserve=ownership "${nixpkgs}/" nixpkgs
         chmod -R u+w nixpkgs
+        # since we fetch nixpkgsSrc using git, we don't get programs.sqlite
+        # for programs.command-not-found which is normally included in the
+        # channel. Building this ourselves is not desireable as it requires
+        # to build and index the whole of nixpkgs. Therefore we just inject
+        # it from a nixos channel (which possibly is a different version).
+        cp --no-preserve=ownership "${programsSqlite}" nixpkgs/programs.sqlite
         echo -n "$nixpkgsVersion" > nixpkgs/.version-suffix
         echo "echo '$nixpkgsVersion'" \
           > nixpkgs/nixos/modules/installer/tools/get-version-suffix
