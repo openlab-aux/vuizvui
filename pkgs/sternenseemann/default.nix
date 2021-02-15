@@ -116,4 +116,9 @@ lib.fix (self: {
   };
 
   unicode_clock = python3Packages.callPackage ./unicode_clock { };
+
+  vuizvui-update-programs-sqlite = python3Packages.callPackage ./vuizvui-update-programs-sqlite {
+    inherit (pkgs.writers) writePython3;
+    inherit (profpatsch) getBins;
+  };
 })
