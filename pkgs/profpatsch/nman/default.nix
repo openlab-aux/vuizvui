@@ -11,4 +11,7 @@ writeRustSimpleBin "nman" {
   dependencies = [
     temp
   ];
+  postInstall = ''
+    install -Dm644 ${./nman.1} "$out/share/man/man1/nman.1"
+  '';
 } ./nman.rs
