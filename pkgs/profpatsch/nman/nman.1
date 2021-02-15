@@ -1,0 +1,194 @@
+.Dd $Mdocdate$
+.Dt NMAN 1
+.Os
+.Sh NAME
+.Nm nman
+.Nd nix-shell for man pages
+.Sh SYNOPSIS
+.Nm
+.Op Fl h
+.Ar ATTR
+.Op Ar PAGE | SECTION Op PAGE
+.Sh DESCRIPTION
+.Nm
+is a simple tool allowing to open man pages of packages
+which are not installed using the power of the
+.Xr nix 1
+package manager.
+It allows you to specify a package and a man
+page and opens it directly using
+.Xr man 1 ,
+essentially implementing what you would expect
+.Ql nix-shell -p foo --run 'man foo'
+to do.
+.Pp
+You can invoke
+.Nm
+in three different ways:
+.Bl -ohang -offset 2n
+.It Nm Ar ATTR SECTION PAGE
+Evaluates the attribute
+.Ar ATTR
+of
+.Ql <nixpkgs>
+and searches all its outputs for a man page of name
+.Ar PAGE
+in man section
+.Ar SECTION .
+.Ar PAGE
+and
+.Ar SECTION
+work just like with
+.Xr man 1 .
+.It Nm Ar ATTR SECTION
+Like above, but
+.Ar ATTR
+is also used as the name of the man page.
+Note that
+.Ar SECTION
+must be a number or
+.Ql 3p .
+Otherwise the next invocation is assumed.
+.It Nm Ar ATTR PAGE
+Opens the man page
+.Ar PAGE
+from package
+.Ar ATTR .
+If multiple matches are found, pages from lower
+man sections are preferred, for example
+.Ql nman lowdown lowdown
+opens
+.Xr lowdown 1
+and not
+.Xr lowdown 3 .
+.It Nm Ar ATTR
+Uses the described method to find the man page
+.Ar ATTR
+from package
+.Ar ATTR .
+.El
+.Sh IMPLEMENTATION NOTES
+.Nm
+uses
+.Xr nix-instantiate 1
+to first evaluate all the derivation outputs of the given attribute.
+It then utilizes
+.Xr nix-store 1
+to realise the outputs one by one until it finds the desired man page
+or runs out of outputs.
+When the man page is found, it is opened using
+.Xr man 1 .
+.Pp
+The outputs are checked in order of likelihood to contain man pages.
+This means that
+.Nm
+is as fast as possible for packages that follow good conventions
+like having their man pages in
+.Ql man ,
+.Ql devman
+or
+.Ql out .
+.Pp
+.Nm
+also creates temporary gc-roots for the derivations and outputs
+to prevent any race conditions with the nix garbage collector.
+.Sh ENVIRONMENT
+.Nm
+uses
+.Ev PATH
+to find its dependencies:
+.Xr man 1 ,
+.Xr nix-instantiate 1
+and
+.Xr nix-store 1
+have to be in
+.Ev PATH
+for it to run.
+.Pp
+You can also influence the behavior of the
+.Xr nix-instantiate 1
+and
+.Xr nix-store 1
+child processes using environment variables.
+For a complete list of them refer to their respective documentation.
+.Pp
+Most useful is probably
+.Ev NIX_PATH
+which allows you to change the
+.Ql <nixpkgs>
+.Nm
+uses for building the desired package:
+.Pp
+.D1 env NIX_PATH="nixpkgs=$HOME/nixpkgs" nman coreutils-full ln
+.Pp
+opens the
+.Xr ln 1
+man page for the
+.Ql coreutils-full
+package from a local checkout of nixpkgs.
+.Pp
+Depending on the implementation of
+.Xr man 1 ,
+.Ev MANPAGER
+and
+.Ev PAGER
+can be used to determine the program used for displaying man pages.
+.Sh EXIT STATUS
+.Bl -tag
+.It 0
+Success.
+.It 1
+An expected error like a man page not being found or the requested
+package not existing.
+.It 64
+An usage error, indicating the user is invoking
+.Nm
+wrong.
+.It 101
+An unexpected error like a build failing, other utilities producing
+garbage output or I/O errors.
+.It 127
+A dependency is missing or not found in
+.Ev PATH .
+.El
+.Sh EXAMPLES
+Open
+.Xr lowdown 1 :
+.Pp
+.D1 nman lowdown
+.Pp
+Open
+.Xr lowdown 3
+from the same package
+.Pp
+.D1 nman lowdown 3
+.Pp
+Open
+.Xr lowdown_html_rndr 3 :
+.Pp
+.D1 nman lowdown lowdown_html_rndr
+.Pp
+Open
+.Xr man 1
+from the
+.Ql mandoc
+package:
+.Pp
+.D1 nman mandoc man
+.Pp
+Now open
+.Xr man 7
+from the same package:
+.Pp
+.D1 nman mandoc 7 man
+.Sh SEE ALSO
+.Xr nix-instantiate 1 ,
+.Xr nix-store 1 and
+.Xr man 1 .
+.Sh AUTHORS
+.Nm
+was written by
+.An Profpatsch
+and
+.An sternenseemann,
+.Mt sternenseemann@systemli.org .
