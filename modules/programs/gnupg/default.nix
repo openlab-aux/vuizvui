@@ -116,16 +116,18 @@ in {
         environment.LD_PRELOAD = agentWrapper hasSupervisorSupport;
         environment.GNUPGHOME = "~/${cfg.homeDir}";
 
-        serviceConfig.ExecStart = toString ([
-          "${cfg.package}/bin/gpg-agent"
-          "--pinentry-program=${pinentryWrapper}"
-          (if cfg.agent.scdaemon.enable
-           then "--scdaemon-program=${scdaemonRedirector}"
-           else "--disable-scdaemon")
-          (if hasSupervisorSupport
-           then "--supervised"
-           else "--no-detach --daemon")
-        ] ++ lib.optional cfg.agent.sshSupport "--enable-ssh-support");
+        serviceConfig.ExecStart = let
+          configFile = pkgs.writeText "gpg-agent.conf" ''
+            pinentry-program ${pinentryWrapper}
+            ${if cfg.agent.scdaemon.enable
+              then "scdaemon-program ${scdaemonRedirector}"
+              else "disable-scdaemon"}
+            ${if hasSupervisorSupport
+              then "supervised"
+              else "no-detach\ndaemon"}
+            ${lib.optionalString cfg.agent.sshSupport "enable-ssh-support"}
+          '';
+        in "${cfg.package}/bin/gpg-agent --options ${configFile}";
 
         serviceConfig.ExecReload = toString [
           "${cfg.package}/bin/gpg-connect-agent"
