@@ -15,6 +15,7 @@ in {
   games = {
     starbound = callTest ./games/starbound.nix;
   };
+  profpatsch.programs.nman = callTest ./profpatsch/programs/nman.nix;
   programs = {
     gnupg = callTest ./programs/gnupg;
   };
