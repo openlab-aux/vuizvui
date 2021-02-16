@@ -332,7 +332,7 @@ fn main() -> std::io::Result<()> {
     fn dispatch_action(progname: &str, action: CliAction) -> std::io::Result<()> {
         match action {
             CliAction::Usage => {
-                println!("Usage: {} ATTR [SECTION | PAGE] [PAGE]", progname);
+                println!("Usage: {} ATTR [PAGE | SECTION [PAGE]]", progname);
                 Ok(())
             },
             CliAction::Man(attr, section, page) =>
