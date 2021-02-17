@@ -18,7 +18,7 @@ use temp::TempDir;
 /// exit code for the occurred error (not that it
 /// really matters for an interactive tool).
 enum NmanError<'a> {
-    IO,
+    IO(std::io::Error),
     Instantiate(&'a str, Vec<u8>),
     Build(OsString, Vec<u8>),
     Man,
@@ -46,8 +46,7 @@ impl NmanError<'_> {
 
     fn msg(&self) -> String {
         match self {
-            // TODO(sterni): make more descriptive
-            NmanError::IO => String::from("unexpected IO error"),
+            NmanError::IO(err) => format!("unexpected IO error occurred: {}", err),
             NmanError::Instantiate(attr, stderr) =>
                 format!("could not instantiate \"{}\". nix-instantiate reported:\n{}", attr,
                         std::str::from_utf8(&stderr).unwrap_or("<invalid utf-8>")),
@@ -196,7 +195,7 @@ fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tem
             Some(s) => vec!(OsString::from(format!("man{}", s))),
             None => {
                 std::fs::read_dir(path.as_path())
-                    .map_err(|_| NmanError::IO)?
+                    .map_err(NmanError::IO)?
                     .filter_map(|entry| entry.ok())
                     .map(|entry| entry.file_name())
                     .collect()
@@ -249,7 +248,7 @@ fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tem
 /// (any man implementation that implements `-l` should
 /// for that matter).
 fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> Result<(), NmanError<'a>> {
-    let tmpdir = TempDir::new("nman").map_err(|_| NmanError::IO)?;
+    let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
     // TODO(sterni): allow selecting other base package sets,
     //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
     let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
