@@ -37,8 +37,8 @@ impl NmanError<'_> {
             NmanError::Instantiate(_, _) => 1,
             // missing executable
             NmanError::Execution(_) => 127,
-            // user error, EX_USAGE (sysexits.h)
-            NmanError::Usage => 64,
+            // user error
+            NmanError::Usage => 100,
             // everything else is an unexpected error
             _ => 101
         }
