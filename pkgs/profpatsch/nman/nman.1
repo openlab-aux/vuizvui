@@ -20,7 +20,9 @@ page and opens it directly using
 .Xr man 1 ,
 essentially implementing what you would expect
 .Ql nix-shell -p foo --run 'man foo'
-to do.
+to do, but
+.Nm
+will only download the minimum amount of data necessary to read the man page.
 .Pp
 You can invoke
 .Nm
@@ -74,16 +76,16 @@ uses
 to first evaluate all the derivation outputs of the given attribute.
 It then utilizes
 .Xr nix-store 1
-to realise the outputs one by one until it finds the desired man page
-or runs out of outputs.
+to realise (that is to download or build) the outputs one by one until
+it finds the desired man page or runs out of outputs.
 When the man page is found, it is opened using
 .Xr man 1 .
 .Pp
 The outputs are checked in order of likelihood to contain man pages.
 This means that
 .Nm
-is as fast as possible for packages that follow good conventions
-like having their man pages in
+is as fast as possible and downloads the least amount of data possible for packages
+that follow good conventions, like having their man pages in
 .Ql man ,
 .Ql devman
 or
