@@ -215,22 +215,19 @@ fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tem
             Some((_, "")) => continue,
             Some(("man", s)) => {
                 // we have a valid man dir, check if it contains our page
-                path.push(dir.as_os_str());
-                path.push(page);
+                let mut page_path = path.clone();
+                page_path.push(dir.as_os_str());
+                page_path.push(page);
 
                 // for nix we almost always have .{section}.gz as extension,
                 // but traditionally plain .{section} is common and possible
                 for ext in EXTENSIONS.iter() {
-                    path.set_extension(format!("{}{}", s, ext));
+                    page_path.set_extension(format!("{}{}", s, ext));
 
-                    if path.exists() {
-                        return Ok(Some(path));
+                    if page_path.exists() {
+                        return Ok(Some(page_path));
                     }
                 }
-
-                // reset the PathBuf if we didn't find anything
-                path.pop(); // page
-                path.pop(); // section directory
             },
             _ => continue,
         }
