@@ -89,7 +89,7 @@ enum DrvOutput<'a> {
 impl<'a> DrvOutput<'a> {
     /// Convert a string (Nix strings may be arbitrary bytes)
     /// into a parsed [`DrvOutput`]. No sanity checking is
-    /// done, anything strange is pased into [`DrvOutput::Other`].
+    /// done, anything strange is passed into [`DrvOutput::Other`].
     fn parse(output: &'a [u8]) -> Self {
         match output {
             b"out" => DrvOutput::Out,
