@@ -69,6 +69,19 @@ Uses the described method to find the man page
 from package
 .Ar ATTR .
 .El
+.Sh DISCLAIMER
+.Nm
+is intended to be used interactively:
+It automatically launches a pager and relies heavily on heuristics
+to automatically
+.Dq do the right thing
+without the user having to think about it.
+The nature of such heuristics however dictates that they are often
+imperfect and require tweaking.
+.Pp
+Therefore neither the behavior nor the user interface of
+.Nm
+should be considered stable or used for scripting purposes.
 .Sh IMPLEMENTATION NOTES
 .Nm
 uses
