@@ -102,6 +102,7 @@ in {
     ghc cabal-install cabal2nix
     sbcl rlwrap
     valgrind gdb
+    github-cli
     scribus gimp inkscape libreoffice
     audacity
     signal-desktop tdesktop discord
