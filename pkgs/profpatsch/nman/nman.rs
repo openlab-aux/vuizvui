@@ -2,9 +2,21 @@ extern crate temp;
 
 use std::ffi::{OsStr, OsString};
 use std::os::unix::ffi::OsStrExt;
+use std::os::unix::process::ExitStatusExt;
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{Stdio, ExitStatus, Command};
 use temp::TempDir;
+
+/// Pretty print an [`ExitStatus`]
+fn pretty_exit_status(status: &ExitStatus) -> String {
+    match status.code() {
+        Some(i) => format!("exited with {}", i),
+        None => match status.signal() {
+            Some(s) => format!("was killed by signal {}", s),
+            None => String::from("exited for unknown reason"),
+        }
+    }
+}
 
 /// Represents all errors that can occurr in `nman`.
 /// The inner structure of this type is rather messy
@@ -19,8 +31,8 @@ use temp::TempDir;
 /// really matters for an interactive tool).
 enum NmanError<'a> {
     IO(std::io::Error),
-    Instantiate(&'a str, Vec<u8>),
-    Build(OsString, Vec<u8>),
+    Instantiate(&'a str, ExitStatus),
+    Build(OsString, ExitStatus),
     Man,
     NotFound(&'a str, Option<&'a str>),
     ParseError(&'a str),
@@ -47,13 +59,12 @@ impl NmanError<'_> {
     fn msg(&self) -> String {
         match self {
             NmanError::IO(err) => format!("unexpected IO error occurred: {}", err),
-            NmanError::Instantiate(attr, stderr) =>
-                format!("could not instantiate \"{}\". nix-instantiate reported:\n{}", attr,
-                        std::str::from_utf8(&stderr).unwrap_or("<invalid utf-8>")),
-            NmanError::Build(drv_path, stderr) =>
-                format!("failed to build \"{}\". nix-store reported:\n{}",
-                        drv_path.to_str().unwrap_or("<invalid utf-8>"),
-                        std::str::from_utf8(&stderr).unwrap_or("<malformed utf-8>")),
+            NmanError::Instantiate(attr, s) =>
+                format!("could not instantiate \"{}\", nix-instantiate {}.",
+                        attr, pretty_exit_status(s)),
+            NmanError::Build(drv_path, s) =>
+                format!("failed to build \"{}\", nix-store {}.",
+                        drv_path.to_str().unwrap_or("<invalid utf-8>"), pretty_exit_status(s)),
             NmanError::Man => String::from("man failed while opening while opening man page"),
             NmanError::NotFound(page, sec) => format!("man page {}({}) could not be found", page, sec.unwrap_or("?")),
             NmanError::ParseError(exec) => format!("could not parse output of {}", exec),
@@ -167,11 +178,12 @@ fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tem
                             .arg("--add-root")
                             .arg(tempdir.as_ref().join("build-result"))
                             .arg("--indirect")
+                            .stderr(Stdio::inherit())
                             .output()
                             .map_err(|_| NmanError::Execution("nix-store"))?;
 
     if !build.status.success() {
-        return Err(NmanError::Build(drv.render(), build.stderr));
+        return Err(NmanError::Build(drv.render(), build.status));
     }
 
     // get the first line of the output, usually only one line
@@ -255,11 +267,12 @@ fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> 
                        .arg("--add-root")
                        .arg(tmpdir.as_ref().join("instantiation-result"))
                        .arg("--indirect")
+                       .stderr(Stdio::inherit())
                        .output()
                        .map_err(|_| NmanError::Execution("nix-instantiate"))?;
 
     if !inst.status.success() {
-        return Err(NmanError::Instantiate(attr, inst.stderr));
+        return Err(NmanError::Instantiate(attr, inst.status));
     }
 
     let mut drvs: Vec<DrvWithOutput> =
