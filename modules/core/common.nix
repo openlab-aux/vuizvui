@@ -2,7 +2,11 @@
 
 with lib;
 
-{
+let
+  rootChannelsPath = "/nix/var/nix/profiles/per-user/root/channels";
+  channelPath = "${rootChannelsPath}/${config.vuizvui.channelName}";
+
+in {
   options.vuizvui = {
     modifyNixPath = mkOption {
       type = types.bool;
@@ -55,8 +59,6 @@ with lib;
     in mkIf config.vuizvui.enableGlobalNixpkgsConfig (mkForce nixpkgsCfg);
 
     nix.nixPath = let
-      rootChannelsPath = "/nix/var/nix/profiles/per-user/root/channels";
-      channelPath = "${rootChannelsPath}/${config.vuizvui.channelName}";
       nixosConfig = "/etc/nixos/configuration.nix";
       nixpkgsConfig = "nixpkgs-config=${pkgs.writeText "nixpkgs-config.nix" ''
         (import ${pkgs.path}/nixos/lib/eval-config.nix {
@@ -70,5 +72,9 @@ with lib;
         rootChannelsPath
       ] ++ optional config.vuizvui.enableGlobalNixpkgsConfig nixpkgsConfig;
     in mkIf config.vuizvui.modifyNixPath (mkOverride 90 nixPath);
+
+    # correct path used by command-not-found which is enabled by default
+    programs.command-not-found.dbPath =
+      mkDefault "${channelPath}/nixpkgs/programs.sqlite";
   };
 }
