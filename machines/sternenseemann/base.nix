@@ -51,6 +51,7 @@ in {
     vuizvui.user.sternenseemann.documentation.mandoc = {
       enable = true;
       generateCaches = true;
+      manPath = [ "share/man" "share/man/de" ];
     };
 
     environment.systemPackages = with pkgs; [

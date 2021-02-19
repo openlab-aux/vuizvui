@@ -66,6 +66,20 @@ in {
         '';
       };
 
+      manPath = lib.mkOption {
+        type = with lib.types; listOf str;
+        default = [ "share/man" ];
+        example = lib.literalExample "[ \"share/man\" \"share/man/fr\" ]";
+        description = ''
+          Change the manpath, i. e. the directories where man looks
+          for section-specific directories of man pages.
+          You only need to change this setting if you want non-english
+          man pages or a combination of different languages. All values
+          must be strings that are a valid path from the target prefix
+          (without including it). The first value given takes priority.
+        '';
+      };
+
       generateCaches = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -81,6 +95,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+
     assertions = [
       {
         assertion = !(cfg.enable && docCfg.man.enable);
@@ -99,13 +114,16 @@ in {
         ++ lib.optional docCfg.dev.enable "devman";
       # tell mandoc about man pages
       systemPackages = [ mandoc ];
-      etc."man.conf".text = ''
-        manpath /run/current-system/sw/share/man
-      '';
+      etc."man.conf".text = lib.concatMapStrings
+        (path: "manpath /run/current-system/sw/${path}\n")
+        cfg.manPath;
       # create mandoc.db for whatis(1), apropos(1) and man(1) -k
       # TODO(sterni): remove -p for production™
       extraSetup = lib.optionalString cfg.generateCaches ''
-        ${bins.makewhatis} -p -T utf8 $out/share/man
+        ${bins.makewhatis} -p -T utf8 \
+          ${lib.concatMapStringsSep " "
+              (path: "\"$out/${path}\"")
+              cfg.manPath}
       '';
     };
   };
