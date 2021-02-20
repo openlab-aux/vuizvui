@@ -128,7 +128,7 @@ in rec {
   git-commit-index = callPackage ./git-commit-index { inherit script; };
   nix-http-serve = callPackage ./nix-http-serve {};
   nman = callPackage ./nman {
-    inherit writeRustSimpleBin;
+    inherit writeRustSimpleBin testRustSimple;
     inherit (sternenseemann) temp;
   };
   sfttime = callPackage ./sfttime {};
