@@ -70,6 +70,23 @@ just like invoking
 .Xr man 1
 with two arguments.
 .El
+.Sh EXAMPLES
+.Bd -literal
+# open lowdown(1)
+nman lowdown
+
+# open lowdown(3) from the same package
+nman lowdown 3
+
+# open lowdown_html_rndr(3)
+nman lowdown lowdown_html_rndr
+
+# open man(1) from the mandoc package
+nman mandoc man
+
+# open man(7) from the same package
+nman mandoc 7 man
+.Ed
 .Sh DISCLAIMER
 .Nm
 is intended to be used interactively:
@@ -167,36 +184,6 @@ garbage output or I/O errors.
 A dependency is missing or not found in
 .Ev PATH .
 .El
-.Sh EXAMPLES
-Open
-.Xr lowdown 1 :
-.Pp
-.D1 nman lowdown
-.Pp
-Open
-.Xr lowdown 3
-from the same package
-.Pp
-.D1 nman lowdown 3
-.Pp
-Open
-.Xr lowdown_html_rndr 3 :
-.Pp
-.D1 nman lowdown lowdown_html_rndr
-.Pp
-Open
-.Xr man 1
-from the
-.Ql mandoc
-package:
-.Pp
-.D1 nman mandoc man
-.Pp
-Now open
-.Xr man 7
-from the same package:
-.Pp
-.D1 nman mandoc 7 man
 .Sh SEE ALSO
 .Xr nix-instantiate 1 ,
 .Xr nix-store 1 and
