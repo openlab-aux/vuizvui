@@ -83,7 +83,7 @@ impl NmanError<'_> {
 /// outputs is to order them from most
 /// likely to least likely to contain man
 /// pages to save on realizing store paths.
-#[derive(PartialEq, PartialOrd, Eq, Ord)]
+#[derive(PartialEq, PartialOrd, Eq, Ord, Debug)]
 enum DrvOutput<'a> {
     Man,
     DevMan,
@@ -118,6 +118,7 @@ impl<'a> DrvOutput<'a> {
 /// A derivation represented as a path
 /// coupled with a parsed [`DrvOutput`]
 /// for sorting purposes.
+#[derive (Debug, PartialEq, Eq)]
 struct DrvWithOutput<'a> {
     /// The original derivation path as printed
     /// by `nix-instantiate` _including_ the output
@@ -388,5 +389,86 @@ fn main() -> std::io::Result<()> {
             dispatch_action(&args[0], CliAction::Usage);
             std::process::exit(NmanError::Usage.code());
         },
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_section_parsing() {
+        assert!(parse_man_section("1").is_ok());
+        assert!(parse_man_section("2").is_ok());
+        assert!(parse_man_section("3").is_ok());
+        assert!(parse_man_section("3p").is_ok());
+        assert!(parse_man_section("4").is_ok());
+        assert!(parse_man_section("5").is_ok());
+        assert!(parse_man_section("6").is_ok());
+        assert!(parse_man_section("7").is_ok());
+        assert!(parse_man_section("8").is_ok());
+        assert!(parse_man_section("9").is_ok());
+
+        assert!(!parse_man_section("man").is_ok());
+        assert!(!parse_man_section("ocamlPackages.sexp").is_ok());
+        assert!(!parse_man_section("lowdown").is_ok());
+    }
+
+    #[test]
+    fn test_output_preference() {
+        // lower =^= preferred
+        assert!(DrvOutput::Man    < DrvOutput::Out);
+        assert!(DrvOutput::DevMan < DrvOutput::Out);
+        assert!(DrvOutput::Out    < DrvOutput::Doc);
+        assert!(DrvOutput::Out    < DrvOutput::DevDoc);
+        assert!(DrvOutput::Out    < DrvOutput::Lib);
+        assert!(DrvOutput::Out    < DrvOutput::Bin);
+        assert!(DrvOutput::Out    < DrvOutput::Other(b"foo"));
+    }
+
+    const OUT: &[u8] = b"/nix/store/3v06l2clmzxx4pna0yd0wiggqlh7b33s-lowdown-0.8.1.drv";
+    const DEVMAN: &[u8] = b"/nix/store/1ilsvw0y81mi8rdz2jp5kng2wakg2mq8-libunwind-1.4.0.drv!devman";
+
+    #[test]
+    fn test_drv_path_parsing() {
+        assert_eq!(
+            DrvWithOutput::parse(OUT),
+            Some(DrvWithOutput {
+                path: OUT,
+                output: DrvOutput::Out,
+            })
+        );
+
+        assert_eq!(
+            DrvWithOutput::parse(DEVMAN),
+            Some(DrvWithOutput {
+                path: DEVMAN,
+                output: DrvOutput::DevMan,
+            })
+        );
+    }
+
+    #[test]
+    fn test_drv_path_rendering() {
+        let mut expected_out_path = Vec::from(OUT);
+        expected_out_path.extend(b"!out");
+
+        let out = DrvWithOutput {
+            path: OUT,
+            output: DrvOutput::Out,
+        };
+        assert_eq!(
+            out.render().as_os_str(),
+            OsStr::from_bytes(&expected_out_path[..])
+        );
+
+        let devman = DrvWithOutput {
+            path: DEVMAN,
+            output: DrvOutput::DevMan,
+        };
+        assert_eq!(
+            devman.render().as_os_str(),
+            OsStr::from_bytes(DEVMAN)
+        );
     }
 }

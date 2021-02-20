@@ -1,9 +1,10 @@
 { lib
 , writeRustSimpleBin
+, testRustSimple
 , temp
 }:
 
-writeRustSimpleBin "nman" {
+testRustSimple (writeRustSimpleBin "nman" {
   meta = {
     license = lib.licenses.gpl3Only;
     description = "Open man page in a temporary nix-shell";
@@ -14,4 +15,4 @@ writeRustSimpleBin "nman" {
   postInstall = ''
     install -Dm644 ${./nman.1} "$out/share/man/man1/nman.1"
   '';
-} ./nman.rs
+} ./nman.rs)
