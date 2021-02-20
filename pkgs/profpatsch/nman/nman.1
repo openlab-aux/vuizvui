@@ -28,46 +28,47 @@ You can invoke
 .Nm
 in four different ways:
 .Bl -ohang -offset 2n
-.It Nm Ar ATTR SECTION PAGE
+.It Nm Ar ATTR
 Evaluates the attribute
 .Ar ATTR
 of
 .Ql <nixpkgs>
-and searches all its outputs for a man page of name
-.Ar PAGE
-in man section
-.Ar SECTION .
-.Ar PAGE
-and
-.Ar SECTION
-work just like with
-.Xr man 1 .
+and searches all its outputs for a man page named
+.Ar ATTR
+which may be in any section.
+If multiple matches are found, the one that is alphanumerically
+lower is preferred:
+For example,
+.Xr lowdown 1
+is preferred over
+.Xr lowdown 3 .
 .It Nm Ar ATTR SECTION
 Like above, but
-.Ar ATTR
-is also used as the name of the man page.
+.Nm
+will only look for the man page in the given section
+.Ar SECTION .
 Note that
 .Ar SECTION
 must be a number or
-.Ql 3p .
-Otherwise the next invocation is assumed.
+.Ql 3p ,
+otherwise the next invocation is assumed.
 .It Nm Ar ATTR PAGE
 Opens the man page
 .Ar PAGE
 from package
 .Ar ATTR .
-If multiple matches are found, pages from lower
-man sections are preferred, for example
-.Ql nman lowdown lowdown
-opens
-.Xr lowdown 1
-and not
-.Xr lowdown 3 .
-.It Nm Ar ATTR
-Uses the described method to find the man page
-.Ar ATTR
-from package
+Man section precedence works like described above.
+.It Nm Ar ATTR SECTION PAGE
+Opens man page
+.Ar PAGE
+in section
+.Ar SECTION
+from the package described by
 .Ar ATTR .
+This is the invocation with the least magic and works
+just like invoking
+.Xr man 1
+with two arguments.
 .El
 .Sh DISCLAIMER
 .Nm
