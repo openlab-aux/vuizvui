@@ -3,12 +3,15 @@
 , requests
 , nix
 , gnutar
+, git
 }:
 
 let
 
   bins = (getBins nix [ "nix-hash" ])
-      // (getBins gnutar [ "tar" ]);
+    // (getBins gnutar [ "tar" ])
+    // (getBins git [ "git" ])
+    ;
 
 in
 
@@ -107,6 +110,15 @@ writePython3 "vuizvui-update-programs-sqlite" {
             f.write(new_text)
 
             print(f'Wrote to {release_nix}', file=sys.stderr)
+
+        subprocess.run([
+            '${bins.git}',
+            'commit', '-m',
+            f'release.nix: update programs.sqlite to {version}',
+            '--',
+            release_nix
+          ],
+          check=True)
 
   if __name__ == '__main__':
     main()
