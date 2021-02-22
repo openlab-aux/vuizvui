@@ -409,9 +409,10 @@ mod tests {
         assert!(parse_man_section("8").is_ok());
         assert!(parse_man_section("9").is_ok());
 
-        assert!(!parse_man_section("man").is_ok());
-        assert!(!parse_man_section("ocamlPackages.sexp").is_ok());
-        assert!(!parse_man_section("lowdown").is_ok());
+        assert!(parse_man_section("man").is_err());
+        assert!(parse_man_section("ocamlPackages.sexp").is_err());
+        assert!(parse_man_section("lowdown").is_err());
+        assert!(parse_man_section("").is_err());
     }
 
     #[test]
