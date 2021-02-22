@@ -1,9 +1,10 @@
 extern crate temp;
 
 use std::ffi::{OsStr, OsString};
+use std::fs::{read_dir, DirEntry};
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::process::ExitStatusExt;
-use std::path::PathBuf;
+use std::path::{PathBuf, Path};
 use std::process::{Stdio, ExitStatus, Command};
 use temp::TempDir;
 
@@ -162,6 +163,32 @@ impl<'a> DrvWithOutput<'a> {
     }
 }
 
+/// Match if a file name is a man file matching the given
+/// section and page. It is checked that the filename is
+/// of the form `<page>.<section>` or
+/// `<page>.<section>.<extra extension>` where extra
+/// extension may not be a valid man section to prevent
+/// mismatches if a man page name itself contains a valid
+/// section extension.
+fn match_man_page_file(name: &str, section: &str, page: &str) -> bool {
+    let init = format!("{}.{}", page, section);
+    let init_len = init.len();
+
+    if !name.starts_with(&init[..]) {
+        false
+    } else {
+        if name.len() == init_len {
+            true
+        } else {
+            let rem = &name[init_len..];
+            rem.chars().nth(0) == Some('.')                       // remainder is an extension
+                && rem.chars().filter(|c| *c == '.').count() == 1 // only one extension
+                && parse_man_section(&rem[1..]).is_err()          // not a man extension
+
+        }
+    }
+}
+
 /// Realises the given derivation output using `nix-store --realise` and
 /// checks if the man page described by `section` and `page` can be found
 /// within it. If that is the case, the path to is returned. If it can't
@@ -203,42 +230,51 @@ fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tem
 
     // expected sub directory of share/man or, if no section
     // is given, all potential sub directories
-    let mut section_dirs: Vec<OsString> =
+    let mut section_dirs: Vec<(OsString, PathBuf)> =
         match section {
-            Some(s) => vec!(OsString::from(format!("man{}", s))),
+            Some(s) => {
+                let dir_name = OsString::from(format!("man{}", s));
+                let dir_path = path.join(dir_name.as_os_str());
+
+                if dir_path.exists() {
+                    vec![(dir_name, dir_path)]
+                } else {
+                    Vec::new()
+                }
+            },
             None => {
-                std::fs::read_dir(path.as_path())
+                read_dir(path.as_path())
                     .map_err(NmanError::IO)?
                     .filter_map(|entry| entry.ok())
-                    .map(|entry| entry.file_name())
+                    .map(|e| (e.file_name(), e.path()))
                     .collect()
             },
         };
 
     // sorting should be ascending in terms of numerics,
     // apart from that, not many requirements
-    section_dirs.sort();
+    section_dirs.sort_unstable_by(|(n1, _), (n2, _)| n1.cmp(n2));
 
-    const EXTENSIONS: [&str; 2] = [ ".gz", "" ];
-
-    for dir in section_dirs {
+    for (dir_name, dir) in section_dirs {
         // separate "man" prefix from section indicator,
         // while validating the particular sub directory
-        match dir.to_str().filter(|d| d.len() > 3).map(|d| d.split_at(3)) {
-            Some((_, "")) => continue,
+        let parsed_man_dir = dir_name.to_str()
+            .filter(|d| d.len() > 3)
+            .map(|d| d.split_at(3));
+
+        match parsed_man_dir {
             Some(("man", s)) => {
                 // we have a valid man dir, check if it contains our page
-                let mut page_path = path.clone();
-                page_path.push(dir.as_os_str());
-                page_path.push(page);
+                let dir_content = read_dir(dir).map_err(NmanError::IO)?;
 
-                // for nix we almost always have .{section}.gz as extension,
-                // but traditionally plain .{section} is common and possible
-                for ext in EXTENSIONS.iter() {
-                    page_path.set_extension(format!("{}{}", s, ext));
+                for entry in dir_content {
+                    let file = entry.map_err(NmanError::IO)?;
+                    let mmatch =
+                        file.file_name().to_str()
+                            .map(|f| match_man_page_file(f, s, page));
 
-                    if page_path.exists() {
-                        return Ok(Some(page_path));
+                    if mmatch.unwrap_or(false) {
+                        return Ok(Some(file.path()))
                     }
                 }
             },
@@ -471,5 +507,25 @@ mod tests {
             devman.render().as_os_str(),
             OsStr::from_bytes(DEVMAN)
         );
+    }
+
+    #[test]
+    fn test_man_page_matching() {
+        assert!(match_man_page_file("man.1", "1", "man"));
+        assert!(match_man_page_file("lowdown.3", "3", "lowdown"));
+        assert!(match_man_page_file("lowdown.3.gz", "3", "lowdown"));
+        assert!(match_man_page_file("magrep.1.gz", "1", "magrep"));
+        assert!(match_man_page_file("CGI.3p", "3p", "CGI"));
+
+        assert!(!match_man_page_file("lowdown.1", "3", "lowdown"));
+        assert!(!match_man_page_file("lowdown.5.3", "3", "lowdown"));
+        assert!(!match_man_page_file("lowdown.5.3", "5", "lowdown"));
+        assert!(!match_man_page_file("mblaze.gz.1", "1", "mblaze"));
+
+        // make sure these don't panic
+        assert!(match_man_page_file("lowdown.3.", "3", "lowdown"));
+        assert!(!match_man_page_file("lowdown.3f", "3", "lowdown"));
+        assert!(match_man_page_file("lowdown.", "", "lowdown"));
+        assert!(!match_man_page_file("", "", ""));
     }
 }
