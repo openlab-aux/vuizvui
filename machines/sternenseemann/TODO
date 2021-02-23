@@ -2,5 +2,7 @@
 [x] port sway configuration into a somewhat generic module
 [ ] mako module
 [ ] use gpg-agent module?
-[ ] documentation.man without man-db, but with mandoc
+[x] documentation.man without man-db, but with mandoc
 [ ] fix jackline notification callback
+[ ] port edwin to vuizvui
+[ ] redo schnurrkadse
