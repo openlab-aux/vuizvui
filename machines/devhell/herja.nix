@@ -68,7 +68,7 @@
     wireless.enable = true;
     useNetworkd = true;
     interfaces = {
-      enp6s0f4u1.useDHCP = true;
+      enp6s0f3u1.useDHCP = true;
       enp2s0f0.useDHCP = true;
       wlp3s0.useDHCP = true;
     };
