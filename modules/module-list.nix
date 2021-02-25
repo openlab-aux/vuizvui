@@ -4,6 +4,7 @@
   ./core/tests.nix
   ./core/lazy-packages.nix
   ./hardware/gamecontroller.nix
+  ./hardware/low-battery.nix
   ./hardware/rtl8192cu
   ./hardware/t100ha
   ./hardware/thinkpad.nix

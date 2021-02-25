@@ -24,6 +24,11 @@
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 
     vuizvui.hardware.thinkpad.enable = lib.mkDefault true;
+    vuizvui.hardware.low-battery = {
+      enable = true;
+      treshold = 3;
+      action = "hibernate";
+    };
 
     environment.systemPackages = with pkgs; [
       lr
