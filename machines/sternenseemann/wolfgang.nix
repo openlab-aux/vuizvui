@@ -135,7 +135,10 @@ in {
     };
   };
 
-  services.printing.enable = true;
+  services.printing = {
+    enable = true;
+    drivers = [ pkgs.gutenprint pkgs.hplip ];
+  };
 
   services.xserver = {
     videoDrivers = [ "intel" ];
