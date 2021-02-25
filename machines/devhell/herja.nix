@@ -33,7 +33,12 @@
     };
     opengl = {
       enable = true;
-      extraPackages = [ pkgs.libvdpau-va-gl pkgs.vaapiVdpau pkgs.amdvlk ];
+      extraPackages = with pkgs; [
+        libvdpau-va-gl
+        vaapiVdpau
+        amdvlk
+        rocm-opencl-icd
+      ];
     };
   };
 
