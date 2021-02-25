@@ -65,7 +65,7 @@ impl NmanError<'_> {
                         attr, pretty_exit_status(s)),
             NmanError::Build(drv_path, s) =>
                 format!("failed to build \"{}\", nix-store {}.",
-                        drv_path.to_str().unwrap_or("<invalid utf-8>"), pretty_exit_status(s)),
+                        drv_path.to_string_lossy(), pretty_exit_status(s)),
             NmanError::Man => String::from("man failed while opening while opening man page"),
             NmanError::NotFound(page, sec) => format!("man page {}({}) could not be found", page, sec.unwrap_or("?")),
             NmanError::ParseError(exec) => format!("could not parse output of {}", exec),
