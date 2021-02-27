@@ -433,6 +433,24 @@ in {
             ExecStart = "${pkgs.notmuch}/bin/notmuch new";
           };
         };
+
+        # I could fight against udev or I could just run this script every ten seconds
+        timers.set-keyboard-speed = {
+          description = "set the keyboard speed every 10 seconds in case a keyboard was plugged in";
+          wantedBy = [ "timers.target" ];
+          timerConfig = {
+            OnStartupSec = "10s";
+            OnUnitActiveSec = "10s";
+          };
+        };
+        services.set-keyboard-speed = {
+          description = "set the keyboard speed";
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = "${pkgs.xorg.xset}/bin/xset r rate 250 35";
+          };
+        };
+
       }
 
 
