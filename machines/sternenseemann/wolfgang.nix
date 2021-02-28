@@ -115,6 +115,7 @@ in {
     imv zathura
     gnome3.nautilus
     browser.pkg
+    nix-output-monitor
     # TODO(sterni) depot.users.sterni.clhs-lookup
     hunspell
   ] ++ (with hunspellDicts; [ de-de en-gb-large en-us ]);
