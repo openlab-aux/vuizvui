@@ -127,16 +127,6 @@
   services.tlp.enable = true;
   services.illum.enable = true;
   services.fwupd.enable = true;
-  services.acpid = {
-    enable = true;
-    handlers = {
-      mutebutton = {
-        action = "${pkgs.pulseaudioLight}/bin/pactl set-source-mute 1 toggle";
-        event = "button/f20.*";
-      };
-    };
-    logEvents = true;
-  };
 
   services.xserver = {
     enable = true;
