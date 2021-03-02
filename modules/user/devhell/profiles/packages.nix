@@ -223,12 +223,12 @@ in {
       tasksh
       taskwarrior
       taskwarrior-tui
+      tealdeer
       telnet
       termdown
       termshark
       testdisk
       tig
-      tldr
       toilet
       transcode
       tree
