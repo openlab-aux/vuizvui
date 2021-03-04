@@ -174,7 +174,7 @@
   nixpkgs.config.mpv.vaapiSupport = true;
 
   programs = {
-    light.enable = true;
+    light.enable = false;
     wavemon.enable = true;
   };
 
