@@ -14,8 +14,14 @@ in {
   config = {
     boot.cleanTmpDir = true;
 
-    nix.useSandbox = true;
-    nix.extraOptions = "gc-keep-derivations = false";
+    nix = {
+      useSandbox = true;
+      extraOptions = ''
+        gc-keep-derivations = false
+        builders-use-substitutes = true
+      '';
+    };
+
     nixpkgs.config.allowUnfree = true;
 
     services.journald.extraConfig = lib.mkDefault "SystemMaxUse=500M";

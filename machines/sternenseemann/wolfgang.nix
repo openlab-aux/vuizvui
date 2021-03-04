@@ -52,8 +52,6 @@ in {
   ];
 
   nix.maxJobs = 4;
-  nix.useSandbox = true;
-  nix.trustedUsers = [ "lukas" ];
 
   boot.initrd.luks.devices = {
     "main".device = "/dev/nvme0n1p2";
@@ -145,6 +143,7 @@ in {
     videoDrivers = [ "intel" ];
   };
 
+  nix.trustedUsers = [ "lukas" ];
   users.users.lukas = {
     isNormalUser = true;
     uid = 1000;
