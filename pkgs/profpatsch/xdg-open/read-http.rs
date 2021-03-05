@@ -25,7 +25,7 @@ fn main() -> std::io::Result<()> {
         Ok(_start_of_body) => {
             match resp.code {
                 Some(code) => write_dict(code, resp.reason, resp.headers)?,
-                None => die(format!("no http status"))
+                None => die(format!("no http status in {:?}", resp))
             }
         }
     };
@@ -41,11 +41,18 @@ fn write_dict<'buf>(code: u16, reason: Option<&'buf str>, headers: &mut [httpars
         http.push(("status-text", Box::new(U::Text(t.as_bytes()))))
     };
 
+    let lowercase_headers = headers.iter_mut().map(
+        |httparse::Header { name, value }|
+        // lowercase the headers, since the standard doesn’t care
+        // and we want unique strings to match agains
+        (name.to_lowercase(), value)
+    ).collect::<Vec<_>>();
+
+
     http.push(("headers", Box::new(U::Record(
-        headers.iter_mut().map(
-            |httparse::Header { name, value }|
-            (*name,
-             Box::new(U::Binary(value)))
+        lowercase_headers.iter().map(
+            |(name, value)|
+            (name.as_str(), Box::new(U::Binary(value)))
         ).collect::<Vec<_>>()
     ))));
 

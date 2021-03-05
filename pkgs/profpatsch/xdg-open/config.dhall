@@ -35,35 +35,51 @@ let mime =
 
 let renderMime = λ(m : Mime) → 32
 
-let UriMimeGlob = { desc : Text, glob : List Text, mime : Mime }
+let
+    -- Handler of an uri glob. Mime maps the uri to a file handler. Transparent is a command which, when run, returns a mimetype of the file.
+    UriGlobHandler =
+      < Transparent : Command | Mime : Mime >
 
-let uriMimeGlobs
-    : List UriMimeGlob
-    = [ { desc = "http link"
-        , glob = [ "http://*", "https://*" ]
-        , mime = mime.text.html
-        }
-      , { glob = [ "mailto:*" ]
-        , desc = "mail address"
-        , mime = mime.mail-address
-        }
-      , { glob = [ "magnet:*" ]
-        , desc = "bittorrent magnet link"
-        , mime = mime.torrent
-        }
-      , { desc = "irc channel", glob = [ "irc:*" ], mime = mime.irc }
-      , { desc = "local file", glob = [ "file://*" ], mime = mime.file }
-      ]
-
-let MimeMatch = { match : Mime, cmd : Command }
+let UriMimeGlob = { desc : Text, glob : List Text, handler : UriGlobHandler }
 
 let Special =
       { open-in-editor : Command
       , open-in-browser : Command
+      , fetch-http-url-mime : Command
       , compose-mail-to : Command
       , exec-in-terminal-emulator : ∀(args : Command) → Command
       , dmenu-list-binaries-and-exec : Command
       }
+
+let uriMimeGlobs
+    : Special → List UriMimeGlob
+    = λ(special : Special) →
+        [ { desc = "http link"
+          , glob = [ "http://*", "https://*" ]
+          , handler =
+              let TODO = UriGlobHandler.Transparent special.fetch-http-url-mime
+
+              in  UriGlobHandler.Mime mime.text.html
+          }
+        , { glob = [ "mailto:*" ]
+          , desc = "mail address"
+          , handler = UriGlobHandler.Mime mime.mail-address
+          }
+        , { glob = [ "magnet:*" ]
+          , desc = "bittorrent magnet link"
+          , handler = UriGlobHandler.Mime mime.torrent
+          }
+        , { desc = "irc channel"
+          , glob = [ "irc:*" ]
+          , handler = UriGlobHandler.Mime mime.irc
+          }
+        , { desc = "local file"
+          , glob = [ "file://*" ]
+          , handler = UriGlobHandler.Mime mime.file
+          }
+        ]
+
+let MimeMatch = { match : Mime, cmd : Command }
 
 let mimeMatcher =
       λ(pkgs : { package : Text, binary : Text } → Executable) →
@@ -74,6 +90,17 @@ let mimeMatcher =
                   { package = packageAndBinaryName
                   , binary = packageAndBinaryName
                   }
+
+        let wrapCommand =
+              λ(wrapper : Command) →
+              λ(cmd : Command) →
+                { exe = wrapper.exe
+                , args =
+                    λ(template : Arg) →
+                        wrapper.args template
+                      # [ Arg.String cmd.exe ]
+                      # cmd.args template
+                }
 
         let oneArg =
               λ(exe : Executable) → { exe, args = λ(file : Arg) → [ file ] }
@@ -114,6 +141,7 @@ in  { mimeMatcher
     , UriMimeGlob
     , Executable
     , Command
+    , UriGlobHandler
     , MimeMatch
     , Special
     , Mime

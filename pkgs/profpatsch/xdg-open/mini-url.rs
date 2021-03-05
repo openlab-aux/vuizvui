@@ -94,7 +94,7 @@ fn main() -> std::io::Result<()> {
     std::env::set_var("protocol", protocol.string());
     std::env::set_var("path", path);
 
-    el_exec::xpathexec0(&args[prog_index..]);
+    el_exec::xmexec0(&args[prog_index..]);
     Ok(())
 }
 

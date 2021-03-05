@@ -13,11 +13,6 @@ let
 
 let config = ./config.dhall
 
-let foo =
-      { match = [ "image", "png" ]
-      , cmd = λ(_ : Text) → { exe = "echo", args = [ "foo" ] }
-      }
-
 let renderMime = Text/concatSep "/"
 
 let shellEscapeCommand =
@@ -66,12 +61,28 @@ let xdg-open =
               ]
 
       let mimeGlobCase =
+            λ(shellEscape2 : Text → Text) →
+            λ(file2 : Text) →
             λ(g : config.UriMimeGlob) →
                 List/concatMap
                   Text
                   Text
                   ( λ(match : Text) →
-                      [ "${match})", "mime=${renderMime g.mime}", ";;" ]
+                      merge
+                        { Mime =
+                            λ(mime : config.Mime) →
+                              [ "${match})", "mime=${renderMime mime}", ";;" ]
+                        , Transparent =
+                            λ(cmd : config.Command) →
+                              [ "${match})"
+                              , "mime=\"\$(${shellEscapeCommand
+                                               shellEscape2
+                                               file2
+                                               cmd})\""
+                              , ";;"
+                              ]
+                        }
+                        g.handler
                   )
                   g.glob
               : List Text
@@ -102,8 +113,8 @@ let xdg-open =
                             List/concatMap
                               config.UriMimeGlob
                               Text
-                              mimeGlobCase
-                              config.uriMimeGlobs
+                              (mimeGlobCase shellEscape "\"\$file\"")
+                              (config.uriMimeGlobs special)
                         }}
                       *)
                         # it’s a file

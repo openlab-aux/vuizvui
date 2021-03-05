@@ -138,6 +138,7 @@ in {
       guiPkgs = [
         lilyterm-git      # terminal emulator, best one around
         dmenu             # minimal launcher
+        (pkgs.vuizvui.profpatsch.binify { exe = pkgs.vuizvui.profpatsch.xdg-open; name = "xdg-open"; }) # override the crap freedesktop crap
       ];
     in basePkgs ++ guiPkgs;
 

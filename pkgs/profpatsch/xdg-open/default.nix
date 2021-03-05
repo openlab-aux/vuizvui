@@ -83,6 +83,14 @@ let
     ] ++ args file;
   };
 
+  fetch-http-url-mime = {
+    exe = writeExecline "fetch-http-url-mime" { readNArgs = 1; } [
+      "pipeline" [ read-headers-and-follow-redirect "$1" ]
+      record-get [ "content-type" ]
+      printenv "content-type"
+    ];
+    args = file: [ file ];
+  };
 
   Prelude =
     let src = (import ./imports.nix { inherit pkgs; }).Prelude;
@@ -106,6 +114,7 @@ let
     : { compose-mail-to : Command
       , dmenu-list-binaries-and-exec : Command
       , exec-in-terminal-emulator : ∀ ( args: Command) → Command
+      , fetch-http-url-mime : Command
       , open-in-browser : Command
       , open-in-editor : Command
       }
@@ -132,6 +141,7 @@ let
       inherit
         compose-mail-to
         open-in-browser
+        fetch-http-url-mime
         open-in-editor
         dmenu-list-binaries-and-exec
         exec-in-terminal-emulator
@@ -150,11 +160,11 @@ let
   ];
 
   stderr-prog = writeExecline "stderr-prog" {} [
-    "foreground" [ bins.echo "$@" ]
+    "if" [ "fdmove" "-c" "1" "2" bins.echo "$@" ]
     "$@"
   ];
 
-  http-request = writeExecline "http-request-for-url" { } [
+  http-request = writeExecline "http-request" { } [
     "importas" "-i" "protocol" "protocol"
     "ifelse" [ bins.s6-test "$protocol" "=" "http" ] [ (http-https-request false) ]
     "ifelse" [ bins.s6-test "$protocol" "=" "https" ] [ (http-https-request true) ]
@@ -177,9 +187,15 @@ let
       ""
       ]) "$path" "$host"
     ]
+    stderr-tee
+    stderr-prog
+    "pipeline" ([
     bins.nc
   ] ++ lib.optional isHttps "-c" ++ [
-      "-N" "$host" "$port"
+      "-v" "-N" "$host" "$port"
+      ])
+    stderr-tee
+    "cat"
   ]);
 
   printenv = writeRustSimple "printenv" {}
@@ -244,7 +260,6 @@ let
       mini-url "$1"
       go
     ]);
-
 
   read-http = writeRustSimple "read-http" {
     dependencies = [ httparse netencode-rs ];
