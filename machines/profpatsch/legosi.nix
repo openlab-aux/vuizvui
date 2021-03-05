@@ -15,6 +15,9 @@ let
 
   myKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNMQvmOfon956Z0ZVdp186YhPHtSBrXsBwaCt0JAbkf/U/P+4fG0OROA++fHDiFM4RrRHH6plsGY3W6L26mSsCM2LtlHJINFZtVILkI26MDEIKWEsfBatDW+XNAvkfYEahy16P5CBtTVNKEGsTcPD+VDistHseFNKiVlSLDCvJ0vMwOykHhq+rdJmjJ8tkUWC2bNqTIH26bU0UbhMAtJstWqaTUGnB0WVutKmkZbnylLMICAvnFoZLoMPmbvx8efgLYY2vD1pRd8Uwnq9MFV1EPbkJoinTf1XSo8VUo7WCjL79aYSIvHmXG+5qKB9ed2GWbBLolAoXkZ00E4WsVp9H philip@nyx";
 
+  xandikosPort = 2345;
+  tailscaleAddress = "100.89.52.54";
+
 in {
   imports = [
     ./base-server.nix
@@ -55,6 +58,8 @@ in {
       firewall = {
         allowedTCPPorts = [
           80 443
+          # only binds against tailscale subnet
+          xandikosPort
         ];
       };
 
@@ -147,6 +152,18 @@ in {
           root = pkgs.vuizvui.profpatsch.websiteStatic;
         };
       };
+    };
+
+    services.xandikos = {
+      enable = true;
+      # not exposed via the firewall, should only be accessible via tailscale
+      address = tailscaleAddress;
+      port = xandikosPort;
+      extraOptions = [
+        "--autocreate"
+        "--defaults"
+        "--dump-dav-xml"
+      ];
     };
 
     services.syncthing = {
