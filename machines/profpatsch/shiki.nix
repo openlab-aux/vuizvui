@@ -360,9 +360,6 @@ in {
 
     vuizvui.user.profpatsch.programs.scanning = {
       enable = true;
-      #remoteScanners = ''
-      #  hippie.lab
-      #'';
     };
 
     virtualisation.docker.enable = true;
