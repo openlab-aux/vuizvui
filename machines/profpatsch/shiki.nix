@@ -67,18 +67,18 @@ in {
     };
     # steam
     # needed by some games (TODO: general module for games)
-    hardware.opengl.driSupport32Bit = true;
+    # hardware.opengl.driSupport32Bit = true;
 
-    # TODO: kinda broken?
-    # i18n = {
-    #   inputMethod = {
-    #     enabled = "fcitx";
-    #     Japanese input
-    #     fcitx.engines = with pkgs.fcitx-engines; [ mozc ];
-    #   };
-    # };
     hardware.bluetooth.enable = true;
     services.blueman.enable = true;
+
+    i18n = {
+      inputMethod = {
+        enabled = "fcitx";
+        # Japanese input
+        fcitx.engines = with pkgs.fcitx-engines; [ mozc ];
+      };
+    };
 
     ######
     # Nix
