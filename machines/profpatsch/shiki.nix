@@ -372,10 +372,13 @@ in {
       enable = true;
       settings = {
         global = {
+          verbosity = "info";
           font = "Sans 14";
           markup = "full";
           padding = 3;
           horizontal_padding = 3;
+          # follow keyboard focus
+          follow = "keyboard";
         };
       };
       iconTheme = {

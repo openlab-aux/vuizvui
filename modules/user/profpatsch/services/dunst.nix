@@ -70,6 +70,7 @@ in {
         BusName = "org.freedesktop.Notifications";
         ExecStart = "${lib.getBin pkgs.dunst}/bin/dunst -config ${pkgs.writeText "dunst.conf" (toDunstINI cfg.settings)}";
         Restart = "on-failure";
+        RestartSec = "1";
       };
       partOf = [ "graphical-session.target" ];
       wantedBy = [ "graphical-session.target" ];
