@@ -235,6 +235,7 @@ in {
         unfreeAndNonDistributablePkgs.steam # the one gaming platform
         youtube-dl           # download videos
         zathura              # pdf viewer
+        ghc                  # powerful pocket calculator
       ];
       userScripts = with pkgs.vuizvui.profpatsch;
         let
