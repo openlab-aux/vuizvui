@@ -116,6 +116,13 @@ in {
         supportedFeatures = [ "big-parallel" ];
       }
     ];
+    nix.binaryCaches = [
+      "https://digitallyinduced.cachix.org"
+    ];
+    nix.binaryCachePublicKeys = [
+      "digitallyinduced.cachix.org-1:y+wQvrnxQ+PdEsCt91rmvv39qRCYzEgGQaldK26hCKE="
+    ];
+
     nix.extraOptions = ''
       builders-use-substitutes = true
       auto-optimise-store = true
