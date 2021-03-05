@@ -139,7 +139,18 @@ function appendTalkies(append_to_element) {
           hover: "Whatever you do, don’t.",
           link: "https://scarfolk.blogspot.com/" },
         { talk: "Live und in Farbe" },
-        { talk: "Glob Star" }
+        { talk: "Glob Star" },
+        { talk: "Varying Degrees of Lüften",
+          link: "https://www.theguardian.com/world/2020/sep/30/germans-embrace-fresh-air-to-ward-off-coronavirus" },
+        { talk: "Linienhafter Sicherheitstrennstreifen",
+          link: "https://de.wikipedia.org/wiki/Fahrradverkehr_in_M%C3%BCnchen" },
+        { talk: "pam_happy_hour.c",
+          link: "www.brendangregg.com/Specials/pam_happy_hour.c" },
+        { talk: "Ctrl-g Ctrl-g Ctrl-g"},
+        { talk: "PROPPATCH",
+          hover: "WebDAV was a mistake" },
+        { talk: "sausage shaped, but lumpy",
+          link: "https://en.wikipedia.org/wiki/Bristol_stool_scale" }
     ];
     var talkie = talkies[Math.floor(Math.random()*talkies.length)];
     var elem = null;
