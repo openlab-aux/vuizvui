@@ -12,7 +12,7 @@ let
     MACHINE="''${1?please set machine as first argument}"
     HOME="''${HOME?please make sure HOME is set}"
     VUIZVUI="$HOME/vuizvui"
-    OUT_LINK="$VUIZVUI/system-$MACHINE"
+    OUT_LINK="$VUIZVUI/machines/profpatsch/system-$MACHINE"
 
     ${bins.nix-build} \
       --show-trace \

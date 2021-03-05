@@ -1,0 +1,2 @@
+# ignore the system gcroots created by my deploy script
+/system-*
