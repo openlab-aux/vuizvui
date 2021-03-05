@@ -105,6 +105,7 @@ in {
       secretFile = "/var/lib/duplicity/secrets";
 
       extraFlags = [
+        "--name" "legosi-root"
         "--verbosity" "notice"
         "--full-if-older-than" "60D"
         "--num-retries" "3"
