@@ -12,7 +12,11 @@ let
   ];
 
   nix-eval = writeExecline "nix-eval" {} [
-    bins.nix-instantiate "--eval" "--strict" "$@"
+    bins.nix-instantiate
+      "--read-write-mode"
+      "--eval"
+      "--strict"
+      "$@"
   ];
 
 in {
