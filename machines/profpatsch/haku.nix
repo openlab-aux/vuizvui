@@ -122,6 +122,11 @@ in
       '';
     };
 
+    vuizvui.services.profpatsch.gonic = {
+      enable = true;
+      musicDir = "/data/seeding";
+      musicDirGroup = "data-seeding";
+    };
 
     systemd.services.warpspeed =
       let user = config.users.users.rtorrent;
