@@ -465,6 +465,24 @@ in {
           };
         };
 
+        services.barrel-roll = {
+          description = "do a barrel roll";
+          serviceConfig = {
+            Restart = "no";
+            ExecStart = "${pkgs.writers.writeDash "barrel-roll" ''
+              ${pkgs.libnotify}/bin/notify-send --urgency=critical "Do a barrel roll!"
+            ''}";
+            };
+        };
+        timers.barrel-roll = {
+          description = "do a barrel roll every hour";
+          wantedBy = [ "timers.target" ];
+          timerConfig = {
+            OnStartupSec="10m";
+            OnUnitActiveSec ="1h";
+            AccuracySec="15m";
+          };
+        };
       }
 
 
