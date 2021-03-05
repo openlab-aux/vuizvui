@@ -271,4 +271,6 @@ in rec {
 
 
   backup = import ./backup { inherit pkgs writeExecline getBins backtick; };
+  gpg-private-offline-key = import ./gpg-private-offline-key { inherit pkgs writeExecline getBins; };
+
 }

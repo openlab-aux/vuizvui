@@ -1,0 +1,77 @@
+{ pkgs, writeExecline, getBins }:
+
+let
+# split
+
+  bins = getBins pkgs.coreutils [ "split" "mktemp" "rm" "rmdir" ]
+      // getBins pkgs.lr [ "lr" ]
+      // getBins pkgs.xe [ "xe" ]
+      // getBins pkgs.qrencode [ "qrencode" ];
+
+  qr-code-props = {
+    # second highest redundancy level
+    level = "Q";
+    # max amount of bytes that level Q can encode
+    bytes = "1700";
+  };
+
+  # Takes a private GPG key encoded with paperkey on stdin,
+  # splits it into pieces into an empty directory that
+  # has to be provided via PRIVKEY_TMPDIR,
+  # and execs into the block provided as first argument
+  # for each qr code image (via stdin).
+  print-qr-codes = writeExecline "print-qr-codes" {} [
+    "importas" "-ui" "privkey_dir" "PRIVKEY_TMPDIR"
+    "cd" "$privkey_dir"
+    "if" [
+      bins.split
+      "--bytes=${qr-code-props.bytes}"
+      # paperkey-encoded key comes from stdin
+      "-"
+    ]
+    "pipeline" [ bins.lr "-0" ]
+    "forstdin" "-0" "piece"
+    "importas" "-iu" "piece" "piece"
+    "redirfd" "-r" "0" "$piece"
+    "pipeline" [
+      bins.qrencode
+      "--level=${qr-code-props.level}"
+      "--dpi=300"
+      "-o-"
+    ]
+    "$@"
+  ];
+
+  print-qr-codes2 = pkgs.writers.writePython "print-qr-codes" {} ''
+    import sys
+
+    while True:
+      str = sys.stdin.bytes.read(${qr-code-props.bytes})
+      if str == "":
+        break
+      sys.execvl( bins.qrencode
+    
+  '';
+
+  rm-files-in-directory = writeExecline "rm-files-in-directory" { readNArgs = 1; } [
+    "if" [
+      "pipeline" [ bins.lr "-0" "-t" "depth==1" "$1" ]
+      bins.xe "-0" bins.rm
+    ]
+    bins.rmdir "$1"
+  ];
+
+  test = writeExecline "test12" {} [
+    "backtick" "-ni" "PRIVKEY_TMPDIR" [ bins.mktemp "-d" ]
+    "importas" "-i" "privdir" "PRIVKEY_TMPDIR"
+    "foreground" [ print-qr-codes [ "feh" "-" ] ]
+    rm-files-in-directory "$privdir"
+  ];
+
+
+# scanning:
+# for i in (seq 0 9); nix-shell -p zbar --run 'scanimage --device=\'fujitsu:ScanSnap iX500:1527308\' --mode=gray --resolution=100 --format=png | zbarimg -Sdisable -Sqrcode.enable --raw - | head --bytes=-1'; end > out
+
+in {
+  inherit test;
+}
