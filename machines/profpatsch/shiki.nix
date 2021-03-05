@@ -284,6 +284,8 @@ in {
           name = "deploy";
         })
         # myPkgs.zoomboxed
+        # for xte with xbindkeys
+        xautomation
       ];
     in systemPkgs ++ xPkgs ++ guiPkgs
     ++ programmingTools ++ documentation
