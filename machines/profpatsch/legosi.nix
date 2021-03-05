@@ -122,6 +122,10 @@ in {
 
     vuizvui.user.profpatsch.programs.weechat = {
       enable = true;
+      userName = "weechat";
+      # give this user access to the bitlbee group and socket
+      extraGroups = [ "bitlbee" ];
+      weechatDataDir = "/var/lib/weechat";
       authorizedKeys = [ myKey ];
       # redirect the bitlbee unix socket to a fake domain
       # because weechat is unable to connect to unix sockets.
@@ -131,7 +135,6 @@ in {
         "addr=1.2.3.4,port=6667,path=${config.vuizvui.user.profpatsch.services.bitlbee.socketFile}"
       ];
     };
-    users.users.weechat.extraGroups = [ "bitlbee" ];
 
     vuizvui.user.profpatsch.services.bitlbee = {
        enable = true;

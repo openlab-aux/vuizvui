@@ -9,9 +9,8 @@
 
 let
   cfg = config.vuizvui.user.profpatsch.programs.weechat;
-  weechatDataDir = "/var/lib/weechat";
+  # tmux session name weechat runs in
   sessionName = "weechat";
-  userName = "weechat";
 
   inherit (pkgs.vuizvui.profpatsch)
     writeExecline
@@ -72,6 +71,22 @@ in
       type = lib.types.listOf lib.types.str;
     };
 
+    userName = lib.mkOption {
+      description = "user name of the user account that should be created for weechat";
+      type = lib.types.str;
+    };
+
+    extraGroups = lib.mkOption {
+      description = "extra groups to add to the weechat user";
+      type = lib.types.listOf lib.types.str;
+    };
+
+    weechatDataDir = lib.mkOption {
+      description = "the data directory used for keeping configuration, logs and other state";
+      type = lib.types.path;
+    };
+
+
     wrapExecStart = lib.mkOption {
       description = "bernstein-chaining command wrapped around weechat";
       type = lib.types.listOf lib.types.str;
@@ -82,33 +97,31 @@ in
   config = lib.mkIf cfg.enable {
     users = {
       groups.weechat = {};
-      users.${userName} = {
+      users.${cfg.userName} = {
         isSystemUser = true;
         createHome = true;
         shell = bins.dash;
         group = "weechat";
-        home = weechatDataDir;
+        home = cfg.weechatDataDir;
         openssh.authorizedKeys.keys = cfg.authorizedKeys;
-        # give this user access to the bitlbee group and socket
-        # TODO: should not be here I guess.
-        extraGroups = [ "bitlbee" ];
+        extraGroups = cfg.extraGroups;
       };
     };
 
     # make sure the only use-case for this account
     # is attaching the tmux session.
     services.openssh.extraConfig = ''
-      Match User ${userName}
+      Match User ${cfg.userName}
           ForceCommand ${attachWeechatTmuxSession}
     '';
 
-    systemd.services.weechat = {
-      environment.WEECHAT_HOME = weechatDataDir;
+    systemd.services."weechat-${cfg.userName}" = {
+      environment.WEECHAT_HOME = cfg.weechatDataDir;
       serviceConfig = {
         ExecStart = startWeechatTmuxSession cfg.wrapExecStart;
         Restart = "always";
         RestartSec = "3s";
-        User = userName;
+        User = cfg.userName;
         Group = "weechat";
       };
       wantedBy = [ "multi-user.target" ];
@@ -125,7 +138,7 @@ in
         rm -r /var/lib/systemd/linger
         mkdir /var/lib/systemd/linger
         # enable for the subset of declared users
-        touch /var/lib/systemd/linger/${userName}
+        touch /var/lib/systemd/linger/${cfg.userName}
       '';
     };
 
