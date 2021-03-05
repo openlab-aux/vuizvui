@@ -128,6 +128,8 @@ in {
 
     networking.networkmanager.enable = true;
 
+    services.tailscale.enable = true;
+
     # TODO: bond eth and wifi again
     # networking.bonds = {
     #   wifiAndEthernet = {

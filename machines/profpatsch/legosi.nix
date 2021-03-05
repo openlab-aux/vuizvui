@@ -71,6 +71,8 @@ in {
       };
     };
 
+    services.tailscale.enable = true;
+
     services.duplicity = {
       enable = true;
 
