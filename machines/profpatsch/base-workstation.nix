@@ -132,6 +132,7 @@ in {
         traceroute        # trace ip routes
         wirelesstools     # iwlist (wifi scan)
         gitFull           # git with send-email
+        binutils          # debugging binary files
       ];
       # minimal set of gui applications
       guiPkgs = [
