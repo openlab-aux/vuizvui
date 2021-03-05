@@ -12,6 +12,7 @@ let
     files = [];
     main = builtins.baseNameOf file;
     type = dhallType;
+    deps = [];
   };
 
   # TODO: document
