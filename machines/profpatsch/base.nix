@@ -38,7 +38,6 @@ in
     environment.systemPackages = with pkgs; [
       curl              # transfer data to/from a URL
       file              # file information
-      git               # version control system
       htop              # top replacement
       nmap              # stats about clients in the network
       rsync             # file syncing tool
