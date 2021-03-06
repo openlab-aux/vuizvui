@@ -17,6 +17,7 @@ let
         limelight-vim
         sleuth
         tabular
+        vim-illuminate
         vim-lastplace
         vim-nix
         vim-signify
