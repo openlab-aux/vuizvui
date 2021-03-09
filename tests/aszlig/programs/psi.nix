@@ -20,7 +20,7 @@
     machine.wait_for_file("/home/alice/.Xauthority")
     machine.succeed("xauth merge ~alice/.Xauthority")
     machine.succeed('su -c "DISPLAY=:0.0 psi" - alice &')
-    machine.wait_for_text('(?i)Register new account')
+    machine.wait_for_text('(?i)Reg.ster new account')
     machine.screenshot('psi')
   '';
 }
