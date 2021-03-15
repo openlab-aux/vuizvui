@@ -13,6 +13,7 @@ in {
   imports = [
     ./base-laptop.nix
     ./desktop-sway.nix
+    ./wireguard.nix
   ];
 
   boot.initrd.availableKernelModules = [
@@ -25,7 +26,8 @@ in {
   boot.kernelModules = [
     "kvm-intel"
     "snd-seq"
-    "snd-rawmidi" ];
+    "snd-rawmidi"
+  ];
 
   hardware.opengl.driSupport32Bit = i686Games;
   hardware.pulseaudio = {
