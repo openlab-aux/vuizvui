@@ -327,7 +327,11 @@ def patch_read_data_path(patcher: Patcher, out: Path) -> None:
     data_path = str(out / 'share' / 'factorio')
     data_path_offset = patcher.write_cstring_to_compost(data_path)
 
-    matches = patcher.raw_command_json('/vj str.usr_share_factorio')
+    if patcher.raw_command_json('?V0') >= 5:
+        name = 'str._usr_share_factorio'
+    else:
+        name = 'str.usr_share_factorio'
+    matches = patcher.raw_command_json(f'/vj {name}')
     assert len(matches) > 0, \
         f'no matches found for /usr/share/factorio: {matches}'
 
@@ -340,7 +344,11 @@ def patch_read_data_path(patcher: Patcher, out: Path) -> None:
 def patch_write_data_path(patcher: Patcher) -> None:
     # This is the function which returns fs::path("$HOME/.factorio"), but since
     # we want to conform to XDG, we need to rewrite that function.
-    fun = patcher.load_function('method.Paths.getSystemWriteData')
+    if patcher.raw_command_json('?V0') >= 5:
+        name = 'method.Paths.getSystemWriteData__'
+    else:
+        name = 'method.Paths.getSystemWriteData'
+    fun = patcher.load_function(name)
 
     # The function in question uses getpwuid(getuid())->pw_dir, so let's find
     # out the register that references the value of the home directory.
