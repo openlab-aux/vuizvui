@@ -42,6 +42,15 @@ in {
       };
       shellInit = ''
         set -x fish_greeting ""
+
+        # an adisbladis original
+        function bonk
+          for arg in $argv
+            set -l store_path (string unescape (nix-instantiate --eval --expr "with (import <nixpkgs> {}); builtins.toString (lib.getBin $arg)"))
+            nix-store --realise "$store_path"
+            set PATH "$store_path/bin" $PATH
+          end
+        end
       '';
     };
 
