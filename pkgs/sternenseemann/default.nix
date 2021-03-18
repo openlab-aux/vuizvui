@@ -35,6 +35,7 @@ let
 
   rust = callPackage ./rust {
     inherit (profpatsch)
+      writeRustSimpleBin
       writeRustSimpleLib
       testRustSimple
       ;
@@ -84,6 +85,7 @@ lib.fix (self: {
 
   inherit (rust)
     temp
+    nix-env-diff
     ;
 
   # don't bother hydra with trivial text substitution
