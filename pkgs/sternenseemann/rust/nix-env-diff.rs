@@ -75,7 +75,7 @@ fn print_changed<T: Read>(
     match line.map(|s| parse_nix_env_line(s.as_slice()))? {
       Some((outs, attr)) =>
         for out in outs {
-          if map.get(&out).is_some() {
+          if map.get(&out).is_none() {
             println!("{}", String::from_utf8_lossy(
                 match mode {
                   Mode::PrintOutPaths => &out.0,
