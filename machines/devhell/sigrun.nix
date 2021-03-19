@@ -1,116 +1,117 @@
-  { config, pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
-  {
-    vuizvui.user.devhell.profiles.base.enable = true;
-    vuizvui.system.kernel.bfq.enable = true;
+{
+  vuizvui.user.devhell.profiles.base.enable = true;
+  vuizvui.system.kernel.bfq.enable = true;
 
-    boot = {
-      loader.grub = {
-        enable = true;
-        version = 2;
-        devices = [
-          "/dev/disk/by-id/ata-ST31500541AS_6XW0NK21"
-          "/dev/disk/by-id/ata-ST31500541AS_6XW0P0CW"
-          "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S21PNSAG848626F"
-          "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S21PNSAG848674K"
-        ];
-      };
-
-      initrd = {
-        availableKernelModules = [ "ehci_pci" "ahci" "firewire_ohci" "usbhid" "usb_storage" ];
-        kernelModules = [ "fuse" ];
-      };
-
-      kernelParams = [ "pci=noaer" ];
-      kernelModules = [ "kvm-intel" ];
-      extraModulePackages = [ ];
-      blacklistedKernelModules = [ "pcspkr" ];
-    };
-
-    hardware = {
-      cpu.intel.updateMicrocode = true;
-      opengl = {
-        extraPackages = [ pkgs.vaapiVdpau ];
-      };
-    };
-
-    fileSystems."/" = {
-      label = "nixos";
-      fsType = "btrfs";
-      options = [
-        "autodefrag"
-        "space_cache"
-        "compress=lzo"
-        "noatime"
-        "ssd"
+  boot = {
+    loader.grub = {
+      enable = true;
+      version = 2;
+      devices = [
+        "/dev/disk/by-id/ata-ST31500541AS_6XW0NK21"
+        "/dev/disk/by-id/ata-ST31500541AS_6XW0P0CW"
+        "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S21PNSAG848626F"
+        "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S21PNSAG848674K"
       ];
     };
 
-    fileSystems."/home" = {
-      label = "home";
-      fsType = "btrfs";
-      options = [
-        "autodefrag"
-        "space_cache"
-        "compress=lzo"
-        "noatime"
-      ];
+    initrd = {
+      availableKernelModules = [ "ehci_pci" "ahci" "firewire_ohci" "usbhid" "usb_storage" ];
+      kernelModules = [ "fuse" ];
     };
 
-    swapDevices = [
-      { device = "/dev/disk/by-uuid/16bd9abd-6af5-4a24-8ea5-58adc51e9641"; }
-      { device = "/dev/disk/by-uuid/279708cb-f9c3-4a37-a064-80ff85a66f88"; }
-      { device = "/dev/disk/by-uuid/0c2409c3-e824-4759-a9ad-9bfcea1e73bb"; }
-      { device = "/dev/disk/by-uuid/3f1835a8-5587-4963-9b6c-66ecb36059de"; }
+    kernelParams = [ "pci=noaer" ];
+    kernelModules = [ "kvm-intel" ];
+    extraModulePackages = [ ];
+    blacklistedKernelModules = [ "pcspkr" ];
+  };
+
+  hardware = {
+    cpu.intel.updateMicrocode = true;
+    opengl = {
+      extraPackages = [ pkgs.vaapiVdpau ];
+    };
+  };
+
+  fileSystems."/" = {
+    label = "nixos";
+    fsType = "btrfs";
+    options = [
+      "autodefrag"
+      "space_cache"
+      "compress=lzo"
+      "noatime"
+      "ssd"
     ];
+  };
 
-    networking.hostName = "sigrun";
-    networking.wireless.enable = false;
-    networking.useNetworkd = true;
+  fileSystems."/home" = {
+    label = "home";
+    fsType = "btrfs";
+    options = [
+      "autodefrag"
+      "space_cache"
+      "compress=lzo"
+      "noatime"
+    ];
+  };
 
-    nix.maxJobs = 8;
+  swapDevices = [
+    { device = "/dev/disk/by-uuid/16bd9abd-6af5-4a24-8ea5-58adc51e9641"; }
+    { device = "/dev/disk/by-uuid/279708cb-f9c3-4a37-a064-80ff85a66f88"; }
+    { device = "/dev/disk/by-uuid/0c2409c3-e824-4759-a9ad-9bfcea1e73bb"; }
+    { device = "/dev/disk/by-uuid/3f1835a8-5587-4963-9b6c-66ecb36059de"; }
+  ];
 
-    i18n = {
-      defaultLocale = "en_US.UTF-8";
+  networking.hostName = "sigrun";
+  networking.wireless.enable = false;
+  networking.useNetworkd = true;
+
+  nix.maxJobs = 8;
+
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+  };
+
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "dvorak";
+  };
+
+  powerManagement.powerUpCommands = ''
+    ${pkgs.hdparm}/sbin/hdparm -B 255 \
+  /dev/disk/by-id/ata-ST31500541AS_6XW0NK21
+    ${pkgs.hdparm}/sbin/hdparm -B 255 \
+  /dev/disk/by-id/ata-ST31500541AS_6XW0P0CW
+  '';
+
+  #### Machine-specific service configuration ####
+
+  vuizvui.user.devhell.profiles.services.enable = true;
+
+  services = {
+    printing = {
+      enable = true;
+      drivers = [ pkgs.hplipWithPlugin ];
     };
-
-    console = {
-      font = "Lat2-Terminus16";
-      keyMap = "dvorak";
+    thermald.enable = true;
+    timesyncd.enable = true;
+    resolved.enable = true;
+    canto-daemon.enable = true;
+    offlineimap = {
+      enable = true;
+      install = true;
+      path = [ pkgs.notmuch ];
     };
-
-    powerManagement.powerUpCommands = ''
-      ${pkgs.hdparm}/sbin/hdparm -B 255 \
-    /dev/disk/by-id/ata-ST31500541AS_6XW0NK21
-      ${pkgs.hdparm}/sbin/hdparm -B 255 \
-    /dev/disk/by-id/ata-ST31500541AS_6XW0P0CW
-    '';
-
-    #### Machine-specific service configuration ####
-
-    vuizvui.user.devhell.profiles.services.enable = true;
-
-    services = {
-      printing = {
-        enable = true;
-        drivers = [ pkgs.hplipWithPlugin ];
-      };
-      thermald.enable = true;
-      timesyncd.enable = true;
-      resolved.enable = true;
-      canto-daemon.enable = true;
-      offlineimap = {
-        enable = true;
-        install = true;
-        path = [ pkgs.notmuch ];
-      };
-      syncthing = {
-        enable = true;
-        user = "dev";
-      };
+    syncthing = {
+      enable = true;
+      user = "dev";
+      dataDir = "/home/dev/syncthing/";
     };
+  };
 
-    services.xserver = {
+  services.xserver = {
     enable = true;
     layout = "dvorak";
     videoDrivers = [ "ati" ];
