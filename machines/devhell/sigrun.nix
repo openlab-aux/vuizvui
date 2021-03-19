@@ -107,7 +107,7 @@
     syncthing = {
       enable = true;
       user = "dev";
-      dataDir = "/home/dev/syncthing/";
+      dataDir = "/home/dev/Sync/";
     };
   };
 
