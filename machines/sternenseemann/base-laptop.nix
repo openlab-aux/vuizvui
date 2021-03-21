@@ -14,9 +14,11 @@
     hardware.bluetooth.enable = lib.mkDefault true;
     services.blueman.enable = true;
 
-    hardware.pulseaudio = {
-      daemon.config.flat-volumes = "yes";
+    services.pipewire = {
       enable = true;
+      pulse.enable = true;
+      alsa.enable = true;
+      socketActivation = true;
     };
 
     hardware.cpu.intel.updateMicrocode = true;

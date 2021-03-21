@@ -30,11 +30,6 @@ in {
   ];
 
   hardware.opengl.driSupport32Bit = i686Games;
-  hardware.pulseaudio = {
-    enable = true;
-    support32Bit = i686Games;
-    zeroconf.discovery.enable = avahi;
-  };
 
   # 100% CPU in university
   services.avahi.enable = avahi;

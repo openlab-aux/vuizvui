@@ -8,7 +8,7 @@ let
     getBins
     ;
 
-  bins = (getBins config.hardware.pulseaudio.package [ "pactl" ])
+  bins = (getBins pkgs.pulseaudioLight [ "pactl" ])
       // (getBins pkgs.dbus [ "dbus-run-session" ])
       // (getBins cfg.package [ "sway" ])
       // (getBins pkgs.i3status [ "i3status" ])
