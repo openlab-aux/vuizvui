@@ -42,8 +42,7 @@
       mosh
       nmap
       ffmpeg graphicsmagick
-      kitty pavucontrol
-      xsel
+      pavucontrol
     ] ++ pkgs.vuizvui.sternenseemann.scripts.default;
   };
 }
