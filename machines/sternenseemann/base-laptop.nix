@@ -44,5 +44,10 @@
       ffmpeg graphicsmagick
       pavucontrol
     ] ++ pkgs.vuizvui.sternenseemann.scripts.default;
+
+    services.earlyoom = {
+      enable = true;
+      freeMemThreshold = 5;
+    };
   };
 }
