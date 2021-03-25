@@ -52,7 +52,7 @@ let
         "importas" "out" "out"
         "if" [
           "pipeline" [ bins.ls "${crate true}/tests" ]
-          "forstdin" "test"
+          "forstdin" "-o0" "test"
           "importas" "test" "test"
           "${crate true}/tests/$test"
         ]
