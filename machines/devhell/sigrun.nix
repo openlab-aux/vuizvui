@@ -106,7 +106,6 @@
     };
     syncthing = {
       enable = true;
-      user = "dev";
     };
   };
 
