@@ -355,6 +355,13 @@ in {
       agent = {
         enable = true;
         sshSupport = true;
+        # I only want to unlock it once per session
+        extraConfig = ''
+          default-cache-ttl 34560000
+          default-cache-ttl-ssh 34560000
+          max-cache-ttl 34560000
+          max-cache-ttl-ssh 34560000
+        '';
       };
     };
 

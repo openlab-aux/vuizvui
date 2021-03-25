@@ -76,6 +76,18 @@ in {
     agent = {
       enable = lib.mkEnableOption "support for the GnuPG agent";
 
+      extraConfig = lib.mkOption {
+        type = types.str;
+        default = "";
+        example = lib.literalExample ''
+          default-cache-ttl 34560000
+          default-cache-ttl-ssh 34560000
+          max-cache-ttl 34560000
+          max-cache-ttl-ssh 34560000
+        '';
+        description = "The content of gpg-agent.conf";
+      };
+
       pinentry.program = mkOption {
         type = types.path;
         default = "${pkgs.pinentry_gtk2}/bin/pinentry";
@@ -118,6 +130,7 @@ in {
 
         serviceConfig.ExecStart = let
           configFile = pkgs.writeText "gpg-agent.conf" ''
+            # module-defined config
             pinentry-program ${pinentryWrapper}
             ${if cfg.agent.scdaemon.enable
               then "scdaemon-program ${scdaemonRedirector}"
@@ -126,6 +139,9 @@ in {
               then "supervised"
               else "no-detach\ndaemon"}
             ${lib.optionalString cfg.agent.sshSupport "enable-ssh-support"}
+
+            # module user config
+            ${cfg.agent.extraConfig}
           '';
         in "${cfg.package}/bin/gpg-agent --options ${configFile}";
 
