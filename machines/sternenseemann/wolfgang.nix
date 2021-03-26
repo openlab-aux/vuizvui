@@ -92,7 +92,7 @@ in {
     github-cli
     scribus gimp inkscape libreoffice
     audacity
-    signal-desktop tdesktop discord
+    signal-desktop discord
     multimc
     vuizvui.profpatsch.nman
     vuizvui.sternenseemann.nix-env-diff
