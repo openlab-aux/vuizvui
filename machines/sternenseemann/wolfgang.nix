@@ -1,9 +1,6 @@
 { config, pkgs, lib, ... }:
 
 let
-  i686Games = false;
-  avahi = false;
-
   browser = rec {
     pkg = pkgs.firefox-wayland;
     bin = "${pkg}/bin/firefox";
@@ -28,11 +25,6 @@ in {
     "snd-seq"
     "snd-rawmidi"
   ];
-
-  hardware.opengl.driSupport32Bit = i686Games;
-
-  # 100% CPU in university
-  services.avahi.enable = avahi;
 
   fileSystems."/" = {
     device = "/dev/mapper/main";
