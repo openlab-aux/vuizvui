@@ -1,13 +1,13 @@
 { pkgs, runExeclineLocal, getBins, drvSeqL }:
 let
-  bins = getBins pkgs.coreutils [ "ln" "ls" "touch" ];
+  bins = getBins pkgs.s6-portable-utils [ "s6-ln" "s6-ls" "s6-touch" ];
 
   writeRustSimple = name: args: srcFile:
     linkTo name "${writeRustSimpleBin name args srcFile}/bin/${name}";
 
   linkTo = name: path: runExeclineLocal name {} [
     "importas" "out" "out"
-    bins.ln "-sT" path "$out"
+    "if" [ bins.s6-ln "-sT" path "$out" ]
   ];
 
   writeRustSimpleBin = name: { dependencies ? [], ... }@args: srcFile: pkgs.buildRustCrate ({
@@ -51,12 +51,12 @@ let
       tests = runExeclineLocal "${rustDrv.name}-tests-run" {} [
         "importas" "out" "out"
         "if" [
-          "pipeline" [ bins.ls "${crate true}/tests" ]
+          "pipeline" [ bins.s6-ls "${crate true}/tests" ]
           "forstdin" "-o0" "test"
           "importas" "test" "test"
           "${crate true}/tests/$test"
         ]
-        bins.touch "$out"
+        bins.s6-touch "$out"
       ];
     in drvSeqL [ tests ] (crate false);
 
