@@ -32,6 +32,8 @@
       action = "hibernate";
     };
 
+    programs.mosh.enable = true;
+
     environment.systemPackages = with pkgs; [
       lr
       lowdown
@@ -39,7 +41,6 @@
       zip unzip
       stow
       silver-searcher
-      mosh
       nmap
       ffmpeg graphicsmagick
       pavucontrol
