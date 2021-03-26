@@ -12,6 +12,7 @@
     console.keyMap = "neo";
 
     hardware.bluetooth.enable = lib.mkDefault true;
+    security.rtkit.enable = true;
 
     services.pipewire = {
       enable = true;
