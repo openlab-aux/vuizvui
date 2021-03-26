@@ -12,7 +12,6 @@
     console.keyMap = "neo";
 
     hardware.bluetooth.enable = lib.mkDefault true;
-    services.blueman.enable = true;
 
     services.pipewire = {
       enable = true;
