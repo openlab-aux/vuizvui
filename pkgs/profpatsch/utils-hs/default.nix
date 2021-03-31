@@ -42,22 +42,6 @@ let
         });
 
         these = hlib.doJailbreak hsuper.these;
-
-        hnix = hlib.overrideCabal
-          (hsuper.hnix.override {
-            inherit (hself) these;
-          }) (old: {
-          src = fetchFromGitHub {
-            owner = "haskell-nix";
-            repo = "hnix";
-            rev = "e7efbb4f0624e86109acd818942c8cd18a7d9d3d";
-            sha256 = "0dismb9vl5fxynasc2kv5baqyzp6gpyybmd5p9g1hlcq3p7pfi24";
-          };
-          broken = false;
-          buildDepends = old.buildDepends or [] ++ (with hself; [
-            dependent-sum prettyprinter (hlib.doJailbreak ref-tf)
-          ]);
-        });
       });
     };
 
@@ -80,13 +64,6 @@ let
     postFixup = "rm -rf $out/lib $out/nix-support $out/share/doc";
   };
 
-
-  nix-gen = haskellDrv {
-    name = "nix-gen";
-    subfolder = "nix-gen";
-    deps = with hps; [ hnix ansi-wl-pprint protolude data-fix ];
-  };
-
   until = haskellDrv {
     name = "until";
     subfolder = "until";
@@ -100,6 +77,6 @@ let
   };
 
 in {
-  inherit nix-gen until watch-server;
+  inherit until watch-server;
   haskellPackages = hps;
 }

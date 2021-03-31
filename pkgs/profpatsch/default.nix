@@ -141,7 +141,7 @@ in rec {
   };
 
   inherit (callPackage ./utils-hs {})
-    nix-gen until watch-server
+    until watch-server
     haskellPackages;
 
   query-audio-streams = callPackage ./query-album-streams {
