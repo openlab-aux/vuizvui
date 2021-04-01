@@ -78,7 +78,8 @@ in {
     services.xserver.windowManager.i3 = {
       enable = true;
       package = pkgs.i3-gaps;
-      extraPackages = with pkgs; [ polybar i3status-rust i3blocks-gaps ];
+      extraPackages = with pkgs; [ polybar i3status-rust i3blocks-gaps
+                                   i3-auto-layout rofi ];
     };
 
     services.journald.extraConfig = ''

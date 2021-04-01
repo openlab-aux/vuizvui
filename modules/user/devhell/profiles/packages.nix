@@ -204,7 +204,6 @@ in {
       recode
       reptyr
       ripgrep
-      rofi
       rsync
       safecopy
       screen
