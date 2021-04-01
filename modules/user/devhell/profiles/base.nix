@@ -57,6 +57,9 @@ in {
     };
 
     programs = {
+      dconf = {
+        enable = true;
+      };
       gnupg = {
         agent.enable = true;
         agent.pinentryFlavor = "gnome3";
