@@ -183,7 +183,6 @@
     ipmitool
     iw
     libva
-    libvdpau-va-gl
     minicom
     pmtools
     pmutils
