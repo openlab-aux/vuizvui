@@ -33,6 +33,7 @@ in {
       geoip-updater.enable = true;
       geoclue2.enable = true;
       redshift.enable = true;
+      haveged.enable = true;
 
       picom = {
         enable = true;
