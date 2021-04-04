@@ -133,6 +133,10 @@ in {
     videoDrivers = [ "intel" ];
   };
 
+  vuizvui.profiles.tvl = {
+    enable = true;
+  };
+
   nix.trustedUsers = [ "lukas" ];
   users.users.lukas = {
     isNormalUser = true;

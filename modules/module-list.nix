@@ -8,6 +8,7 @@
   ./hardware/rtl8192cu
   ./hardware/t100ha
   ./hardware/thinkpad.nix
+  ./profiles/tvl.nix
   ./programs/gnupg
   ./programs/fish/fasd.nix
   ./programs/foot/default.nix
