@@ -2,6 +2,8 @@
 
 let
   cfg = config.vuizvui.profiles.tvl;
+
+  tvlShortDNS = [ "b" "cl" ];
 in
 
 {
@@ -20,6 +22,12 @@ in
       binaryCaches = lib.mkAfter [
         "https://cache.tvl.su"
       ];
+
+    };
+
+    networking.hosts = {
+      "49.12.129.211" = tvlShortDNS;
+      "2a01:4f8:242:5b21:0:feed:edef:beef" = tvlShortDNS;
     };
   };
 }
