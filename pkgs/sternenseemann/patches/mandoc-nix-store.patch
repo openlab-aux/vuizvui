@@ -39,7 +39,7 @@ RCS file: /cvs/mandoc/mandocdb.c,v
 retrieving revision 1.267
 diff -r1.267 mandocdb.c
 167a168
-> static	int	 read_allowed(char *);
+> static	ssize_t	 read_allowed(char *);
 614,618c615
 < 			if (strncmp(buf, basedir, basedir_len) != 0
 < #ifdef HOMEBREWDIR
@@ -47,17 +47,20 @@ diff -r1.267 mandocdb.c
 < #endif
 < 			) {
 ---
-> 			if (!read_allowed(buf)) {
-824c821
+> 			if (read_allowed(buf) == -1) {
+788a786
+> 	ssize_t		 prefix_len;
+824,829c822,823
 < 	else if (strncmp(usefile, basedir, basedir_len) == 0)
----
-> 	else if (read_allowed(usefile))
-826,829d822
+< 		start = usefile + basedir_len;
 < #ifdef HOMEBREWDIR
 < 	else if (strncmp(usefile, HOMEBREWDIR, strlen(HOMEBREWDIR)) == 0)
 < 		start = usefile;
 < #endif
-1947a1941,1973
+---
+> 	else if ((prefix_len = read_allowed(usefile)) != -1)
+> 		start = usefile + prefix_len;
+1947a1942,1980
 > }
 > 
 > /*
@@ -65,16 +68,22 @@ diff -r1.267 mandocdb.c
 >  * constructing a database. This checks if the given
 >  * path is in the current set basedir or any directory
 >  * in READ_ALLOWED_PATH if it is defined.
+>  *
+>  * Returns -1 if reading is not allowed, the length
+>  * of the allowed directory part of the realpath if
+>  * reading is allowed. Note that stripping a prefix of
+>  * this length is only guaranteed to be a man dir if
+>  * the file is in basedir.
 >  */
-> static int
+> static ssize_t
 > read_allowed(char *realpath)
 > {
 > 	// if we have no basedir, don't check
 > 	if(basedir_len == 0 || basedir == NULL || *basedir == '\0')
-> 		return 1;
+> 		return basedir_len;
 > 
 > 	if(strncmp(realpath, basedir, basedir_len) == 0)
-> 		return 1;
+> 		return basedir_len;
 > 
 > #ifdef READ_ALLOWED_PATH
 > 	const char *pb = READ_ALLOWED_PATH;
@@ -83,11 +92,11 @@ diff -r1.267 mandocdb.c
 > 		size_t len = strcspn(pb, ":");
 > 
 > 		if (len > 0 && strncmp(realpath, pb, len) == 0)
-> 			return 1;
+> 			return len;
 > 
 > 		pb += len;
 > 		pb += strspn(pb, ":");
 > 	}
 > #endif
 > 
-> 	return 0;
+> 	return -1;
