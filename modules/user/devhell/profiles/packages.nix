@@ -28,8 +28,6 @@ in {
     }));
 
     nixpkgs.config = {
-      pulseaudio = true;
-
       allowUnfree = true;
 
       systemd = {
