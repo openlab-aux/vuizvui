@@ -57,6 +57,10 @@ lib.fix (self: {
     temp
     ;
 
+  schmecgit = callPackage ./schmecgit {
+    inherit (pkgs.llvmPackages_latest) stdenv;
+  };
+
   scripts = dontRecurseIntoAttrs (callPackage ./scripts {
     inherit (writers) writeBashBin;
     inherit (self) shakti;
