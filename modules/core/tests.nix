@@ -370,18 +370,18 @@ let
       in !isHeimdal && (isServer || config.krb5.enable);
       path  = ["nixos" "kerberos" "mit"];
     }
-    { check = config.boot.kernelPackages.kernel.version
-           == pkgs.linuxPackages_latest.kernel.version;
-      path  = ["nixos" "kernel-latest"];
-    }
-    { check = config.boot.kernelPackages.kernel.version
-           == pkgs.linuxPackages.kernel.version;
-      path  = ["nixos" "kernel-lts"];
-    }
-    { check = config.boot.kernelPackages.kernel.version
-           == pkgs.linuxPackages_testing.kernel.version;
-      path  = ["nixos" "kernel-testing"];
-    }
+    (let
+      kernelVersion = config.boot.kernelPackages.kernel.version;
+      majorMinor = lib.concatStringsSep "_"
+        (lib.take 2 (builtins.splitVersion kernelVersion));
+      kernelTestName = "linux_${majorMinor}";
+    in {
+      # isDerivation is a workaround to fix eval until
+      # https://github.com/NixOS/nixpkgs/pull/119307 lands.
+      check = lib.isDerivation
+        (pkgs.nixosTests.kernel-generic."${kernelTestName}" or null);
+      path  = ["nixos" "kernel-generic" kernelTestName ];
+    })
     { check = config.services.knot.enable;
       path  = ["nixos" "knot"];
     }
