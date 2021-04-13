@@ -90,7 +90,7 @@ in {
     sbcl rlwrap
     valgrind gdb
     github-cli
-    scribus gimp inkscape libreoffice
+    scribusUnstable gimp inkscape libreoffice
     audacity
     signal-desktop discord
     multimc
