@@ -44,12 +44,44 @@ let
 in
 
 lib.fix (self: {
-  inherit (haskellPackages) emoji-generic;
-
+  # nix utilities
   lib = callPackage ./lib { };
+
+  # packaged sterniware
+  inherit (haskellPackages) emoji-generic;
 
   logbook = ocamlPackages.callPackage ./logbook { };
 
+  inherit (rust)
+    nix-env-diff
+    temp
+    ;
+
+  scripts = dontRecurseIntoAttrs (callPackage ./scripts {
+    inherit (writers) writeBashBin;
+    inherit (self) shakti;
+    inherit getBins;
+  });
+
+  tep = callPackage ./tep {
+    inherit (haskellPackages)
+      emoji-generic text utf8-light
+      attoparsec bytestring;
+    inherit (writers) writeBashBin writeHaskell;
+    emojiTestTxt = fetchurl {
+      url = "https://www.unicode.org/Public/emoji/13.1/emoji-test.txt";
+      sha256 = "0n6d31533l1gnb1sxz8z486kv6rsggcpxyiq8wc1ald8l89c6g4f";
+    };
+  };
+
+  unicode_clock = python3Packages.callPackage ./unicode_clock { };
+
+  vuizvui-update-programs-sqlite = python3Packages.callPackage ./vuizvui-update-programs-sqlite {
+    inherit (pkgs.writers) writePython3;
+    inherit (profpatsch) getBins;
+  };
+
+  # patched packages
   mandoc = pkgs.mandoc.overrideAttrs (old: rec {
     src = pkgs.fetchcvs {
       sha256 = "19cqasw7fjsmhshs5khxrv8w3vdhf8xadls70l0gzqn7cyjmgsb9";
@@ -83,33 +115,6 @@ lib.fix (self: {
     '';
   });
 
-  inherit (rust)
-    temp
-    nix-env-diff
-    ;
-
-  # don't bother hydra with trivial text substitution
-  scripts = dontRecurseIntoAttrs (callPackage ./scripts {
-    inherit (writers) writeBashBin;
-    inherit (self) shakti;
-    inherit getBins;
-  });
-
-  shakti = callPackage ./shakti { };
-
-  t = python3Packages.callPackage ./t { };
-
-  tep = callPackage ./tep {
-    inherit (haskellPackages)
-      emoji-generic text utf8-light
-      attoparsec bytestring;
-    inherit (writers) writeBashBin writeHaskell;
-    emojiTestTxt = fetchurl {
-      url = "https://www.unicode.org/Public/emoji/13.1/emoji-test.txt";
-      sha256 = "0n6d31533l1gnb1sxz8z486kv6rsggcpxyiq8wc1ald8l89c6g4f";
-    };
-  };
-
   texlive = pkgs.texlive.combine {
     inherit (pkgs.texlive)
       scheme-medium minted titlesec units collection-bibtexextra wrapfig
@@ -117,10 +122,8 @@ lib.fix (self: {
       collectbox csquotes biblatex-philosophy quoting breakurl;
   };
 
-  unicode_clock = python3Packages.callPackage ./unicode_clock { };
+  # packaged 3rd party software
+  shakti = callPackage ./shakti { };
 
-  vuizvui-update-programs-sqlite = python3Packages.callPackage ./vuizvui-update-programs-sqlite {
-    inherit (pkgs.writers) writePython3;
-    inherit (profpatsch) getBins;
-  };
+  t = python3Packages.callPackage ./t { };
 })
