@@ -2,11 +2,12 @@
 
 stdenv.mkDerivation {
   pname = "shakti";
-  version = "unstable-2021-01-29";
+  version = "unstable-2021-04-12";
 
   src = fetchurl {
-    url = "https://shakti.sh/linux/k?eula=shakti.com/license";
-    sha256 = "1a6pf5krb4qym7wvk48p37rdd3wl0igwa3kzp3swq346l07z9m5k";
+    # mi2.0 would be for darwin but idc
+    url = "https://shakti.com/download/li2.0?eula=shakti.com/license";
+    sha256 = "1hlal87azrv4gy0cav2hzfg3bj6y960a2711ns2c77ic4mjr06wm";
   };
 
   dontUnpack = true;
@@ -27,7 +28,7 @@ stdenv.mkDerivation {
     homepage = "https://shakti.com";
     description = "k9 programming language";
     license = licenses.unfree;
-    # https://shakti.com/license
+    # https://shakti.com/download/license
     platforms = platforms.linux;
     # hash breakes every few weeks
     hydraPlatforms = [];
