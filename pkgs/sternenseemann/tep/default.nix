@@ -1,4 +1,4 @@
-{ writeHaskell, writeBashBin, runCommandLocal
+{ writeHaskell, writeBashBin, writeText, runCommandLocal
 , emoji-generic, utf8-light, attoparsec, text, bytestring
 , bemenu
 , fromTep ? "cut -d' ' -f1"
@@ -10,8 +10,14 @@ let
   tepData = writeHaskell "tep-data" {
     libraries = [ emoji-generic utf8-light attoparsec text bytestring ];
   } ./tepData.hs;
+
+  static = writeText "static-tep.txt" ''
+    · dot time character
+  '';
+
   emojis = runCommandLocal "emojis.txt" {} ''
-    ${tepData} < ${emojiTestTxt} > "$out"
+    ${tepData} < ${emojiTestTxt} > tep-data.txt
+    cat ${static} tep-data.txt > "$out"
   '';
 in
 
