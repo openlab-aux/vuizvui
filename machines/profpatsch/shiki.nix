@@ -32,9 +32,6 @@ in {
     boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" ];
     boot.loader.grub.device = "/dev/disk/by-id/ata-CT500MX500SSD1_1809E130BEE8";
 
-    # VPN support
-    boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
-
     boot.initrd.luks.devices.cryptroot.device = "/dev/disk/by-uuid/2e1c433f-4a54-4f04-9073-3639b66b975d";
 
     ###########

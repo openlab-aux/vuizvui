@@ -42,8 +42,6 @@ in {
     vuizvui.user.profpatsch.server.sshPort = 7001;
 
     boot.loader.grub.device = "/dev/sda";
-    # VPN support
-    boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
 
     fileSystems = {
       "/" = {
