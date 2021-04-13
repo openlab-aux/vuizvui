@@ -47,6 +47,15 @@ lib.fix (self: {
   # nix utilities
   lib = callPackage ./lib { };
 
+  buildGitTarball = callPackage ./build-git-tarball {
+    inherit getBins;
+  };
+
+  bundleSignedReleases = callPackage ./bundle-signed-release {
+    inherit getBins;
+    inherit (self) buildGitTarball;
+  };
+
   # packaged sterniware
   inherit (haskellPackages) emoji-generic;
 
