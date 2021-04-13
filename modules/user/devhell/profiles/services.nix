@@ -85,9 +85,9 @@ in {
     services.xserver.windowManager.i3 = {
       enable = true;
       package = pkgs.i3-gaps;
-      extraPackages = with pkgs; [ polybar i3status-rust i3blocks-gaps rofi ]
-        ++ lib.optional (pkgs ? i3-auto-layout) [ pkgs.i3-auto-layout ];
-      # FIXME: lib.optional construct can be removed if i3-auto-layout is in unstable
+      extraPackages = with pkgs; [
+        polybar i3status-rust i3blocks-gaps rofi i3-auto-layout
+      ];
     };
 
     services.journald.extraConfig = ''
