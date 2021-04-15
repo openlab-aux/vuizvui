@@ -133,7 +133,6 @@ in {
       hplipWithPlugin
       htop
       httpie
-      i3lock-fancy
       imagemagick
       ipcalc
       iprange

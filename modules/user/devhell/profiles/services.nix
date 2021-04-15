@@ -86,7 +86,7 @@ in {
       enable = true;
       package = pkgs.i3-gaps;
       extraPackages = with pkgs; [
-        polybar i3status-rust i3blocks-gaps rofi i3-auto-layout
+        polybar multilockscreen rofi i3-auto-layout
       ];
     };
 
