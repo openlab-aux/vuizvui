@@ -14,6 +14,8 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         limelight-vim
         sleuth
         tabular
+        vim-illuminate
+        vim-better-whitespace
         vim-lastplace
         vim-nix
         vim-signify
@@ -35,7 +37,6 @@ pkgs.vim_configurable.overrideAttrs (drv: {
       set tabstop=4
       set softtabstop=4
       set shiftwidth=4
-      set textwidth=79
       set background=dark
       set history=500
       set backspace=indent,eol,start
