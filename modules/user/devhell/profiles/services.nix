@@ -96,6 +96,7 @@ in {
 
     services.mpd = {
       enable = true;
+      startWhenNeeded = true;
       extraConfig = ''
         input {
           plugin "curl"
@@ -111,7 +112,6 @@ in {
         audio_output {
           type "pulse"
           name "Pulse Output"
-          server "127.0.0.1"
         }
 
         replaygain "album"
