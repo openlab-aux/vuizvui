@@ -9,7 +9,10 @@ let
     ;
 
   bins = (getBins pkgs.pulseaudioLight [ "pactl" ])
-      // (getBins pkgs.dbus [ "dbus-run-session" ])
+      // (getBins pkgs.dbus [
+        "dbus-run-session"
+        "dbus-update-activation-environment"
+      ])
       // (getBins cfg.package [ "sway" ])
       // (getBins pkgs.i3status [ "i3status" ])
       // (getBins pkgs.brightnessctl [ "brightnessctl" ])
@@ -160,6 +163,7 @@ in {
       "sway/config".text = ''
         # correct DPI after hotplugging
         exec ${pkgs.xorg.xrdb}/bin/xrdb -load ${dpiXresources}
+        exec ${bins.dbus-update-activation-environment} WAYLAND_DISPLAY
 
         # set the one true modifier
         set $mod Mod4
