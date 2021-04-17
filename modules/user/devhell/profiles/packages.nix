@@ -226,7 +226,6 @@ in {
       testdisk
       tig
       toilet
-      transcode
       tree
       tty-clock
       ugrep
