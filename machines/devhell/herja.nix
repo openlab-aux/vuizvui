@@ -16,7 +16,7 @@
 
     initrd = {
       availableKernelModules = [ "nvme" "ehci_pci" "xhci_pci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
-      kernelModules = [ "fuse" ];
+      kernelModules = [ "fuse" "amdgpu" ];
     };
 
     kernelModules = [ "kvm-amd" "acpi_call" ];
@@ -33,11 +33,13 @@
     };
     opengl = {
       enable = true;
+      driSupport = true;
       extraPackages = with pkgs; [
         libvdpau-va-gl
         vaapiVdpau
         amdvlk
         rocm-opencl-icd
+        rocm-opencl-runtime
       ];
     };
   };
@@ -128,7 +130,7 @@
   services.xserver = {
     enable = true;
     layout = "gb";
-    videoDrivers = [ "modesetting" ];
+    videoDrivers = [ "amdgpu" ];
 
     libinput = {
       enable = true;
