@@ -13,5 +13,6 @@ rec {
     passwordFile = "${home}/.config/passwd";
     shell = "${lib.getBin fish}/bin/fish";
     openssh.authorizedKeys.keys = authKeys;
+    isNormalUser = true;
   };
 }

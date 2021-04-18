@@ -51,6 +51,7 @@ in
       description = "BitlBee user";
       home = "/var/lib/bitlbee";
       createHome = true;
+      isNormalUser = true;
     };
 
     users.groups.bitlbee.name = "bitlbee";
