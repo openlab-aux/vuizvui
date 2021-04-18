@@ -69,6 +69,7 @@ in {
     environment.systemPackages = with pkgs; [
       curl wget
       man-pages
+      man-pages-posix
       git
       file htop psmisc tmux
       neovim
