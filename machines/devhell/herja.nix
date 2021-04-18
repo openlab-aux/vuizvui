@@ -187,7 +187,6 @@
     minicom
     pmtools
     pmutils
-    pulseaudio
     teams
     vaapiVdpau
     vdpauinfo
