@@ -7,7 +7,7 @@ let
 
   linkTo = name: path: runExeclineLocal name {} [
     "importas" "out" "out"
-    "if" [ bins.s6-ln "-sT" path "$out" ]
+    "if" [ bins.s6-ln "-sL" path "$out" ]
   ];
 
   writeRustSimpleBin = name: { dependencies ? [], ... }@args: srcFile: pkgs.buildRustCrate ({
