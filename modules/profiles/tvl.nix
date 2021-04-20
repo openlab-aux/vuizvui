@@ -13,11 +13,11 @@ in
 
   config = lib.mkIf cfg.enable {
     nix = {
-      binaryCachePublicKeys = lib.mkAfter [
+      binaryCachePublicKeys = [
         "cache.tvl.su:kjc6KOMupXc1vHVufJUoDUYeLzbwSr9abcAKdn/U1Jk="
       ];
 
-      binaryCaches = lib.mkAfter [
+      binaryCaches = [
         "https://cache.tvl.su"
       ];
 
