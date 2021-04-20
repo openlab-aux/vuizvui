@@ -198,7 +198,8 @@ in {
         pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
         execline
         pkgs.vuizvui.profpatsch.dhall
-        pkgs.vuizvui.profpatsch.dhall-flycheck
+        # TODO(Profpatsch): make dhall-flycheck build again
+        # pkgs.vuizvui.profpatsch.dhall-flycheck
       ];
       documentation = [
         # mustache-spec NOT IN 16.09
