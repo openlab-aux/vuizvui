@@ -21,7 +21,7 @@
 
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      kernelModules = [ "fuse" ];
+      kernelModules = [ "fuse" "amdgpu" ];
     };
 
     kernelParams = [ "pcie_aspm=off" ];
@@ -34,11 +34,13 @@
     cpu.amd.updateMicrocode = true;
     opengl = {
       enable = true;
+      driSupport = true;
       extraPackages = with pkgs; [
         libvdpau-va-gl
         vaapiVdpau
-        amdvlk 
+        amdvlk
         rocm-opencl-icd
+        rocm-opencl-runtime
       ];
     };
   };
@@ -103,7 +105,7 @@
   services.xserver = {
     enable = true;
     layout = "dvorak";
-    videoDrivers = [ "modesetting" ];
+    videoDrivers = [ "amdgpu" ];
 
     # XXX: Factor out and make DRY, because a lot of the stuff here is
     # duplicated in the other machine configurations.
