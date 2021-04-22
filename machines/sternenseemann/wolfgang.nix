@@ -89,7 +89,6 @@ in {
     ghc cabal-install cabal2nix
     sbcl rlwrap
     valgrind gdb
-    github-cli
     scribusUnstable gimp inkscape libreoffice
     audacity
     signal-desktop discord
