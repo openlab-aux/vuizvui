@@ -140,6 +140,8 @@ in rec {
     inherit writeExecline writeHaskellInterpret getBins runInEmptyEnv sandbox;
   };
 
+  xrandr = import ./xrandr.nix { inherit pkgs getBins runExeclineLocal writeExecline toNetstringKeyVal dhall-json; };
+
   inherit (callPackage ./utils-hs {})
     until watch-server
     haskellPackages;
@@ -185,6 +187,15 @@ in rec {
 
   toNetstring = s:
     "${toString (builtins.stringLength s)}:${s},";
+
+  toNetstringList = xs:
+    lib.concatStrings (map toNetstring xs);
+
+  toNetstringKeyVal = attrs:
+    lib.concatStrings
+      (lib.mapAttrsToList
+        (k: v: toNetstring (toNetstring k + toNetstring v))
+        attrs);
 
   inherit getBins binify;
 
