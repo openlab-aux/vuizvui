@@ -37,7 +37,6 @@ let
     inherit (profpatsch)
       writeRustSimpleBin
       writeRustSimpleLib
-      testRustSimple
       ;
   };
 

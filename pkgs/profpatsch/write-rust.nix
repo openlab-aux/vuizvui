@@ -10,7 +10,13 @@ let
     "if" [ bins.s6-ln "-sL" path "$out" ]
   ];
 
-  writeRustSimpleBin = name: { dependencies ? [], ... }@args: srcFile: pkgs.buildRustCrate ({
+  writeRustSimpleBin = name: {
+    dependencies ? [],
+    doCheck ? true,
+    ...
+  }@args: srcFile:
+    (if doCheck then testRustSimple else pkgs.lib.id)
+    (pkgs.buildRustCrate ({
       pname = name;
       version = "1.0.0";
       crateName = name;
@@ -21,9 +27,15 @@ let
         cp ${srcFile} $out/src/bin/${name}.rs
         find $out
       '';
-    } // args);
+    } // args));
 
-  writeRustSimpleLib = name: { dependencies ? [], ... }@args: srcFile: pkgs.buildRustCrate ({
+  writeRustSimpleLib = name: {
+    dependencies ? [],
+    doCheck ? true,
+    ...
+  }@args: srcFile:
+    (if doCheck then testRustSimple else pkgs.lib.id)
+    (pkgs.buildRustCrate ({
       pname = name;
       version = "1.0.0";
       crateName = name;
@@ -33,7 +45,7 @@ let
         cp ${srcFile} $out/src/lib.rs
         find $out
       '';
-    } // args);
+    } // args));
 
   /* Takes a `buildRustCrate` derivation as an input,
     * builds it with `{ buildTests = true; }` and runs
@@ -65,6 +77,5 @@ in {
     writeRustSimple
     writeRustSimpleBin
     writeRustSimpleLib
-    testRustSimple
     ;
 }

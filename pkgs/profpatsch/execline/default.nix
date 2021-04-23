@@ -1,11 +1,10 @@
-{ pkgs, writeRustSimpleLib, testRustSimple, rust-deps }:
+{ pkgs, writeRustSimpleLib, rust-deps }:
 
 let
-  el-semicolon = testRustSimple
-    (writeRustSimpleLib "el_semicolon" {
-      release = false;
-      verbose = true;
-    } ./el_semicolon.rs);
+  el-semicolon = writeRustSimpleLib "el_semicolon" {
+    release = false;
+    verbose = true;
+  } ./el_semicolon.rs;
 
   el-exec = writeRustSimpleLib "el_exec" {
     dependencies = [ rust-deps.libc ];

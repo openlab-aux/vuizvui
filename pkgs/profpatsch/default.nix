@@ -128,7 +128,7 @@ in rec {
   git-commit-index = callPackage ./git-commit-index { inherit script; };
   nix-http-serve = callPackage ./nix-http-serve {};
   nman = callPackage ./nman {
-    inherit writeRustSimpleBin testRustSimple;
+    inherit writeRustSimpleBin;
     inherit (sternenseemann) temp;
   };
   sfttime = callPackage ./sfttime {};
@@ -171,7 +171,6 @@ in rec {
     writeRustSimple
     writeRustSimpleBin
     writeRustSimpleLib
-    testRustSimple
     ;
 
   inherit (runExeclineFns)
@@ -267,7 +266,7 @@ in rec {
     record-get
     ;
 
-  inherit (import ./execline/default.nix { inherit pkgs writeRustSimpleLib testRustSimple rust-deps; })
+  inherit (import ./execline/default.nix { inherit pkgs writeRustSimpleLib rust-deps; })
     el-semicolon
     el-exec
     el-substitute
