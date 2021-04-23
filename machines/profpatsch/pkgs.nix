@@ -8,7 +8,7 @@ let
 
   mpv = pkgs.wrapMpv pkgs.mpv-unwrapped {
     scripts = [
-      (unfreeAndNonDistributablePkgs pkgs.mpvScripts.convert)
+      (unfreeAndNonDistributablePkgs.mpvScripts.convert)
     ];
   };
 
