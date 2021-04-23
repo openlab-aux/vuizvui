@@ -125,10 +125,6 @@ in {
       auto-optimise-store = true
     '';
 
-    nixpkgs.config.allowUnfreePredicate = pkg: lib.elem (lib.getName pkg) [
-      "mpv-convert-script"
-    ];
-
     ##########
     # Network
 

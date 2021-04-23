@@ -92,7 +92,7 @@ in {
         "/tmp"
         "/usr"
         # /var/lib is what we want because it contains all services,
-        # but let’s be generous and keep everthing in /var except log
+        # but let’s be generous and keep everything in /var except log
         "/var/log"
       ];
 
