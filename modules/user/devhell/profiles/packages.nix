@@ -76,6 +76,7 @@ in {
       bottom
       brave
       broot
+      catgirl
       ccrypt
       chromaprint
       cifs_utils
