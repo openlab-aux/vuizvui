@@ -642,9 +642,6 @@ let
            && builtins.match ".*MySQL.*" extraConfig != null;
       path  = ["nixos" "prosodyMysql"];
     }
-    { check = config.services.quagga.ospf.enable;
-      path  = ["nixos" "quagga"];
-    }
     { check = config.services.rabbitmq.enable;
       path  = ["nixos" "rabbitmq"];
     }
