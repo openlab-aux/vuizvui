@@ -11,6 +11,7 @@ in {
     ./base-laptop.nix
     ./desktop-sway.nix
     ./wireguard.nix
+    ./user-lukas.nix
   ];
 
   boot.initrd.availableKernelModules = [
@@ -52,12 +53,6 @@ in {
 
   networking = {
     hostName = "wolfgang";
-    firewall = {
-      enable = true;
-      allowedTCPPortRanges = [
-        { from = 9990; to = 9999; }
-      ];
-    };
     # nat networking for virtual machines / containers
     # TODO(sterni): remove when I don't have to deal
     #               with such stuff @ work anymore
@@ -66,16 +61,10 @@ in {
       internalInterfaces = [ "ve-+" ];
       externalInterface = "wlp3s0";
     };
-    networkmanager = {
-      enable = true;
-      unmanaged = [ "interface-name:ve-*" ];
-    };
+    networkmanager.unmanaged = [ "interface-name:ve-*" ];
   };
 
-
   virtualisation.docker.enable = true;
-
-  time.timeZone = "Europe/Berlin";
 
   environment.systemPackages = with pkgs; [
     vuizvui.sternenseemann.pass
@@ -124,27 +113,12 @@ in {
     };
   };
 
-  services.printing = {
-    enable = true;
-    drivers = [ pkgs.gutenprint pkgs.hplip ];
-  };
-
   services.xserver = {
     videoDrivers = [ "intel" ];
   };
 
   vuizvui.profiles.tvl = {
     enable = true;
-  };
-
-  nix.trustedUsers = [ "lukas" ];
-  users.users.lukas = {
-    isNormalUser = true;
-    uid = 1000;
-    home = "/home/lukas";
-    group = "users";
-    extraGroups = [ "wheel" "networkmanager" "audio" "docker" ];
-    shell = "${pkgs.fish}/bin/fish";
   };
 
   system.stateVersion = "unstable";

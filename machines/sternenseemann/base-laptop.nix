@@ -50,5 +50,20 @@
       enable = true;
       freeMemThreshold = 5;
     };
+
+    networking = {
+      firewall = {
+        enable = true;
+        allowedTCPPortRanges = [
+          { from = 9990; to = 9999; }
+        ];
+      };
+      networkmanager.enable = true;
+    };
+
+    services.printing = {
+      enable = true;
+      drivers = [ pkgs.gutenprint pkgs.hplip ];
+    };
   };
 }
