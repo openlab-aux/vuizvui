@@ -31,21 +31,23 @@
         "ata_piix"
         "usb_storage"
         "floppy"
+        "sd_mod"
+        "sr_mod"
         "usblp"
         "pcspkr"
         "btusb"
       ];
 
       initrd.luks.devices = {
-        main.device = "/dev/disk/by-label/crypted-main";
-        swap.device = "/dev/disk/by-label/crypted-swap";
+        crypted-main.device = "/dev/disk/by-uuid/84dc044f-3137-435f-a7ee-67112e56cfaa";
+        crypted-swap.device = "/dev/disk/by-uuid/f84ab2a9-2687-4674-a870-d037bbd84640";
       };
     };
 
     fileSystems = {
       "/" = {
-        device = "/dev/mapper/main";
-        fsType = "btrfs";
+        device = "/dev/mapper/crypted-main";
+        fsType = "ext4";
       };
 
       "/boot" = {
@@ -55,12 +57,15 @@
     };
 
     swapDevices = [
-      { device = "/dev/mapper/swap"; }
+      { device = "/dev/mapper/crypted-swap"; }
     ];
 
     hardware.enableRedistributableFirmware = true;
 
-    networking.hostName = "racker";
+    networking = {
+      hostName = "racker";
+      enableIntel2200BGFirmware = true;
+    };
 
     nix.maxJobs = 2;
 
