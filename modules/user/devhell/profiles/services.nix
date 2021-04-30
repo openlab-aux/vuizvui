@@ -30,7 +30,6 @@ in {
       gpm.enable = true;
       openssh.enable = true;
       udisks2.enable = true;
-      geoip-updater.enable = true;
       geoclue2.enable = true;
       redshift.enable = true;
       haveged.enable = true;
@@ -43,7 +42,7 @@ in {
         fade = true;
         fadeDelta = 1;
         shadow = true;
-        settings = { 
+        settings = {
           inactive-dim = 0.2;
           unredir-if-possible = false;
         };
