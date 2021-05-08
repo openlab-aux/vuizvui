@@ -15,6 +15,8 @@ let Command = CommandTemplate Arg
 let mime =
       { text =
         { html = [ "text", "html" ]
+        , gemini = [ "text", "gemini" ]
+        , gopher = [ "text", "gopher" ]
         , xml = [ "text", "xml" ]
         , any = [ "text", "*" ]
         }
@@ -60,6 +62,14 @@ let uriMimeGlobs
               let TODO = UriGlobHandler.Transparent special.fetch-http-url-mime
 
               in  UriGlobHandler.Mime mime.text.html
+          }
+        , { desc = "gemini link"
+          , glob = [ "gemini://*" ]
+          , handler = UriGlobHandler.Mime mime.text.gemini
+          }
+        , { desc = "gemini link"
+          , glob = [ "gopher://*", "gophers://*" ]
+          , handler = UriGlobHandler.Mime mime.text.gopher
           }
         , { glob = [ "mailto:*" ]
           , desc = "mail address"
@@ -109,6 +119,8 @@ let mimeMatcher =
 
         in    [ { match = mime.mail-address, cmd = special.compose-mail-to }
               , { match = mime.text.html, cmd = special.open-in-browser }
+              , { match = mime.text.gemini, cmd = oneArg (pkgSame "lagrange") }
+              , { match = mime.text.gopher, cmd = oneArg (pkgSame "lagrange") }
               , { match = mime.text.xml, cmd = special.open-in-browser }
               , { match = mime.text.any, cmd = special.open-in-editor }
               , { match = mime.image.gif, cmd = special.open-in-browser }
