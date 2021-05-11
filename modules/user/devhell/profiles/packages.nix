@@ -142,7 +142,6 @@ in {
       iprange
       iptraf-ng
       ipv6calc
-      irssi
       jfsutils
       jwhois
       kmon
@@ -153,8 +152,6 @@ in {
       lm_sensors
       lsof
       lxc
-      lynx
-      macchanger
       maim
       manpages
       mediainfo
@@ -260,6 +257,7 @@ in {
       youtube-dl
       zathura
       zbar
+      zettlr
       zip
       zotero
       zstd
