@@ -72,6 +72,7 @@ in {
       bcal
       beets
       binutils
+      blender
       bmon
       bottom
       brave
