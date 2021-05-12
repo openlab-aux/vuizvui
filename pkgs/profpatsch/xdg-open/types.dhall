@@ -36,7 +36,10 @@ let UriMimeGlob =
       , handler : UriGlobHandler
       }
 
-let MimeMatch = { match : Mime, cmd : Command }
+let
+    -- describes the command `cmd` to run for the matched mime type `mime`
+    MimeMatch =
+      { mime : Mime, cmd : Command }
 
 in  { Mime
     , Executable

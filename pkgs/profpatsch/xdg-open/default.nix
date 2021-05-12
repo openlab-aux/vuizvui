@@ -149,6 +149,7 @@ let
         open-in-editor
         dmenu-list-binaries-and-exec
         exec-in-terminal-emulator
+        notify
         ;
     };
 

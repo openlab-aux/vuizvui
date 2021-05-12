@@ -55,7 +55,7 @@ let xdg-open =
             λ(shellEscape2 : Text → Text) →
             λ(file2 : Text) →
             λ(m : types.MimeMatch) →
-              [ "${renderMime m.match})"
+              [ "${renderMime m.mime})"
               , "${shellEscapeCommand shellEscape2 file2 m.cmd}"
               , ";;"
               ]
@@ -140,7 +140,7 @@ let xdg-open =
                                   types.MimeMatch
                                   Text
                                   (mimeMatcherCase shellEscape "\"\$file\"")
-                                  config.mimeMatcher
+                                  config.orderedMimeMatchers
                             }}
                         esac
                         ''

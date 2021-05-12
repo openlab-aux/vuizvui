@@ -113,7 +113,7 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
                   { mime = [ "*" ], cmd = special.dmenu-list-binaries-and-exec }
                 }
 
-      let matchOrder =
+      let orderedMimeMatchers =
             [ mime.text.html
             , mime.text.gemini
             , mime.text.gopher
@@ -175,82 +175,9 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
               }
             ]
 
-      let mimeMatcher =
-            let pkgSame =
-                  λ(packageAndBinaryName : Text) →
-                    pkgs
-                      { package = packageAndBinaryName
-                      , binary = packageAndBinaryName
-                      }
-
-            let wrapCommand =
-                  λ(wrapper : Command) →
-                  λ(cmd : Command) →
-                    { exe = wrapper.exe
-                    , args =
-                        λ(template : Arg) →
-                            wrapper.args template
-                          # [ Arg.String cmd.exe ]
-                          # cmd.args template
-                    }
-
-            let oneArg =
-                  λ(exe : Executable) → { exe, args = λ(file : Arg) → [ file ] }
-
-            let m = λ(match : Mime) → λ(cmd : Command) → { match, cmd }
-
-            in    [ { match = mime.mail-address.mime
-                    , cmd = special.compose-mail-to
-                    }
-                  , { match = mime.text.html.mime
-                    , cmd = special.open-in-browser
-                    }
-                  , { match = mime.text.gemini.mime
-                    , cmd = oneArg (pkgSame "lagrange")
-                    }
-                  , { match = mime.text.gopher.mime
-                    , cmd = oneArg (pkgSame "lagrange")
-                    }
-                  , { match = mime.text.xml.mime
-                    , cmd = special.open-in-browser
-                    }
-                  , { match = mime.text.any.mime, cmd = special.open-in-editor }
-                  , { match = mime.image.gif.mime
-                    , cmd = special.open-in-browser
-                    }
-                  , { match = mime.image.svg.mime
-                    , cmd = oneArg (pkgSame "inkscape")
-                    }
-                  , { match = mime.image.any.mime
-                    , cmd = oneArg (pkgSame "imv")
-                    }
-                  , { match = mime.pdf.mime, cmd = oneArg (pkgSame "zathura") }
-                  , { match = mime.pgp-key.mime
-                    , cmd =
-                      { exe = pkgs { package = "gnupg", binary = "gpg" }
-                      , args =
-                          λ(file : Arg) →
-                            [ Arg.String "--import"
-                            , Arg.String "--import-options"
-                            , Arg.String "show-only"
-                            , file
-                            ]
-                      }
-                    }
-                  , { match = mime.directory.mime
-                    , cmd =
-                        special.exec-in-terminal-emulator
-                          (oneArg (pkgSame "ranger"))
-                    }
-                  , { match = mime.any.mime
-                    , cmd = special.dmenu-list-binaries-and-exec
-                    }
-                  ]
-                : List MimeMatch
-
-      in  { mimeMatcher
-          , uriMimeGlobs
+      in  { uriMimeGlobs
           , UriMimeGlob
+          , orderedMimeMatchers
           , Executable
           , Command
           , UriGlobHandler
