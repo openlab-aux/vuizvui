@@ -11,28 +11,28 @@ let
     Executable =
       Text
 
-let config = ./config.dhall
+let types = ./types.dhall
 
 let renderMime = Text/concatSep "/"
 
 let shellEscapeCommand =
       λ(shellEscape : Text → Text) →
       λ(file : Text) →
-      λ(cmd : config.Command) →
+      λ(cmd : types.Command) →
           Text/concatSep
             " "
             (   [ shellEscape cmd.exe ]
               # List/map
-                  config.Arg
+                  types.Arg
                   Text
-                  ( λ(arg : config.Arg) →
+                  ( λ(arg : types.Arg) →
                       merge
                         { String = λ(t : Text) → shellEscape t
                         , Variable = λ(t : Text) → t
                         }
                         arg
                   )
-                  (cmd.args (config.Arg.Variable file))
+                  (cmd.args (types.Arg.Variable file))
             )
         : Text
 
@@ -54,7 +54,7 @@ let xdg-open =
       let mimeMatcherCase =
             λ(shellEscape2 : Text → Text) →
             λ(file2 : Text) →
-            λ(m : config.MimeMatch) →
+            λ(m : types.MimeMatch) →
               [ "${renderMime m.match})"
               , "${shellEscapeCommand shellEscape2 file2 m.cmd}"
               , ";;"
@@ -63,17 +63,17 @@ let xdg-open =
       let mimeGlobCase =
             λ(shellEscape2 : Text → Text) →
             λ(file2 : Text) →
-            λ(g : config.UriMimeGlob) →
+            λ(g : types.UriMimeGlob) →
                 List/concatMap
                   Text
                   Text
                   ( λ(match : Text) →
                       merge
                         { Mime =
-                            λ(mime : config.Mime) →
+                            λ(mime : types.Mime) →
                               [ "${match})", "mime=${renderMime mime}", ";;" ]
                         , Transparent =
-                            λ(cmd : config.Command) →
+                            λ(cmd : types.Command) →
                               [ "${match})"
                               , "mime=\"\$(${shellEscapeCommand
                                                shellEscape2
@@ -91,57 +91,59 @@ let xdg-open =
           λ(write-dash : Text → Text → Executable) →
           λ(shellEscape : Text → Text) →
           λ(pkgs : { package : Text, binary : Text } → Executable) →
-          λ(special : config.Special) →
-            write-dash
-              "xdg-open"
-              (     ''
-                    # TODO: --dry-run to display what would be opened and why
+          λ(special : types.Special) →
+            let config = ./config.dhall pkgs special
 
-                    # partially taken from
-                    # https://github.com/march-linux/mimi/blob/master/xdg-open
+            in  write-dash
+                  "xdg-open"
+                  (     ''
+                        # TODO: --dry-run to display what would be opened and why
 
-                    set -e
-                    file="$1"
-                    mime=
+                        # partially taken from
+                        # https://github.com/march-linux/mimi/blob/master/xdg-open
 
-                    # match on protocols
-                    # if you want to match files reliably, start with file://
-                    case "$file" in
-                    ${prettyLines
-                        { indent = 2
-                        , lines =
-                            List/concatMap
-                              config.UriMimeGlob
-                              Text
-                              (mimeGlobCase shellEscape "\"\$file\"")
-                              (config.uriMimeGlobs special)
-                        }}
-                      *)
-                        # it’s a file
+                        set -e
+                        file="$1"
+                        mime=
 
-                        # strip possible protocol
-                        file=''
-                ++  "\$"
-                ++  ''
-                    {file#file://}
-                        mime=$(file -E --brief --mime-type "$file") \
-                        || (echo "$mime" 1>&2; exit 1)
-                        # ^ echo the error message of file
-                        ;;
-                    esac
+                        # match on protocols
+                        # if you want to match files reliably, start with file://
+                        case "$file" in
+                        ${prettyLines
+                            { indent = 2
+                            , lines =
+                                List/concatMap
+                                  types.UriMimeGlob
+                                  Text
+                                  (mimeGlobCase shellEscape "\"\$file\"")
+                                  config.uriMimeGlobs
+                            }}
+                          *)
+                            # it’s a file
 
-                    case "$mime" in
-                    ${prettyLines
-                        { indent = 2
-                        , lines =
-                            List/concatMap
-                              config.MimeMatch
-                              Text
-                              (mimeMatcherCase shellEscape "\"\$file\"")
-                              (config.mimeMatcher pkgs special)
-                        }}
-                    esac
-                    ''
-              )
+                            # strip possible protocol
+                            file=''
+                    ++  "\$"
+                    ++  ''
+                        {file#file://}
+                            mime=$(file -E --brief --mime-type "$file") \
+                            || (echo "$mime" 1>&2; exit 1)
+                            # ^ echo the error message of file
+                            ;;
+                        esac
+
+                        case "$mime" in
+                        ${prettyLines
+                            { indent = 2
+                            , lines =
+                                List/concatMap
+                                  types.MimeMatch
+                                  Text
+                                  (mimeMatcherCase shellEscape "\"\$file\"")
+                                  config.mimeMatcher
+                            }}
+                        esac
+                        ''
+                  )
 
 in  xdg-open

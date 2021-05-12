@@ -54,6 +54,8 @@ let
     args = file: [ file ];
   };
 
+
+
   open-in-browser = {
     exe = bins.firefox;
     args = file: [ file ];
@@ -117,6 +119,7 @@ let
       , fetch-http-url-mime : Command
       , open-in-browser : Command
       , open-in-editor : Command
+      , notify : Text -> Command
       }
     )
 → Text
@@ -125,6 +128,7 @@ let
       main = "xdg-open.dhall";
       files = [
         "config.dhall"
+        "types.dhall"
         "imports/Prelude/Text/concatSep"
         "imports/Prelude/Text/concatMap"
         "imports/Prelude/Text/concat"
