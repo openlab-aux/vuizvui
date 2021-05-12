@@ -23,9 +23,14 @@ let Special =
       }
 
 let
+    -- describes the command `cmd` to run for the matched mime type `mime`
+    MimeMatch =
+      { mime : Mime, cmd : Command }
+
+let
     -- Handler of an uri glob. Mime maps the uri to a file handler. Transparent is a command which, when run, returns a mimetype of the file.
     UriGlobHandler =
-      < Transparent : Command | Mime : Mime >
+      < Transparent : Command | Mime : MimeMatch >
 
 let UriMimeGlob =
       { desc : Text
@@ -35,11 +40,6 @@ let UriMimeGlob =
         glob : List Text
       , handler : UriGlobHandler
       }
-
-let
-    -- describes the command `cmd` to run for the matched mime type `mime`
-    MimeMatch =
-      { mime : Mime, cmd : Command }
 
 in  { Mime
     , Executable

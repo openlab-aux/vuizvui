@@ -141,37 +141,37 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
                   let TODO =
                         UriGlobHandler.Transparent special.fetch-http-url-mime
 
-                  in  UriGlobHandler.Mime mime.text.html.mime
+                  in  UriGlobHandler.Mime mime.text.html
               }
             , { desc = "gemini link"
               , glob = [ "gemini://*" ]
               , schema-prefix = [ "gemini" ]
-              , handler = UriGlobHandler.Mime mime.text.gemini.mime
+              , handler = UriGlobHandler.Mime mime.text.gemini
               }
             , { desc = "gemini link"
               , glob = [ "gopher://*", "gophers://*" ]
               , schema-prefix = [ "gopher", "gophers" ]
-              , handler = UriGlobHandler.Mime mime.text.gopher.mime
+              , handler = UriGlobHandler.Mime mime.text.gopher
               }
             , { glob = [ "mailto:*" ]
               , desc = "mail address"
               , schema-prefix = [ "mailto" ]
-              , handler = UriGlobHandler.Mime mime.mail-address.mime
+              , handler = UriGlobHandler.Mime mime.mail-address
               }
             , { glob = [ "magnet:*" ]
               , desc = "bittorrent magnet link"
               , schema-prefix = [ "magnet" ]
-              , handler = UriGlobHandler.Mime mime.torrent.mime
+              , handler = UriGlobHandler.Mime mime.torrent
               }
             , { desc = "irc channel"
               , glob = [ "irc:*", "ircs:*" ]
               , schema-prefix = [ "irc", "ircs" ]
-              , handler = UriGlobHandler.Mime mime.irc.mime
+              , handler = UriGlobHandler.Mime mime.irc
               }
             , { desc = "local file"
               , glob = [ "file://*" ]
               , schema-prefix = [ "file" ]
-              , handler = UriGlobHandler.Mime mime.file.mime
+              , handler = UriGlobHandler.Mime mime.file
               }
             ]
 

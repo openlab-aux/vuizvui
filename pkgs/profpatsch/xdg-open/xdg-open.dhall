@@ -15,13 +15,17 @@ let types = ./types.dhall
 
 let renderMime = Text/concatSep "/"
 
-let shellEscapeCommand =
+let
+    -- Escape the given shell command, at least the String arguments of it.
+    -- Passes `$file` as variable argument.
+    -- The final shell command is executed into.
+    shellEscapeExecCommand =
       λ(shellEscape : Text → Text) →
       λ(file : Text) →
       λ(cmd : types.Command) →
           Text/concatSep
             " "
-            (   [ shellEscape cmd.exe ]
+            (   [ "exec", shellEscape cmd.exe ]
               # List/map
                   types.Arg
                   Text
@@ -56,7 +60,7 @@ let xdg-open =
             λ(file2 : Text) →
             λ(m : types.MimeMatch) →
               [ "${renderMime m.mime})"
-              , "${shellEscapeCommand shellEscape2 file2 m.cmd}"
+              , "${shellEscapeExecCommand shellEscape2 file2 m.cmd}"
               , ";;"
               ]
 
@@ -70,12 +74,18 @@ let xdg-open =
                   ( λ(match : Text) →
                       merge
                         { Mime =
-                            λ(mime : types.Mime) →
-                              [ "${match})", "mime=${renderMime mime}", ";;" ]
+                            λ(mime : types.MimeMatch) →
+                              [ "${match})"
+                              , shellEscapeExecCommand
+                                  shellEscape2
+                                  file2
+                                  mime.cmd
+                              , ";;"
+                              ]
                         , Transparent =
                             λ(cmd : types.Command) →
                               [ "${match})"
-                              , "mime=\"\$(${shellEscapeCommand
+                              , "mime=\"\$(${shellEscapeExecCommand
                                                shellEscape2
                                                file2
                                                cmd})\""
