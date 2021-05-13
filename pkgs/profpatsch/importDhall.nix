@@ -35,7 +35,10 @@ let
           ${pkgs.xorg.lndir}/bin/lndir -silent $dep/${cacheDhall} ${cacheDhall}
         done
 
-        export XDG_CACHE_HOME=./${cache}
+        export XDG_CACHE_HOME=$(pwd)/${cache}
+        # go into the source directory, so that the type can import files.
+        # TODO: This is a bit of a hack hrm.
+        cd "${src}"
         printf '%s' ${pkgs.lib.escapeShellArg "${src}/${main} : ${type}"} \
           | ${dhall-nix}/bin/dhall-to-nix \
           > $out
