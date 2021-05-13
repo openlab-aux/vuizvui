@@ -53,15 +53,6 @@ in {
 
   networking = {
     hostName = "wolfgang";
-    # nat networking for virtual machines / containers
-    # TODO(sterni): remove when I don't have to deal
-    #               with such stuff @ work anymore
-    nat = {
-      enable = true;
-      internalInterfaces = [ "ve-+" ];
-      externalInterface = "wlp3s0";
-    };
-    networkmanager.unmanaged = [ "interface-name:ve-*" ];
   };
 
   virtualisation.docker.enable = true;
