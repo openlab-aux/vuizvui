@@ -27,18 +27,13 @@ let
     MimeMatch =
       { mime : Mime, cmd : Command }
 
-let
-    -- Handler of an uri glob. Mime maps the uri to a file handler. Transparent is a command which, when run, returns a mimetype of the file.
-    UriGlobHandler =
-      < Transparent : Command | Mime : MimeMatch >
-
 let UriMimeGlob =
       { desc : Text
       , -- less specific than glob, used by firefox to refer to the schema
         schema-prefix : List Text
       , -- schema shell glob to check whether a link corresponds to the schema
         glob : List Text
-      , handler : UriGlobHandler
+      , handler : MimeMatch
       }
 
 in  { Mime
@@ -47,7 +42,6 @@ in  { Mime
     , CommandTemplate
     , Command
     , Special
-    , UriGlobHandler
     , UriMimeGlob
     , MimeMatch
     }

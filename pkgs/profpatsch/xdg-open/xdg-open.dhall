@@ -72,27 +72,10 @@ let xdg-open =
                   Text
                   Text
                   ( λ(match : Text) →
-                      merge
-                        { Mime =
-                            λ(mime : types.MimeMatch) →
-                              [ "${match})"
-                              , shellEscapeExecCommand
-                                  shellEscape2
-                                  file2
-                                  mime.cmd
-                              , ";;"
-                              ]
-                        , Transparent =
-                            λ(cmd : types.Command) →
-                              [ "${match})"
-                              , "mime=\"\$(${shellEscapeExecCommand
-                                               shellEscape2
-                                               file2
-                                               cmd})\""
-                              , ";;"
-                              ]
-                        }
-                        g.handler
+                      [ "${match})"
+                      , shellEscapeExecCommand shellEscape2 file2 g.handler.cmd
+                      , ";;"
+                      ]
                   )
                   g.glob
               : List Text

@@ -10,8 +10,6 @@ let Arg = types.Arg
 
 let Mime = types.Mime
 
-let UriGlobHandler = types.UriGlobHandler
-
 let UriMimeGlob = types.UriMimeGlob
 
 let MimeMatch = types.MimeMatch
@@ -137,41 +135,37 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
           = [ { desc = "http link"
               , glob = [ "http://*", "https://*" ]
               , schema-prefix = [ "http", "https" ]
-              , handler =
-                  let TODO =
-                        UriGlobHandler.Transparent special.fetch-http-url-mime
-
-                  in  UriGlobHandler.Mime mime.text.html
+              , handler = mime.text.html
               }
             , { desc = "gemini link"
               , glob = [ "gemini://*" ]
               , schema-prefix = [ "gemini" ]
-              , handler = UriGlobHandler.Mime mime.text.gemini
+              , handler = mime.text.gemini
               }
             , { desc = "gemini link"
               , glob = [ "gopher://*", "gophers://*" ]
               , schema-prefix = [ "gopher", "gophers" ]
-              , handler = UriGlobHandler.Mime mime.text.gopher
+              , handler = mime.text.gopher
               }
             , { glob = [ "mailto:*" ]
               , desc = "mail address"
               , schema-prefix = [ "mailto" ]
-              , handler = UriGlobHandler.Mime mime.mail-address
+              , handler = mime.mail-address
               }
             , { glob = [ "magnet:*" ]
               , desc = "bittorrent magnet link"
               , schema-prefix = [ "magnet" ]
-              , handler = UriGlobHandler.Mime mime.torrent
+              , handler = mime.torrent
               }
             , { desc = "irc channel"
               , glob = [ "irc:*", "ircs:*" ]
               , schema-prefix = [ "irc", "ircs" ]
-              , handler = UriGlobHandler.Mime mime.irc
+              , handler = mime.irc
               }
             , { desc = "local file"
               , glob = [ "file://*" ]
               , schema-prefix = [ "file" ]
-              , handler = UriGlobHandler.Mime mime.file
+              , handler = mime.file
               }
             ]
 
@@ -180,7 +174,6 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
           , orderedMimeMatchers
           , Executable
           , Command
-          , UriGlobHandler
           , MimeMatch
           , Special
           , Mime
