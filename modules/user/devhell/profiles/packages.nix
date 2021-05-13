@@ -90,6 +90,7 @@ in {
       darkstat
       dcfldd
       ddrescue
+      delta
       dhcping
       di
       dmidecode
