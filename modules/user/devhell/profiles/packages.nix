@@ -134,6 +134,7 @@ in {
       graphviz
       hdparm
       hexedit
+      hexyl
       hicolor-icon-theme
       hplipWithPlugin
       htop
