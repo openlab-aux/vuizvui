@@ -259,6 +259,7 @@ in {
       youtube-dl
       zathura
       zbar
+      zellij
       zettlr
       zip
       zotero
