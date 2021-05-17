@@ -84,7 +84,7 @@
   services = {
     thermald.enable = true;
     tftpd.enable = false;
-    gnome3.gnome-keyring.enable = true;
+    gnome.gnome-keyring.enable = true;
     printing = {
       enable = true;
       drivers = [ pkgs.hplip ];
@@ -150,15 +150,15 @@
         Xcursor.theme:               Vanilla-DMZ-AA
         Xcursor.size:                22
         *.charClass:33:48,35:48,37:48,43:48,45-47:48,61:48,63:48,64:48,95:48,126:48,35:48,58:48
-        
+
         ! Copyright (c) 2016-present Arctic Ice Studio <development@arcticicestudio.com>
         ! Copyright (c) 2016-present Sven Greb <code@svengreb.de>
-        
+
         ! Project:    Nord XResources
         ! Version:    0.1.0
         ! Repository: https://github.com/arcticicestudio/nord-xresources
         ! License:    MIT
-        
+
         #define nord0 #2E3440
         #define nord1 #3B4252
         #define nord2 #434C5E
@@ -175,13 +175,13 @@
         #define nord13 #EBCB8B
         #define nord14 #A3BE8C
         #define nord15 #B48EAD
-        
+
         *.foreground:   nord4
         *.background:   nord0
         *.cursorColor:  nord4
         *fading: 35
         *fadeColor: nord3
-        
+
         *.color0: nord1
         *.color1: nord11
         *.color2: nord14
