@@ -11,8 +11,7 @@ let
     tep
     ;
 
-  bins = (getBins pkgs.xurls [ "xurls" ])
-      // (getBins pkgs.bemenu [ "bemenu" "bemenu-run" ])
+  bins = (getBins pkgs.bemenu [ "bemenu" "bemenu-run" ])
       // (getBins tep [ "tep" ])
       // (getBins pkgs.grim [ "grim" ])
       // (getBins pkgs.slurp [ "slurp" ])
@@ -80,15 +79,6 @@ in
           font-increase = "Control+Shift+b";
           font-decrease = "Control+Shift+t";
           font-reset = "Control+Shift+0";
-          pipe-visible = {
-            bind = "Control+Shift+e";
-            cmd = ''sh -c "${lib.concatStringsSep " | " [
-              bins.xurls
-              "tac"
-              "${bins.bemenu} -l 10"
-              "xargs -r $BROWSER"
-            ]}"'';
-          };
         };
 
         mouse-bindings = {
