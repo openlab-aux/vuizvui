@@ -260,6 +260,8 @@ in rec {
     printenv
     ;
 
+  text-letter = import ./text-letter.nix { inherit pkgs rust-deps writeRustSimple writeExecline getBins; };
+
   inherit (import ./netencode { inherit pkgs writeRustSimpleLib writeRustSimple el-semicolon el-exec; })
     netencode-rs
     netencode-rs-tests
