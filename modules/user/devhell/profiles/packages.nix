@@ -186,6 +186,7 @@ in {
       pamixer
       pandoc
       paperkey
+      pastel
       pbzip2
       pciutils
       pigz
