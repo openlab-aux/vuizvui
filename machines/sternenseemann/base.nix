@@ -70,7 +70,7 @@ in {
       curl wget
       man-pages
       man-pages-posix
-      git
+      gitFull
       file htop psmisc tmux
       neovim
     ];
