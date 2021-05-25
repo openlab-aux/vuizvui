@@ -98,6 +98,9 @@
       enable = true;
       drivers = [ pkgs.foo2zjs pkgs.hplip ];
     };
+    syncthing = {
+      enable = true;
+    };
   };
 
   services.zfs.autoScrub.enable = true;
