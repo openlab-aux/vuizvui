@@ -98,6 +98,7 @@ in {
       duf
       duff
       e2fsprogs
+      element-desktop
       ethtool
       fd
       fdupes
