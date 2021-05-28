@@ -53,6 +53,10 @@ in {
       };
     };
 
+    environment.etc."mdadm.conf".text = ''
+      MAILADDR root
+    '';
+
     environment.systemPackages = with pkgs; [
       abook
       accountsservice
