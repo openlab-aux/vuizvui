@@ -43,4 +43,5 @@
   ./user/profpatsch/services/dunst.nix
   ./user/sternenseemann/documentation/mandoc.nix
   ./user/sternenseemann/services/sway.nix
+  ./user/sternenseemann/programs/saneterm.nix
 ]

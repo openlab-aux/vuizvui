@@ -18,6 +18,8 @@ let
       // (getBins pkgs.mako [ "makoctl" ])
       // (getBins screenshot [ "screenshot" ])
       // (getBins pkgs.foot [ "foot" ])
+      // (getBins pkgs.bash [ "sh" ])
+      // (getBins config.vuizvui.user.sternenseemann.programs.saneterm.package [ "saneterm" ])
       ;
 
   screenshot = pkgs.writers.writeDashBin "screenshot" ''
@@ -46,6 +48,7 @@ in
         "$mod+g" = "${bins.tep} copy -l 25 -p 'tep>' -i";
         "$mod+c" = "${bins.makoctl} dismiss -a";
         "$mod+x" = bins.screenshot;
+        "$mod+Shift+Return" = "${bins.saneterm} ${bins.sh}";
       };
       term = bins.foot;
       menu = "${bins.bemenu-run} -l 10 -i";
@@ -95,6 +98,8 @@ in
         };
       };
     };
+
+    vuizvui.user.sternenseemann.programs.saneterm.enable = true;
 
     # notifications
     services.dbus.packages = [ pkgs.mako ];
