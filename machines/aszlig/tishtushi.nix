@@ -31,6 +31,8 @@
     '';
   };
 
+  hardware.cpu.intel.updateMicrocode = true;
+
   networking.hostName = "tishtushi";
   networking.wireless.enable = lib.mkForce true;
   networking.interfaces.wlp2s0.useDHCP = true;

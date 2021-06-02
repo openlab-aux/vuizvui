@@ -24,8 +24,6 @@ in {
       version = 2;
     };
 
-    hardware.cpu.intel.updateMicrocode = true;
-
     users.defaultUserShell = "/var/run/current-system/sw/bin/zsh";
 
     networking.wireless.enable = false;

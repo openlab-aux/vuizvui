@@ -74,6 +74,8 @@ in {
     hplip = super.hplip.override { withPlugin = true; };
   }));
 
+  hardware.cpu.amd.updateMicrocode = true;
+
   hardware.sane.enable = true;
   hardware.sane.extraBackends = [ pkgs.hplip ];
 

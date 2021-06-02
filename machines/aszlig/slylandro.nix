@@ -23,6 +23,8 @@
     };
   };
 
+  hardware.cpu.intel.updateMicrocode = true;
+
   networking.hostName = "slylandro";
   networking.wireless.enable = lib.mkForce true;
   networking.interfaces.enp5s0.useDHCP = true;
