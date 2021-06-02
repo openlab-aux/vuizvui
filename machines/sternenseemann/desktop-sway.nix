@@ -18,7 +18,7 @@ let
       // (getBins pkgs.mako [ "makoctl" ])
       // (getBins screenshot [ "screenshot" ])
       // (getBins pkgs.foot [ "foot" ])
-      // (getBins pkgs.bash [ "sh" ])
+      // (getBins pkgs.dash [ "dash" ])
       // (getBins config.vuizvui.user.sternenseemann.programs.saneterm.package [ "saneterm" ])
       ;
 
@@ -48,7 +48,7 @@ in
         "$mod+g" = "${bins.tep} copy -l 25 -p 'tep>' -i";
         "$mod+c" = "${bins.makoctl} dismiss -a";
         "$mod+x" = bins.screenshot;
-        "$mod+Shift+Return" = "${bins.saneterm} ${bins.sh}";
+        "$mod+Shift+Return" = "${bins.saneterm} -- ${bins.dash} -l";
       };
       term = bins.foot;
       menu = "${bins.bemenu-run} -l 10 -i";
