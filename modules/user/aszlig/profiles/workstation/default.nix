@@ -32,7 +32,9 @@ in {
       })
     ];
 
-    vuizvui.requiresTests = lib.singleton ["vuizvui" "programs" "psi"];
+    vuizvui.requiresTests = [
+      ["vuizvui" "aszlig" "programs" "psi"]
+    ];
 
     environment.pathsToLink = lib.singleton "/share/chromium/extensions";
 

@@ -38,7 +38,9 @@ in {
   config = lib.mkIf cfg.enable {
     environment.systemPackages = lib.singleton cfg.package;
 
-    vuizvui.requiresTests = lib.singleton ["vuizvui" "programs" "flameshot"];
+    vuizvui.requiresTests = [
+      ["vuizvui" "aszlig" "programs" "flameshot"]
+    ];
 
     services.dbus.packages = lib.singleton (pkgs.writeTextFile {
       name = "flameshot-dbus";
