@@ -19,11 +19,6 @@ in {
       '';
     };
 
-    boot.loader.grub = {
-      enable = true;
-      version = 2;
-    };
-
     users.defaultUserShell = "/var/run/current-system/sw/bin/zsh";
 
     networking.wireless.enable = false;

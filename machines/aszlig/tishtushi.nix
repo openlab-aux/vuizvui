@@ -8,6 +8,7 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.loader = {
+    grub.enable = true;
     grub.device = "/dev/disk/by-id/ata-Hitachi_HTS543232A7A384_E2P31243FGB6PJ";
     timeout = 1;
   };

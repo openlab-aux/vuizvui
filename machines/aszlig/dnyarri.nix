@@ -44,7 +44,7 @@ in {
 
   boot = {
     loader.systemd-boot.enable = true;
-    loader.grub.enable = lib.mkForce false;
+    loader.grub.enable = false;
     loader.efi.canTouchEfiVariables = true;
 
     kernelPackages = pkgs.linuxPackages_latest;
