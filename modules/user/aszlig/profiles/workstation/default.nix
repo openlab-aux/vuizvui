@@ -32,6 +32,8 @@ in {
       })
     ];
 
+    vuizvui.requiresTests = lib.singleton ["vuizvui" "programs" "psi"];
+
     environment.pathsToLink = lib.singleton "/share/chromium/extensions";
 
     # The default theme hurts my eyes.
