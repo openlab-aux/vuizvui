@@ -473,8 +473,25 @@ in {
           description = "do a barrel roll";
           serviceConfig = {
             Restart = "no";
-            ExecStart = "${pkgs.writers.writeDash "barrel-roll" ''
-              ${pkgs.libnotify}/bin/notify-send --urgency=critical "Do a barrel roll!"
+            ExecStart = "${pkgs.writers.writePython3 "barrel-roll" {
+              flakeIgnore = [ "E121" "E128" "E999" "E203" "E201" "E202" "E501" ];
+            } ''
+              import random
+              import subprocess as sub
+              excercises = [
+                 { "name": "burpies"
+                 , "sets": 2
+                 , "reps": 10
+                 , "sigma": 2 },
+              ]
+              ex = random.choice(excercises)
+              reps = round(random.gauss(ex['reps'], ex['sigma']))
+              msg = "Do a barrel roll! {} {}, {} sets".format(reps, ex['name'], ex['sets'])
+              sub.check_call([
+                "${pkgs.libnotify}/bin/notify-send",
+                "--urgency=critical",
+                msg
+              ])
             ''}";
             };
         };
@@ -483,7 +500,7 @@ in {
           wantedBy = [ "timers.target" ];
           timerConfig = {
             OnStartupSec="10m";
-            OnUnitActiveSec ="1h";
+            OnUnitActiveSec ="3h";
             AccuracySec="15m";
           };
         };
