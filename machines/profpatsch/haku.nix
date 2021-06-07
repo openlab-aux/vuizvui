@@ -6,13 +6,18 @@ let
 
   hakuHostName = "haku.profpatsch.de";
 
-  warpspeedPort = 1338;
-  youtube2audiopodcastPort = "1339";
+  youtube2audiopodcastPort = 1339;
   youtube2audiopodcastSubdir = "/halp";
 
+  sshPort = 7001;
+  warpspeedPort = 1338;
+  wireguardPortUdp = 6889;
+  tailscaleInterface = "tailscale0";
+  tailscaleAddress = "100.76.60.85";
+  gonicPortTailscale = 4747;
   ethernetInterface = "enp0s20";
   wireguard = {
-    port = 6889;
+    port = wireguardPortUdp;
     interface = "wg0";
     internalNetwork =
       let genIp = cidr: lastByte: "10.42.0.${toString lastByte}/${toString cidr}";
@@ -62,7 +67,7 @@ in
       channel = "https://headcounter.org/hydra/channel/custom/openlab/vuizvui/channels.machines.profpatsch.haku";
     };
 
-    vuizvui.user.profpatsch.server.sshPort = 7001;
+    vuizvui.user.profpatsch.server.sshPort = sshPort;
 
     boot.loader.grub.device = "/dev/sda";
 
@@ -144,7 +149,7 @@ in
         wantedBy = [ "default.target" ];
         script = "${pkgs.vuizvui.profpatsch.youtube2audiopodcast {
           url = "https://${hakuHostName}${youtube2audiopodcastSubdir}";
-          internalPort = youtube2audiopodcastPort;
+          internalPort = toString youtube2audiopodcastPort;
         }}";
         serviceConfig.User = config.users.users.youtube2audiopodcast.name;
       };
@@ -202,6 +207,14 @@ in
           wireguard.port
           60100
         ];
+
+        interfaces.${tailscaleInterface} = {
+          allowedTCPPorts = [
+            gonicPortTailscale
+            # sambaPortTailscale
+          ];
+        };
+
         # forward wireguard connections to ethernet device (VPN)
         extraCommands = ''
           iptables -t nat -A POSTROUTING -s ${wireguard.internalNetwork.range} -o ${ethernetInterface} -j MASQUERADE
@@ -232,10 +245,16 @@ in
         ];
       };
 
+
       nameservers = [
         "62.210.16.6"
         "62.210.16.7"
       ];
+    };
+
+    services.tailscale = {
+      enable = true;
+      # interfaceName = tailscaleInterface;
     };
   };
 }
