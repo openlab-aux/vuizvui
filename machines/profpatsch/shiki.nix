@@ -400,6 +400,7 @@ in {
           horizontal_padding = 3;
           # follow keyboard focus
           follow = "keyboard";
+          max_icon_size = 45;
         };
       };
       iconTheme = {
