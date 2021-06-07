@@ -47,6 +47,11 @@ in {
       speed = 280;
     };
 
+    powerManagement = {
+      powertop.enable = true;
+      cpuFreqGovernor = "powersave";
+    };
+
     hardware.pulseaudio = {
       enable = true;
       zeroconf.discovery.enable = true;
