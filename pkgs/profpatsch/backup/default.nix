@@ -46,19 +46,23 @@ let
     ".config/chromium/Default/IndexedDB/"
     ".config/chromium/Default/Local?Storage/"
     ".config/chromium/Default/Application?Cache/"
+    "Android/"
+    # no idea why Code is in .config …
+    ".config/Code/"
     ".stack/"
     ".cargo/"
     ".mozilla/firefox/*.default/storage/"
     ".cabal/"
     ".go/"
+    ".rustup/"
+    ".android/"
+    ".vscode/"
     ".vagrant.d/"
     ".minecraft/"
     ".npm/"
     ".gem/"
     # consistently updating caches
     ".Mail/.notmuch/xapian/"
-    # tmp stuff
-    "Mail-bak/"
   ];
 
   exclude-code-build-dirs = [
@@ -73,7 +77,7 @@ let
     pkgs.lib.concatMap (e: [ "--exclude" "${root}/kot/**/${e}" ]) exclude-code-build-dirs ++ [
     # "--dry-run"
     "--progress"
-    "--verbosity" "debug"
+    "--verbosity" "info"
     "--asynchronous-upload"
     "--full-if-older-than" "60D"
     "--num-retries" "3"
@@ -83,7 +87,9 @@ let
 
   callDuplicity = name: argv: writeExecline name {} ([
     # used by duplicity for all kinds of backends
-    fetchSecretIntoEnv "FTP_PASSWORD" "backups/backblaze.com/application-keys/profpatsch-restore/applicationKey"
+    # TODO: pass the right password depending on the application-key
+    # fetchSecretIntoEnv "FTP_PASSWORD" "backups/backblaze.com/application-keys/profpatsch-restore/applicationKey"
+    fetchSecretIntoEnv "FTP_PASSWORD" "backups/backblaze.com/application-keys/duplicity-main-backup/applicationKey"
     (debugExec "duplicity call")
     bins.duplicity
   ] ++ argv);
@@ -136,16 +142,18 @@ let
     read = "b2://000efe88f7148a00000000004@profpatsch-legosi/";
   };
 
-  incremental = duplicity-incremental home;
-  verify = duplicity-verify home;
+  incremental-home = duplicity-incremental home;
+  verify-home = duplicity-verify home;
+  list-home = duplicity-list home;
   verify-legosi = duplicity-verify legosi;
   restore-legosi = duplicity-restore legosi;
   list-legosi = duplicity-list legosi;
 
 in {
   inherit
-    incremental
-    verify
+    incremental-home
+    verify-home
+    list-home
     verify-legosi
     restore-legosi
     list-legosi
