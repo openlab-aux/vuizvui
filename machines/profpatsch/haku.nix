@@ -15,6 +15,8 @@ let
   tailscaleInterface = "tailscale0";
   tailscaleAddress = "100.76.60.85";
   gonicPortTailscale = 4747;
+  sambaPortTailscale = 445;
+
   ethernetInterface = "enp0s20";
   wireguard = {
     port = wireguardPortUdp;
@@ -131,6 +133,29 @@ in
       musicDirGroup = "data-seeding";
     };
 
+    services.samba = {
+      enable = true;
+      enableNmbd = false;
+      enableWinbindd = false;
+      nsswins = false;
+      extraConfig = ''
+        # only listen to tailscale
+        interfaces = ${tailscaleInterface}
+        smb ports = ${toString sambaPortTailscale}
+      '';
+      shares = {
+        data-seeding = {
+          "path" = "/data/seeding";
+          "read only" = "yes";
+          "browsable" = "yes";
+          "guest ok" = "yes";
+        };
+      };
+    };
+    # somewhat hacky, but we want tailscale to be up
+    systemd.services.samba-smbd.wants = [ "tailscaled.service" ];
+    systemd.services.samba-smbd.after = [ "tailscaled.service" ];
+
     systemd.services.warpspeed =
       let user = config.users.users.rtorrent;
       in {
@@ -211,7 +236,7 @@ in
         interfaces.${tailscaleInterface} = {
           allowedTCPPorts = [
             gonicPortTailscale
-            # sambaPortTailscale
+            sambaPortTailscale
           ];
         };
 
