@@ -42,7 +42,7 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
 
             in  { text =
                   { html =
-                    { mime = [ "text", "html" ], cmd = special.compose-mail-to }
+                    { mime = [ "text", "html" ], cmd = special.open-in-browser }
                   , gemini =
                     { mime = [ "text", "gemini" ]
                     , cmd = oneArg (pkgSame "lagrange")
