@@ -90,7 +90,6 @@ let xdg-open =
             in  write-dash
                   "xdg-open"
                   (     ''
-                        # TODO: --dry-run to display what would be opened and why
 
                         # partially taken from
                         # https://github.com/march-linux/mimi/blob/master/xdg-open
@@ -98,6 +97,9 @@ let xdg-open =
                         set -e
                         file="$1"
                         mime=
+
+                        # TODO: --dry-run to display what would be opened and why
+                        notify-send --expire-time=500 -- "xdg-open: $1"
 
                         # match on protocols
                         # if you want to match files reliably, start with file://
