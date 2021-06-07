@@ -130,6 +130,7 @@ let
 
     if len(connected) != 2:
         print("only know how to configure two monitors")
+        sys.exit(1)
 
     eDP1 = connected['eDP1']
 
