@@ -3,6 +3,7 @@
 let
   cfg = config.vuizvui.services.profpatsch.gonic;
   gonicDataDir = "/var/lib/gonic";
+  systemdDataDirSuffix = "gonic"; # implicitly scoped to /var/lib
   userName = "gonic";
 
   inherit (pkgs.vuizvui.profpatsch)
@@ -19,8 +20,13 @@ in {
    options.vuizvui.services.profpatsch.gonic = {
      enable = lib.mkEnableOption "gonic server";
 
+     listenAddress = lib.mkOption {
+       description = "daemon listen address";
+       type = lib.types.str;
+     };
+
      musicDir = lib.mkOption {
-       description = "path to the music directory";
+       description = "path to the music directory; must exist beforehand and have the right group permissions";
        type = lib.types.path;
      };
      musicDirGroup = lib.mkOption {
@@ -28,6 +34,21 @@ in {
        type = lib.types.str;
      };
 
+     podcastDir = lib.mkOption {
+       description = "path to the podcast directory; must exist beforehand and have the right group permissions";
+       type = lib.types.path;
+     };
+     podcastDirGroup = lib.mkOption {
+       description = "user group to access podcast directory";
+       type = lib.types.str;
+     };
+
+     scanIntervalMinutes = lib.mkOption {
+       description = "interval (in minutes) to check for new music (automatic scanning disabled if omitted)";
+       type = lib.types.nullOr lib.types.ints.positive;
+       default = null;
+       example = 10;
+     };
    };
 
    config = lib.mkIf cfg.enable {
@@ -40,16 +61,20 @@ in {
      systemd.services.gonic = {
        wantedBy = [ "default.target" ];
        serviceConfig = {
-         ExecStart = writeExecline "start-gonic" {} [
+         ExecStart = writeExecline "start-gonic" {} ([
            bins.gonic
-           "-listen-addr" "127.0.0.1:4747"
+           "-listen-addr" cfg.listenAddress
            "-cache-path" "${gonicDataDir}/cache"
            "-db-path" "${gonicDataDir}/db.sqlite"
            "-music-path" cfg.musicDir
-         ];
-         StateDirectory = gonicDataDir;
+           "-podcast-path" cfg.podcastDir
+         ]
+         ++ lib.optionals (cfg.scanIntervalMinutes != null) [
+           "-scan-interval" (toString cfg.scanIntervalMinutes)
+         ]);
+         StateDirectory = systemdDataDirSuffix;
          User = userName;
-         SupplementaryGroups = cfg.musicDirGroup;
+         SupplementaryGroups = [ cfg.musicDirGroup cfg.podcastDirGroup ];
        };
      };
 

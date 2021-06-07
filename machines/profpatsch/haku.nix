@@ -129,8 +129,12 @@ in
 
     vuizvui.services.profpatsch.gonic = {
       enable = true;
+      listenAddress = "${tailscaleAddress}:${toString gonicPortTailscale}";
       musicDir = "/data/seeding";
       musicDirGroup = "data-seeding";
+      podcastDir = "/data/podcasts";
+      podcastDirGroup = "data-seeding";
+      scanIntervalMinutes = 10;
     };
 
     services.samba = {
