@@ -309,7 +309,8 @@ in {
 
     # TMP
 
-    vuizvui.services.guix.enable = true;
+    # vuizvui.services.guix.enable = true;
+
     ###################
     # Graphical System
 
