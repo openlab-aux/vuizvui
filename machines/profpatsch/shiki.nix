@@ -281,6 +281,11 @@ in {
           exe = pkgs.vuizvui.profpatsch.deploy;
           name = "deploy";
         })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.xrandr.two-monitor-setup;
+          # this is still referenced in my .xbindkeysrc, which is not in my nixpkgs config
+          name = "monitor-home";
+        })
         # myPkgs.zoomboxed
         # for xte with xbindkeys
         xautomation
