@@ -29,23 +29,18 @@ in {
     #########
     # Kernel
 
-    boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" ];
-    boot.loader.grub.device = "/dev/disk/by-id/ata-CT500MX500SSD1_1809E130BEE8";
-
-    boot.initrd.luks.devices.cryptroot.device = "/dev/disk/by-uuid/2e1c433f-4a54-4f04-9073-3639b66b975d";
+    boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "xhci_pci" "nvme" "usb_storage" "sd_mod" ];
+    boot.initrd.luks.devices.cryptroot.device = "/dev/disk/by-uuid/99922061-f883-4384-b1d9-a02d2ea88e59";
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.grub.enable = false;
 
     ###########
     # Hardware
 
     fileSystems."/" = {
-      device = "/dev/disk/by-uuid/5339f027-df78-437b-8a4c-39b93abc40b9";
+      device = "/dev/disk/by-uuid/d88fb591-afa8-428f-bc24-5c096bcd762d";
       fsType = "btrfs";
-      options = [ "ssd" "subvol=/katarafs" ];
-    };
-
-    fileSystems."/boot" = {
-      device = "/dev/disk/by-uuid/53042c4f-bbf2-418b-bf85-5d148ab5dda0";
-      fsType = "ext3";
+      options = [ "ssd" "subvol=/root" ];
     };
 
     hardware.trackpoint = {

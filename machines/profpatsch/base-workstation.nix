@@ -17,11 +17,6 @@ in {
     ###########
     # Hardware
 
-    boot.loader = {
-      grub.enable = true;
-      grub.version = 2;
-    };
-
     hardware.cpu.intel.updateMicrocode = true;
 
     networking = {
