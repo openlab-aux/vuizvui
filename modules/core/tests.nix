@@ -99,8 +99,8 @@ let
     { check = config.services.cloud-init.enable;
       path  = ["nixos" "cloud-init"];
     }
-    { check = config.services.codimd.enable;
-      path  = ["nixos" "codimd"];
+    { check = config.services.hedgedoc.enable;
+      path  = ["nixos" "hedgedoc"];
     }
     { check = config.services.consul.enable;
       path  = ["nixos" "consul"];
@@ -240,7 +240,7 @@ let
     { check = config.services.glusterfs.enable;
       path  = ["nixos" "glusterfs"];
     }
-    { check = config.services.xserver.desktopManager.gnome3.enable;
+    { check = config.services.xserver.desktopManager.gnome.enable;
       path  = ["nixos" "installed-tests"];
     }
     { check = config.services.gocd-agent.enable;

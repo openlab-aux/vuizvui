@@ -173,9 +173,9 @@ in {
         xorg.xkill        # X11 application kill
       ];
       guiPkgs = [
-        gnome3.adwaita-icon-theme
+        gnome.adwaita-icon-theme
         # TODO: get themes to work. See notes.org.
-        gnome3.gnome_themes_standard
+        gnome.gnome_themes_standard
         pavucontrol
       ];
       programmingTools = [
@@ -404,7 +404,7 @@ in {
         };
       };
       iconTheme = {
-        package = pkgs.gnome3.adwaita-icon-theme;
+        package = pkgs.gnome.adwaita-icon-theme;
         name = "Adwaita";
       };
     };

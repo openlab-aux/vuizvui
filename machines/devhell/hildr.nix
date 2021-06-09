@@ -47,7 +47,7 @@
     fsType = "vfat";
   };
 
-  swapDevices = [ 
+  swapDevices = [
     { device = "/dev/disk/by-uuid/ff725995-b9a1-453f-9e6d-ba9bd6579db6"; }
   ];
 
@@ -98,7 +98,7 @@
   services = {
     thermald.enable = true;
     tftpd.enable = false;
-    gnome3.gnome-keyring.enable = true;
+    gnome.gnome-keyring.enable = true;
     printing = {
       enable = true;
       drivers = [ pkgs.foo2zjs pkgs.cups-brother-hl1110 ];

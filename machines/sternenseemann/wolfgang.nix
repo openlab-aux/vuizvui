@@ -81,7 +81,7 @@ in {
     xdg_utils                  # xdg-open etc.
     networkmanagerapplet       # for nm-connection-ediotr
     imv zathura
-    gnome3.nautilus
+    gnome.nautilus
     browser.pkg
     nix-output-monitor
     # TODO(sterni) depot.users.sterni.clhs-lookup

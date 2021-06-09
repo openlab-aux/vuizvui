@@ -32,7 +32,7 @@ in
       baseGUI = [
         filezilla
         chromium
-        gnome3.gedit
+        gnome.gedit
         gmpc
         libreoffice
         vlc

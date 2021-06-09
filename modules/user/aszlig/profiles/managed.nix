@@ -54,7 +54,7 @@ in {
       unfreeAndNonDistributablePkgs.skype
     ];
 
-    i18n.consoleUseXkbConfig = true;
+    console.useXkbConfig = true;
 
     # Printing for the most common printers among the managed machines.
     services.printing.enable = true;

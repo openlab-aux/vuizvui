@@ -127,8 +127,8 @@ in {
       gitinspector
       gitui
       glow
-      gnome3.adwaita-icon-theme
-      gnome3.defaultIconTheme
+      gnome.adwaita-icon-theme
+      gnome.defaultIconTheme
       gnufdisk
       gnumake
       gnupg
