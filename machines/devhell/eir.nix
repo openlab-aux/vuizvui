@@ -125,8 +125,10 @@
 
     libinput = {
       enable = true;
-      disableWhileTyping = true;
-      middleEmulation = true;
+      touchpad = {
+        disableWhileTyping = true;
+        middleEmulation = true;
+      };
     };
 #    synaptics = {
 #      enable = true;
