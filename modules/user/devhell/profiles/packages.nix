@@ -247,6 +247,7 @@ in {
       vanilla-dmz
       virt-viewer
       virtmanager
+      visidata
       vivid
       vlc
       vlock
