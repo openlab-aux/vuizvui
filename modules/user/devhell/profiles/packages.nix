@@ -98,6 +98,7 @@ in {
       dhcping
       di
       dmidecode
+      dogdns
       dos2unix
       duf
       duff
