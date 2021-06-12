@@ -135,7 +135,7 @@ lib.fix (self: {
   };
 
   # packaged 3rd party software
-  saneterm = pkgs.python3.pkgs.callPackage ./saneterm { };
+  saneterm = pkgs.python39Packages.callPackage ./saneterm { };
 
   shakti = callPackage ./shakti { };
 
