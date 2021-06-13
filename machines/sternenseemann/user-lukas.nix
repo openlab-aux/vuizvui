@@ -8,7 +8,7 @@
       uid = 1000;
       home = "/home/lukas";
       group = "users";
-      extraGroups = [ "wheel" "networkmanager" "audio" "docker" ];
+      extraGroups = [ "wheel" "networkmanager" "audio" "docker" "cdrom" ];
       shell = "${pkgs.fish}/bin/fish";
     };
   };
