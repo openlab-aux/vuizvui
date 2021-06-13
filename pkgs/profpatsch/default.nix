@@ -232,13 +232,15 @@ in rec {
   dhall-json = easy-dhall-nix.dhall-json-simple;
 
   # dhall-flycheck = (import /home/philip/kot/dhall/flycheck/overlay.nix pkgs pkgs).dhall-flycheck;
-  dhall-flycheck =
-    (import "${pkgs.fetchFromGitHub {
-      owner = "Profpatsch";
-      repo = "dhall-flycheck";
-      rev = "2ace6b38cec356d8821b3390b670d301d54623b";
-      sha256 = "0d6qjr245jmx1lvqdplvrshlkpfaqa46aizyhyb6hg37v8jq8rv7";
-    }}/overlay.nix" pkgs pkgs).dhall-flycheck;
+
+  # FIXME: removed 2021-06-13 since it doesn't evaluate with the unstable channel anymore
+  # dhall-flycheck =
+  #   (import "${pkgs.fetchFromGitHub {
+  #     owner = "Profpatsch";
+  #     repo = "dhall-flycheck";
+  #     rev = "2ace6b38cec356d8821b3390b670d301d54623b";
+  #     sha256 = "0d6qjr245jmx1lvqdplvrshlkpfaqa46aizyhyb6hg37v8jq8rv7";
+  #   }}/overlay.nix" pkgs pkgs).dhall-flycheck;
 
   buildDhallPackage = pkgs.callPackage ./dhall/build-dhall-package-improved.nix { inherit dhall; };
 
