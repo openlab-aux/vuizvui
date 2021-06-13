@@ -208,6 +208,7 @@ in {
       pxz
       qemu
       qrencode
+      radeontop
       recode
       reptyr
       ripgrep
