@@ -38,8 +38,6 @@
         libvdpau-va-gl
         vaapiVdpau
         amdvlk
-        rocm-opencl-icd
-        rocm-opencl-runtime
       ];
     };
   };
