@@ -53,6 +53,9 @@ in {
 
   networking = {
     hostName = "wolfgang";
+    hosts = {
+      "127.0.0.1" = [ "rocketchat" ];
+    };
   };
 
   virtualisation.docker.enable = true;
