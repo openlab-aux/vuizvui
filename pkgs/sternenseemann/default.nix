@@ -107,7 +107,7 @@ lib.fix (self: {
     patches = [ ./patches/mandoc-nix-store.patch ];
     patchFlags = [ "-p0" ];
     preConfigure = old.preConfigure + ''
-      echo READ_ALLOWED_PATH=\"$(dirname "$out")\" >> configure.local
+      echo READ_ALLOWED_PATH=\"${builtins.storeDir}\" >> configure.local
     '';
   });
 
