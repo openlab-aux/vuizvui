@@ -13,8 +13,8 @@ buildPythonApplication {
 
   src = fetchgit {
     url = "git://git.8pit.net/saneterm.git";
-    rev = "15448192c2b905a43c8b009ffeca0d6fc74fb639";
-    sha256 = "04gaclfbvm7gqjb588x3g69gygb0q9lsz2shq9b2lj63lrpwh7r0";
+    rev = "0288f7436406af694d56b5656c4a8a92b860f82b";
+    sha256 = "0pwadkrdajxsm6vj16nvkqdjfv4mz3ffsfg55l99jilil1dk0xx7";
   };
 
   nativeBuildInputs = [
