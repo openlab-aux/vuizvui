@@ -114,6 +114,7 @@ in {
       firefox
       flac
       flameshot
+      flavours
       focuswriter
       fortune
       freerdpUnstable
