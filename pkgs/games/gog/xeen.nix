@@ -1,6 +1,6 @@
 { lib, stdenv, buildSandbox, fetchGog, gogUnpackHook, bchunk, p7zip
 , scummvm, fetchFromGitHub
-, runCommand, xvfb_run
+, runCommand, xvfb-run
 
 , showItemCosts ? true
 , durableArmor ? true
@@ -86,7 +86,7 @@ let
   injectOption = c: o: lib.optionalString c "-e '/^\\[worldof/a ${o}=true'";
 
   scummVmConfig = runCommand "scummvm-xeen.ini" {
-    nativeBuildInputs = [ xvfb_run latestScummVM ];
+    nativeBuildInputs = [ xvfb-run latestScummVM ];
     inherit gameData;
   } ''
     xvfb-run scummvm -p "$gameData" -a

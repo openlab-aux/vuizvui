@@ -1,5 +1,5 @@
 { stdenv, lib, buildSandbox, writeTextFile, runCommand, fetchGog, fetchurl
-, fetchFromGitHub, winePackages, xvfb_run, ffmpeg, rename
+, fetchFromGitHub, winePackages, xvfb-run, ffmpeg, rename
 
 # Dependencies for the Stratagus engine
 , cmake, pkg-config, toluapp, lua5_1, libpng, libmng, zlib, SDL, fluidsynth
@@ -121,7 +121,7 @@ let
       downloadName = "en1installer0";
       sha256 = "1cf3c1ylgdrvkk7y25v47f66m6lp9m4wvl2aldpxzrrqdrlk34k3";
     };
-    nativeBuildInputs = [ winePackages.minimal xvfb_run ffmpeg wargus rename ];
+    nativeBuildInputs = [ winePackages.minimal xvfb-run ffmpeg wargus rename ];
   } ''
     export WINEPREFIX="$PWD"
     wine wineboot.exe

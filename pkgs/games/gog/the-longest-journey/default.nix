@@ -1,6 +1,6 @@
 { stdenv, lib, fetchGog, fetchFromGitHub, innoextract, runCommand, buildSandbox
 , SDL2, SDL2_net, freetype, libGLU_combined, glew, alsaLib
-, libogg, libvorbis, xvfb_run
+, libogg, libvorbis, xvfb-run
 }:
 
 let
@@ -68,7 +68,7 @@ let
   };
 
   configFile = runCommand "residualvm-stark.ini" {
-    nativeBuildInputs = [ xvfb_run residualvm ];
+    nativeBuildInputs = [ xvfb-run residualvm ];
     inherit gameData;
   } ''
     xvfb-run residualvm -p "$gameData" -a

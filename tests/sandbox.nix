@@ -103,7 +103,7 @@
 
     in [
       # Unfortunately, "xdg-open test-sandbox.desktop" doesn't work, so let's
-      # use gtk-launch instead. We also need xvfb_run so that we can avoid to
+      # use gtk-launch instead. We also need xvfb-run so that we can avoid to
       # start a full-blown X server.
       #
       # See also:
@@ -111,7 +111,7 @@
       #   https://askubuntu.com/questions/5172
       #   https://bugs.launchpad.net/ubuntu/+source/gvfs/+bug/378783
       #
-      (lib.getBin pkgs.gtk3) pkgs.xvfb_run
+      (lib.getBin pkgs.gtk3) pkgs.xvfb-run
 
       (pkgs.vuizvui.buildSandbox testPackage {
         paths.required = [
