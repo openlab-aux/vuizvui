@@ -1,6 +1,6 @@
 { stdenv, lib, fetchFromGitHub, cmake, makeWrapper
 , hunspell, libgcrypt, libgpgerror, libidn, libotr, libsForQt5
-, libsignal-protocol-c, libtidy, qt5
+, libsignal-protocol-c, html-tidy, qt5
 
 , substituteAll
 
@@ -71,6 +71,7 @@ in stdenv.mkDerivation rec {
   enableParallelBuilding = true;
   nativeBuildInputs = [ cmake makeWrapper qt5.wrapQtAppsHook ];
   buildInputs = [
+    html-tidy
     hunspell
     libgcrypt
     libgpgerror
@@ -78,7 +79,6 @@ in stdenv.mkDerivation rec {
     libotr
     libsForQt5.qca-qt5
     libsignal-protocol-c
-    libtidy
     usrsctp
     qt5.qtbase
     qt5.qtmultimedia
