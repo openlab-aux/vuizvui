@@ -163,7 +163,7 @@ lib.fix (self: {
 
   opam-env = writeBashBin "opam-env" ''
     nix-shell -p pkgs.opam \
-      pkgs.m4 pkgs.gnumake pkgs.binutils pkgs.gcc pkgs.gmp pkgs.glib pkgs.pkgconfig \
+      pkgs.m4 pkgs.gnumake pkgs.binutils pkgs.gcc pkgs.gmp pkgs.glib pkgs.pkg-config \
       --command ". $HOME/.opam/opam-init/init.sh; eval \`opam config env\`; return" \
   '';
 

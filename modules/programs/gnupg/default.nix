@@ -31,7 +31,7 @@ let
   '';
 
   agentWrapper = withSupervisor: pkgs.runCommandCC "gpg-agent-wrapper" {
-    buildInputs = with pkgs; [ pkgconfig systemd ];
+    buildInputs = with pkgs; [ pkg-config systemd ];
     inherit pinentryWrapper;
   } ''
     cc -Wall -shared -std=c11 \

@@ -1,4 +1,4 @@
-{ stdenv, lib, pkgconfig, closureInfo, nix, boost, dash }:
+{ stdenv, lib, pkg-config, closureInfo, nix, boost, dash }:
 
 drv: { paths ? {}, ... }@attrs:
 
@@ -97,7 +97,7 @@ in stdenv.mkDerivation ({
     done
   '';
 
-  nativeBuildInputs = [ pkgconfig ];
+  nativeBuildInputs = [ pkg-config ];
   buildInputs = [ boost nix ];
   makeFlags = [ "BINDIR=${drv}/bin" "EXTRA_NS_FLAGS=${extraNamespaceFlags}" ]
            ++ lib.optional allowBinSh "BINSH_EXECUTABLE=${dash}/bin/dash"

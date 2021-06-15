@@ -2,7 +2,7 @@
 , python, python3, pythonPackages
 
 # Dependencies for the captcha solver
-, pkgconfig, qt5
+, pkg-config, qt5
 
 , email, password
 }:
@@ -89,7 +89,7 @@ let
 
     dontUnpack = true;
 
-    nativeBuildInputs = [ pkgconfig (qt5.wrapQtAppsHook or null) ];
+    nativeBuildInputs = [ pkg-config (qt5.wrapQtAppsHook or null) ];
     buildInputs = [ qt5.qtbase qt5.qtwebengine ];
     preferLocalBuild = true;
 

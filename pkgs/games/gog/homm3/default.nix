@@ -1,5 +1,5 @@
 { stdenv, lib, buildSandbox, fetchGog, runCommand, makeWrapper, fetchFromGitHub
-, cmake, pkgconfig, python3, boost, zlib, minizip, qt5
+, cmake, pkg-config, python3, boost, zlib, minizip, qt5
 , SDL2, SDL2_image, SDL2_mixer, SDL2_ttf
 , innoextract, parallel, ffmpeg
 }:
@@ -68,7 +68,7 @@ let
 
     cmakeFlags = [ "-DCMAKE_INSTALL_LIBDIR=lib" "-DENABLE_TEST=0" ];
     enableParallelBuilding = true;
-    nativeBuildInputs = [ cmake pkgconfig python3 makeWrapper ];
+    nativeBuildInputs = [ cmake pkg-config python3 makeWrapper ];
     buildInputs = [
       boost zlib minizip SDL2 SDL2_image SDL2_mixer SDL2_ttf ffmpeg
       qt5.qtbase

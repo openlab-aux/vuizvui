@@ -2,7 +2,7 @@
 , fetchFromGitHub, winePackages, xvfb_run, ffmpeg, rename
 
 # Dependencies for the Stratagus engine
-, cmake, pkgconfig, toluapp, lua5_1, libpng, libmng, zlib, SDL, fluidsynth
+, cmake, pkg-config, toluapp, lua5_1, libpng, libmng, zlib, SDL, fluidsynth
 , bzip2, libmikmod, libogg, libvorbis, libtheora, libGLU_combined, sqlite
 }:
 
@@ -42,7 +42,7 @@ let
       "-DOpenGL_GL_PREFERENCE=GLVND" "-DENABLE_DEV=ON"
       "-DGAMEDIR=${placeholder "out"}/bin"
     ];
-    nativeBuildInputs = [ cmake pkgconfig toluapp ];
+    nativeBuildInputs = [ cmake pkg-config toluapp ];
     buildInputs = [
       toluapp lua5_1 libpng libmng zlib SDL fluidsynth bzip2 libmikmod libogg
       libvorbis libtheora libGLU_combined sqlite
@@ -106,7 +106,7 @@ let
     '';
 
     cmakeFlags = [ "-DGAMEDIR=${placeholder "out"}/bin" ];
-    nativeBuildInputs = [ cmake pkgconfig ];
+    nativeBuildInputs = [ cmake pkg-config ];
     buildInputs = [ stratagus zlib libpng bzip2 stormlib ];
   };
 
