@@ -132,7 +132,7 @@
 
       (pkgs.vuizvui.buildSandbox (pkgs.writeScriptBin "test-sandbox3" ''
         #!${pkgs.stdenv.shell}
-        echo hello network | ${pkgs.netcat-openbsd}/bin/nc -N 127.0.0.1 3000 \
+        echo hello network | ${pkgs.libressl.nc}/bin/nc -N 127.0.0.1 3000 \
           || echo netcat has failed
       '') { namespaces.net = true; })
 
