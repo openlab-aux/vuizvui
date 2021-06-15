@@ -18,13 +18,13 @@ let
 
   usrsctp = stdenv.mkDerivation {
     pname = "usrsctp";
-    version = "git20201119";
+    version = "git20210517";
 
     src = fetchFromGitHub {
       owner = "sctplab";
       repo = "usrsctp";
-      rev = "a17109528c75d01f6372d5c30851a639684c6e99";
-      sha256 = "0dqacva05zrp4wzkbafqgpzrr7bvca4dl81w7r3azglvncpxwgjg";
+      rev = "e984d7f3c1b13d0b0582497b385c93f0e8d89fb3";
+      sha256 = "0rnhbl80l7gv6r9fqja333l8g06h6cj6d422f6wkx22hfxcphxvf";
     };
 
     nativeBuildInputs = [ cmake ];
@@ -32,21 +32,21 @@ let
 
 in stdenv.mkDerivation rec {
   name = "psi-${version}";
-  version = "2.0git20201123aszlig";
+  version = "2.0git20210604aszlig";
 
   src = fetchFromGitHub {
     owner = "psi-im";
     repo = "psi";
-    rev = "aec005072fee81ef1247c6162d18b9c7572fdb31";
-    sha256 = "1a7xb403qz07fyi1zj2a6fpy7c9v4ilfbqf1mw131714szc0nrrc";
+    rev = "ac2d3dc43e5183c8cd897f12b6643de22b5a6a53";
+    sha256 = "0dpp79mmacv14haiscdra3f1znkfzrikw3m9ybq6vbbmsbs860j0";
     fetchSubmodules = true;
   };
 
   plugins = fetchFromGitHub {
     owner = "psi-im";
     repo = "plugins";
-    rev = "b613be9a7d8e91356385466cc33d3906efc1e63b";
-    sha256 = "0kqpspyx18kqd7lw21hh25bfkw66nbnpm9jr3xisyfrva7w5w0s8";
+    rev = "d4824a5c9c13cba0ae03dd265d95b5b921baf001";
+    sha256 = "1wk0ppfzadzq64hh34jr2mc7bw21bw61zd5dwk18sjr107b9khqw";
   };
 
   patches = [
