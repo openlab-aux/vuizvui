@@ -48,7 +48,7 @@ let
     inherit lib;
     inherit (runExeclineFns) runExecline;
     inherit (pkgs) runCommandLocal;
-    bin = getBins pkgs.s6PortableUtils [ "s6-touch" "s6-echo" ];
+    bin = getBins pkgs.s6-portable-utils [ "s6-touch" "s6-echo" ];
   };
 
   # TODO: upstream
@@ -90,7 +90,7 @@ let
                  { use = "if"; as = "execlineIf"; }
                  "redirfd" "importas"
                ])
-           // (getBins pkgs.s6PortableUtils
+           // (getBins pkgs.s6-portable-utils
                 [ "s6-cat" "s6-grep" "s6-touch" "s6-test" "s6-chmod" ]);
        };
     in {
