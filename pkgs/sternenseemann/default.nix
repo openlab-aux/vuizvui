@@ -114,11 +114,16 @@ lib.fix (self: {
   pass = (pkgs.pass.override {
     waylandSupport = true;
     x11Support = false;
-    dmenuSupport = true;
   }).overrideAttrs (old: {
-    postPatch = old.postPatch + ''
+    patches = old.patches ++ [ ./patches/passmenu-wayland.patch ];
+    postPatch = ''
+      ${old.postPatch}
       substituteInPlace "contrib/dmenu/passmenu" \
-        --replace "dmenu-wl" "${bins.bemenu}"
+        --replace "bemenu" "'${bins.bemenu} -l10'"
+    '';
+    postInstall = ''
+      ${old.postInstall}
+      cp "contrib/dmenu/passmenu" "$out/bin/"
     '';
   });
 
