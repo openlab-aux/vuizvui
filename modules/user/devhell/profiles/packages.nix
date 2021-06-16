@@ -82,6 +82,7 @@ in {
       brave
       broot
       catgirl
+      cbonsai
       ccrypt
       chromaprint
       cifs_utils
