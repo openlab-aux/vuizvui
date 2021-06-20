@@ -60,6 +60,7 @@ in {
     environment.systemPackages = with pkgs; [
       abook
       accountsservice
+      aerc
       ag
       alacritty
       antiword
