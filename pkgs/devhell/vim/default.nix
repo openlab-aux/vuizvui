@@ -19,6 +19,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         vim-lastplace
         vim-nix
         vim-signify
+        colorizer
       ];
       opt = [ vimtex ];
     };
