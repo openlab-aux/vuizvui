@@ -82,7 +82,7 @@ in {
           diff = "delta";
           ip = "ip --color=auto";
           sed = "sd";
-          du = "du-dunst";
+          du = "dust";
           tree = "broot";
           ps = "procs";
           ack = "ag";
