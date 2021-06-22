@@ -85,6 +85,8 @@ in {
           du = "du-dunst";
           tree = "broot";
           ps = "procs";
+          ack = "ag";
+          curl = "xh";
         };
         setOptions = [
           "auto_cd"
