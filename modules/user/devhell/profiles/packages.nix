@@ -121,10 +121,10 @@ in {
       fzf
       gcc
       gdb
+      gh
       ghostscript
       ghostwriter
       git
-      gh
       gitinspector
       gitui
       glow
@@ -138,6 +138,7 @@ in {
       gpodder
       gptfdisk
       graphviz
+      grex
       hdparm
       hexedit
       hexyl
@@ -239,6 +240,7 @@ in {
       testdisk
       tig
       toilet
+      tokei
       tree
       tty-clock
       ugrep
