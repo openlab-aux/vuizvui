@@ -77,10 +77,14 @@ in {
           source ${pkgs.fzf}/share/fzf/key-bindings.zsh
         '';
         shellAliases = {
-          ls = "ls --color=auto";
-          grep = "grep --color=auto";
-          diff = "diff --color=auto";
+          ls = "lsd";
+          grep = "rg";
+          diff = "delta";
           ip = "ip --color=auto";
+          sed = "sd";
+          du = "du-dunst";
+          tree = "broot";
+          ps = "procs";
         };
         setOptions = [
           "auto_cd"

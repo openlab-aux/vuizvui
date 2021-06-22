@@ -90,10 +90,8 @@ in {
       cipherscan
       clac
       cmatrix
-      colordiff
       cryptsetup
       cuetools
-      darkstat
       dcfldd
       ddrescue
       delta
@@ -102,13 +100,12 @@ in {
       dmidecode
       dogdns
       dos2unix
+      du-dust
       duf
-      duff
       e2fsprogs
       element-desktop
       ethtool
       fd
-      fdupes
       feh
       ffmpeg-full
       figlet
@@ -127,7 +124,7 @@ in {
       ghostscript
       ghostwriter
       git
-      gitAndTools.gh
+      gh
       gitinspector
       gitui
       glow
@@ -147,13 +144,13 @@ in {
       hicolor-icon-theme
       hplipWithPlugin
       htop
-      httpie
       imagemagick
       ipcalc
       iprange
       iptraf-ng
       ipv6calc
       jfsutils
+      jq
       jwhois
       kmon
       ldns
@@ -161,8 +158,9 @@ in {
       libarchive
       libreoffice
       lm_sensors
+      lsd
       lsof
-      lxc
+      lxd
       maim
       manpages
       mediainfo
@@ -218,6 +216,7 @@ in {
       rsync
       safecopy
       screen
+      sd
       signal-desktop
       smartmontools
       smos
@@ -267,6 +266,7 @@ in {
       wireguard
       wordgrinder
       xfsprogs
+      xh
       xlibs.xev
       youtube-dl
       zathura
