@@ -183,7 +183,7 @@ in {
       netsniff-ng
       nitrogen
       nixfmt
-      nixops
+      nixopsUnstable
       nload
       nmap
       ntfs3g
