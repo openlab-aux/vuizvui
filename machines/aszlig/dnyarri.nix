@@ -45,19 +45,9 @@ in {
     pkgs.paperwork
   ];
 
-  # This is very ugly and I really want to avoid non-free packages on all
-  # of my workstations. But right now I need to get rid of useless paper.
-  nixpkgs.config.allowUnfreePredicate = pkg: let
-    inherit (builtins.parseDrvName (pkg.name or "")) name;
-  in name == "hplip";
-  nixpkgs.overlays = lib.singleton (lib.const (super: {
-    hplip = super.hplip.override { withPlugin = true; };
-  }));
-
   hardware.cpu.amd.updateMicrocode = true;
 
   hardware.sane.enable = true;
-  hardware.sane.extraBackends = [ pkgs.hplip ];
 
   hardware.enableRedistributableFirmware = true;
 
