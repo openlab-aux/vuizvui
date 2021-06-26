@@ -108,7 +108,7 @@ in {
 
   vuizvui.user.aszlig.services.i3.workspaces."1" = {
     label = "XMPP";
-    assign = lib.singleton { class = "^(?:Tkabber|Gajim)\$"; };
+    assign = lib.singleton { class = "^(?:Tkabber|Gajim|Psi)\$"; };
   };
 
   vuizvui.user.aszlig.services.i3.workspaces."3" = {
