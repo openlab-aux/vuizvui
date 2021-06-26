@@ -78,6 +78,18 @@ in {
 
   services.btrfs.autoScrub.enable = true;
 
+  # The machine has two identical sound cards, so let's give them stable
+  # identifiers because the device names assigned by the kernel are based on
+  # initialisation order.
+  services.udev.extraRules = let
+    mkRule = id: path: ''
+      ACTION=="add", DEVPATH=="${path}", SUBSYSTEM=="sound", ATTR{id}="${id}"
+    '';
+  in lib.concatStrings (lib.mapAttrsToList mkRule {
+    lower = "/devices/pci0000:00/0000:00:03.1/0000:02:00.0/*/sound/card?*";
+    upper = "/devices/pci0000:40/0000:40:01.1/0000:41:00.0/*/sound/card?*";
+  });
+
   swapDevices = map ({ name, ... }: {
     device = "/dev/mapper/${name}";
   }) cryptDevices.swap;
