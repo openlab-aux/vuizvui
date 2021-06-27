@@ -134,6 +134,7 @@ in {
       gnumake
       gnupg
       gopass
+      gpg-tui
       gpgme
       gpodder
       gptfdisk
