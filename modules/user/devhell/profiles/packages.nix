@@ -60,7 +60,6 @@ in {
     environment.systemPackages = with pkgs; [
       abook
       accountsservice
-      aerc
       ag
       alacritty
       antiword
@@ -187,6 +186,7 @@ in {
       nixopsUnstable
       nload
       nmap
+      notmuch
       ntfs3g
       ntfsprogs
       oneshot
