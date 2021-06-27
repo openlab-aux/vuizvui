@@ -183,7 +183,7 @@ in {
       netsniff-ng
       nitrogen
       nixfmt
-      nixopsUnstable
+      nixops
       nload
       nmap
       notmuch
