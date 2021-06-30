@@ -18,6 +18,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         vim-better-whitespace
         vim-lastplace
         vim-nix
+        vim-mucomplete
         vim-signify
         vim-toml
         colorizer
@@ -50,6 +51,12 @@ pkgs.vim_configurable.overrideAttrs (drv: {
 
       filetype plugin indent on
       colorscheme tender
+
+      " mucomplete Settings
+      set completeopt+=menuone
+      set completeopt+=noinsert
+      set shortmess+=c
+      set belloff+=ctrlg
 
       " signify Settings
       set updatetime=100
