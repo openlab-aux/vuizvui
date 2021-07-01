@@ -145,6 +145,7 @@ in {
       hplipWithPlugin
       htop
       imagemagick
+      imv
       ipcalc
       iprange
       iptraf-ng
@@ -228,7 +229,6 @@ in {
       starship
       stow
       strace
-      sxiv
       tasksh
       taskwarrior
       taskwarrior-tui
