@@ -337,13 +337,11 @@ let
       installPhase = "cp -r data/syntax-highlighting/vim \"$out\"";
     };
 
-    jinja2 = stdenv.mkDerivation {
-      name = "jinja2-vim-${python3Packages.jinja2.version}";
-      inherit (python3Packages.jinja2) src;
-      phases = [ "unpackPhase" "installPhase" ];
-      installPhase = ''
-        install -vD -m 0644 ext/Vim/jinja.vim "$out/syntax/jinja.vim"
-      '';
+    jinja2 = fetchFromGitHub {
+      owner = "Glench";
+      repo = "Vim-Jinja2-Syntax";
+      rev = "2c17843b074b06a835f88587e1023ceff7e2c7d1";
+      sha256 = "13mfzsw3kr3r826wkpd3jhh1sy2j10hlj1bv8n8r01hpbngikfg7";
     };
 
     xdebug = fetchurl {
