@@ -131,6 +131,7 @@ in {
       gnufdisk
       gnumake
       gnupg
+      gomuks
       gopass
       gpg-tui
       gpgme
