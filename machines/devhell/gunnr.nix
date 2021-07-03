@@ -2,7 +2,6 @@
 
 {
   vuizvui.user.devhell.profiles.base.enable = true;
-  vuizvui.system.kernel.bfq.enable = true;
 
   boot = {
     loader = {
