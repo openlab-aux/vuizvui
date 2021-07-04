@@ -84,13 +84,7 @@ in {
     device = "/dev/mapper/${name}";
   }) cryptDevices.swap;
 
-  users.users.aszlig.extraGroups = [
-    "scanner"
-    # TODO: Try to avoid this, but as there is only a single user using audio
-    # on this machine, it's okay for now. But remember that this will break
-    # heavily, should there be another user accessing the audio devices.
-    "audio"
-  ];
+  users.users.aszlig.extraGroups = [ "scanner" ];
 
   services.xserver.videoDrivers = [ "amdgpu" ];
   services.xserver.xrandrHeads = [ "DisplayPort-0" "DisplayPort-1" ];
