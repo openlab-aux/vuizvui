@@ -94,12 +94,6 @@ in {
 
       merge.tool = "vimdiff3";
       merge.conflictstyle = "diff3";
-
-      alias.backport = let
-        release = "14.04";
-        message = "Merge release ${release} into backports.";
-      in "!git fetch upstream release-${release} &&"
-       + " git merge -m \"${message}\" --log FETCH_HEAD";
     };
 
     vuizvui.hardware.gameController."03000000ff1100004133000010010000" = {
