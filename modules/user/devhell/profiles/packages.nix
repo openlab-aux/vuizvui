@@ -139,6 +139,7 @@ in {
       gptfdisk
       graphviz
       grex
+      handlr
       hdparm
       hexedit
       hexyl
