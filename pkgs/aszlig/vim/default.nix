@@ -1,5 +1,5 @@
 { stdenv, lib, fetchurl, fetchFromGitHub, writeText, writeTextFile, writeScript
-, python3Packages, ledger, meson, vim
+, runCommand, writers, python3Packages, ledger, meson, vim
 }:
 
 let
@@ -410,6 +410,118 @@ let
     set history=500
   '';
 
+  vimLanguages = runCommand "vim-languages.json" {
+    inherit vim;
+    plugins = lib.attrValues plugins;
+  } ''
+    result=
+
+    add_synfiles() {
+      for synfile in "$@"; do
+        synbase="$(basename "$synfile")"
+        result="$result''${result:+,}\"''${synbase%.vim}\""
+      done
+    }
+
+    add_synfiles "$vim"/share/vim/vim[0-9]*/syntax/*.vim
+    for plugin in $plugins; do
+      add_synfiles "$plugin"/syntax/*.vim
+    done
+
+    echo "[$result]" > "$out"
+  '';
+
+  githubLanguages = let
+    rev = "16c70aef8cd62ca071231a380c69050f5e83c900";
+    sha256 = "1bzxvf9128dzwc3n6hamvqld1idmagx0mfw8ydg4v7789yywppjj";
+    file = "lib/linguist/languages.yml";
+    url = "https://github.com/github/linguist/raw/${rev}/${file}";
+  in fetchurl { inherit url sha256; };
+
+  blacklistedLanguages = [
+    # Support file rather than real syntax files, which we never ever want to
+    # include directly.
+    "syncolor" "synload" "syntax"
+
+    # Those have poor runtime performance because they include other syntax
+    # files. While there are certainly others, I excluded the following syntax
+    # files because I find them highly unlikely to occur in code blocks from
+    # Markdown files I care about.
+    "2html" "ant" "antlr" "groovy" "gsp" "haml" "javacc" "jinja" "jsp" "less"
+    "lucius" "phtml" "rpcgen" "sass" "scss" "smarty" "sqlj" "vim" "vue" "xs"
+
+    # Cause conflicts because they execute "syn sync linecont".
+    "fortran" "rexx" "sicad"
+
+    # These syntax files recursively include markdown.vim syntax file.
+    "lhaskell" "markdown" "pug" "rmd"
+
+    # Other markup languages I think are pretty unlikely to be included in
+    # Markdown code blocks.
+    "asciidoc" "docbk" "docbksgml" "docbkxml" "doxygen" "groff" "nroff" "rst"
+    "rtf"
+  ];
+
+  transformer = writers.writePython3Bin "transform-languages" {
+    libraries = lib.singleton python3Packages.pyyaml;
+    flakeIgnore = [ "E111" "E114" "E501" ];
+  } ''
+    import json
+    import sys
+    import yaml
+
+    blacklisted_languages = {${
+      lib.concatMapStringsSep ", " (l: "'${l}'") blacklistedLanguages
+    }}
+
+    with open(sys.argv[1]) as fp:
+      vim_languages = set(json.load(fp)) - blacklisted_languages
+
+    # This generate language canidates/aliases according to
+    # https://git.io/Jcioq with the keys being the corresponding Vim syntax
+    # file name and the values being a set of all the aliases we can use for
+    # GitHub Flavored Markdown.
+    languages = {}
+    with open(sys.argv[2]) as fp:
+      for name, lang in yaml.load(fp, Loader=yaml.CLoader).items():
+        if lang['tm_scope'] == 'none':
+          continue
+
+        aliases = lang.get('aliases', [])
+        interpreters = lang.get('interpreters', [])
+        # The Vim variant doesn't support a dot prefix to the language name.
+        extensions = [ext.lstrip('.') for ext in lang.get('extensions', [])]
+
+        raw_canidates = [name] + aliases + interpreters + extensions
+        # Note that this is not a set (yet), because order is important here,
+        # going from the most specific ones to the least specific ones.
+        canidates = [c.replace(' ', '-').lower() for c in raw_canidates]
+
+        for canidate in canidates:
+          if canidate in vim_languages:
+            # At this point we *do* want to make sure it's a set because we
+            # only want to provide the aliases once.
+            languages[canidate] = set(canidates)
+            break
+
+    # This is for getting the canidates/aliases into the format expected by
+    # g:markdown_fenced_languages, which either is the syntax file directly or
+    # some aliased mapping like "bash=sh".
+    fenced_langs = []
+    for name, canidates in languages.items():
+      fenced_langs += [c if c == name else f'{c}={name}' for c in canidates]
+
+    with open(sys.argv[3], 'w') as fp:
+      escaped = ["'" + val.replace("'", "'''") + "'" for val in fenced_langs]
+      vim_fenced_langs = '[' + ', '.join(escaped) + ']'
+      fp.write('let g:markdown_fenced_languages = ' + vim_fenced_langs + "\n")
+  '';
+
+  vimMarkdownLanguages = runCommand "markdown-languages.vim" {
+    inherit vimLanguages githubLanguages;
+    nativeBuildInputs = lib.singleton transformer;
+  } "transform-languages \"$vimLanguages\" \"$githubLanguages\" \"$out\"";
+
   plugin = ''
     " erlang
     let erlang_folding = 0
@@ -438,6 +550,9 @@ let
     let php_baselib = 1
     let php_htmlInStrings = 1
     let g:PHP_vintage_case_default_indent = 1
+
+    " markdown
+    source ${vimMarkdownLanguages}
   '';
 
   autocmd = ''
