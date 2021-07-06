@@ -18,7 +18,7 @@
       availableKernelModules = [ "ehci_pci" "ahci" "usb_storage" ];
       kernelModules = [ "fuse" ];
       postDeviceCommands = ''
-        echo noop > /sys/block/sda/queue/scheduler
+        echo none > /sys/block/sda/queue/scheduler
       '';
     };
 
