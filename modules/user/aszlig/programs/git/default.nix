@@ -1,53 +1,53 @@
 { config, lib, pkgs, ... }:
 
-with lib;
-
 let
+  inherit (lib) types;
   cfg = config.vuizvui.user.aszlig.programs.git;
 
   genConf = attrs: let
-    escStr = s: "\"${escape [ "\"" "\\" ] s}\"";
-    mkVal = v: if isBool v && v  then "true"
-          else if isBool v && !v then "false"
+    escStr = s: "\"${lib.escape [ "\"" "\\" ] s}\"";
+    mkVal = v: if lib.isBool v && v  then "true"
+          else if lib.isBool v && !v then "false"
           else escStr (toString v);
     mkLine = key: val: "${key} = ${mkVal val}";
 
-    filterNull = filterAttrs (_: v: !(isNull v));
+    joinLines = lib.concatStringsSep "\n";
+    filterNull = lib.filterAttrs (lib.const (v: !(isNull v)));
 
     mkSection = sect: subsect: vals: ''
-      [${sect}${optionalString (subsect != null) " ${escStr subsect}"}]
-      ${concatStringsSep "\n" (mapAttrsToList mkLine (filterNull vals))}
+      [${sect}${lib.optionalString (subsect != null) " ${escStr subsect}"}]
+      ${joinLines (lib.mapAttrsToList mkLine (filterNull vals))}
     '';
 
     mkConf = sect: content: let
-      subs = filterAttrs (_: isAttrs) content;
-      nonSubs = filterAttrs (_: s: !isAttrs s) content;
-      hasPlain = (attrNames nonSubs) != [];
-      plainSects = singleton (mkSection sect null nonSubs);
-    in mapAttrsToList (mkSection sect) subs ++ optional hasPlain plainSects;
+      subs = lib.filterAttrs (lib.const lib.isAttrs) content;
+      nonSubs = lib.filterAttrs (lib.const (s: !lib.isAttrs s)) content;
+      maybePlain = lib.optional (nonSubs != {});
+      plainSects = lib.singleton (mkSection sect null nonSubs);
+    in lib.mapAttrsToList (mkSection sect) subs ++ maybePlain plainSects;
 
-    text = concatStringsSep "\n" (flatten (mapAttrsToList mkConf attrs));
-  in pkgs.writeText "gitconfig" text;
+    lines = lib.flatten (lib.mapAttrsToList mkConf attrs);
+  in pkgs.writeText "gitconfig" (joinLines lines);
 
-  gitPatched = overrideDerivation pkgs.gitFull (git: {
+  gitPatched = pkgs.gitFull.overrideAttrs (git: {
     makeFlags = let
       oldFlags = git.makeFlags or [];
       newVal = "ETC_GITCONFIG=${cfg.config}";
-    in if isList oldFlags
+    in if lib.isList oldFlags
        then oldFlags ++ [ newVal ]
        else "${oldFlags} ${newVal}";
   });
 in {
   options.vuizvui.user.aszlig.programs.git = {
-    enable = mkEnableOption "Git";
+    enable = lib.mkEnableOption "Git";
 
-    config = mkOption {
+    config = lib.mkOption {
       description = "System-wide default config for Git";
 
-      type = with types; let
-        options = attrsOf (either (either bool int) str);
-        subSection = addCheck (attrsOf options) (s: all isAttrs (attrValues s));
-      in attrsOf (either subSection options);
+      type = let
+        scalar = types.oneOf [ types.bool types.int types.str ];
+        section = types.either (types.attrsOf scalar) scalar;
+      in types.attrsOf (types.attrsOf section);
 
       default = {};
       example = {
@@ -60,7 +60,7 @@ in {
     };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     environment.systemPackages = [
       gitPatched
       pkgs.gitAndTools.git-remote-hg
