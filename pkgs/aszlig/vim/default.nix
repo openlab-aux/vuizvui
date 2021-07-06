@@ -245,11 +245,11 @@ let
       type = "indent";
     };
 
-    fishSyntax = fetchVimScript {
-      name = "fish";
-      srcId = 20242;
-      sha256 = "12gfmyxxf84f19bp8xfmkb9phbfkifn89sjgi8hnv6dn0a5y1zpj";
-      type = "syntax";
+    fishSyntax = fetchFromGitHub {
+      owner = "georgewitteman";
+      repo = "vim-fish";
+      rev = "667523b8fc0310b3f09492186a1e25b978ef8e5f";
+      sha256 = "1ni9bkrc2m1y7sirp57piqks3ns4yin7hi4x71pjmyrdkqnv8xr1";
     };
 
     elmVim = fetchFromGitHub {
