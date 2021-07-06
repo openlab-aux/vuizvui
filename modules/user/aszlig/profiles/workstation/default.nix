@@ -80,7 +80,6 @@ in {
     vuizvui.user.aszlig.programs.git.enable = true;
     vuizvui.user.aszlig.programs.git.settings = {
       color.ui = "auto";
-      merge.tool = "vimdiff3";
       user.email = "aszlig@nix.build";
       user.name = "aszlig";
       user.signingkey = "DD526BC7767DBA2816C095E5684089CE67EBB691";
@@ -92,6 +91,9 @@ in {
       rerere.autoupdate = true;
       commit.gpgsign = true;
       pull.rebase = false;
+
+      merge.tool = "vimdiff3";
+      merge.conflictstyle = "diff3";
 
       alias.backport = let
         release = "14.04";
