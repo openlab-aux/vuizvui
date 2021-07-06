@@ -618,6 +618,7 @@ let
     filetype plugin indent on
     syntax on
     colorscheme elflord
+    set termguicolors
 
     ${functions}
 
@@ -652,8 +653,18 @@ let
     )
   '';
 
-in lib.overrideDerivation vim (o: {
-  postInstall = (o.postInstall or "") + ''
+in lib.overrideDerivation vim (drv: {
+  # Fix elflord color theme to use the 16 color terminal colors in GUI mode as
+  # well for consistence. Also, I'm already used to the colors and I don't for
+  # example like the "Statement" guifg color.
+  patchPhase = (drv.patchPhase or "") + ''
+    sed -i -e '
+      /^hi Normal/c hi Normal guifg=#bebebe guibg=black
+      s/ctermfg=\([^ ]*\)\(.*guifg=\)[^ ]*/ctermfg=\1\2\1/
+    ' runtime/colors/elflord.vim
+  '';
+
+  postInstall = (drv.postInstall or "") + ''
     export vimdir="$(echo "$out/share/vim/vim"[0-9]*)"
     ${lib.concatStrings (lib.mapAttrsToList installPlugin plugins)}
     ln -sf "${vimrc}" "$out/share/vim/vimrc"

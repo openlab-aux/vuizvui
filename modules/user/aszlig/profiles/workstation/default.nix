@@ -171,7 +171,8 @@ in {
         displayManager.defaultSession = "none+i3";
         displayManager.sessionCommands = ''
           ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
-            XTerm*termName:            xterm-256color
+            XTerm*termName:            xterm-direct
+            XTerm*directColor:         true
             XTerm*faceName:            MxPlus IBM VGA 8x16
             XTerm*faceSize:            12
             XTerm*renderFont:          true
