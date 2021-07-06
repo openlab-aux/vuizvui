@@ -79,7 +79,6 @@ in {
         shellAliases = {
           ls = "lsd";
           grep = "rg";
-          diff = "delta";
           ip = "ip --color=auto";
           sed = "sd";
           du = "dust";
