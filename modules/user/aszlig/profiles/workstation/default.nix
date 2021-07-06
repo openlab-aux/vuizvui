@@ -78,7 +78,7 @@ in {
     vuizvui.user.aszlig.programs.mpv.enable = true;
 
     vuizvui.user.aszlig.programs.git.enable = true;
-    vuizvui.user.aszlig.programs.git.config = {
+    vuizvui.user.aszlig.programs.git.settings = {
       color.ui = "auto";
       merge.tool = "vimdiff3";
       user.email = "aszlig@nix.build";
