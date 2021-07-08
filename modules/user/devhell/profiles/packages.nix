@@ -186,6 +186,7 @@ in {
       netsniff-ng
       nitrogen
       nixfmt
+      nixops
       nload
       nmap
       notmuch
