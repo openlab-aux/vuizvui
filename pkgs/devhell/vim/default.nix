@@ -21,7 +21,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         vim-mucomplete
         vim-signify
         vim-toml
-        colorizer
+        vim-css-color
       ];
       opt = [ vimtex ];
     };
