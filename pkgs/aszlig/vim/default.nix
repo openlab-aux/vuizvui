@@ -1,5 +1,5 @@
 { stdenv, lib, fetchurl, fetchFromGitHub, writeText, writeTextFile, writeScript
-, runCommand, writers, python3Packages, ledger, meson, vim
+, runCommand, writers, python3Packages, ledger, meson, vim, buildGoPackage
 }:
 
 let
@@ -363,11 +363,31 @@ let
       sha256 = "1insh39hzbynr6qxb215qxhpifl5m8i5i0d09a3b6v679i7s11i8";
     };
 
-    vim-css-color = fetchFromGitHub {
-      owner = "ap";
-      repo = "vim-css-color";
-      rev = "741dd18a35e251ededc0687eea9b8d100d3b83b8";
-      sha256 = "1mjwyznprhhfmwi1djyjgxkqv9bwima1ysxa9782rk198j2n87vs";
+    hexokinase = buildGoPackage {
+      name = "hexokinase";
+      goPackagePath = "hexokinase";
+      outputs = [ "out" "bin" ];
+      src = fetchFromGitHub {
+        owner = "RRethy";
+        repo = "vim-hexokinase";
+        rev = "62324b43ea858e268fb70665f7d012ae67690f43";
+        sha256 = "1qdy028i9zrldjx24blk5im35lcijvq4fwg63ks2vrrvn0dfsj01";
+        fetchSubmodules = true;
+      };
+      postPatch = ''
+        sed -i -n -e '/^let g:Hexokinase_executable_path/ {
+          :l; n; /^ *\\/bl
+          i let g:Hexokinase_executable_path = '"'$bin/bin/hexokinase'"'
+        }' -e p plugin/hexokinase.vim
+      '';
+      installPhase = ''
+        install -vD "$NIX_BUILD_TOP/go/bin/hexokinase" "$bin/bin/hexokinase"
+        cd "$NIX_BUILD_TOP/go/src/$goPackagePath"
+        mkdir "$out"
+        for i in autoload doc plugin; do
+          cp -Rd "$i" "$out"
+        done
+      '';
     };
 
     fluent = fetchFromGitHub {
@@ -553,6 +573,11 @@ let
 
     " markdown
     source ${vimMarkdownLanguages}
+
+    " hexokinase
+    let g:Hexokinase_highlighters = ['background']
+    let g:Hexokinase_refreshEvents =
+      \ ['TextChanged', 'TextChangedI', 'InsertLeave', 'BufRead']
   '';
 
   autocmd = ''
