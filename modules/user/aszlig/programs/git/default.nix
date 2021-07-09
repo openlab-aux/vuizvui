@@ -8,7 +8,7 @@ let
   gitPatched = pkgs.gitFull.overrideAttrs (git: {
     makeFlags = let
       oldFlags = git.makeFlags or [];
-      newVal = "ETC_GITCONFIG=${cfg.config}";
+      newVal = "ETC_GITCONFIG=${cfg.configFile}";
     in if lib.isList oldFlags
        then oldFlags ++ [ newVal ]
        else "${oldFlags} ${newVal}";
