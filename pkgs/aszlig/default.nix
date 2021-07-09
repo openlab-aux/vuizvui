@@ -1,4 +1,4 @@
-{ callPackage, callPackage_i686, vim_configurable, gopass, mutt }:
+{ callPackage, callPackage_i686, vim_configurable, gopass, mutt, xterm }:
 
 {
   aacolorize = callPackage ./aacolorize { };
@@ -13,4 +13,5 @@
   psi = callPackage ./psi { };
   pvolctrl = callPackage ./pvolctrl { };
   vim = callPackage ./vim { vim = vim_configurable; };
+  xterm = callPackage ./xterm { inherit xterm; };
 }

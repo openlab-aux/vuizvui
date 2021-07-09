@@ -188,6 +188,10 @@ in {
       };
     };
 
+    nixpkgs.overlays = lib.singleton (lib.const (super: {
+      xterm = super.vuizvui.aszlig.xterm;
+    }));
+
     users.users.aszlig = {
       uid = 1000;
       isNormalUser = true;

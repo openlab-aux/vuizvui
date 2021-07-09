@@ -1,0 +1,13 @@
+diff --git a/main.c b/main.c
+index ec3e9bb..88b0983 100644
+--- a/main.c
++++ b/main.c
+@@ -4580,6 +4580,8 @@ spawnXTerm(XtermWidget xw, unsigned line_speed)
+ 	    xtermSetenv("TERM", resource.term_name);
+ 	    if (!resource.term_name)
+ 		*get_tcap_buffer(xw) = 0;
++	    else if (!strcmp(resource.term_name, "xterm-direct"))
++		xtermSetenv("COLORTERM", "truecolor");
+ 
+ 	    sprintf(buf, "%lu",
+ 		    ((unsigned long) XtWindow(SHELL_OF(CURRENT_EMU()))));
