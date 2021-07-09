@@ -1,8 +1,7 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
 let
+  inherit (lib) mkOption types;
   rootChannelsPath = "/nix/var/nix/profiles/per-user/root/channels";
   channelPath = "${rootChannelsPath}/${config.vuizvui.channelName}";
 
@@ -25,8 +24,8 @@ in {
       description = ''
         Enabling this links <literal>nixos-config</literal> to be used by
         <literal>nixpkgs-config</literal>, which essentially means that
-        attributes defined in <option>nixpkgs.config</option> are also in effect
-        for user environments.
+        attributes defined in <option>nixpkgs.config</option> are also in
+        effect for user environments.
       '';
     };
 
@@ -51,12 +50,13 @@ in {
     ];
 
     environment.variables.NIXPKGS_CONFIG = let
+      inherit (config.vuizvui) enableGlobalNixpkgsConfig;
       nixpkgsCfg = toString (pkgs.writeText "nixpkgs-try-config.nix" ''
         if (builtins.tryEval <nixpkgs-config>).success
         then import <nixpkgs-config>
         else {}
       '');
-    in mkIf config.vuizvui.enableGlobalNixpkgsConfig (mkForce nixpkgsCfg);
+    in lib.mkIf enableGlobalNixpkgsConfig (lib.mkForce nixpkgsCfg);
 
     nix.nixPath = let
       nixosConfig = "/etc/nixos/configuration.nix";
@@ -70,11 +70,11 @@ in {
         "nixpkgs=${channelPath}/nixpkgs"
         "nixos-config=${nixosConfig}"
         rootChannelsPath
-      ] ++ optional config.vuizvui.enableGlobalNixpkgsConfig nixpkgsConfig;
-    in mkIf config.vuizvui.modifyNixPath (mkOverride 90 nixPath);
+      ] ++ lib.optional config.vuizvui.enableGlobalNixpkgsConfig nixpkgsConfig;
+    in lib.mkIf config.vuizvui.modifyNixPath (lib.mkOverride 90 nixPath);
 
     # correct path used by command-not-found which is enabled by default
     programs.command-not-found.dbPath =
-      mkDefault "${channelPath}/nixpkgs/programs.sqlite";
+      lib.mkDefault "${channelPath}/nixpkgs/programs.sqlite";
   };
 }
