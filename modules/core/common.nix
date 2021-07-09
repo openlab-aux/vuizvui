@@ -40,9 +40,9 @@ in {
 
   config = {
     # Expose all packages in ../../pkgs as pkgs.vuizvui in modules.
-    nixpkgs.overlays = singleton (pkgs: const {
-      vuizvui = import ../../pkgs { inherit pkgs; };
-    });
+    nixpkgs.overlays = lib.mkBefore (lib.singleton (lib.const (super: {
+      vuizvui = import ../../pkgs { pkgs = super; };
+    })));
 
     nix.binaryCaches = [ "https://headcounter.org/hydra/" ];
     nix.binaryCachePublicKeys = [
