@@ -21,7 +21,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         vim-mucomplete
         vim-signify
         vim-toml
-        vim-css-color
+        vim-hexokinase
       ];
       opt = [ vimtex ];
     };
@@ -48,6 +48,11 @@ pkgs.vim_configurable.overrideAttrs (drv: {
       set laststatus=2
       set signcolumn=number
       set timeout timeoutlen=5000 ttimeoutlen=100
+      if exists('+termguicolors')
+        let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+        let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+        set termguicolors
+      endif
 
       filetype plugin indent on
       colorscheme tender
@@ -78,6 +83,11 @@ pkgs.vim_configurable.overrideAttrs (drv: {
 
       " vimtex Settings
       let g:tex_flavor = 'latex'
+
+      " hexokinase Settings
+      let g:Hexokinase_highlighters = ['backgroundfull']
+      let g:Hexokinase_refreshEvents =
+        \ ['TextChanged', 'TextChangedI', 'InsertLeave', 'BufRead']
 
       " Autoload
       autocmd FileType tex :packadd vimtex
