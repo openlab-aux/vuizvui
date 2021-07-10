@@ -42,6 +42,12 @@ in {
         fade = true;
         fadeDelta = 1;
         shadow = true;
+        shadowExclude = [
+          "window_type = 'menu'"
+          "window_type = 'utility'"
+          "window_type = 'dropdown_menu'"
+          "window_type = 'popup_menu'"
+        ];
         settings = {
           inactive-dim = 0.2;
           unredir-if-possible = false;
