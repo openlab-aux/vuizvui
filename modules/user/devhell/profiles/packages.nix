@@ -219,6 +219,7 @@ in {
       recode
       reptyr
       ripgrep
+      rq
       rsync
       safecopy
       screen
@@ -265,15 +266,18 @@ in {
       vscodium
       vuizvui.devhell.vim
       w3m
+      watchexec
       wavpack
       wget
       which
       wipe
       wireguard
       wordgrinder
+      wuzz
       xfsprogs
       xh
       xlibs.xev
+      xsv
       youtube-dl
       zathura
       zbar
