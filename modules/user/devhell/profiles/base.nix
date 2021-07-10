@@ -85,6 +85,7 @@ in {
           tree = "broot";
           ps = "procs";
           ack = "ag";
+          less = "peep";
         };
         setOptions = [
           "auto_cd"

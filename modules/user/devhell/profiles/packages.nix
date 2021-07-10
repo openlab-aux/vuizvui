@@ -201,6 +201,7 @@ in {
       pastel
       pbzip2
       pciutils
+      peep
       pigz
       pipr
       pixz
