@@ -145,6 +145,7 @@ in {
       enableGhostscriptFonts = true;
       fonts = with pkgs; [
         clearlyU
+        fixedsys-excelsior
         cm_unicode
         corefonts
         cozette
