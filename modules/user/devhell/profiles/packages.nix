@@ -203,7 +203,7 @@ in {
       pciutils
       peep
       pigz
-      pipr
+      #pipr
       pixz
       podman
       podman-compose
