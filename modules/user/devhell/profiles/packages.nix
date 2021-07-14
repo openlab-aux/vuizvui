@@ -209,6 +209,7 @@ in {
       podman-compose
       posix_man_pages
       powertop
+      procs
       profanity
       pulsemixer
       pv
