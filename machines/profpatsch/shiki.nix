@@ -187,7 +187,7 @@ in {
 
         # TODO: move to user config
         direnv
-        httpie                       # nice http CLI
+        xh                       # reimplementation of httpie in rust (faster startup)
         jq                           # json filter
         telnet                       # tcp debugging
         # TODO: make static binaries
