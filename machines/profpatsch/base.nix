@@ -12,6 +12,8 @@ in
     # correctness before speed
     nix.useSandbox = true;
 
+    nix.maxJobs = "auto";
+
     # /tmp should never be depended on
     boot.cleanTmpDir = true;
 
