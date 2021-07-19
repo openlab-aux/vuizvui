@@ -103,14 +103,14 @@ in {
         system = "aarch64-linux";
         supportedFeatures = [ "big-parallel" ];
       }
-      # tweag remote builder
+      # possehl analytics remote builder
       {
-        hostName = "build01.tweag.io";
+        hostName = "build01.possehl-analytics.com";
         maxJobs = 24;
-        sshKey = "/root/.ssh/tweag-nix-builder";
-        sshUser = "nix";
+        sshKey = "/root/.ssh/possehl-analytics-nix-builder";
+        sshUser = "nix-builder";
         system = "x86_64-linux";
-        supportedFeatures = [ "big-parallel" ];
+        supportedFeatures = [ "kvm" "big-parallel" "nixos-test" "benchmark" ];
       }
     ];
     nix.binaryCaches = [
