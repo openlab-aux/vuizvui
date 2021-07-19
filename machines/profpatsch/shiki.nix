@@ -372,6 +372,9 @@ in {
       enable = true;
     };
 
+    # some Gnome-infested programs break without dconf
+    programs.dconf.enable = true;
+
     virtualisation.docker.enable = true;
     # virtualisation.virtualbox.host.enable = true;
     # virtualisation.libvirtd.enable = true;
