@@ -6,7 +6,7 @@ rec {
 
   philip = rec {
     name = "philip";
-    extraGroups = [ "wheel" "networkmanager" "docker" "vboxuser" "libvirtd" ];
+    extraGroups = [ "wheel" "networkmanager" "docker" "vboxusers" "libvirtd" ];
     uid = 1000;
     createHome = true;
     home = "/home/philip";
