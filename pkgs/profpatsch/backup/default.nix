@@ -54,6 +54,8 @@ let
     ".mozilla/firefox/*.default/storage/"
     ".cabal/"
     ".go/"
+    ".m2"
+    ".gradle"
     ".rustup/"
     ".android/"
     ".vscode/"
@@ -61,6 +63,7 @@ let
     ".minecraft/"
     ".npm/"
     ".gem/"
+    "VirtualBox VMs/"
     # consistently updating caches
     ".Mail/.notmuch/xapian/"
   ];
