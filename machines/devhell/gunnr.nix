@@ -106,8 +106,6 @@
     };
   };
 
-  services.openssh.enable = false;
-
   services.zfs.autoScrub.enable = true;
 
   services.xserver = {
