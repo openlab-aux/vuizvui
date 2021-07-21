@@ -42,7 +42,6 @@ in
   config = {
 
     # TODO abstract out
-    nix.maxJobs = 2;
     vuizvui.modifyNixPath = false;
     nix.nixPath = [
       "nixpkgs=${with pkgs.vuizvui.profpatsch; filterSourceGitignoreWith {
