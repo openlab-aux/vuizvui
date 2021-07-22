@@ -4,7 +4,6 @@ let
   inherit (lib) types;
   cfg = config.vuizvui.user.aszlig.programs.git;
 
-
   gitPatched = pkgs.gitFull.overrideAttrs (git: {
     makeFlags = let
       oldFlags = git.makeFlags or [];
@@ -13,6 +12,18 @@ let
        then oldFlags ++ [ newVal ]
        else "${oldFlags} ${newVal}";
   });
+
+  libgit2Patched = pkgs.libgit2.overrideAttrs (drv: {
+    postPatch = (drv.postPatch or "") + ''
+      substituteInPlace src/sysdir.c \
+        --replace '"/etc"' ${lib.escapeShellArg "\"${cfg.configFile}\""}
+    '';
+  });
+
+  deltaPatched = pkgs.delta.overrideAttrs (drv: {
+    buildInputs = (drv.buildInputs or []) ++ lib.singleton libgit2Patched;
+  });
+
 in {
   options.vuizvui.user.aszlig.programs.git = {
     enable = lib.mkEnableOption "Git";
@@ -24,6 +35,8 @@ in {
         The path to the system-wide configuration file.
       '';
     };
+
+    delta.enable = lib.mkEnableOption "using delta for Git diff";
 
     settings = lib.mkOption {
       type = let
@@ -73,10 +86,17 @@ in {
       lines = lib.flatten (lib.mapAttrsToList mkConf cfg.settings);
     in pkgs.writeText "gitconfig" (joinLines lines);
 
+    vuizvui.user.aszlig.programs.git.settings = lib.mkIf cfg.delta.enable {
+      interactive.diffFilter = "delta --color-only";
+      pager = lib.flip lib.genAttrs (lib.const "delta") [
+        "diff" "log" "reflog" "show"
+      ];
+    };
+
     environment.systemPackages = [
       gitPatched
       pkgs.gitAndTools.git-remote-hg
       pkgs.gitAndTools.hub
-    ];
+    ] ++ lib.optional cfg.delta.enable deltaPatched;
   };
 }

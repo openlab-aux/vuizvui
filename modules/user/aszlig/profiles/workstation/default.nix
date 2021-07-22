@@ -78,6 +78,7 @@ in {
     vuizvui.user.aszlig.programs.mpv.enable = true;
 
     vuizvui.user.aszlig.programs.git.enable = true;
+    vuizvui.user.aszlig.programs.git.delta.enable = true;
     vuizvui.user.aszlig.programs.git.settings = {
       color.ui = "auto";
       user.email = "aszlig@nix.build";
@@ -94,6 +95,18 @@ in {
 
       merge.tool = "vimdiff3";
       merge.conflictstyle = "diff3";
+
+      delta = {
+        commit-decoration-style = "bold yellow box";
+        file-decoration-style = "blue ul";
+        file-style = "bold blue ul";
+        hunk-header-style = "line-number dim italic syntax";
+        hunk-header-decoration-style = "blue";
+        hunk-header-line-number-style = "cyan";
+        plus-style = "syntax auto";
+        minus-style = "syntax auto";
+        line-numbers = true;
+      };
     };
 
     vuizvui.hardware.gameController."03000000ff1100004133000010010000" = {
