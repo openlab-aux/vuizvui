@@ -58,6 +58,7 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
+      #pipr
       abook
       accountsservice
       ag
@@ -171,6 +172,7 @@ in {
       mediainfo
       mkvtoolnix
       mmv
+      mnamer
       monkeysAudio
       mosh
       mp3gain
@@ -204,7 +206,6 @@ in {
       pciutils
       peep
       pigz
-      #pipr
       pixz
       podman
       podman-compose
