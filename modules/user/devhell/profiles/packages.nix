@@ -224,6 +224,7 @@ in {
       ripgrep
       rq
       rsync
+      rustscan
       safecopy
       screen
       sd
