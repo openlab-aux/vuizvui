@@ -181,7 +181,7 @@ in rec {
     runblock;
   inherit (import ./execline/nixecline.nix { inherit writeExecline; })
     backtick;
-  inherit (import ./execline/e.nix { inherit pkgs writeExecline getBins; })
+  inherit (import ./execline/e.nix { inherit pkgs writeExecline getBins writeRustSimple; })
     e;
 
   toNetstring = s:

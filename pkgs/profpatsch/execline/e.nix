@@ -1,4 +1,4 @@
-{ writeExecline, getBins, pkgs }:
+{ writeExecline, getBins, pkgs, writeRustSimple }:
 let
 
   bins = getBins pkgs.rlwrap [ "rlwrap" ]
@@ -28,20 +28,10 @@ let
     if [ $# -eq 0 ]; then
       ${shell}
     else
-      cmd=
-      # substitute "[" and "]" to execline’s "{" and "}"
-      for arg in "$@"; do
-        if [ "$arg" = "[" ]; then
-          cmd="$cmd {"
-        else if [ "$arg" = "]" ]; then
-          cmd="$cmd }"
-        else
-          cmd="$cmd $arg"
-        fi; fi
-      done
-      # call execlineb with the arguments as script
-      ${bins.execlineb} -Pc "$cmd"
+      export EXECLINE_STRICT=2
+      ${run-cmd-line-block} "$@"
     fi
   '';
 
+  run-cmd-line-block = writeRustSimple "run-cmd-line-block" {} ./run-cmd-line-block.rs;
 in { inherit e; }
