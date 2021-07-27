@@ -686,6 +686,7 @@ in lib.overrideDerivation vim (drv: {
     sed -i -e '
       /^hi Normal/c hi Normal guifg=#bebebe guibg=black
       s/ctermfg=\([^ ]*\)\(.*guifg=\)[^ ]*/ctermfg=\1\2\1/
+      s/guifg=LightBlue\>/guifg=#5fd7ff/g
     ' runtime/colors/elflord.vim
   '';
 
