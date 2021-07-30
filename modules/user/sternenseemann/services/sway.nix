@@ -240,9 +240,6 @@ in {
         # aesthetics
         font "${cfg.font.name} ${builtins.toString cfg.font.size}"
 
-        # waste some space
-        gaps inner 10
-
         # colors
         set $bg     ${cfg.colors.background}
         set $act    ${cfg.colors.active}
