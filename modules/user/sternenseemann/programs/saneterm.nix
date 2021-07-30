@@ -26,6 +26,8 @@ in
           export PAGER=cat
           export GIT_PAGER=cat
         fi
+
+        export PS1="; "
       '';
       systemPackages = [
         cfg.package
