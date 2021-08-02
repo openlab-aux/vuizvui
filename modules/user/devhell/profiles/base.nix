@@ -74,6 +74,7 @@ in {
         '';
         interactiveShellInit = ''
           zstyle ':completion:*' menu select
+          zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
           source ${pkgs.fzf}/share/fzf/key-bindings.zsh
         '';
         shellAliases = {
