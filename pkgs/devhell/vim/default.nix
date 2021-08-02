@@ -14,6 +14,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         limelight-vim
         sleuth
         tabular
+        vim-clap
         vim-illuminate
         vim-better-whitespace
         vim-lastplace
