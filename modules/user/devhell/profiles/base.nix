@@ -71,7 +71,7 @@ in {
         enable = true;
         promptInit = ''
           eval "$(${pkgs.starship}/bin/starship init zsh)"
-          ${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin}
+          ${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin
         '';
         interactiveShellInit = ''
           zstyle ':completion:*' menu select
@@ -81,7 +81,6 @@ in {
           ls = "lsd";
           grep = "rg";
           ip = "ip --color=auto";
-          sed = "sd";
           du = "dust";
           tree = "broot";
           ps = "procs";
