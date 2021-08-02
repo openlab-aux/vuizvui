@@ -71,10 +71,10 @@ in {
         enable = true;
         promptInit = ''
           eval "$(${pkgs.starship}/bin/starship init zsh)"
+          ${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin}
         '';
         interactiveShellInit = ''
           zstyle ':completion:*' menu select
-          zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
           source ${pkgs.fzf}/share/fzf/key-bindings.zsh
         '';
         shellAliases = {
