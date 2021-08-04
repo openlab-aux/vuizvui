@@ -19,6 +19,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         vim-better-whitespace
         vim-lastplace
         vim-nix
+        vim-markdown
         vim-mucomplete
         vim-signify
         vim-toml
