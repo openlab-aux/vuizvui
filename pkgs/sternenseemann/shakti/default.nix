@@ -2,12 +2,12 @@
 
 stdenv.mkDerivation {
   pname = "shakti";
-  version = "unstable-2021-04-12";
+  version = "unstable-2021-07-26";
 
   src = fetchurl {
     # mi2.0 would be for darwin but idc
     url = "https://shakti.com/download/li2.0?eula=shakti.com/license";
-    sha256 = "1hlal87azrv4gy0cav2hzfg3bj6y960a2711ns2c77ic4mjr06wm";
+    sha256 = "1dxn9f3jm69wjlsysnfyknkxy4b2agl9wwwv6x20a4g1aqmdig7p";
   };
 
   dontUnpack = true;
