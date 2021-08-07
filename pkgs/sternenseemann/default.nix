@@ -96,16 +96,15 @@ lib.fix (self: {
   # patched packages
   mandoc = pkgs.mandoc.overrideAttrs (old: rec {
     src = pkgs.fetchcvs {
-      sha256 = "13dz321f7fyqkz71xgyk42m4la9phqrijs9phn6icarnqrfi9fpr";
-      date = "2021-08-06";
+      date = "2021-08-08";
+      sha256 = "0g3hzhngklgxcyfc7mp6gq129chhgkl6z0i7r872iri4d9dq59sg";
       cvsRoot = "anoncvs@mandoc.bsd.lv:/cvs";
       module = "mandoc";
     };
+    patches = [];
     version = "unstable-${src.date}"; # actually early but idc
     # fix makewhatis(1) skipping all man pages that
     # are symlinks to /nix/store
-    patches = [ ./patches/mandoc-nix-store.patch ];
-    patchFlags = [ "-p0" ];
     preConfigure = old.preConfigure + ''
       echo READ_ALLOWED_PATH=\"${builtins.storeDir}\" >> configure.local
     '';
