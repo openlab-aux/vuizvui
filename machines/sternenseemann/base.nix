@@ -66,6 +66,33 @@ in {
       manPath = [ "share/man" "share/man/de" ];
     };
 
+    # HACK: create man0p, man1p, man3p etc. as directories in the environment
+    # out path to work around the makewhatis(8) bug that it always assumes
+    # symlinks are files. Since man3p etc. comes from a single package,
+    # buildEnv just symlinks the entire directory and makewhatis(8) then
+    # ignores it.
+    environment.extraSetup = lib.mkBefore ''
+      for dir in $out/share/man/*; do
+        section="$(basename "$dir")"
+        sectionDir="$out/share/man/$section"
+
+        if test -L "$sectionDir"; then
+          dest="$(realpath "$sectionDir")"
+
+          if test -d "$dest"; then
+            echo "Recreating $sectionDir and linking everything from $dest..." 1>&2
+
+            rm "$sectionDir"
+            mkdir "$sectionDir"
+
+            for f in "$dest"/*; do
+              ln -s "$f" -t "$sectionDir"
+            done
+          fi
+        fi
+      done
+    '';
+
     environment.systemPackages = with pkgs; [
       curl wget
       man-pages
