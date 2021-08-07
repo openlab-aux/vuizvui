@@ -96,8 +96,8 @@ lib.fix (self: {
   # patched packages
   mandoc = pkgs.mandoc.overrideAttrs (old: rec {
     src = pkgs.fetchcvs {
-      sha256 = "19cqasw7fjsmhshs5khxrv8w3vdhf8xadls70l0gzqn7cyjmgsb9";
-      date = "2021-02-07";
+      sha256 = "13dz321f7fyqkz71xgyk42m4la9phqrijs9phn6icarnqrfi9fpr";
+      date = "2021-08-06";
       cvsRoot = "anoncvs@mandoc.bsd.lv:/cvs";
       module = "mandoc";
     };
