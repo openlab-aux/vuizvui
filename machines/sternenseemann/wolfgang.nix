@@ -60,6 +60,9 @@ in {
 
   virtualisation.docker.enable = true;
 
+  # useful for debugging native compilation of packages on another platform
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   environment.systemPackages = with pkgs; [
     vuizvui.sternenseemann.pass
     exfat borgbackup
