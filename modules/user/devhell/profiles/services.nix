@@ -30,9 +30,18 @@ in {
       gpm.enable = true;
       openssh.enable = true;
       udisks2.enable = true;
-      geoclue2.enable = true;
       redshift.enable = true;
       haveged.enable = true;
+      geoclue2 = {
+        enable = true;
+        enable3G = false;
+        enableCDMA = false;
+        enableDemoAgent = true;
+        enableModemGPS = false;
+        enableNmea = false;
+        enableWifi = true;
+        submitData = true;
+      };
 
       picom = {
         enable = true;
