@@ -36,13 +36,6 @@ in {
         enableKDbus = true;
       };
 
-      conky = {
-        weatherMetarSupport = true;
-        mpdSupport = true;
-        wirelessSupport = true;
-        x11Support = false;
-      };
-
       firefox = {
         enableGTK3 = true;
         enableOfficalBranding = true;

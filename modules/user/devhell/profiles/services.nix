@@ -101,30 +101,5 @@ in {
     services.journald.extraConfig = ''
       SystemMaxUse = 50M
     '';
-
-    services.mpd = {
-      enable = true;
-      startWhenNeeded = true;
-      extraConfig = ''
-        input {
-          plugin "curl"
-        }
-
-        audio_output {
-          type "fifo"
-          name "FIFO Output"
-          path "/tmp/mpd.fifo"
-          format "44100:16:2"
-        }
-
-        audio_output {
-          type "pulse"
-          name "Pulse Output"
-          server "127.0.0.1"
-        }
-
-        replaygain "album"
-      '';
-    };
   };
 }
