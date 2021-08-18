@@ -5,7 +5,6 @@
     fonts = {
       fonts = with pkgs; [
         corefonts            # microsoft fonts
-        dejavu_fonts
         ttf_bitstream_vera   # dejavu without b&w emojis
         libertine
         liberation_ttf       # free replacements for times …
@@ -18,7 +17,6 @@
         twemoji-color-font   # emoji fallback
         unifont              # bitmap font, good fallback
         unifont_upper        # upper unicode ranges of unifont
-        spleen               # bitmap monospace font
       ];
 
       fontDir.enable = true;
