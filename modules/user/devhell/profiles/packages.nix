@@ -51,6 +51,7 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
+      #mnamer
       #pipr
       abook
       accountsservice
@@ -165,7 +166,6 @@ in {
       mediainfo
       mkvtoolnix
       mmv
-      mnamer
       monkeysAudio
       mosh
       mp3gain
