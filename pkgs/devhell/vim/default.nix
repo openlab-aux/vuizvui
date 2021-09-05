@@ -23,6 +23,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         vim-signify
         vim-toml
         vim-hexokinase
+        mkdx
       ];
       opt = [ vimtex ];
     };
