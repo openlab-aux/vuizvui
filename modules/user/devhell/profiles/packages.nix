@@ -28,8 +28,6 @@ in {
     }));
 
     nixpkgs.config = {
-      pulseaudio = true;
-
       allowUnfree = true;
 
       systemd = {
@@ -207,6 +205,7 @@ in {
       powertop
       procs
       profanity
+      pulseaudio
       pulsemixer
       pv
       pxz
