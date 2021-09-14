@@ -48,6 +48,7 @@ in {
     environment.systemPackages = with pkgs; [
       binutils
       cacert
+      ddrescue
       file
       htop
       iotop
