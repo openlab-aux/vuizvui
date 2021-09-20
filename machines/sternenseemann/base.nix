@@ -57,13 +57,15 @@ in {
     documentation = {
       enable = true;
       dev.enable = true;
-      man.enable = false;
-    };
-
-    vuizvui.user.sternenseemann.documentation.mandoc = {
-      enable = true;
-      generateCaches = true;
-      manPath = [ "share/man" "share/man/de" ];
+      man = {
+        enable = true;
+        generateCaches = true;
+        man-db.enable = false;
+        mandoc = {
+          enable = true;
+          manPath = [ "share/man" "share/man/de" ];
+        };
+      };
     };
 
     # HACK: create man0p, man1p, man3p etc. as directories in the environment
