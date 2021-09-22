@@ -50,6 +50,7 @@ in {
 
     environment.systemPackages = with pkgs; [
       #mnamer
+      #nixops
       #pipr
       abook
       accountsservice
@@ -181,7 +182,6 @@ in {
       netsniff-ng
       nitrogen
       nixfmt
-      nixops
       nload
       nmap
       notmuch
