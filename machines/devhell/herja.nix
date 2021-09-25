@@ -104,7 +104,6 @@
   vuizvui.user.devhell.profiles.services.enable = true;
 
   services = {
-    thermald.enable = true;
     gnome.gnome-keyring.enable = true;
     printing = {
       enable = true;
