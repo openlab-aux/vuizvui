@@ -205,7 +205,6 @@ in {
       powertop
       procs
       profanity
-      pulseaudio
       pulsemixer
       pv
       pxz
