@@ -93,8 +93,8 @@ let
     tlib = fetchFromGitHub {
       owner = "tomtom";
       repo = "tlib_vim";
-      rev = "bc4097bd38c4bc040fe1e74df68dec6c9adfcb6a";
-      sha256 = "19v7bgmkk4k2g1z62bd0kky29xxfq96l7wfrl27wb2zijlhbrnpz";
+      rev = "70c4e222464020edc2809c932b488daaf891eeef";
+      sha256 = "1amx220nbh1s51z35pkhvl3110pbha5qj2rdgxvg8dbqha7py9fx";
     };
 
     vamStub = writeTextFile {
