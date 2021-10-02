@@ -134,6 +134,7 @@ in {
       gptfdisk
       graphviz
       grex
+      grv
       handlr
       hdparm
       hexedit
