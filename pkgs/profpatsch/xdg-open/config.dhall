@@ -53,6 +53,10 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
                     }
                   , xml =
                     { mime = [ "text", "xml" ], cmd = special.open-in-browser }
+                  , ical =
+                    { mime = [ "text", "calendar" ]
+                    , cmd = special.add-to-calendar
+                    }
                   , any =
                     { mime = [ "text", "any" ], cmd = special.open-in-editor }
                   }
@@ -116,6 +120,7 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
             , mime.text.gemini
             , mime.text.gopher
             , mime.text.xml
+            , mime.text.ical
             , mime.text.any
             , mime.mail-address
             , mime.torrent

@@ -449,7 +449,7 @@ in {
           description = "run mbsync job every 15 minutes";
           wantedBy = [ "timers.target" ];
           timerConfig = {
-            OnStartupSec="10s";
+            OnStartupSec="30s";
             OnUnitActiveSec ="15m";
           };
         };
@@ -458,6 +458,22 @@ in {
           serviceConfig = {
             Restart = "no";
             ExecStart = "${pkgs.notmuch}/bin/notmuch new";
+          };
+        };
+
+        services.calendar-sync = {
+          description = "syncronize private calendars";
+          serviceConfig = {
+            Restart = "no";
+            ExecStart = "${pkgs.vdirsyncer}/bin/vdirsyncer -vdebug sync";
+          };
+        };
+        timers.calendar-sync = {
+          description = "sync calendars every 15 minutes";
+          wantedBy = [ "timers.target" ];
+          timerConfig = {
+            OnStartupSec="30s";
+            OnUnitActiveSec ="15m";
           };
         };
 

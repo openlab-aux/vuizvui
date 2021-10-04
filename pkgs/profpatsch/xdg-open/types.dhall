@@ -20,6 +20,7 @@ let Special =
       , exec-in-terminal-emulator : ∀(args : Command) → Command
       , dmenu-list-binaries-and-exec : Command
       , notify : ∀(message : Text) → Command
+      , add-to-calendar : Command
       }
 
 let

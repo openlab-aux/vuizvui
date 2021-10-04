@@ -26,6 +26,7 @@ let
       // getBins pkgs.firefox [ "firefox" ]
       // getBins pkgs.lilyterm-git [ "lilyterm" ]
       // getBins pkgs.ranger [ "ranger" ]
+      // getBins pkgs.khal [ "khal" ]
       ;
 
   notify = msg: {
@@ -54,7 +55,24 @@ let
     args = file: [ file ];
   };
 
-
+  # TODO: interactive adding? Don’t want to add all ics files to my calendar
+  add-to-calendar = {
+    exe = writeExecline "add-to-calendar" { readNArgs = 1; } [
+      "if" [
+        bins.khal
+          "import"
+          "--batch"
+          # the private calendar is called calendar
+          "--include-calendar" "calendar"
+          "$1"
+      ]
+      "systemctl" "--user"
+        "start"
+        # defined as a user service (TODO: config variable?)
+        "calendar-sync"
+    ];
+    args = file: [ file ];
+  };
 
   open-in-browser = {
     exe = bins.firefox;
@@ -120,6 +138,7 @@ let
       , open-in-browser : Command
       , open-in-editor : Command
       , notify : Text -> Command
+      , add-to-calendar : Command
       }
     )
 → Text
@@ -150,6 +169,7 @@ let
         dmenu-list-binaries-and-exec
         exec-in-terminal-emulator
         notify
+        add-to-calendar
         ;
     };
 
