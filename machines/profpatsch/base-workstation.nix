@@ -26,6 +26,8 @@ in {
         # for manual/temporary stuff
         allowedTCPPortRanges =
           [{ from = 9990; to = 9999; }];
+        allowedUDPPortRanges =
+          [{ from = 9990; to = 9999; }];
       };
     };
 
