@@ -83,18 +83,10 @@ fn main() {
 
 
 
-
-
-
-
 {{{from_address_one_line}}}
 
 {{{an}}}
 {{{to_address}}}
-
-
-
-
 
 
 

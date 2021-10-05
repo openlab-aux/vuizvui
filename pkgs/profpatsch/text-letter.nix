@@ -1,7 +1,9 @@
 { pkgs, rust-deps, writeRustSimple, writeExecline, getBins }:
 
 let
-  bins = getBins pkgs.coreutils [ "date" "cat" ];
+  bins = getBins pkgs.coreutils [ "date" "cat" ]
+      // getBins pkgs.paps [ "paps" ]
+      // getBins pkgs.ghostscript [ "ps2pdf" ];
 
   mustache-interpol = writeRustSimple "mustache-interpol" {
     dependencies = [
@@ -16,9 +18,16 @@ let
     mustache-interpol
   ];
 
+  text-letter-pdf = writeExecline "write-letter-pdf" {} [
+    "pipeline" [ text-letter ]
+    "pipeline" [ bins.paps "--encoding=utf8" ]
+    bins.ps2pdf "-"
+  ];
+
 in {
    inherit
      mustache-interpol
      text-letter
+     text-letter-pdf
      ;
 }
