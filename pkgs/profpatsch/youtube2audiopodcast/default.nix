@@ -11,7 +11,7 @@ let
     // getBins pkgs.s6-portable-utils [
          { use = "s6-cat"; as = "cat"; }
        ]
-    // getBins pkgs.jl [ "jl" ];
+    // getBins (pkgs.haskell.lib.justStaticExecutables pkgs.jl) [ "jl" ];
 
   # fetch the audio of a youtube video to ./audio.opus, given video ID
   youtube-dl-audio = writeExecline "youtube-dl-audio" { readNArgs = 1; } [
