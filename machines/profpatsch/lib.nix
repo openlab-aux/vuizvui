@@ -6,7 +6,15 @@ rec {
 
   philip = rec {
     name = "philip";
-    extraGroups = [ "wheel" "networkmanager" "docker" "vboxusers" "libvirtd" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "docker"
+      "vboxusers"
+      "libvirtd"
+      "scanner"
+      "jackaudio"
+    ];
     uid = 1000;
     createHome = true;
     home = "/home/philip";
