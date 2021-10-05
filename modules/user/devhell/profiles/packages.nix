@@ -90,6 +90,7 @@ in {
       delta
       dhcping
       di
+      diskus
       dmidecode
       dogdns
       dos2unix
