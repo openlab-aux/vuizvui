@@ -6,7 +6,7 @@ let
 
 in {
   options.vuizvui.user.profpatsch.programs.scanning = {
-    enable = mkEnableOption "scanning &amp; simple-scan";
+    enable = mkEnableOption "scanning &amp; simple-scan &amp; ScanSnap drivers";
 
     remoteScanners = mkOption {
       type = lib.types.lines;
@@ -24,6 +24,11 @@ in {
       enable = true;
       netConf = cfg.remoteScanners;
       extraBackends = [ unfreeAndNonDistributablePkgs.hplipWithPlugin ];
+
+      drivers.scanSnap = {
+        enable = true;
+        package = unfreeAndNonDistributablePkgs.sane-drivers.epjitsu;
+      };
     };
   };
 }
