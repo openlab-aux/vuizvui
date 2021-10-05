@@ -2,8 +2,8 @@ let pkgs = import <nixpkgs> {};
     simple = import (pkgs.fetchFromGitHub {
       owner = "justinwoo";
       repo = "easy-dhall-nix";
-      rev = "14f7e929210e928f7b5beade5ef163a62a5d1f4b";
-      sha256 = "02f5723rx4q4b53dbckmc7mgzfc1m27xbh1m8rkdhlkklwb5jydp";
+      rev = "11f6eecab5c276a59858a10bbfcbbc5611187da03";
+      sha256 = "02f5723rx4q4b53dbckmc7mgzfc1m27xbh1m844dhlkklwb5jydp";
     }) {};
 
   dhall-to-shell = pkgs.writers.writeBashBin "dhall-to-shell" ''
