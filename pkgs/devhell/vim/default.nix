@@ -12,6 +12,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         indentLine
         lightline-vim
         limelight-vim
+        minimap-vim
         sleuth
         tabular
         vim-clap
