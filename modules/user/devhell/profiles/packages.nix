@@ -165,6 +165,7 @@ in {
       maim
       manpages
       mediainfo
+      menyoki
       mkvtoolnix
       mmv
       monkeysAudio
