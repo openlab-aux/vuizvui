@@ -1,5 +1,5 @@
 { stdenv, lib, fetchFromGitHub, cmake, makeWrapper
-, hunspell, libgcrypt, libgpgerror, libidn, libotr, libsForQt5
+, hunspell, libgcrypt, libgpg-error, libidn, libotr, libsForQt5
 , libsignal-protocol-c, html-tidy, qt5
 
 , substituteAll
@@ -74,7 +74,7 @@ in stdenv.mkDerivation rec {
     html-tidy
     hunspell
     libgcrypt
-    libgpgerror
+    libgpg-error
     libidn
     libotr
     libsForQt5.qca-qt5
