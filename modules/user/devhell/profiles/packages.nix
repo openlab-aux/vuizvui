@@ -95,6 +95,7 @@ in {
       dogdns
       dos2unix
       du-dust
+      dua
       duf
       e2fsprogs
       element-desktop
@@ -119,6 +120,7 @@ in {
       ghostscript
       ghostwriter
       git
+      git-trim
       gitinspector
       gitui
       glow
@@ -154,6 +156,7 @@ in {
       jwhois
       kmon
       ldns
+      lfs
       lftp
       libarchive
       libreoffice
@@ -164,6 +167,7 @@ in {
       lxd
       maim
       manpages
+      mapcidr
       mediainfo
       menyoki
       mkvtoolnix
@@ -185,6 +189,7 @@ in {
       netsniff-ng
       nitrogen
       nixfmt
+      nixpkgs-fmt
       nload
       nmap
       notmuch
@@ -225,6 +230,7 @@ in {
       screen
       sd
       signal-desktop
+      silicon
       smartmontools
       smos
       so
@@ -246,6 +252,7 @@ in {
       toilet
       tokei
       tree
+      treefmt
       tty-clock
       ugrep
       units
