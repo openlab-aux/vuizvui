@@ -133,6 +133,9 @@ in rec {
   };
   sfttime = callPackage ./sfttime {};
   show-qr-code = callPackage ./show-qr-code {};
+  read-qr-code = callPackage ./read-qr-code.nix {
+    inherit writeExecline getBins;
+  };
   warpspeed = callPackage ./warpspeed {
     inherit (pkgs.haskellPackages) ghcWithPackages;
   };

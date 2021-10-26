@@ -244,6 +244,7 @@ in {
         display-infos  # show time & battery
         di-notify      # same, but pipe to libnotify
         show-qr-code   # display a QR code
+        read-qr-code   # read a QR code on the screen
         backlight      # adjust laptop backlight
         sfttime        # geek time
       ];
