@@ -168,6 +168,8 @@ in {
       maim
       manpages
       mapcidr
+      mdbook
+      mdbook-mermaid
       mediainfo
       menyoki
       mkvtoolnix
