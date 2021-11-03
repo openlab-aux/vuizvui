@@ -16,8 +16,8 @@ let
 
   # version of the nixos-unstable channel to get programs.sqlite from.
   # Use pkgs.sternenseemann.vuizvui-update-programs-sqlite to update.
-  programsSqliteVersion = "21.05pre282432.311ceed827f";
-  programsSqliteSha256 = "0pqjfgbrl7hlz6da1q859nlazfjbnqia03kd5mmyqla4qlv8anf8";
+  programsSqliteVersion = "21.11pre327669.b67e752c29f";
+  programsSqliteSha256 = "15r6sxly7hgc7sbk4y0vj54ziw33bn4yz9xwk31hcxc858k8655i";
   programsSqlite = pkgsUpstream.fetchurl {
     name = "programs.sqlite-${programsSqliteVersion}";
     url = "https://releases.nixos.org/nixos/unstable/nixos-${programsSqliteVersion}/nixexprs.tar.xz";
