@@ -203,6 +203,7 @@ in {
       pamixer
       pandoc
       paperkey
+      papirus-icon-theme
       pastel
       pbzip2
       pciutils
