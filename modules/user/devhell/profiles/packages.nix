@@ -279,6 +279,7 @@ in {
       wavpack
       wget
       which
+      wiki-tui
       wipe
       wireguard
       wordgrinder
