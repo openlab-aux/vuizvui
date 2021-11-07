@@ -267,12 +267,12 @@ let
     { check = hasPackage pkgs.gvisor;
       path  = ["nixos" "gvisor"];
     }
-    { check = config.services.hadoop.hdfs.namenode.enabled
-           || config.services.hadoop.hdfs.datanode.enabled;
+    { check = config.services.hadoop.hdfs.namenode.enable
+           || config.services.hadoop.hdfs.datanode.enable;
       path  = ["nixos" "hadoop" "hdfs"];
     }
-    { check = config.services.hadoop.yarn.resourcemanager.enabled
-           || config.services.hadoop.yarn.nodemanager.enabled;
+    { check = config.services.hadoop.yarn.resourcemanager.enable
+           || config.services.hadoop.yarn.nodemanager.enable;
       path  = ["nixos" "hadoop" "yarn"];
     }
     { check = hasPackage pkgs.handbrake;
