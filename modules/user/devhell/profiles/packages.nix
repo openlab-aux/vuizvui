@@ -49,9 +49,7 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
-      #mnamer
       #nixops
-      #pipr
       abook
       accountsservice
       ag
@@ -174,6 +172,7 @@ in {
       menyoki
       mkvtoolnix
       mmv
+      mnamer
       monkeysAudio
       mosh
       mp3gain
@@ -209,6 +208,7 @@ in {
       pciutils
       peep
       pigz
+      pipr
       pixz
       podman
       podman-compose
