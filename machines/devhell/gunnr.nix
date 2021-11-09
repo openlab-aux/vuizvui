@@ -31,6 +31,7 @@
     kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
     blacklistedKernelModules = [ ];
+    kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
   };
 
   hardware = {
