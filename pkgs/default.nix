@@ -12,7 +12,8 @@ let
 
   self.vuizvui = pkgs.recurseIntoAttrs {
     mkChannel = callPackage ./build-support/channel.nix { };
-    buildSandbox = callPackage build-support/build-sandbox {};
+    buildSandbox = callPackage ./build-support/build-sandbox {};
+    lazy-packages = callPackage ./build-support/lazy-packages {};
 
     list-gamecontrollers = callPackage ./list-gamecontrollers { };
 
