@@ -84,8 +84,9 @@ let xdg-open =
           λ(write-dash : Text → Text → Executable) →
           λ(shellEscape : Text → Text) →
           λ(pkgs : { package : Text, binary : Text } → Executable) →
+          λ(pkgsOnDemand : { package : Text, binary : Text } → Executable) →
           λ(special : types.Special) →
-            let config = ./config.dhall pkgs special
+            let config = ./config.dhall pkgs pkgsOnDemand special
 
             in  write-dash
                   "xdg-open"

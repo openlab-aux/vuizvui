@@ -10,7 +10,12 @@ let Arg = < String : Text | Variable : Text >
 let CommandTemplate =
       λ(templates : Type) → { exe : Executable, args : templates → List Arg }
 
-let Command = CommandTemplate Arg
+let
+    -- Given an executable and args to pass to the executable,
+    -- which might be a bash variable or a simple command line string.
+    -- Should remove that indirection at some point and just generate execline strings/scripts instead. (?)
+    Command =
+      CommandTemplate Arg
 
 let Special =
       { open-in-editor : Command

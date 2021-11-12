@@ -103,6 +103,10 @@ let
     ] ++ args file;
   };
 
+  fetch-command-on-demand = cmd: pkgs.vuizvui.lazy-packages.mkWrapper {
+    package = cmd;
+  };
+
   fetch-http-url-mime = {
     exe = writeExecline "fetch-http-url-mime" { readNArgs = 1; } [
       "pipeline" [ read-headers-and-follow-redirect "$1" ]
@@ -130,6 +134,7 @@ let
 → ∀(write-dash : Text → Text → Text)
 → ∀(shellEscape : Text → Text)
 → ∀(pkgs : { binary : Text, package : Text } → Text)
+→ ∀(pkgsOnDemand : { binary : Text, package : Text } → Text)
 → ∀ ( special
     : { compose-mail-to : Command
       , dmenu-list-binaries-and-exec : Command
@@ -160,11 +165,15 @@ let
     pkgs.writers.writeDash
     pkgs.lib.escapeShellArg
     ({binary, package}: "${lib.getBin pkgs.${package}}/bin/${binary}")
+    ({binary, package}: "${pkgs.vuizvui.lazy-packages.mkWrapper {
+      package = (lib.getBin pkgs.${package});
+    }}/bin/${binary}")
     {
       inherit
         compose-mail-to
         open-in-browser
         fetch-http-url-mime
+        fetch-command-on-demand
         open-in-editor
         dmenu-list-binaries-and-exec
         exec-in-terminal-emulator

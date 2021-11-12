@@ -15,11 +15,19 @@ let UriMimeGlob = types.UriMimeGlob
 let MimeMatch = types.MimeMatch
 
 in  λ(pkgs : { package : Text, binary : Text } → Executable) →
+    λ(pkgsOnDemand : { package : Text, binary : Text } → Executable) →
     λ(special : Special) →
       let mime =
             let pkgSame =
                   λ(packageAndBinaryName : Text) →
                     pkgs
+                      { package = packageAndBinaryName
+                      , binary = packageAndBinaryName
+                      }
+
+            let pkgSameOnDemand =
+                  λ(packageAndBinaryName : Text) →
+                    pkgsOnDemand
                       { package = packageAndBinaryName
                       , binary = packageAndBinaryName
                       }
@@ -111,6 +119,10 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
                       special.exec-in-terminal-emulator
                         (oneArg (pkgSame "ranger"))
                   }
+                , opendocument-any =
+                  { mime = [ "application/vnd.oasis.opendocument.*" ]
+                  , cmd = oneArg (pkgSameOnDemand "libreoffice")
+                  }
                 , any =
                   { mime = [ "*" ], cmd = special.dmenu-list-binaries-and-exec }
                 }
@@ -130,6 +142,7 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
             , mime.image.svg
             , mime.image.any
             , mime.pdf
+            , mime.opendocument-any
             , mime.pgp-key
             , mime.directory
             , mime.any
