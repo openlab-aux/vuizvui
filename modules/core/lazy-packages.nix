@@ -12,16 +12,16 @@ let
   # The command used to fetch the store path from the binary cache.
   fetchSubstitute = "${escapeShellArg "${pkgs.nix}/bin/nix-store"} -r";
 
-  mkWrapper = package: pkgs.runCommandLocal "${package.name}-lazy" {
+  mkWrapper = {package, extraErrorMessage ? ""}: pkgs.runCommandLocal "${package.name}-lazy" {
     inherit package;
+    inherit extraErrorMessage;
   } ''
     encoded="$(echo "$package" | ${encoder})"
 
     if [ ! -e "$package/bin" ]; then
       echo "Store path $package doesn't have a \`bin' directory" \
-           "so we can't create lazy wrappers for it. Please" \
-           "remove \`${escapeShellArg package.name}' from" \
-           "\`vuizvui.lazyPackages'." >&2
+           "so we can't create lazy wrappers for it." \
+           "$extraErrorMessage" >&2
       exit 1
     fi
 
@@ -46,7 +46,12 @@ let
     done
   '';
 
-  wrappers = map mkWrapper config.vuizvui.lazyPackages;
+  vuizvuiWrapper = package: mkWrapper {
+    inherit package;
+    extraErrorMessage = "Please remove `${escapeShellArg package.name}' from `vuizvui.lazyPackages'.";
+  };
+
+  wrappers = map vuizvuiWrapper config.vuizvui.lazyPackages;
 
 in {
   options.vuizvui.lazyPackages = lib.mkOption {
@@ -63,5 +68,5 @@ in {
     '';
   };
 
-  config.environment.systemPackages = map mkWrapper lazyPackages;
+  config.environment.systemPackages = map vuizvuiWrapper lazyPackages;
 }
