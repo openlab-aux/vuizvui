@@ -56,6 +56,7 @@ in {
        isSystemUser = true;
        createHome = true;
        home = gonicDataDir;
+       group = "gonic";
      };
 
      systemd.services.gonic = {
