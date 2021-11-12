@@ -104,6 +104,7 @@ in
 
       youtube2audiopodcast = {
         isSystemUser = true;
+        group = "youtube2audiopodcast";
       };
     };
 
