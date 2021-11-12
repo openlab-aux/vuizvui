@@ -6,17 +6,14 @@ let
       // getBins libnotify [ "notify-send" ];
 
   script = writeExecline "read-qr-code" {} [
-    "backtick" "-iE" "qrcontent" [
-      "pipeline" [
-        bins.import "png:-"
-      ]
-      bins.zbarimg
-        "-Sdisable"
-        "-Sqrcode.enable"
-        "--raw"
-        "-"
+    "pipeline" [
+      bins.import "png:-"
     ]
-    bins.notify-send "$qrcontent"
+    bins.zbarimg
+      "-Sdisable"
+      "-Sqrcode.enable"
+      "--raw"
+      "-"
   ];
 
 in script // {
