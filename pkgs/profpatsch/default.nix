@@ -103,6 +103,12 @@ let
 
 
 in rec {
+  tvl = import (builtins.fetchGit {
+    url = "https://code.tvl.fyi/depot.git";
+    ref = "canon";
+    rev = "e2fbc10ebdb5d85813fd15c5dd371ee8e1e87a22"; # 2021-11-13
+  }) {};
+
   inherit (nixperiments)
     # canonical pattern matching primitive
     match
@@ -212,9 +218,13 @@ in rec {
     inherit symlink;
   };
 
-  inherit (import ./profpatsch.de { inherit pkgs lib toNetstring writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode record-get; })
+  inherit (import ./profpatsch.de {
+    inherit pkgs tvl lib
+      toNetstring toNetstringList writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode record-get;
+  })
     websiteStatic
     importas-if
+    concatenatedCss
     ;
 
   inherit (import ./nix-tools.nix { inherit pkgs getBins writeExecline runblock backtick; })

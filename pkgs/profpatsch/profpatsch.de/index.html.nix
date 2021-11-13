@@ -2,7 +2,9 @@
 , cssNormalize, cssMain
 , id_txt, cv_pdf
 , fontsQuattrocentoLatin, fontsOpenSansLatin
+, notes-html-snippet, projects-html-snippet, posts-html-snippet
 }:
+
 ''
 <!DOCTYPE html>
 <html>
@@ -53,19 +55,16 @@
         <a href="${cv_pdf}">CV</a>
       </p>
 
-      <p>Hey there. Seems like you landed on my webpage.</p>
+      <p>Hey there.</p>
 
-      <p>Well, more like a simple HTML page. But that’s fine for the moment, since I don’t use it as a web presence yet.
-        I may when I finally write those articles I have in mind, but for now you are stuck with this.</p>
+      <h1>Notes</h1>
+      ${notes-html-snippet}
 
-      <p>That’s not a problem, though, since other people do a lot better job at designing these. For example the folks at Youtube, StackExchange or Github.</p>
+      <h1>Projects</h1>
+      ${projects-html-snippet}
 
-      <p>If you are searching for a skilled programmer to do some work for you, <a href="${cv_pdf}">look no further</a>.
-        In case you want to know what I do in my free time, you can <a href="https://twitter.com/Profpatsch/">follow me on Twitter</a>.</p>
-      <p>On another note, you can find me practically everywhere under my nick (Github, G+, several mailinglists, SO, &amp;c.)
-
-      <p>There you go. Cya!</p>
-
+      <h1>Posts</h1>
+      ${posts-html-snippet}
 
     </main>
   </body>

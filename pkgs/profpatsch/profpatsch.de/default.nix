@@ -1,4 +1,4 @@
-{ pkgs, lib, toNetstring, writeExecline, runExecline, getBins, writeRustSimple, netencode-rs, el-semicolon, el-substitute, el-exec, netencode, record-get }:
+{ pkgs, tvl, lib, toNetstring, toNetstringList, writeExecline, runExecline, getBins, writeRustSimple, netencode-rs, el-semicolon, el-substitute, el-exec, netencode, record-get }:
 
 let
   bins = getBins pkgs.coreutils [ "ln" "mkdir" "echo" "printenv" "cat" "env" ]
@@ -20,13 +20,23 @@ let
     "pipeline" [ bins.multitee "0-1,2" ] "$@"
   ];
 
-  applyTemplate = name: templateNix: deps:
+  applyTemplate = {
+    name,
+    # the nix template file to import
+    templateNix,
+    # the page dependencies, attrset of path, relativeDir and relativeFile
+    pageDeps,
+    # html that should just be interpolated;
+    # will shadow any attrs in pageDeps of the same name
+    interpolateHtml ? {},
+  }:
     pkgs.writeText name
       (import templateNix
-        (lib.mapAttrs
-          # relative to the root of the webpage
-          (k: v: "/" + (joinPath (v.relativeDir ++ [ v.relativeFile ])))
-          deps));
+        ((lib.mapAttrs
+            # relative to the root of the webpage
+            (k: v: "/" + (joinPath (v.relativeDir ++ [ v.relativeFile ])))
+            pageDeps)
+          // interpolateHtml));
 
   staticFiles =
     rec {
@@ -43,13 +53,34 @@ let
       cssMain = {
         relativeDir = [ "css" ];
         relativeFile = "main.css";
-        path = applyTemplate "main.css" ./main.css.nix {
-          inherit
-            fontsQuattrocentoLatin
-            fontsOpenSansLatin
-            ;
+        path = applyTemplate {
+          name = "main.css";
+          templateNix = ./main.css.nix;
+          pageDeps = {
+            inherit
+              fontsQuattrocentoLatin
+              fontsOpenSansLatin
+              ;
+          };
         };
       };
+      cssConcatenated =
+        let
+          concatCss = cssFiles: runExecline "concat-css" {
+            stdin = toNetstringList (map (c: c.path) cssFiles);
+          } [
+            "importas" "out" "out"
+            "forstdin" "-Ed" "" "css"
+            "redirfd" "-a" "1" "$out"
+            "redirfd" "-r" "0" "$css"
+            bins.cat
+          ];
+        in {
+          relativeDir = [ "css" ];
+          relativeFile = "concatenated.css";
+          path = concatCss [cssNormalize cssMain];
+        };
+
       fontsQuattrocentoLatin = {
         relativeDir = [ "fonts" ];
         relativeFile = "quattrocento-latin.woff2";
@@ -78,15 +109,24 @@ let
       index_html = {
         relativeDir = [];
         relativeFile = "index.html";
-        path = applyTemplate "index.html" ./index.html.nix {
-          inherit jsTalkies;
-          inherit cssNormalize cssMain;
-          inherit cv_pdf id_txt;
-          # preloading
-          inherit
-            fontsQuattrocentoLatin
-            fontsOpenSansLatin
-            ;
+        path = applyTemplate {
+          name = "index.html";
+          templateNix = ./index.html.nix;
+          pageDeps = {
+            inherit jsTalkies;
+            inherit cssNormalize cssMain;
+            inherit cv_pdf id_txt;
+            # preloading
+            inherit
+              fontsQuattrocentoLatin
+              fontsOpenSansLatin
+              ;
+          };
+          interpolateHtml = {
+            notes-html-snippet = tvl.users.Profpatsch.blog.notes-index-html;
+            projects-html-snippet = tvl.users.Profpatsch.blog.projects-index-html;
+            posts-html-snippet = tvl.users.Profpatsch.blog.posts-index-html;
+          };
         };
       };
       toc = {
@@ -95,6 +135,11 @@ let
         path = ./toc.txt;
       };
     };
+
+  concatenatedCss =
+    let mkRoute = css: { route = css.relativeDir ++ [ css.relativeFile ]; };
+    in mkRoute staticFiles.cssConcatenated;
+
 
   importas-if = writeRustSimple "importas-if" {
     dependencies = [ netencode-rs el-substitute el-exec ];
@@ -168,5 +213,6 @@ in {
     websiteStatic
     record-get
     importas-if
+    concatenatedCss
     ;
 }

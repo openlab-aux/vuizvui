@@ -150,7 +150,10 @@ function appendTalkies(append_to_element) {
         { talk: "PROPPATCH",
           hover: "WebDAV was a mistake" },
         { talk: "sausage shaped, but lumpy",
-          link: "https://en.wikipedia.org/wiki/Bristol_stool_scale" }
+          link: "https://en.wikipedia.org/wiki/Bristol_stool_scale" },
+        { talk: "polsterboi.json.mozlz4" },
+        { talk: "buffer-local when set" }
+
     ];
     var talkie = talkies[Math.floor(Math.random()*talkies.length)];
     var elem = null;
