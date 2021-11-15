@@ -85,9 +85,6 @@
 
   nix = {
     maxJobs = lib.mkDefault 8;
-    extraOptions = ''
-      auto-optimise-store = true
-    '';
   };
 
   i18n = {
