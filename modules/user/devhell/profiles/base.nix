@@ -18,7 +18,7 @@ in {
       buildCores = 0;
       useSandbox = true;
       extraOptions = ''
-        auto-optimise-store = true;
+        auto-optimise-store = true
         experimental-features = nix-command flakes
       '';
     };
