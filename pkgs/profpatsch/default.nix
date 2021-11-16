@@ -103,10 +103,10 @@ let
 
 
 in rec {
-  tvl = import (builtins.fetchGit {
+  tvl = import (pkgs.fetchgit {
     url = "https://code.tvl.fyi/depot.git";
-    ref = "canon";
     rev = "e2fbc10ebdb5d85813fd15c5dd371ee8e1e87a22"; # 2021-11-13
+    sha256 = "14hrzx31a7bas64n8rz89388nwfhmy77l5s85g82vvzd5fxg61by";
   }) {};
 
   inherit (nixperiments)
