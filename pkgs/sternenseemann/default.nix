@@ -95,14 +95,6 @@ lib.fix (self: {
 
   # patched packages
   mandoc = pkgs.mandoc.overrideAttrs (old: rec {
-    src = pkgs.fetchcvs {
-      date = "2021-08-08";
-      sha256 = "0g3hzhngklgxcyfc7mp6gq129chhgkl6z0i7r872iri4d9dq59sg";
-      cvsRoot = "anoncvs@mandoc.bsd.lv:/cvs";
-      module = "mandoc";
-    };
-    patches = [];
-    version = "unstable-${src.date}"; # actually early but idc
     # fix makewhatis(1) skipping all man pages that
     # are symlinks to /nix/store
     preConfigure = old.preConfigure + ''
