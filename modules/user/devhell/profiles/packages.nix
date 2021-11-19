@@ -196,6 +196,7 @@ in {
       notmuch
       ntfs3g
       ntfsprogs
+      obs-studio
       oneshot
       openssl
       p7zip
