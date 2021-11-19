@@ -82,7 +82,6 @@ in {
           ls = "lsd";
           grep = "rg";
           ip = "ip --color=auto";
-          du = "dust";
           tree = "broot";
           ps = "procs";
           ack = "ag";
