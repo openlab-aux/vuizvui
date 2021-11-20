@@ -101,13 +101,37 @@ let
 
   writeExeclineFns = callPackage ./execline/write-execline.nix {};
 
+  # Fetch the tvl source at commit, and replac the nixpkgs version it depends
+  # on with the given nixpkgsPath.
+  tvlSrc = { tvlCommit, tvlSha256, nixpkgsPath }:
+    let
+      bins = getBins pkgs.gawk [ "gawk" ]
+          // getBins pkgs.coreutils [ "cp" ];
+      gawkScript = ''
+        /stableNixpkgs =/ { sub("stableNixpkgsSrc", "${nixpkgsPath}"); print }
+        !/stableNixpkgs =/ { print }
+      '';
+      src = pkgs.fetchgit {
+        url = "https://code.tvl.fyi/depot.git";
+        rev = tvlCommit; # 2021-11-13
+        sha256 = tvlSha256;
+      };
+      prepareSource = runExeclineFns.runExeclineLocal "prepare-tvl" {} [
+        "importas" "out" "out"
+        "if" [ bins.cp "--no-preserve=mode" "-r" src "$out" ]
+        bins.gawk "-i" "inplace" gawkScript "\${out}/third_party/nixpkgs/default.nix"
+      ];
+    in prepareSource;
+
 
 in rec {
-  tvl = import (pkgs.fetchgit {
-    url = "https://code.tvl.fyi/depot.git";
-    rev = "e2fbc10ebdb5d85813fd15c5dd371ee8e1e87a22"; # 2021-11-13
-    sha256 = "14hrzx31a7bas64n8rz89388nwfhmy77l5s85g82vvzd5fxg61by";
-  }) {};
+  tvl =
+    import (tvlSrc {
+      tvlCommit = "e2fbc10ebdb5d85813fd15c5dd371ee8e1e87a22"; # 2021-11-13
+      tvlSha256 = "14hrzx31a7bas64n8rz89388nwfhmy77l5s85g82vvzd5fxg61by";
+      nixpkgsPath = import ../../nixpkgs-path.nix;
+    }) {};
+
 
   inherit (nixperiments)
     # canonical pattern matching primitive
