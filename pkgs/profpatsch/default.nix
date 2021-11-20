@@ -105,24 +105,24 @@ let
   # # on with the given nixpkgsPath.
   importTvl = { tvlCommit, tvlSha256, nixpkgsPath }:
     let
-      # bins = getBins pkgs.gawk [ "gawk" ]
-      #     // getBins pkgs.coreutils [ "cp" ];
-      # gawkScript = ''
-      #   /stableNixpkgs =/ { sub("stableNixpkgsSrc", "${nixpkgsPath}"); print }
-      #   !/stableNixpkgs =/ { print }
-      # '';
+      bins = getBins pkgs.gawk [ "gawk" ]
+          // getBins pkgs.coreutils [ "cp" ];
+      gawkScript = ''
+        # patch out emacs overlay (requires fetching the overlay with builtins.fetchTarball)
+        /depot.third_party.overlays.emacs/ {}
+        1 { print }
+      '';
       src = pkgs.fetchgit {
         url = "https://code.tvl.fyi/depot.git";
         rev = tvlCommit; # 2021-11-13
         sha256 = tvlSha256;
       };
-      # prepareSource = runExeclineFns.runExeclineLocal "prepare-tvl" {} [
-      #   "importas" "out" "out"
-      #   "if" [ bins.cp "--no-preserve=mode" "-r" src "$out" ]
-      #   bins.gawk "-i" "inplace" gawkScript "\${out}/third_party/nixpkgs/default.nix"
-      # ];
-    # in prepareSource;
-    in import src {
+      prepareSource = runExeclineFns.runExeclineLocal "prepare-tvl" {} [
+        "importas" "out" "out"
+        "if" [ bins.cp "--no-preserve=mode" "-r" src "$out" ]
+        bins.gawk "-i" "inplace" gawkScript "\${out}/third_party/nixpkgs/default.nix"
+      ];
+    in import prepareSource {
       nixpkgsBisectPath = nixpkgsPath;
     };
 
