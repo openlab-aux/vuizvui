@@ -97,6 +97,11 @@ let
       runExecline = it;
       runExeclineLocal = name: args: execline:
         testing.drvSeqL tests (itLocal name args execline);
+
+      # This is just a stupid workaround to prevent nix restricted mode
+      # from stumbling over the symlink in the derivation output.
+      runExeclineLocalNoSeqL = name: args: execline:
+        itLocal name args execline;
     };
 
   writeExeclineFns = callPackage ./execline/write-execline.nix {};
@@ -117,7 +122,7 @@ let
         rev = tvlCommit; # 2021-11-13
         sha256 = tvlSha256;
       };
-      prepareSource = runExeclineFns.runExeclineLocal "prepare-tvl" {} [
+      prepareSource = runExeclineFns.runExeclineLocalNoSeqL "prepare-tvl" {} [
         "importas" "out" "out"
         "if" [ bins.cp "--no-preserve=mode" "-r" src "$out" ]
         bins.gawk "-i" "inplace" gawkScript "\${out}/third_party/nixpkgs/default.nix"
