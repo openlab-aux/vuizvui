@@ -114,7 +114,7 @@ let
           // getBins pkgs.coreutils [ "cp" ];
       gawkScript = ''
         # patch out emacs overlay (requires fetching the overlay with builtins.fetchTarball)
-        /depot.third_party.overlays.emacs/ {}
+        /depot.third_party.overlays.emacs/ { sub("^", "#") }
         1 { print }
       '';
       src = pkgs.fetchgit {
