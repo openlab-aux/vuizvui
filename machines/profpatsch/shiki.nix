@@ -257,7 +257,10 @@ in {
         display-infos  # show time & battery
         di-notify      # same, but pipe to libnotify
         show-qr-code   # display a QR code
-        read-qr-code   # read a QR code on the screen
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.read-qr-code;
+          name = "read-qr-code";
+        })
         backlight      # adjust laptop backlight
         sfttime        # geek time
       ];
