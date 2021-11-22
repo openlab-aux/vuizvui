@@ -52,15 +52,26 @@ in {
       cpuFreqGovernor = "powersave";
     };
 
-    hardware.pulseaudio = {
+    # hardware.pulseaudio = {
+    #   enable = true;
+    #   zeroconf.discovery.enable = true;
+    #   # for Pillars of Eternity
+    #   support32Bit = true;
+    #   package = pkgs.pulseaudio.override {
+    #     bluetoothSupport = true;
+    #     jackaudioSupport = true;
+    #   };
+    #   extraModules = [ pkgs.pulseaudio-modules-bt ];
+    # };
+    # services.jack = {
+    #   jackd.enable = true;
+    #   alsa.enable = false;
+    #   loopback.enable = true;
+    # };
+    services.pipewire = {
       enable = true;
-      zeroconf.discovery.enable = true;
-      # for Pillars of Eternity
-      support32Bit = true;
-      package = pkgs.pulseaudio.override {
-        bluetoothSupport = true;
-      };
-      extraModules = [ pkgs.pulseaudio-modules-bt ];
+      jack.enable = true;
+      pulse.enable = true;
     };
     # steam
     # needed by some games (TODO: general module for games)
@@ -175,7 +186,9 @@ in {
         gnome.adwaita-icon-theme
         # TODO: get themes to work. See notes.org.
         gnome.gnome_themes_standard
+        # can go away once I migrate to pw-ctl and such
         pavucontrol
+        pulseaudioLight
       ];
       programmingTools = [
         cabal2nix                    # convert cabal files to nixexprs
