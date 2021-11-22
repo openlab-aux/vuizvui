@@ -123,6 +123,10 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
                   { mime = [ "application/vnd.oasis.opendocument.*" ]
                   , cmd = oneArg (pkgSameOnDemand "libreoffice")
                   }
+                , openxmlformats-any =
+                  { mime = [ "application/vnd.openxmlformats-officedocument.*" ]
+                  , cmd = oneArg (pkgSameOnDemand "libreoffice")
+                  }
                 , any =
                   { mime = [ "*" ], cmd = special.dmenu-list-binaries-and-exec }
                 }
@@ -143,6 +147,7 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
             , mime.image.any
             , mime.pdf
             , mime.opendocument-any
+            , mime.openxmlformats-any
             , mime.pgp-key
             , mime.directory
             , mime.any
