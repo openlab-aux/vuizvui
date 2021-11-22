@@ -132,7 +132,7 @@ in rec {
     importTvl {
       tvlCommit = "e2fbc10ebdb5d85813fd15c5dd371ee8e1e87a22"; # 2021-11-13
       tvlSha256 = "14hrzx31a7bas64n8rz89388nwfhmy77l5s85g82vvzd5fxg61by";
-      nixpkgsPath = import ../../nixpkgs-path.nix;
+      nixpkgsPath = pkgs.path;
     };
 
 
