@@ -363,8 +363,25 @@ in {
 
     services.printing = {
       enable = true;
-      drivers = [ pkgs.gutenprint pkgs.gutenprintBin pkgs.hplip ];
+      drivers = [
+        pkgs.gutenprint
+        pkgs.gutenprintBin
+        # pkgs.hplip
+        unfreeAndNonDistributablePkgs.canon-cups-ufr2
+        unfreeAndNonDistributablePkgs.dcp9020cdwlpr
+      ];
     };
+
+    # for discovering ddns printers.
+    services.avahi.enable = true;
+    # for being able to talk to ddns printers after finding them.
+    # disable v6 for mdns (argh)
+    services.avahi.nssmdns = false;
+    system.nssModules = [ pkgs.nssmdns ];
+    system.nssDatabases.hosts = (lib.mkMerge [
+      (lib.mkBefore [ "mdns4_minimal [NOTFOUND=return]" ]) # before resolve
+      (lib.mkAfter [ "mdns4" ]) # after dns
+    ]);
 
     ###########
     # Programs
