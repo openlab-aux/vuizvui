@@ -233,6 +233,7 @@ in {
         # gimp                 # graphics
         inkscape             # vector graphics
         # libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
+        mediainfo            # Swiss army knife of media metadata file information
         myPkgs.mumble
         myPkgs.mpv           # you are my sun and my stars, and you play my stuff.
         pass                 # standard unix password manager
