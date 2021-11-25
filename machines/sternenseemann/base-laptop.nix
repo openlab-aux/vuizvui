@@ -63,7 +63,11 @@
 
     services.printing = {
       enable = true;
-      drivers = [ pkgs.gutenprint pkgs.hplip ];
+      drivers = [
+        pkgs.gutenprint
+        pkgs.hplip
+        pkgs.cups-brother-hll2350dw
+      ];
     };
   };
 }
