@@ -67,7 +67,7 @@ in {
     vuizvui.sternenseemann.pass
     exfat borgbackup
     gnupg pinentry-gtk2 signing-party gpgme
-    thunderbird
+    thunderbird-wayland
     jackline dino
     vuizvui.sternenseemann.texlive jabref
     youtube-dl mpv spotify
