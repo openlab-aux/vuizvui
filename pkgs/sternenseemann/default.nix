@@ -117,7 +117,8 @@ lib.fix (self: {
     inherit (pkgs.texlive)
       scheme-medium minted titlesec units collection-bibtexextra wrapfig
       libertine enumitem dashrule ifmtarg xstring xgreek adjustbox
-      collectbox csquotes biblatex-philosophy quoting breakurl;
+      collectbox csquotes biblatex-philosophy quoting breakurl
+      capt-of;
   };
 
   # packaged 3rd party software
