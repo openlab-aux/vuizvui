@@ -1,4 +1,4 @@
-{ stdenv, lib, pkgs, sternenseemann }:
+{ stdenv, lib, pkgs, sternenseemann, lazy-packages }:
 
 let
   inherit (pkgs) callPackage;
@@ -297,7 +297,7 @@ in rec {
 
   rust-deps = (import ./rust-deps.nix { inherit (pkgs) buildRustCrate; });
 
-  inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline dhall buildDhallPackage runExeclineLocal netencode-rs writeRustSimple record-get el-exec; })
+  inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline dhall buildDhallPackage runExeclineLocal netencode-rs writeRustSimple record-get el-exec lazy-packages; })
     xdg-open
     Prelude
     read-headers-and-follow-redirect

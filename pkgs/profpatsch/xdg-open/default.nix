@@ -7,7 +7,8 @@ runExeclineLocal,
 writeRustSimple,
 netencode-rs,
 record-get,
-el-exec
+el-exec,
+lazy-packages
 }:
 
 let
@@ -103,7 +104,7 @@ let
     ] ++ args file;
   };
 
-  fetch-command-on-demand = cmd: pkgs.vuizvui.lazy-packages.mkWrapper {
+  fetch-command-on-demand = cmd: lazy-packages.mkWrapper {
     package = cmd;
   };
 
