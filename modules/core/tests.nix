@@ -651,7 +651,7 @@ let
     { check = config.services.radicale.enable;
       path  = ["nixos" "radicale"];
     }
-    { check = config.services.redis.enable;
+    { check = config.services.redis.servers != {};
       path  = ["nixos" "redis"];
     }
     { check = config.services.redmine.enable;
