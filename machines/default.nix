@@ -25,7 +25,7 @@ with import ../lib;
     # mikiya = callMachine ./profpatsch/mikiya.nix {};
   };
   sternenseemann = {
-    racker = callMachine ./sternenseemann/racker.nix {};
+    # racker = callMachine ./sternenseemann/racker.nix {};
     wolfgang = callMachine ./sternenseemann/wolfgang.nix {};
   };
   misc = {
