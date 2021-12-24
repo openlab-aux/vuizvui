@@ -166,7 +166,7 @@ let
     pkgs.writers.writeDash
     pkgs.lib.escapeShellArg
     ({binary, package}: "${lib.getBin pkgs.${package}}/bin/${binary}")
-    ({binary, package}: "${pkgs.vuizvui.lazy-packages.mkWrapper {
+    ({binary, package}: "${lazy-packages.mkWrapper {
       package = (lib.getBin pkgs.${package});
     }}/bin/${binary}")
     {
