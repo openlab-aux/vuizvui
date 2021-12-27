@@ -56,6 +56,14 @@ in {
       '';
     };
 
+    verbosity = lib.mkOption {
+      type = lib.types.enum [ "crit" "warn" "mesg" "info" "debug"];
+      default = "mesg";
+      description = ''
+        Verbosity of the dunst daemon on stderr.
+      '';
+    };
+
     iconTheme = lib.mkOption {
       type = themeType;
       description = "Set the icon theme.";
@@ -68,7 +76,7 @@ in {
       serviceConfig = {
         Type = "dbus";
         BusName = "org.freedesktop.Notifications";
-        ExecStart = "${lib.getBin pkgs.dunst}/bin/dunst -config ${pkgs.writeText "dunst.conf" (toDunstINI cfg.settings)}";
+        ExecStart = "${lib.getBin pkgs.dunst}/bin/dunst -verbosity ${cfg.verbosity} -config ${pkgs.writeText "dunst.conf" (toDunstINI cfg.settings)}";
         Restart = "on-failure";
         RestartSec = "1";
       };

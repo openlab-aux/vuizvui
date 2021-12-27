@@ -428,13 +428,19 @@ in {
     # User services
     vuizvui.user.profpatsch.services.dunst = {
       enable = true;
+      # verbosity = "debug";
       settings = {
         global = {
-          verbosity = "info";
-          font = "Sans 14";
+          width = "(5000, 10000)";
+          format = "%s %b";
+          origin = "top-left";
+          font = "Sans 18";
           markup = "full";
-          padding = 3;
-          horizontal_padding = 3;
+          padding = 5;
+          horizontal_padding = 5;
+          # please just at the top of the screen for easy access
+          offset = "0x0";
+          frame_width = 0;
           # follow keyboard focus
           follow = "keyboard";
           max_icon_size = 45;
