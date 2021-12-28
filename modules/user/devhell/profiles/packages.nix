@@ -49,7 +49,7 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
-      #nixops
+      #musikcube
       abook
       accountsservice
       ag
@@ -107,7 +107,6 @@ in {
       flac
       flameshot
       flavours
-      focuswriter
       fortune
       freerdpUnstable
       fuse_exfat
@@ -179,7 +178,6 @@ in {
       mpc_cli
       mpv
       msmtp
-      musikcube
       ncdu
       ncmpcpp
       neofetch
@@ -190,6 +188,7 @@ in {
       netsniff-ng
       nitrogen
       nixfmt
+      nixopsUnstable
       nixpkgs-fmt
       nload
       nmap
