@@ -3,7 +3,8 @@
 let script = writeScriptBin "show-qr-code" ''
   #!/bin/sh
   TMP=$(mktemp)
-  ${qrencode}/bin/qrencode -s 8 -o "$TMP" -t PNG "$1"
+  trap 'rm "$TMP"' EXIT
+  ${qrencode}/bin/qrencode -s 8 -o "$TMP" -t PNG
 
   export DIALOG='
   <vbox>
@@ -17,7 +18,6 @@ let script = writeScriptBin "show-qr-code" ''
 
   sleep 0.2
 
-  rm "$TMP"
 
   '';
 
