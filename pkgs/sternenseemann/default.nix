@@ -93,15 +93,6 @@ lib.fix (self: {
     inherit (profpatsch) getBins;
   };
 
-  # patched packages
-  mandoc = pkgs.mandoc.overrideAttrs (old: rec {
-    # fix makewhatis(1) skipping all man pages that
-    # are symlinks to /nix/store
-    preConfigure = old.preConfigure + ''
-      echo READ_ALLOWED_PATH=\"${builtins.storeDir}\" >> configure.local
-    '';
-  });
-
   pass = (pkgs.pass.override {
     waylandSupport = true;
     x11Support = false;
