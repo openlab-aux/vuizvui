@@ -769,9 +769,6 @@ let
     { check = config.services.transmission.enable;
       path  = ["nixos" "transmission"];
     }
-    { check = config.services.trac.enable;
-      path  = ["nixos" "trac"];
-    }
     { check = config.services.trilium-server.enable;
       path  = ["nixos" "trilium-server"];
     }
