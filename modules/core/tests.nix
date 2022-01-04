@@ -444,9 +444,6 @@ let
     { check = config.services.minidlna.enable;
       path  = ["nixos" "minidlna"];
     }
-    { check = config.services.moinmoin.enable;
-      path  = ["nixos" "moinmoin"];
-    }
     { check = config.services.mongodb.enable;
       path  = ["nixos" "mongodb"];
     }
