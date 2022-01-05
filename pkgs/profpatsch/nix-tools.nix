@@ -1,13 +1,12 @@
-{ pkgs, writeExecline, backtick, runblock, getBins }:
+{ pkgs, writeExecline, runblock, getBins }:
 
 let
   bins = getBins pkgs.nix [ "nix-build" "nix-instantiate" ];
 
   nix-run = writeExecline "nix-run" { argMode = "env"; } [
-    (backtick {
-      var = "storepath";
-      cmd = [ runblock "1" bins.nix-build ];
-    })
+    "backtick" "-iE" "storepath" [
+      runblock "1" bins.nix-build
+    ]
     runblock "-r" "2" "exec" "$storepath"
   ];
 

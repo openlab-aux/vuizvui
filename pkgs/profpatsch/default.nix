@@ -220,8 +220,6 @@ in rec {
     writeExecline writeExeclineBin;
   inherit (import ./execline/runblock.nix { inherit pkgs; })
     runblock;
-  inherit (import ./execline/nixecline.nix { inherit writeExecline; })
-    backtick;
   inherit (import ./execline/e.nix { inherit pkgs writeExecline getBins writeRustSimple; })
     e;
 
@@ -259,7 +257,7 @@ in rec {
     concatenatedCss
     ;
 
-  inherit (import ./nix-tools.nix { inherit pkgs getBins writeExecline runblock backtick; })
+  inherit (import ./nix-tools.nix { inherit pkgs getBins writeExecline runblock; })
     nix-run
     nix-eval
     ;
@@ -328,7 +326,8 @@ in rec {
     ;
 
 
-  backup = import ./backup { inherit pkgs writeExecline getBins backtick; };
+  backup = import ./backup { inherit pkgs writeExecline getBins; };
+
   gpg-private-offline-key = import ./gpg-private-offline-key { inherit pkgs writeExecline getBins; };
 
 }
