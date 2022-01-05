@@ -4,6 +4,9 @@ use std::os::unix::process::CommandExt;
 
 fn main() -> std::io::Result<()> {
   let args = std::env::args_os();
+  let is_debug = std::env::var_os("DEBUG_E").is_some();
+  let dbg = |msg| if is_debug { eprintln!("{}", msg); } else {};
+
   let mut cmd : Vec<OsString> = vec![];
   let mut depth = 0;
   for arg in args.skip(1) {
@@ -18,11 +21,20 @@ fn main() -> std::io::Result<()> {
   }
 
   Err(match cmd.len() {
-      0 => std::process::exit(0),
-      1 => Command::new(&cmd[0]).exec(),
-      _ => Command::new(&cmd[0])
+      0 => {
+          dbg(format!("e: Exiting, no commands given"));
+          std::process::exit(0)
+      },
+      1 => {
+          dbg(format!("e: Executing {:?}", cmd));
+          Command::new(&cmd[0]).exec()
+      },
+      _ => {
+          dbg(format!("e: Executing {:?}", cmd));
+          Command::new(&cmd[0])
              .args(&cmd[1..])
              .exec()
+      }
   })
 }
 
