@@ -65,6 +65,10 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
                     { mime = [ "text", "calendar" ]
                     , cmd = special.add-to-calendar
                     }
+                  , csv =
+                    { mime = [ "text", "csv" ]
+                    , cmd = oneArg (pkgSameOnDemand "libreoffice")
+                    }
                   , any =
                     { mime = [ "text", "any" ], cmd = special.open-in-editor }
                   }
@@ -137,6 +141,7 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
             , mime.text.gopher
             , mime.text.xml
             , mime.text.ical
+            , mime.text.csv
             , mime.text.any
             , mime.mail-address
             , mime.torrent
