@@ -20,7 +20,7 @@ let
         block_number = int(sys.argv[2])
         block_start = 3
     elif one.startswith("-"):
-        print("only -r supported", file=sys.stderr)
+        print("runblock-python: only -r supported", file=sys.stderr)
         sys.exit(100)
     else:
         block_number = int(one)
@@ -32,6 +32,12 @@ let
 
     def parse_block(args):
         new_args = []
+        if args == []:
+            print(
+              "runblock-python: empty block",
+              file=sys.stderr
+            )
+            sys.exit(100)
         for arg in args:
             if arg == "":
                 break
@@ -39,7 +45,7 @@ let
                 new_args.append(arg[1:])
             else:
                 print(
-                  "unterminated block: {}".format(args),
+                  "runblock-python: unterminated block: {}".format(args),
                   file=sys.stderr
                 )
                 sys.exit(100)
