@@ -259,6 +259,7 @@ in rec {
 
   inherit (import ./nix-tools.nix { inherit pkgs getBins writeExecline runblock; })
     nix-run
+    nix-run-bin
     nix-eval
     ;
 

@@ -291,6 +291,10 @@ in {
           name = "nix-run";
         })
         (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.nix-run-bin;
+          name = "nix-run-bin";
+        })
+        (pkgs.vuizvui.profpatsch.binify {
           exe = pkgs.vuizvui.profpatsch.nix-eval;
           name = "nix-eval";
         })
