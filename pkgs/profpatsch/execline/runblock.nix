@@ -9,9 +9,12 @@ let
   # This is going to be added to a future version
   # of execline by skarnet, but for now it’s easier
   # to just dirtily reimplement it in Python.
-  runblock = pkgs.writers.writePython3 "runblock" {} ''
+  runblock = pkgs.writers.writePython3 "runblock" {
+    flakeIgnore = [ "E501" "E226" ];
+  } ''
     import sys
     import os
+    from pathlib import Path
 
     skip = False
     one = sys.argv[1]
@@ -34,8 +37,8 @@ let
         new_args = []
         if args == []:
             print(
-              "runblock-python: empty block",
-              file=sys.stderr
+                "runblock-python: empty block",
+                file=sys.stderr
             )
             sys.exit(100)
         for arg in args:
@@ -45,8 +48,8 @@ let
                 new_args.append(arg[1:])
             else:
                 print(
-                  "runblock-python: unterminated block: {}".format(args),
-                  file=sys.stderr
+                    "runblock-python: unterminated block: {}".format(args),
+                    file=sys.stderr
                 )
                 sys.exit(100)
         args_rest = args[len(new_args)+1:]
@@ -66,6 +69,14 @@ let
 
     given_argv = sys.argv[block_start:]
     run = given_argv + new_argv
+    if os.path.isabs(run[0]):
+        # TODO: ideally I’d check if it’s an executable here, but it was too hard to figure out and I couldn’t be bothered tbh
+        if not Path(run[0]).is_file():
+            print(
+                "runblock-python: Executable {} does not exist or is not a file.".format(run[0]),
+                file=sys.stderr
+            )
+            sys.exit(100)
     os.execvp(
         file=run[0],
         args=run
