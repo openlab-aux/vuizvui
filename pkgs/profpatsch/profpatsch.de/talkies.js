@@ -152,7 +152,9 @@ function appendTalkies(append_to_element) {
         { talk: "sausage shaped, but lumpy",
           link: "https://en.wikipedia.org/wiki/Bristol_stool_scale" },
         { talk: "polsterboi.json.mozlz4" },
-        { talk: "buffer-local when set" }
+        { talk: "buffer-local when set" },
+        { talk: "Jordan Peterson's broader œuvre",
+          link: "https://twitter.com/bronzeswords/status/1449345260207828995" }
 
     ];
     var talkie = talkies[Math.floor(Math.random()*talkies.length)];
