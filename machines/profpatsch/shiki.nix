@@ -30,7 +30,7 @@ in {
     # Kernel
 
     boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "xhci_pci" "nvme" "usb_storage" "sd_mod" ];
-    boot.initrd.luks.devices.cryptroot.device = "/dev/disk/by-uuid/99922061-f883-4384-b1d9-a02d2ea88e59";
+    boot.initrd.luks.devices.cryptroot.device = "/dev/disk/by-label/root";
     boot.loader.systemd-boot.enable = true;
     boot.loader.grub.enable = false;
 
@@ -38,18 +38,24 @@ in {
     # Hardware
 
     fileSystems."/" = {
-      device = "/dev/disk/by-uuid/d88fb591-afa8-428f-bc24-5c096bcd762d";
+      device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
       options = [ "ssd" "subvol=/root" ];
     };
 
-    hardware.trackpoint = {
-      speed = 280;
+    fileSystems."/boot" = {
+      device = "/dev/disk/by-label/BOOT";
+      fsType = "vfat";
+      options = ["nofail"];
     };
 
     powerManagement = {
       powertop.enable = true;
       cpuFreqGovernor = "powersave";
+    };
+
+    hardware.trackpoint = {
+      speed = 280;
     };
 
     # hardware.pulseaudio = {
