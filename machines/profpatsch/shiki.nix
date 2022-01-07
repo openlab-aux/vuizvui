@@ -417,7 +417,7 @@ in {
     programs.dconf.enable = true;
 
     virtualisation.docker.enable = true;
-    virtualisation.virtualbox.host.enable = true;
+    # virtualisation.virtualbox.host.enable = true;
     # virtualisation.libvirtd.enable = true;
 
     #######
