@@ -49,11 +49,6 @@ in {
       options = ["nofail"];
     };
 
-    powerManagement = {
-      powertop.enable = true;
-      cpuFreqGovernor = "powersave";
-    };
-
     hardware.trackpoint = {
       speed = 280;
     };
