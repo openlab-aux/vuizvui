@@ -144,6 +144,9 @@ in {
 
     services.tailscale.enable = true;
 
+
+    services.mullvad-vpn.enable = true;
+
     # TODO: bond eth and wifi again
     # networking.bonds = {
     #   wifiAndEthernet = {
