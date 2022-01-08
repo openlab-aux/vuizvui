@@ -71,7 +71,7 @@ in {
     services.xserver.layout = "de";
     services.xserver.xkbOptions = lib.mkOverride 900 "eurosign:e";
     services.xserver.displayManager.sddm.enable = true;
-    services.xserver.displayManager.defaultSession = "plasma5";
+    services.xserver.displayManager.defaultSession = "plasma";
     services.xserver.desktopManager.plasma5.enable = true;
 
     # And also most common scanners are also HP ones.
