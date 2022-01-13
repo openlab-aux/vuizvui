@@ -235,7 +235,6 @@ in {
       signal-desktop
       silicon
       smartmontools
-      smos
       so
       sox
       spek
