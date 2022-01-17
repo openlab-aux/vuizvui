@@ -59,6 +59,9 @@ in
         name = defaultFont;
         size = 10;
       };
+      extraConfig = ''
+        exec ${pkgs.nextcloud-client}/bin/nextcloud
+      '';
     };
 
     vuizvui.programs.foot = {
@@ -114,6 +117,7 @@ in
       wl-clipboard               # instead of xsel
       grim slurp screenshot      # screenshots
       mako                       # notifications
+      nextcloud-client
     ];
 
     programs.fish.shellAliases = {

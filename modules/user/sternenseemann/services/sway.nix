@@ -113,6 +113,14 @@ in {
           Whether to automatically start sway when logging in on tty1.
         '';
       };
+
+      extraConfig = lib.mkOption {
+        type = lib.types.lines;
+        default = "";
+        description = ''
+          Additional lines to append to the configuration.
+        '';
+      };
     };
   };
 
@@ -271,6 +279,8 @@ in {
             urgent_workspace   $urg   $urg   $act
           }
         }
+
+        ${cfg.extraConfig}
       '';
 
       "xdg/i3status/config".text = ''
