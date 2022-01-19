@@ -122,7 +122,6 @@ in {
       gitui
       glow
       gnome.adwaita-icon-theme
-      gnome.defaultIconTheme
       gnufdisk
       gnumake
       gnupg
