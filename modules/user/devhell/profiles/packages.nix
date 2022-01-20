@@ -118,7 +118,6 @@ in {
       ghostwriter
       git
       git-trim
-      gitinspector
       gitui
       glow
       gnome.adwaita-icon-theme
