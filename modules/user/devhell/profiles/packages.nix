@@ -223,6 +223,7 @@ in {
       radeontop
       recode
       reptyr
+      restic
       ripgrep
       rq
       rsync
