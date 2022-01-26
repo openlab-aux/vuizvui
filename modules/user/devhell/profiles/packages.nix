@@ -81,6 +81,7 @@ in {
       cipherscan
       clac
       cmatrix
+      colmena
       cryptsetup
       cuetools
       dcfldd
