@@ -84,7 +84,9 @@
   };
 
   nix = {
-    maxJobs = lib.mkDefault 8;
+    settings = {
+      maxJobs = lib.mkDefault 8;
+    };
   };
 
   i18n = {
