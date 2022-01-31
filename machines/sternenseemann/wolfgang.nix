@@ -79,7 +79,6 @@ in {
     scribusUnstable gimp inkscape libreoffice
     audacity
     signal-desktop discord
-    multimc
     vuizvui.profpatsch.nman
     vuizvui.sternenseemann.nix-env-diff
     vuizvui.sternenseemann.tep
