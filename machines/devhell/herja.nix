@@ -85,7 +85,7 @@
 
   nix = {
     settings = {
-      maxJobs = lib.mkDefault 16;
+      maxJobs = lib.mkDefault 8;
     };
   };
 
