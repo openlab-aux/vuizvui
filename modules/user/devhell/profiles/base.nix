@@ -60,15 +60,36 @@ in {
     };
 
     programs = {
-      dconf = {
-        enable = true;
-      };
+      dconf.enable = true;
+      iftop.enable = true;
+      iotop.enable = true;
+      usbtop.enable = true;
+      less.enable = true;
+      tmux.enable = true;
+      traceroute.enable = true;
+      wireshark.enable = true;
+      wavemon.enable = true;
+      bandwhich.enable = true;
+      git.enable = true;
+      liboping.enable = true;
+      htop.enable = true;
+      noisetorch.enable = true;
       gnupg = {
         agent.enable = true;
         agent.pinentryFlavor = "gnome3";
       };
       ssh = {
         startAgent = false;
+      };
+      bash = {
+        enableCompletion = true;
+      };
+      starship = {
+        enable = true;
+        settings = {
+          command_timeout = 700;
+          nix_shell.disabled = false;
+        };
       };
       zsh = {
         enable = true;
@@ -98,27 +119,6 @@ in {
           "hist_no_store"
           "hist_reduce_blanks"
         ];
-      };
-      bash = {
-        enableCompletion = true;
-      };
-      iftop = {
-        enable = true;
-      };
-      iotop = {
-        enable = true;
-      };
-      less = {
-        enable = true;
-      };
-      tmux = {
-        enable = true;
-      };
-      traceroute = {
-        enable = true;
-      };
-      wireshark = {
-        enable = true;
       };
     };
 
