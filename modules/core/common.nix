@@ -44,8 +44,8 @@ in {
       vuizvui = import ../../pkgs { pkgs = super; };
     })));
 
-    nix.settings.binaryCaches = [ "https://headcounter.org/hydra/" ];
-    nix.settings.binaryCachePublicKeys = [
+    nix.binaryCaches = [ "https://headcounter.org/hydra/" ];
+    nix.binaryCachePublicKeys = [
       "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
     ];
 
