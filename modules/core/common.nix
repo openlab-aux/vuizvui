@@ -44,10 +44,14 @@ in {
       vuizvui = import ../../pkgs { pkgs = super; };
     })));
 
-    nix.binaryCaches = [ "https://headcounter.org/hydra/" ];
-    nix.binaryCachePublicKeys = [
-      "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
-    ];
+    nix = {
+      settings = {
+        substituters = [ "https://headcounter.org/hydra/" ];
+        trusted-public-keys = [
+          "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
+        ];
+      };
+    };
 
     environment.variables.NIXPKGS_CONFIG = let
       inherit (config.vuizvui) enableGlobalNixpkgsConfig;
