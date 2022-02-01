@@ -15,8 +15,10 @@ in {
     };
 
     nix = {
-      buildCores = 0;
-      useSandbox = true;
+      settings = {
+        sandbox = true;
+        cores = 0;
+      };
       extraOptions = ''
         auto-optimise-store = true
         experimental-features = nix-command flakes
