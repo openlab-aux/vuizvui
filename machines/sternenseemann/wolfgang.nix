@@ -51,14 +51,7 @@ in {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking = {
-    hostName = "wolfgang";
-    hosts = {
-      "127.0.0.1" = [ "rocketchat" ];
-    };
-  };
-
-  virtualisation.docker.enable = true;
+  networking.hostName = "wolfgang";
 
   # useful for debugging native compilation of packages on another platform
   boot.binfmt.emulatedSystems = [ /* "aarch64-linux" */ ];
