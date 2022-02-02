@@ -12,15 +12,14 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    nix = {
-      binaryCachePublicKeys = [
+    nix.settings = {
+      trusted-public-keys = [
         "cache.tvl.su:kjc6KOMupXc1vHVufJUoDUYeLzbwSr9abcAKdn/U1Jk="
       ];
 
-      binaryCaches = [
+      substituters = [
         "https://cache.tvl.su"
       ];
-
     };
 
     # TVL short DNS
