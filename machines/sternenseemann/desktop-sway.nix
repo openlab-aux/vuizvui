@@ -111,6 +111,9 @@ in
     # notifications
     services.dbus.packages = [ pkgs.mako ];
 
+    # for nextcloud-client
+    services.gnome.gnome-keyring.enable = true;
+
     environment.systemPackages = with pkgs; [
       bemenu                     # better dmenu
       xwayland qt5.qtwayland
