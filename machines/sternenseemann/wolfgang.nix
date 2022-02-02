@@ -64,7 +64,6 @@ in {
     jackline dino
     vuizvui.sternenseemann.texlive jabref
     youtube-dl mpv spotify
-    newsboat
     ghc cabal-install cabal2nix
     sbcl rlwrap
     valgrind gdb
