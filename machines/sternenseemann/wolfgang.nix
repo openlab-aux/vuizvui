@@ -82,7 +82,6 @@ in {
     vuizvui.profpatsch.nman
     vuizvui.sternenseemann.nix-env-diff
     vuizvui.sternenseemann.tep
-    vuizvui.sternenseemann.t
     xdg_utils                  # xdg-open etc.
     networkmanagerapplet       # for nm-connection-ediotr
     imv zathura

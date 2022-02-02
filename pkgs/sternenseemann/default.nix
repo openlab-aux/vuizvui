@@ -116,6 +116,4 @@ lib.fix (self: {
   saneterm = pkgs.python39Packages.callPackage ./saneterm { };
 
   shakti = callPackage ./shakti { };
-
-  t = python3Packages.callPackage ./t { };
 })
