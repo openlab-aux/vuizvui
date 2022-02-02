@@ -17,11 +17,11 @@ in {
     nix = {
       # new --show-trace is so noisy, I wouldn't be able to debug something to save my life
       package = pkgs.nix_2_3;
-      useSandbox = true;
-      extraOptions = ''
-        gc-keep-derivations = false
-        builders-use-substitutes = true
-      '';
+      settings = {
+        sandbox = true;
+        gc-keep-derivations = false;
+        builders-use-substitutes = true;
+      };
     };
 
     nixpkgs.config.allowUnfree = true;

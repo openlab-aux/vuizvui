@@ -2,7 +2,7 @@
 
 {
   config = {
-    nix.trustedUsers = [ "lukas" ];
+    nix.settings.trusted-users = [ "lukas" ];
     users.users.lukas = {
       isNormalUser = true;
       uid = 1000;

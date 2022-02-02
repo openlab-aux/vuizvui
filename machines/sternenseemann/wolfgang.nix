@@ -41,7 +41,7 @@ in {
     { device = "/dev/disk/by-uuid/198329ed-5038-4ad8-b8a6-e52921f2673d"; }
   ];
 
-  nix.maxJobs = 4;
+  nix.settings.max-jobs = 4;
 
   boot.initrd.luks.devices = {
     "main".device = "/dev/nvme0n1p2";
