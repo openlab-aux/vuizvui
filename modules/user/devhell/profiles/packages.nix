@@ -70,6 +70,7 @@ in {
       binutils
       blender
       bmon
+      borg
       bottom
       brave
       broot
