@@ -49,7 +49,6 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
-      #musikcube
       abook
       accountsservice
       ag
@@ -178,6 +177,7 @@ in {
       mpc_cli
       mpv
       msmtp
+      musikcube
       ncdu
       ncmpcpp
       neofetch
