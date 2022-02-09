@@ -1,4 +1,4 @@
-{ stdenv, lib, pkg-config, closureInfo, nix, boost, dash }:
+{ stdenv, lib, pkg-config, closureInfo, nix_2_3, boost, dash }:
 
 drv: { paths ? {}, ... }@attrs:
 
@@ -98,7 +98,8 @@ in stdenv.mkDerivation ({
   '';
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ boost nix ];
+  # FIXME: Use current Nix after fixing API compatibility.
+  buildInputs = [ boost nix_2_3 ];
   makeFlags = [ "BINDIR=${drv}/bin" "EXTRA_NS_FLAGS=${extraNamespaceFlags}" ]
            ++ lib.optional allowBinSh "BINSH_EXECUTABLE=${dash}/bin/dash"
            ++ lib.optional fullNixStore "FULL_NIX_STORE=1";
