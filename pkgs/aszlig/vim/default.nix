@@ -1,5 +1,6 @@
 { stdenv, lib, fetchurl, fetchFromGitHub, writeText, writeTextFile, writeScript
 , runCommand, writers, python3Packages, ledger, meson, vim, buildGoPackage
+, rustc, rustfmt
 }:
 
 let
@@ -403,6 +404,14 @@ let
       rev = "e38845b4042d2351c47cd63f8705fd51c97acb4f";
       sha256 = "1k3val0ibriwcv5jdyq95sgxgkz54r15gpylbhns5934zvaakpj1";
     };
+
+    # Remove once https://github.com/rust-lang/rust.vim/issues/446 is resolved.
+    rust = fetchFromGitHub {
+      owner = "rust-lang";
+      repo = "rust.vim";
+      rev = "4aa69b84c8a58fcec6b6dad6fe244b916b1cf830";
+      sha256 = "07nh8gvkwq91i7qcz0rk5jlc8sb4d3af4zq2892kmmw576zg1wd8";
+    };
   };
 
   generic = ''
@@ -578,6 +587,14 @@ let
     let g:Hexokinase_highlighters = ['background']
     let g:Hexokinase_refreshEvents =
       \ ['TextChanged', 'TextChangedI', 'InsertLeave', 'BufRead']
+
+    " rust
+    if !executable('rustc')
+      let g:rustc_path = '${rustc}/bin/rustc'
+    endif
+    let g:rustfmt_command = '${rustfmt}/bin/rustfmt'
+    let g:rustfmt_autosave = 1
+    let g:rust_recommended_style = 0
   '';
 
   autocmd = ''
