@@ -5,13 +5,12 @@ let
 
   # TODO: Make configurable via module system.
   settings = {
-    closeAfterScreenshot = true;
     disabledTrayIcon = true;
     drawColor = "#ff0000";
     drawThickness = 2;
-    saveAfterCopyPath = "$HOME/screenshots";
     savePath = "$HOME/screenshots";
     savePathFixed = true;
+    checkForUpdates = false;
   };
 
 in {

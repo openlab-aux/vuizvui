@@ -1,39 +1,146 @@
+diff --git a/src/tools/toolfactory.cpp b/src/tools/toolfactory.cpp
+index edeb2bc0..e1c98ae1 100644
+--- a/src/tools/toolfactory.cpp
++++ b/src/tools/toolfactory.cpp
+@@ -51,13 +51,8 @@ CaptureTool* ToolFactory::CreateTool(CaptureTool::Type t, QObject* parent)
+         if_TYPE_return_TOOL(TYPE_COPY, CopyTool);
+         if_TYPE_return_TOOL(TYPE_SAVE, SaveTool);
+         if_TYPE_return_TOOL(TYPE_EXIT, ExitTool);
+-        if_TYPE_return_TOOL(TYPE_IMAGEUPLOADER, ImgUploaderTool);
+-#if !defined(Q_OS_MACOS)
+-        if_TYPE_return_TOOL(TYPE_OPEN_APP, AppLauncher);
+-#endif
+         if_TYPE_return_TOOL(TYPE_PIXELATE, PixelateTool);
+         if_TYPE_return_TOOL(TYPE_REDO, RedoTool);
+-        if_TYPE_return_TOOL(TYPE_PIN, PinTool);
+         if_TYPE_return_TOOL(TYPE_TEXT, TextTool);
+         if_TYPE_return_TOOL(TYPE_CIRCLECOUNT, CircleCountTool);
+         if_TYPE_return_TOOL(TYPE_SIZEINCREASE, SizeIncreaseTool);
 diff --git a/src/utils/confighandler.cpp b/src/utils/confighandler.cpp
-index 6786225..3a55a73 100644
+index 42f53102..3b0517cc 100644
 --- a/src/utils/confighandler.cpp
 +++ b/src/utils/confighandler.cpp
-@@ -16,9 +16,8 @@
+@@ -96,7 +96,7 @@ static QMap<class QString, QSharedPointer<ValueHandler>>
+     OPTION("useJpgForClipboard"          ,Bool               ( false         )),
+     OPTION("uploadWithoutConfirmation"   ,Bool               ( false         )),
+     OPTION("saveAfterCopy"               ,Bool               ( false         )),
+-    OPTION("savePath"                    ,ExistingDir        (                   )),
++    OPTION("savePath"                    ,String             ( ""                )),
+     OPTION("savePathFixed"               ,Bool               ( false         )),
+     OPTION("saveAsFileExtension"         ,SaveFileExtension  (                   )),
+     OPTION("uploadHistoryMax"            ,LowerBoundedInt    (0, 25          )),
+@@ -137,10 +137,6 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
+     SHORTCUT("TYPE_SAVE"                ,   "Ctrl+S"                ),
+     SHORTCUT("TYPE_ACCEPT"              ,   "Return"                ),
+     SHORTCUT("TYPE_EXIT"                ,   "Ctrl+Q"                ),
+-    SHORTCUT("TYPE_IMAGEUPLOADER"       ,                           ),
+-#if !defined(Q_OS_MACOS)
+-    SHORTCUT("TYPE_OPEN_APP"            ,   "Ctrl+O"                ),
+-#endif
+     SHORTCUT("TYPE_PIXELATE"            ,   "B"                     ),
+     SHORTCUT("TYPE_INVERT"              ,   "I"                     ),
+     SHORTCUT("TYPE_REDO"                ,   "Ctrl+Shift+Z"          ),
+@@ -163,7 +159,6 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
+ #else
+     SHORTCUT("TYPE_DELETE_CURRENT_TOOL" ,   "Delete"                ),
  #endif
+-    SHORTCUT("TYPE_PIN"                 ,                           ),
+     SHORTCUT("TYPE_SELECTIONINDICATOR"  ,                           ),
+     SHORTCUT("TYPE_SIZEINCREASE"        ,                           ),
+     SHORTCUT("TYPE_SIZEDECREASE"        ,                           ),
+@@ -174,10 +169,8 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
+ // CLASS CONFIGHANDLER
  
  ConfigHandler::ConfigHandler()
--{
--    m_settings.setDefaultFormat(QSettings::IniFormat);
--}
-+  : m_settings("@configFile@", QSettings::IniFormat)
-+{}
- 
- QVector<CaptureToolButton::ButtonType> ConfigHandler::getButtons()
+-  : m_settings(QSettings::IniFormat,
+-               QSettings::UserScope,
+-               qApp->organizationName(),
+-               qApp->applicationName())
++  : m_settings("@configFile@",
++               QSettings::IniFormat)
  {
-@@ -49,11 +48,7 @@ QVector<CaptureToolButton::ButtonType> ConfigHandler::getButtons()
-                 << CaptureToolButton::TYPE_UNDO << CaptureToolButton::TYPE_REDO
-                 << CaptureToolButton::TYPE_COPY << CaptureToolButton::TYPE_SAVE
-                 << CaptureToolButton::TYPE_EXIT
--                << CaptureToolButton::TYPE_IMAGEUPLOADER
--#if not defined(Q_OS_MACOS)
--                << CaptureToolButton::TYPE_OPEN_APP
+     static bool firstInitialization = true;
+     if (firstInitialization) {
+diff --git a/src/utils/confighandler.h b/src/utils/confighandler.h
+index 5a3f4237..3a99a622 100644
+--- a/src/utils/confighandler.h
++++ b/src/utils/confighandler.h
+@@ -8,6 +8,7 @@
+ #include <QStringList>
+ #include <QVariant>
+ #include <QVector>
++#include <QDir>
+ 
+ #define CONFIG_GROUP_GENERAL "General"
+ #define CONFIG_GROUP_SHORTCUTS "Shortcuts"
+@@ -62,12 +63,20 @@ public:
+ 
+     static ConfigHandler* getInstance();
+ 
++    QString savePath() {
++        QString val = value(QStringLiteral("savePath")).toString()
++            .replace("$HOME", QDir::homePath());
++        QDir().mkpath(val);
++        return val;
++    }
++
++    CONFIG_SETTER(setSavePath, savePath, QString);
++
+     // Definitions of getters and setters for config options
+     // Some special cases are implemented regularly, without the macro
+     // NOTE: When adding new options, make sure to add an entry in
+     // recognizedGeneralOptions in the cpp file.
+     CONFIG_GETTER_SETTER(userColors, setUserColors, QVector<QColor>);
+-    CONFIG_GETTER_SETTER(savePath, setSavePath, QString)
+     CONFIG_GETTER_SETTER(savePathFixed, setSavePathFixed, bool)
+     CONFIG_GETTER_SETTER(uiColor, setUiColor, QColor)
+     CONFIG_GETTER_SETTER(contrastUiColor, setContrastUiColor, QColor)
+diff --git a/src/widgets/capture/capturetoolbutton.cpp b/src/widgets/capture/capturetoolbutton.cpp
+index 12946181..c79323b3 100644
+--- a/src/widgets/capture/capturetoolbutton.cpp
++++ b/src/widgets/capture/capturetoolbutton.cpp
+@@ -145,15 +145,9 @@ static std::map<CaptureTool::Type, int> buttonTypeOrder
+       { CaptureTool::TYPE_SELECTIONINDICATOR, 11 },
+       { CaptureTool::TYPE_MOVESELECTION, 12 }, { CaptureTool::TYPE_UNDO, 13 },
+       { CaptureTool::TYPE_REDO, 14 }, { CaptureTool::TYPE_COPY, 15 },
+-      { CaptureTool::TYPE_SAVE, 16 }, { CaptureTool::TYPE_IMAGEUPLOADER, 17 },
++      { CaptureTool::TYPE_SAVE, 16 },
+       { CaptureTool::TYPE_ACCEPT, 18 },
+-#if !defined(Q_OS_MACOS)
+-      { CaptureTool::TYPE_OPEN_APP, 19 }, { CaptureTool::TYPE_EXIT, 20 },
+-      { CaptureTool::TYPE_PIN, 21 },
+-#else
+-      { CaptureTool::TYPE_EXIT, 19 }, { CaptureTool::TYPE_PIN, 20 },
 -#endif
--                << CaptureToolButton::TYPE_PIN << CaptureToolButton::TYPE_TEXT
-+                << CaptureToolButton::TYPE_TEXT
-                 << CaptureToolButton::TYPE_CIRCLECOUNT;
+-
++      { CaptureTool::TYPE_EXIT, 20 },
+       { CaptureTool::TYPE_SIZEINCREASE, 22 },
+       { CaptureTool::TYPE_SIZEDECREASE, 23 },
+ };
+@@ -175,10 +169,6 @@ QList<CaptureTool::Type> CaptureToolButton::iterableButtonTypes = {
+     CaptureTool::TYPE_MOVESELECTION, CaptureTool::TYPE_UNDO,
+     CaptureTool::TYPE_REDO,          CaptureTool::TYPE_COPY,
+     CaptureTool::TYPE_SAVE,          CaptureTool::TYPE_EXIT,
+-    CaptureTool::TYPE_IMAGEUPLOADER,
+-#if !defined(Q_OS_MACOS)
+-    CaptureTool::TYPE_OPEN_APP,
+-#endif
+-    CaptureTool::TYPE_PIN,           CaptureTool::TYPE_SIZEINCREASE,
+-    CaptureTool::TYPE_SIZEDECREASE,  CaptureTool::TYPE_ACCEPT,
++    CaptureTool::TYPE_SIZEINCREASE,  CaptureTool::TYPE_SIZEDECREASE,
++    CaptureTool::TYPE_ACCEPT,
+ };
+diff --git a/src/widgets/capture/capturewidget.cpp b/src/widgets/capture/capturewidget.cpp
+index c34a5f11..0913af24 100644
+--- a/src/widgets/capture/capturewidget.cpp
++++ b/src/widgets/capture/capturewidget.cpp
+@@ -272,9 +272,6 @@ void CaptureWidget::initButtons()
+         for (auto* buttonList : { &allButtonTypes, &visibleButtonTypes }) {
+             buttonList->removeOne(CaptureTool::TYPE_SAVE);
+             buttonList->removeOne(CaptureTool::TYPE_COPY);
+-            buttonList->removeOne(CaptureTool::TYPE_IMAGEUPLOADER);
+-            buttonList->removeOne(CaptureTool::TYPE_OPEN_APP);
+-            buttonList->removeOne(CaptureTool::TYPE_PIN);
+         }
      }
- 
-@@ -105,7 +100,8 @@ QVector<QColor> ConfigHandler::getUserColors()
- 
- QString ConfigHandler::savePath()
- {
--    return m_settings.value(QStringLiteral("savePath")).toString();
-+    return m_settings.value(QStringLiteral("savePath")).toString()
-+        .replace("$HOME", QDir::homePath());
- }
- 
- void ConfigHandler::setSavePath(const QString& savePath)
+     QVector<CaptureToolButton*> vectorButtons;

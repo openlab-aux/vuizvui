@@ -19,8 +19,11 @@
     machine.wait_for_x()
     machine.wait_for_file("/home/alice/.Xauthority")
     machine.succeed("xauth merge ~alice/.Xauthority")
-    machine.succeed('su -c "DISPLAY=:0.0 flameshot gui" - alice &')
-    machine.wait_for_text('(?i)capture the screen')
+    machine.succeed('su -c "DISPLAY=:0.0 flameshot gui" - alice >&2 &')
+    machine.wait_for_text('(?i)save screenshot')
     machine.screenshot('flameshot')
+    machine.send_key("ctrl-s")
+    machine.wait_until_succeeds('ls -1 ~alice/screenshots/ | grep -q png')
+    machine.screenshot('flameshot_done')
   '';
 }
