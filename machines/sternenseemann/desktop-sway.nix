@@ -121,6 +121,7 @@ in
       grim slurp screenshot      # screenshots
       mako                       # notifications
       nextcloud-client
+      gnome3.adwaita-icon-theme
     ];
 
     programs.fish.shellAliases = {
