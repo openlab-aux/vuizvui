@@ -113,6 +113,7 @@ in
 
     # for nextcloud-client
     services.gnome.gnome-keyring.enable = true;
+    programs.dconf.enable = true;
 
     environment.systemPackages = with pkgs; [
       bemenu                     # better dmenu
