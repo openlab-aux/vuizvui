@@ -60,6 +60,9 @@ in
         size = 10;
       };
       extraConfig = ''
+        exec eval $(${pkgs.gnome3.gnome-keyring}/bin/gnome-keyring-daemon --start)
+        exec export SSH_AUTH_SOCK
+
         exec ${pkgs.nextcloud-client}/bin/nextcloud
       '';
     };
