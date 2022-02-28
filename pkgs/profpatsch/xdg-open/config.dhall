@@ -131,6 +131,10 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
                   { mime = [ "application/vnd.openxmlformats-officedocument.*" ]
                   , cmd = oneArg (pkgSameOnDemand "libreoffice")
                   }
+                , msword =
+                  { mime = [ "application/msword" ]
+                  , cmd = oneArg (pkgSameOnDemand "libreoffice")
+                  }
                 , any =
                   { mime = [ "*" ], cmd = special.dmenu-list-binaries-and-exec }
                 }
