@@ -555,6 +555,10 @@ in {
               excercises = [
                  { "name": "burpies"
                  , "sets": 2
+                 , "reps": 5
+                 , "sigma": 2 },
+                 { "name": "stretch & bend"
+                 , "sets": 1
                  , "reps": 10
                  , "sigma": 2 },
               ]
