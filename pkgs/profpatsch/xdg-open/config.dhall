@@ -190,11 +190,6 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
               , schema-prefix = [ "irc", "ircs" ]
               , handler = mime.irc
               }
-            , { desc = "local file"
-              , glob = [ "file://*" ]
-              , schema-prefix = [ "file" ]
-              , handler = mime.file
-              }
             ]
 
       in  { uriMimeGlobs
