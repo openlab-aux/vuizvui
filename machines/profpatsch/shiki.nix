@@ -192,7 +192,7 @@ in {
         gnome.gnome_themes_standard
         # can go away once I migrate to pw-ctl and such
         pavucontrol
-        pulseaudioLight
+        pulseaudio
       ];
       programmingTools = [
         cabal2nix                    # convert cabal files to nixexprs

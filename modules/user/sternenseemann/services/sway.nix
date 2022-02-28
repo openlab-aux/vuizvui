@@ -8,7 +8,7 @@ let
     getBins
     ;
 
-  bins = (getBins pkgs.pulseaudioLight [ "pactl" ])
+  bins = (getBins pkgs.pulseaudio [ "pactl" ])
       // (getBins pkgs.dbus [
         "dbus-run-session"
         "dbus-update-activation-environment"

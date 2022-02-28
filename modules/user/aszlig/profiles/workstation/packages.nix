@@ -50,7 +50,7 @@ pkgs: with pkgs; [
   p7zip
   pavucontrol
   posix_man_pages
-  pulseaudioLight
+  pulseaudio
   vuizvui.aszlig.pvolctrl
   pv
   python
