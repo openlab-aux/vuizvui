@@ -74,8 +74,8 @@ in {
         sessionCommands = with pkgs; ''
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
-            export EDITOR=emacsclient
             export TERMINAL=${lilyterm-git}/bin/lilyterm
+            export EDITOR="emacsclient --create-frame"
 
             ${xorg.xset}/bin/xset r rate 250 35
 
