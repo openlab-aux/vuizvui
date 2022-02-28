@@ -119,7 +119,7 @@ let
       '';
       src = pkgs.fetchgit {
         url = "https://code.tvl.fyi/depot.git";
-        rev = tvlCommit; # 2021-11-13
+        rev = tvlCommit;
         sha256 = tvlSha256;
       };
       prepareSource = runExeclineFns.runExeclineLocalNoSeqL "prepare-tvl" {} [
@@ -133,10 +133,11 @@ let
 
 
 in rec {
+  # tvl = import /home/philip/depot {};
   tvl =
     importTvl {
-      tvlCommit = "e2fbc10ebdb5d85813fd15c5dd371ee8e1e87a22"; # 2021-11-13
-      tvlSha256 = "14hrzx31a7bas64n8rz89388nwfhmy77l5s85g82vvzd5fxg61by";
+      tvlCommit = "72b46e8fe80d9c8c708602387b4d46cce6bb266d"; # 2022-02-28
+      tvlSha256 = "sha256-uWrsbMWe3CZVlsstMrJB4HP3tzU8GgFB7VAsanUBI2g=";
       nixpkgsPath = pkgs.path;
     };
 

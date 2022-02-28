@@ -19,7 +19,6 @@ let
       // getBins pkgs.s6 [ "s6-ioconnect" ]
       // getBins pkgs.s6-portable-utils [ "s6-test" ]
       // getBins pkgs.s6-networking [ "s6-tcpclient" ]
-      // getBins pkgs.lilyterm-git [ "lilyterm" ]
       // getBins pkgs.netcat-openbsd [ "nc" ]
       // getBins pkgs.dmenu [ "dmenu" "dmenu_path" ]
       # TODO: make sure these are the ones from the environment
@@ -96,7 +95,7 @@ let
   };
 
   exec-in-terminal-emulator = {exe, args}: {
-    exe = bins.lilyterm;
+    exe = pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.alacritty;
     args = file: [
       ({Variable, String}: String "--execute")
       ({Variable, String}: String exe)

@@ -51,7 +51,6 @@ in {
     # Graphical System
 
     services.xserver = {
-
       enable = true;
       layout = "de";
       xkbVariant = "neo";
@@ -74,8 +73,9 @@ in {
         sessionCommands = with pkgs; ''
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
-            export TERMINAL=${lilyterm-git}/bin/lilyterm
+            export PATH+=":$HOME/bin" #add user-specific binaries (filled by nix-home)
             export EDITOR="emacsclient --create-frame"
+            export TERMINAL=terminal-emulator
 
             ${xorg.xset}/bin/xset r rate 250 35
 
@@ -133,7 +133,6 @@ in {
       ];
       # minimal set of gui applications
       guiPkgs = [
-        lilyterm-git      # terminal emulator, best one around
         dmenu             # minimal launcher
         (pkgs.vuizvui.profpatsch.binify { exe = pkgs.vuizvui.profpatsch.xdg-open; name = "xdg-open"; }) # override the crap freedesktop crap
       ];
