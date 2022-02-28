@@ -154,8 +154,9 @@ function appendTalkies(append_to_element) {
         { talk: "polsterboi.json.mozlz4" },
         { talk: "buffer-local when set" },
         { talk: "Jordan Peterson's broader œuvre",
-          link: "https://twitter.com/bronzeswords/status/1449345260207828995" }
-
+          link: "https://twitter.com/bronzeswords/status/1449345260207828995" },
+        { talk: "🙏 🌧 ⬇ 🌍"
+        , link: "https://www.youtube.com/watch?v=QAo_Ycocl1E" }
     ];
     var talkie = talkies[Math.floor(Math.random()*talkies.length)];
     var elem = null;
