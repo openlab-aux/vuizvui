@@ -1,10 +1,10 @@
-{ pkgs, getBins, writeExecline, runExeclineLocal, toNetstringKeyVal, dhall-json, ... }:
+{ pkgs, getBins, writeExecline, runExeclineLocal, toNetstringKeyVal, ... }:
 
 let
   inherit (pkgs) lib;
   bins = getBins pkgs.nodejs [ "node" ]
       // getBins pkgs.coreutils [ "echo" "ln" "mkdir" ]
-      // getBins dhall-json [ "json-to-dhall" ]
+      // getBins pkgs.dhall-json [ "json-to-dhall" ]
       // getBins pkgs.xorg.xrandr [ "xrandr" ]
       ;
 

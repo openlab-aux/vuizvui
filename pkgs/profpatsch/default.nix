@@ -181,7 +181,7 @@ in rec {
     inherit writeExecline writeHaskellInterpret getBins runInEmptyEnv sandbox;
   };
 
-  xrandr = import ./xrandr.nix { inherit pkgs getBins runExeclineLocal writeExecline toNetstringKeyVal dhall-json; };
+  xrandr = import ./xrandr.nix { inherit pkgs getBins runExeclineLocal writeExecline toNetstringKeyVal; };
 
   inherit (callPackage ./utils-hs {})
     until watch-server
@@ -264,16 +264,7 @@ in rec {
     ;
 
 
-  easy-dhall-nix = (import (pkgs.fetchFromGitHub {
-    owner = "justinwoo";
-    repo = "easy-dhall-nix";
-    rev = "288ee825c326f352a5db194a024bd3e1f2f735b2";
-    sha256 = "12v4ql1nm1famz8r80k1xkkdgj7285vy2vn16iili0qwvz3i98ah";
-  }) { inherit pkgs; });
 
-  dhall = easy-dhall-nix.dhall-simple;
-  dhall-nix = easy-dhall-nix.dhall-nix-simple;
-  dhall-json = easy-dhall-nix.dhall-json-simple;
 
   # dhall-flycheck = (import /home/philip/kot/dhall/flycheck/overlay.nix pkgs pkgs).dhall-flycheck;
 
@@ -286,9 +277,9 @@ in rec {
   #     sha256 = "0d6qjr245jmx1lvqdplvrshlkpfaqa46aizyhyb6hg37v8jq8rv7";
   #   }}/overlay.nix" pkgs pkgs).dhall-flycheck;
 
-  buildDhallPackage = pkgs.callPackage ./dhall/build-dhall-package-improved.nix { inherit dhall; };
+  buildDhallPackage = pkgs.callPackage ./dhall/build-dhall-package-improved.nix { };
 
-  inherit (import ./importDhall.nix { inherit pkgs dhall-nix dhall-json exactSource; })
+  inherit (import ./importDhall.nix { inherit pkgs exactSource; })
     importDhall
     importDhall2
     readDhallFileAsJson
@@ -296,7 +287,7 @@ in rec {
 
   rust-deps = (import ./rust-deps.nix { inherit (pkgs) buildRustCrate; });
 
-  inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline dhall buildDhallPackage runExeclineLocal netencode-rs writeRustSimple record-get el-exec lazy-packages; })
+  inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline buildDhallPackage runExeclineLocal netencode-rs writeRustSimple record-get el-exec lazy-packages; })
     xdg-open
     Prelude
     read-headers-and-follow-redirect

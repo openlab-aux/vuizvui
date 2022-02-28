@@ -213,7 +213,7 @@ in {
         pkgs.vuizvui.profpatsch.watch-server # restart server on code change
         pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
         execline
-        pkgs.vuizvui.profpatsch.dhall
+        pkgs.dhall
         # TODO(Profpatsch): make dhall-flycheck build again
         # pkgs.vuizvui.profpatsch.dhall-flycheck
       ];

@@ -1,4 +1,4 @@
-{ pkgs, dhall-nix, dhall-json, exactSource }:
+{ pkgs, exactSource }:
 let
 
   # import the dhall file as nix expression via dhall-nix.
@@ -40,7 +40,7 @@ let
         # TODO: This is a bit of a hack hrm.
         cd "${src}"
         printf '%s' ${pkgs.lib.escapeShellArg "${src}/${main} : ${type}"} \
-          | ${dhall-nix}/bin/dhall-to-nix \
+          | ${pkgs.dhall-nix}/bin/dhall-to-nix \
           > $out
       '';
     in import convert;
@@ -52,7 +52,7 @@ let
     let
       convert = pkgs.runCommandLocal "dhall-to-json" {} ''
         printf '%s' ${pkgs.lib.escapeShellArg "${file} : ${dhallType}"} \
-          | ${dhall-json}/bin/dhall-to-json \
+          | ${pkgs.dhall-json}/bin/dhall-to-json \
           > $out
       '';
     in builtins.fromJSON (builtins.readFile convert);

@@ -3,6 +3,8 @@
 let
   bins = getBins pkgs.nix [ "nix-build" "nix-instantiate" ];
 
+  # TODO: both of these don’t prevent `result` from being created. good? bad?
+
   # Usage (execline syntax):
   #    nix-run { -A foo <more_nix_options> } args...
   #

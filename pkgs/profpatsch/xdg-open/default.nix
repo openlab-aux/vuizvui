@@ -1,7 +1,6 @@
 { pkgs, getBins,
 importDhall2,
 writeExecline,
-dhall,
 buildDhallPackage,
 runExeclineLocal,
 writeRustSimple,
@@ -20,12 +19,12 @@ let
       // getBins pkgs.s6 [ "s6-ioconnect" ]
       // getBins pkgs.s6-portable-utils [ "s6-test" ]
       // getBins pkgs.s6-networking [ "s6-tcpclient" ]
+      // getBins pkgs.lilyterm-git [ "lilyterm" ]
       // getBins pkgs.netcat-openbsd [ "nc" ]
       // getBins pkgs.dmenu [ "dmenu" "dmenu_path" ]
       # TODO: make sure these are the ones from the environment
       // getBins pkgs.emacs [ "emacsclient" ]
       // getBins pkgs.firefox [ "firefox" ]
-      // getBins pkgs.lilyterm-git [ "lilyterm" ]
       // getBins pkgs.ranger [ "ranger" ]
       // getBins pkgs.khal [ "khal" ]
       ;
