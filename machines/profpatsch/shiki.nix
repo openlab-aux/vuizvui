@@ -578,8 +578,24 @@ in {
             AccuracySec="15m";
           };
         };
-      }
 
+        services.tagtime = {
+          description = "tagtime daemon";
+          wantedBy = [ "default.target" ];
+          serviceConfig = {
+            Restart = "on-failure";
+            ExecStart = "${pkgs.tagtime}/bin/tagtimed";
+            Environment = [
+              "DISPLAY=:0"
+              ''
+                EDITOR=${pkgs.writers.writeDash "emacs-frame" ''
+                  ${pkgs.emacs}/bin/emacsclient -c "$@"
+                ''}
+              ''
+            ];
+          };
+        };
+      }
 
       ({
       #   services.pyrnotify-ssh-connection = {
