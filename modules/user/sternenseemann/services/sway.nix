@@ -12,6 +12,7 @@ let
       // (getBins pkgs.dbus [
         "dbus-update-activation-environment"
       ])
+      // (getBins pkgs.systemd [ "systemd-cat" ])
       // (getBins cfg.package [ "sway" ])
       // (getBins pkgs.i3status [ "i3status" ])
       // (getBins pkgs.brightnessctl [ "brightnessctl" ])
@@ -127,7 +128,7 @@ in {
     programs.fish.loginShellInit = lib.mkIf cfg.autolaunchFish ''
       if test -z "$DISPLAY"; and test -z "$WAYLAND_DISPLAY"; and test (tty) = "/dev/tty1"
         set -x SWAYSOCK "/run/user/"(id -u)"/sway.sock"
-        exec ${bins.sway}
+        exec ${bins.systemd-cat} ${bins.sway}
       end
     '';
 
