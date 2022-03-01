@@ -10,7 +10,6 @@ let
 
   bins = (getBins pkgs.pulseaudio [ "pactl" ])
       // (getBins pkgs.dbus [
-        "dbus-run-session"
         "dbus-update-activation-environment"
       ])
       // (getBins cfg.package [ "sway" ])
@@ -128,7 +127,7 @@ in {
     programs.fish.loginShellInit = lib.mkIf cfg.autolaunchFish ''
       if test -z "$DISPLAY"; and test -z "$WAYLAND_DISPLAY"; and test (tty) = "/dev/tty1"
         set -x SWAYSOCK "/run/user/"(id -u)"/sway.sock"
-        exec ${bins.dbus-run-session} -- ${bins.sway}
+        exec ${bins.sway}
       end
     '';
 
