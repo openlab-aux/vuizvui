@@ -27,5 +27,15 @@ in
 
     # TLP Linux Advanced Power Management
     services.tlp.enable = mkDefault true;
+    boot = {
+      # acpi_call is required for some tlp features, e.g. discharge/recalibrate
+      kernelModules = [
+        "acpi_call"
+      ];
+
+      extraModulePackages = [
+        config.boot.kernelPackages.acpi_call
+      ];
+    };
   };
 }
