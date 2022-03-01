@@ -171,7 +171,7 @@ in {
       "sway/config".text = ''
         # correct DPI after hotplugging
         exec ${pkgs.xorg.xrdb}/bin/xrdb -load ${dpiXresources}
-        exec ${bins.dbus-update-activation-environment} WAYLAND_DISPLAY
+        exec ${bins.dbus-update-activation-environment} --all --systemd
 
         # set the one true modifier
         set $mod Mod4
