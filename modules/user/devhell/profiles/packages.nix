@@ -52,7 +52,6 @@ in {
       abook
       accountsservice
       alacritty
-      antiword
       apg
       aria2
       ascii
@@ -78,7 +77,6 @@ in {
       chromaprint
       cifs-utils
       cipherscan
-      clac
       cmatrix
       colmena
       cryptsetup
@@ -115,7 +113,6 @@ in {
       gdb
       gh
       ghostscript
-      ghostwriter
       git
       git-trim
       gitui
@@ -147,7 +144,6 @@ in {
       iprange
       iptraf-ng
       ipv6calc
-      jfsutils
       jq
       jwhois
       kmon
@@ -164,8 +160,6 @@ in {
       maim
       man-pages
       mapcidr
-      mdbook
-      mdbook-mermaid
       mediainfo
       menyoki
       mkvtoolnix
@@ -199,6 +193,7 @@ in {
       oneshot
       openssl
       p7zip
+      viu
       pamixer
       pandoc
       paperkey
@@ -216,7 +211,6 @@ in {
       powertop
       procs
       profanity
-      pulseaudio
       pulsemixer
       pv
       pxz
@@ -275,7 +269,6 @@ in {
       vscodium
       vuizvui.devhell.vim
       w3m
-      watchexec
       wavpack
       wget
       which
