@@ -80,6 +80,6 @@ pkgs: with pkgs; [
   wcc
   wireshark
   xorg.xhost
-  youtubeDL
+  youtube-dl
   zathura
 ]
