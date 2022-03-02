@@ -26,10 +26,14 @@
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 
     vuizvui.hardware.thinkpad.enable = lib.mkDefault true;
-    vuizvui.hardware.low-battery = {
+    services.upower = {
       enable = true;
-      treshold = 3;
-      action = "hibernate";
+      usePercentageForPolicy = true;
+      criticalPowerAction = "Hibernate";
+
+      percentageLow = 15;
+      percentageCritical = 10;
+      percentageAction = 8;
     };
 
     programs.mosh.enable = true;
