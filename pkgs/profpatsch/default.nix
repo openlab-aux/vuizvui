@@ -288,7 +288,7 @@ in rec {
 
   rust-deps = (import ./rust-deps.nix { inherit (pkgs) buildRustCrate; });
 
-  inherit (import ./xdg-open { inherit pkgs getBins importDhall2 writeExecline buildDhallPackage runExeclineLocal netencode-rs writeRustSimple record-get el-exec lazy-packages; })
+  inherit (import ./xdg-open { inherit pkgs tvl getBins importDhall2 writeExecline buildDhallPackage runExeclineLocal netencode-rs writeRustSimple record-get el-exec lazy-packages; })
     xdg-open
     Prelude
     read-headers-and-follow-redirect

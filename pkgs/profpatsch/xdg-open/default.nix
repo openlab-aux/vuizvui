@@ -1,4 +1,4 @@
-{ pkgs, getBins,
+{ pkgs, getBins, tvl,
 importDhall2,
 writeExecline,
 buildDhallPackage,
@@ -95,7 +95,7 @@ let
   };
 
   exec-in-terminal-emulator = {exe, args}: {
-    exe = pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.alacritty;
+    exe = tvl.users.Profpatsch.alacritty;
     args = file: [
       ({Variable, String}: String "--execute")
       ({Variable, String}: String exe)
