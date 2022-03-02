@@ -171,14 +171,14 @@
   };
 
   environment.systemPackages = with pkgs; [
-    aircrackng
+    aircrack-ng
     fwupd
     horst
     ipmitool
     iw
     libva
     minicom
-    pmtools
+    acpica-tools
     pmutils
     teams
     vaapiVdpau

@@ -50,7 +50,7 @@ in {
       pkgs.thunderbird
       pkgs.vuizvui.aszlig.vim
       pkgs.wine
-      pkgs.youtubeDL
+      pkgs.youtube-dl
       unfreeAndNonDistributablePkgs.skype
     ];
 

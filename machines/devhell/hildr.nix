@@ -182,7 +182,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    aircrackng
+    aircrack-ng
     cdrtools
     dvdplusrwtools
     horst
@@ -191,7 +191,7 @@
     libva
     libvdpau-va-gl
     minicom
-    pmtools
+    acpica-tools
     pmutils
     reaverwps
     snort

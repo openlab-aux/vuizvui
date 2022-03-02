@@ -195,7 +195,7 @@
     libva
     libvdpau-va-gl
     minicom
-    pmtools
+    acpica-tools
     pmutils
     vaapiVdpau
     vdpauinfo

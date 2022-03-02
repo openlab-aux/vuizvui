@@ -42,7 +42,7 @@ in
 
     environment.systemPackages = with pkgs; let
       base = [
-        ack ag
+        ack silver-searcher
         fish
         git
         man-pages
