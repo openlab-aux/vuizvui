@@ -103,7 +103,7 @@ in {
     ];
 
     nix.distributedBuilds = true;
-    nix.trustedUsers = [ "@wheel" ];
+    nix.settings.trustedUsers = [ "@wheel" ];
     nix.buildMachines = [
       # access to the nix-community aarch64 build box
       {
@@ -124,10 +124,10 @@ in {
         supportedFeatures = [ "kvm" "big-parallel" "nixos-test" "benchmark" ];
       }
     ];
-    nix.binaryCaches = [
+    nix.settings.binaryCaches = [
       "https://digitallyinduced.cachix.org"
     ];
-    nix.binaryCachePublicKeys = [
+    nix.settings.binaryCachePublicKeys = [
       "digitallyinduced.cachix.org-1:y+wQvrnxQ+PdEsCt91rmvv39qRCYzEgGQaldK26hCKE="
     ];
 

@@ -10,9 +10,9 @@ in
 {
   config = {
     # correctness before speed
-    nix.useSandbox = true;
+    nix.settings.useSandbox = true;
 
-    nix.maxJobs = "auto";
+    nix.settings.maxJobs = "auto";
 
     # /tmp should never be depended on
     boot.cleanTmpDir = true;
