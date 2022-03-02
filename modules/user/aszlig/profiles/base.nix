@@ -82,7 +82,7 @@ in {
       };
     }));
 
-    system.fsPackages = with pkgs; [ sshfsFuse ];
+    system.fsPackages = with pkgs; [ sshfs-fuse ];
     time.timeZone = "Europe/Berlin";
   };
 }

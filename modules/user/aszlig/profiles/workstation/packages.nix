@@ -71,7 +71,7 @@ pkgs: with pkgs; [
   strace
   surfraw
   vuizvui.taalo-build
-  telnet
+  inetutils
   unzip
   valgrind
   vbindiff

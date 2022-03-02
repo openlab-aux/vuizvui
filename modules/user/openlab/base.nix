@@ -45,7 +45,7 @@ in
         ack ag
         fish
         git
-        manpages
+        man-pages
         netcat-openbsd
         python3
         tmux

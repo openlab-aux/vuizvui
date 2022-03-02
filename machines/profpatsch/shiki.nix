@@ -175,7 +175,7 @@ in {
         imagemagick          # image conversion
         jmtpfs               # MTP fuse
         mosh                 # ssh with stable connections
-        sshfsFuse            # mount ssh machines
+        sshfs-fuse            # mount ssh machines
         # TODO move into atool deps
         unzip                # extract zip archives
         networkmanagerapplet # for nm-connection-editor
@@ -189,7 +189,7 @@ in {
       guiPkgs = [
         gnome.adwaita-icon-theme
         # TODO: get themes to work. See notes.org.
-        gnome.gnome_themes_standard
+        gnome.gnome-themes-extra
         # can go away once I migrate to pw-ctl and such
         pavucontrol
         pulseaudio
@@ -205,7 +205,7 @@ in {
         direnv
         xh                       # reimplementation of httpie in rust (faster startup)
         jq                           # json filter
-        telnet                       # tcp debugging
+        inetutils                       # tcp debugging
         # TODO: make static binaries
         pkgs.vuizvui.profpatsch.nix-http-serve # serve nix builds and rebuild on reloads
         pkgs.vuizvui.profpatsch.nman # open man pages in temporary nix shell

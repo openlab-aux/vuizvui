@@ -162,7 +162,7 @@ in {
       lsof
       lxd
       maim
-      manpages
+      man-pages
       mapcidr
       mdbook
       mdbook-mermaid
@@ -247,7 +247,7 @@ in {
       taskwarrior
       taskwarrior-tui
       tealdeer
-      telnet
+      inetutils
       termdown
       termshark
       testdisk

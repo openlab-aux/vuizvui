@@ -31,7 +31,7 @@ in {
 
     system = {
       fsPackages = with pkgs; [
-        sshfsFuse
+        sshfs-fuse
         fuse
         cryptsetup
       ];

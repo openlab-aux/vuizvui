@@ -121,7 +121,7 @@ in {
         ripgrep           # file content searcher, > ag > ack > grep
         lr                # list recursively, ls & find replacement
         dos2unix          # text file conversion
-        manpages          # system manpages (not included by default)
+        man-pages          # system manpages (not included by default)
         mkpasswd          # UNIX password creator
         ncdu              # disk size checker
         smartmontools     # check disk state
