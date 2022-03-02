@@ -51,7 +51,7 @@ in {
       pkgs.vuizvui.aszlig.vim
       pkgs.wine
       pkgs.youtube-dl
-      unfreeAndNonDistributablePkgs.skype
+      unfreeAndNonDistributablePkgs.skypeforlinux
     ];
 
     console.useXkbConfig = true;
