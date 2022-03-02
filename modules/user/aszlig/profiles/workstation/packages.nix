@@ -75,7 +75,7 @@ pkgs: with pkgs; [
   unzip
   valgrind
   vbindiff
-  vorbisTools
+  vorbis-tools
   w3m
   wcc
   wireshark

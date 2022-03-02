@@ -51,7 +51,6 @@ in {
     environment.systemPackages = with pkgs; [
       abook
       accountsservice
-      ag
       alacritty
       antiword
       apg
@@ -77,7 +76,7 @@ in {
       cbonsai
       ccrypt
       chromaprint
-      cifs_utils
+      cifs-utils
       cipherscan
       clac
       cmatrix
@@ -110,7 +109,7 @@ in {
       flavours
       fortune
       freerdpUnstable
-      fuse_exfat
+      exfat
       fzf
       gcc
       gdb
@@ -143,6 +142,7 @@ in {
       htop
       imagemagick
       imv
+      inetutils
       ipcalc
       iprange
       iptraf-ng
@@ -235,6 +235,7 @@ in {
       sd
       signal-desktop
       silicon
+      silver-searcher
       smartmontools
       so
       sox
@@ -247,7 +248,6 @@ in {
       taskwarrior
       taskwarrior-tui
       tealdeer
-      inetutils
       termdown
       termshark
       testdisk
@@ -270,7 +270,7 @@ in {
       vivid
       vlc
       vlock
-      vorbisTools
+      vorbis-tools
       vorbisgain
       vscodium
       vuizvui.devhell.vim
@@ -281,12 +281,12 @@ in {
       which
       wiki-tui
       wipe
-      wireguard
+      wireguard-tools
       wordgrinder
       wuzz
       xfsprogs
       xh
-      xlibs.xev
+      xorg.xev
       xsv
       youtube-dl
       zathura
