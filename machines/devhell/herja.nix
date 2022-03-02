@@ -83,8 +83,8 @@
     cpuFreqGovernor = "powersave";
   };
 
-  nix.settings = {
-    max-jobs = lib.mkDefault 16;
+  nix = {
+    settings.max-jobs = lib.mkDefault 16;
   };
 
   i18n = {

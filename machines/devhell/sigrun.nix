@@ -68,7 +68,9 @@
   networking.wireless.enable = false;
   networking.useNetworkd = true;
 
-  nix.maxJobs = 8;
+  nix = {
+    settings.max-jobs = lib.mkDefault 8;
+  };
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
