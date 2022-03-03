@@ -24,6 +24,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         vim-signify
         vim-toml
         vim-hexokinase
+        vim-shellcheck
         mkdx
       ];
       opt = [ vimtex ];
