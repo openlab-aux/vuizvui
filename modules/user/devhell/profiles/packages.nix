@@ -96,6 +96,7 @@ in {
       e2fsprogs
       element-desktop
       ethtool
+      exfat
       fd
       feh
       ffmpeg-full
@@ -107,7 +108,6 @@ in {
       flavours
       fortune
       freerdpUnstable
-      exfat
       fzf
       gcc
       gdb
@@ -193,7 +193,6 @@ in {
       oneshot
       openssl
       p7zip
-      viu
       pamixer
       pandoc
       paperkey
@@ -227,6 +226,7 @@ in {
       safecopy
       screen
       sd
+      shellcheck
       signal-desktop
       silicon
       silver-searcher
@@ -261,6 +261,7 @@ in {
       virt-viewer
       virtmanager
       visidata
+      viu
       vivid
       vlc
       vlock
