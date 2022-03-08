@@ -22,6 +22,7 @@ with import ../lib;
     shiki = callMachine ./profpatsch/shiki.nix {};
     haku = callMachine ./profpatsch/haku.nix {};
     legosi = callMachine ./profpatsch/legosi.nix {};
+    leguin = callMachine ./profpatsch/leguin.nix {};
     # mikiya = callMachine ./profpatsch/mikiya.nix {};
   };
   sternenseemann = {
