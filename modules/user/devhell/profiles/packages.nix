@@ -130,6 +130,7 @@ in {
       graphviz
       grex
       grv
+      gurk-rs
       handlr
       hdparm
       hexedit
@@ -245,6 +246,7 @@ in {
       tealdeer
       termdown
       termshark
+      termusic
       testdisk
       tig
       toilet
@@ -278,6 +280,7 @@ in {
       wipe
       wireguard-tools
       wordgrinder
+      writedisk
       wuzz
       xfsprogs
       xh
