@@ -69,6 +69,8 @@ in
     vuizvui.programs.foot = {
       enable = true;
       settings = {
+        include = "${pkgs.foot.themes}/share/foot/themes/selenized-white";
+
         font = [
           {
             font = defaultFont;
