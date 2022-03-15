@@ -65,6 +65,7 @@ in {
     vuizvui.sternenseemann.texlive jabref
     youtube-dl mpv spotify
     ghc cabal-install cabal2nix
+    direnv
     sbcl rlwrap
     valgrind gdb
     docker-compose
@@ -87,6 +88,8 @@ in {
   environment.variables = {
     BROWSER = browser.bin;
   };
+
+  services.lorri.enable = true;
 
   services.tor = {
     enable = true;
