@@ -59,7 +59,7 @@ in {
   environment.systemPackages = with pkgs; [
     vuizvui.sternenseemann.pass
     exfat borgbackup
-    gnupg pinentry-gtk2 signing-party gpgme
+    gnupg pinentry-gnome signing-party gpgme
     thunderbird-wayland
     jackline dino
     vuizvui.sternenseemann.texlive jabref
