@@ -15,6 +15,7 @@
   ./services/postfix
   ./services/starbound.nix
   ./services/guix.nix
+  ./services/upower-minimal.nix
   ./system/iso.nix
   ./system/kernel/bfq
   ./system/kernel/rckernel.nix

@@ -47,6 +47,20 @@ in {
       freeMemThreshold = 5; # <5% free
     };
 
+    vuizvui.services.upower = {
+      enable = true;
+      settings = {
+        UPower = {
+          UsePercentageForPolicy = true;
+          CriticalPowerAction = "Suspend";
+
+          PercentageLow = 15;
+          PercentageCritical = 8;
+          PercentageAction = 5;
+        };
+      };
+    };
+
     ###################
     # Graphical System
 
