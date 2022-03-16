@@ -20,6 +20,8 @@ let
     ];
   });
 
+  configFile = ini.generate "UPower.conf" cfg.settings;
+
 in
 
 {
@@ -66,7 +68,6 @@ in
 
   config = lib.mkIf cfg.enable {
 
-
     # this is … questionable … l o w  e f f o r t
 
     environment.systemPackages = [ pkg ];
@@ -77,8 +78,10 @@ in
 
     systemd.packages = [ pkg ];
 
-    environment.etc."UPower/UPower.conf".source =
-      ini.generate "UPower.conf" cfg.settings;
+    # this implicitly assumes the package has a `upower.service` unit file
+    systemd.services."upower".restartTriggers = [ configFile ];
+
+    environment.etc."UPower/UPower.conf".source = configFile ;
   };
 
 }
