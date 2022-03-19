@@ -46,15 +46,6 @@ lib.fix (self: {
   # nix utilities
   lib = callPackage ./lib { };
 
-  buildGitTarball = callPackage ./build-git-tarball {
-    inherit getBins;
-  };
-
-  bundleSignedReleases = callPackage ./bundle-signed-release {
-    inherit getBins;
-    inherit (self) buildGitTarball;
-  };
-
   # packaged sterniware
   inherit (haskellPackages) emoji-generic;
 
@@ -64,10 +55,6 @@ lib.fix (self: {
     nix-env-diff
     temp
     ;
-
-  schmecgit = callPackage ./schmecgit {
-    inherit (pkgs.llvmPackages_latest) stdenv;
-  };
 
   scripts = dontRecurseIntoAttrs (callPackage ./scripts {
     inherit (writers) writeBashBin;
@@ -85,8 +72,6 @@ lib.fix (self: {
       sha256 = "02b1zj31cpaa4mf83pv3zisvifgvp4jr1pn1dp7af2k7fgh4nizc";
     };
   };
-
-  unicode_clock = python3Packages.callPackage ./unicode_clock { };
 
   vuizvui-update-programs-sqlite = python3Packages.callPackage ./vuizvui-update-programs-sqlite {
     inherit (pkgs.writers) writePython3;
