@@ -18,5 +18,5 @@
       xlink:href="&openlab.url;">OpenLab Augsburg</link>
 '>
 
-<!ENTITY hydra.base "https://headcounter.org/hydra">
+<!ENTITY hydra.base "https://hydra.build">
 <!ENTITY hydra.channelbase "&hydra.base;/channel/custom/openlab/vuizvui">

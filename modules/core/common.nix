@@ -46,7 +46,7 @@ in {
 
     nix = {
       settings = {
-        substituters = [ "https://headcounter.org/hydra/" ];
+        substituters = [ "https://hydra.build/" ];
         trusted-public-keys = [
           "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
         ];

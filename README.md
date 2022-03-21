@@ -10,4 +10,4 @@ Documentation
 
 You can find the latest build of the documentation here:
 
-https://headcounter.org/hydra/job/openlab/vuizvui/manual/latest/download
+https://hydra.build/job/openlab/vuizvui/manual/latest/download
