@@ -46,7 +46,7 @@ in
         fish
         git
         man-pages
-        netcat-openbsd
+        libressl.nc
         python3
         tmux
         screen

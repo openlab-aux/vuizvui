@@ -19,7 +19,7 @@ let
       // getBins pkgs.s6 [ "s6-ioconnect" ]
       // getBins pkgs.s6-portable-utils [ "s6-test" ]
       // getBins pkgs.s6-networking [ "s6-tcpclient" ]
-      // getBins pkgs.netcat-openbsd [ "nc" ]
+      // getBins pkgs.libressl.nc [ "nc" ]
       // getBins pkgs.dmenu [ "dmenu" "dmenu_path" ]
       # TODO: make sure these are the ones from the environment
       // getBins pkgs.emacs [ "emacsclient" ]
