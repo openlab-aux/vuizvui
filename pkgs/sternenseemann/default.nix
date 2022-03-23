@@ -78,6 +78,11 @@ lib.fix (self: {
     inherit (profpatsch) getBins;
   };
 
+  # customized third party software
+  acme = callPackage ./acme {
+    inherit (self) plan9port;
+  };
+
   pass = (pkgs.pass.override {
     waylandSupport = true;
     x11Support = false;
@@ -87,6 +92,13 @@ lib.fix (self: {
       substituteInPlace "contrib/dmenu/passmenu" \
         --replace "dmenu-wl" "${bins.bemenu}"
     '';
+  });
+
+  plan9port = pkgs.plan9port.overrideAttrs (old: {
+    patches = old.patches or [] ++ [
+      ./acme/no-usr-local-plan9.patch
+      ./acme/neo-modifier-fix.patch
+    ];
   });
 
   texlive = pkgs.texlive.combine {

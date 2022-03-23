@@ -58,6 +58,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     vuizvui.sternenseemann.pass
+    vuizvui.sternenseemann.acme
     exfat borgbackup
     gnupg pinentry-gnome signing-party gpgme
     thunderbird-wayland

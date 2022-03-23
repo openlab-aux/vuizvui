@@ -1,0 +1,162 @@
+From 24df3a48ccf9551ee54ed45cf0fe7250e243e4d8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=B6ren=20Tempel?= <soeren+git@soeren-tempel.net>
+Date: Sun, 31 Oct 2021 00:06:02 +0100
+Subject: [PATCH 1/4] INSTALL: Always set PLAN9_TARGET environment variable
+
+That is, not only when -r was given. This allows using this veriable in
+mkfiles across the code base.
+---
+ INSTALL          | 5 ++++-
+ lib/moveplan9.sh | 1 -
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/INSTALL b/INSTALL
+index 79c0745fa..f2ce6ecfe 100755
+--- a/INSTALL
++++ b/INSTALL
+@@ -16,7 +16,7 @@ x-c)
+ 	;;
+ x-r)
+ 	shift
+-	PLAN9_TARGET=$1 export PLAN9_TARGET
++	PLAN9_TARGET=$1
+ 	;;
+ *)
+ 	echo 'usage: INSTALL [-b | -c] [-r path]' 1>&2
+@@ -32,6 +32,9 @@ rm -f config
+ 
+ PLAN9=`pwd` export PLAN9
+ PATH=/bin:/usr/bin:$PLAN9/bin:$PATH export PATH
++[ -z "$PLAN9_TARGET" ] && PLAN9_TARGET="$PLAN9"
++export PLAN9_TARGET
++
+ case `uname` in
+ SunOS)
+ 	awk=nawk
+diff --git a/lib/moveplan9.sh b/lib/moveplan9.sh
+index b22801958..958b7135a 100644
+--- a/lib/moveplan9.sh
++++ b/lib/moveplan9.sh
+@@ -12,7 +12,6 @@ case $# in
+ 	exit 1
+ esac
+ 
+-[ -z "$PLAN9_TARGET" ] && PLAN9_TARGET="$PLAN9"
+ new=`cleanname $PLAN9_TARGET`
+ 
+ if [ X"$new" = X"" ]
+
+From 0d85d9f45c12afa2dacfde029def223d4af1623b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=B6ren=20Tempel?= <soeren+git@soeren-tempel.net>
+Date: Sun, 31 Oct 2021 06:01:30 +0100
+Subject: [PATCH 2/4] lib9: pass $PLAN9_TARGET via CPP for get9root fallback
+ value
+
+Allows this function to always return the proper path in situations
+where the $PLAN9 environment variable is not set, i.e. a rc login shell.
+---
+ src/lib9/get9root.c | 3 +--
+ src/lib9/mkfile     | 3 +++
+ src/mkmk.sh         | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/lib9/get9root.c b/src/lib9/get9root.c
+index 07e2872c5..3e7b10501 100644
+--- a/src/lib9/get9root.c
++++ b/src/lib9/get9root.c
+@@ -11,7 +11,6 @@ get9root(void)
+ 
+ 	if((s = getenv("PLAN9")) != 0)
+ 		return s;
+-	/* could do better - search $PATH */
+-	s = "/usr/local/plan9";
++	s = PLAN9_TARGET;
+ 	return s;
+ }
+diff --git a/src/lib9/mkfile b/src/lib9/mkfile
+index db267dfed..ed4315ff4 100644
+--- a/src/lib9/mkfile
++++ b/src/lib9/mkfile
+@@ -175,6 +175,9 @@ HFILES=\
+ %.$O: utf/%.c
+ 	$CC $CFLAGS utf/$stem.c
+ 
++get9root.$O: get9root.c
++	$CC $CFLAGS -DPLAN9_TARGET=\"$PLAN9_TARGET\" get9root.c
++
+ XLIB=$PLAN9/lib/$LIB
+ 
+ testfmt: testfmt.$O $XLIB
+diff --git a/src/mkmk.sh b/src/mkmk.sh
+index dfccd3694..897186489 100644
+--- a/src/mkmk.sh
++++ b/src/mkmk.sh
+@@ -36,7 +36,7 @@ echo cd `pwd`
+ 9c  exitcode.c
+ 9c  fcallfmt.c
+ 9c  frand.c
+-9c  get9root.c
++9c  -DPLAN9_TARGET=\"$PLAN9_TARGET\" get9root.c
+ 9c  getcallerpc.c
+ 9c  getenv.c
+ 9c  getfields.c
+
+From 9d1459d5be85b0e8b0eee7c45597c08f3e7f30bb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=B6ren=20Tempel?= <soeren+git@soeren-tempel.net>
+Date: Sun, 31 Oct 2021 01:30:46 +0100
+Subject: [PATCH 3/4] sam: use get9root instead of duplicating the logic
+
+---
+ src/cmd/sam/sam.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/src/cmd/sam/sam.c b/src/cmd/sam/sam.c
+index 84e015f51..a660e4e32 100644
+--- a/src/cmd/sam/sam.c
++++ b/src/cmd/sam/sam.c
+@@ -152,9 +152,7 @@ rescue(void)
+ 			free(c);
+ 		}else
+ 			sprint(buf, "nameless.%d", nblank++);
+-		root = getenv("PLAN9");
+-		if(root == nil)
+-			root = "/usr/local/plan9";
++		root = get9root();
+ 		fprint(io, "#!/bin/sh\n%s/bin/samsave '%s' $* <<'---%s'\n", root, buf, buf);
+ 		addr.r.p1 = 0, addr.r.p2 = f->b.nc;
+ 		writeio(f);
+
+From 8ae7fa2c1105ca79f7c57ab3357b558c4d3f51b5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=B6ren=20Tempel?= <soeren+git@soeren-tempel.net>
+Date: Sun, 31 Oct 2021 17:46:35 +0100
+Subject: [PATCH 4/4] upas: don't hardcode path for rc(1)
+
+---
+ src/cmd/upas/nfs/imap.c | 3 ++-
+ src/cmd/upas/nfs/mkfile | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/cmd/upas/nfs/imap.c b/src/cmd/upas/nfs/imap.c
+index 5249e2e78..fbd232fef 100644
+--- a/src/cmd/upas/nfs/imap.c
++++ b/src/cmd/upas/nfs/imap.c
+@@ -825,7 +825,8 @@ imapdial(char *server, int mode)
+ 		fd[0] = dup(p[0], -1);
+ 		fd[1] = dup(p[0], -1);
+ 		fd[2] = dup(2, -1);
+-		if(threadspawnl(fd, "/usr/local/plan9/bin/rc", "rc", "-c", server, nil) < 0){
++		/* could do better - use get9root for rc(1) path */
++		if(threadspawnl(fd, PLAN9_TARGET "/bin/rc", "rc", "-c", server, nil) < 0){
+ 			close(p[0]);
+ 			close(p[1]);
+ 			close(fd[0]);
+diff --git a/src/cmd/upas/nfs/mkfile b/src/cmd/upas/nfs/mkfile
+index 7716ab58d..a8f2d8e64 100644
+--- a/src/cmd/upas/nfs/mkfile
++++ b/src/cmd/upas/nfs/mkfile
+@@ -16,3 +16,5 @@ HFILES=a.h box.h imap.h sx.h
+ 
+ <$PLAN9/src/mkone
+ 
++imap.$O: imap.c
++	$CC $CFLAGS -DPLAN9_TARGET=\"$PLAN9_TARGET\" imap.c
