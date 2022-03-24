@@ -56,7 +56,48 @@ in {
       "interactive_comments"
     ];
 
-    programs.zsh.interactiveShellInit = mkAfter ''
+    programs.zsh.interactiveShellInit = let
+      # This is to make sure that all themes use either color names or RGB
+      # colors, otherwise they're not displayed correctly on 24bit color terms.
+      highlighter = pkgs.zsh-fast-syntax-highlighting.overrideAttrs (drv: {
+        fixThemeColors = pkgs.writers.writePython3 "fix-theme-colors" {
+          libraries = [ pkgs.python3Packages.plumbum ];
+          flakeIgnore = [ "E111" "E121" "E302" "E305" ];
+        } ''
+          import re
+          from glob import glob
+          from plumbum.colorlib.styles import Color
+          from configparser import RawConfigParser
+
+          def fix_color(color: str) -> str:
+            if color[:2] in ('fg', 'bg') and color[2:3] in ':=':
+              return color[:3] + fix_color(color[3:])
+            return Color(int(color)).hex_code if color.isdigit() else color
+
+          mainfile = re.sub(
+            r'^(:\s+\''${FAST_HIGHLIGHT_STYLES\[[^]]+\]:=)([^}]+)',
+            lambda m: m.group(1) + fix_color(m.group(2)),
+            open('fast-highlight').read(),
+            flags=re.MULTILINE
+          )
+          open('fast-highlight', 'w').write(mainfile)
+
+          for themefile in glob('themes/*.ini'):
+            parser = RawConfigParser(strict=False)
+            parser.read(themefile)
+
+            for name, section in parser.items():
+              for key, color in section.items():
+                section[key] = ','.join(fix_color(c) for c in color.split(','))
+
+            with open(themefile, 'w') as fp:
+              parser.write(fp)
+        '';
+        postPatch = (drv.postPatch or "") + ''
+          "$fixThemeColors"
+        '';
+      });
+    in mkAfter ''
       export HISTFILE=~/.histfile
       export HISTSIZE=100000
       export SAVEHIST=100000
@@ -113,6 +154,10 @@ in {
       zstyle ':completion:*' verbose true
 
       autoload -Uz zmv
+
+      source ${lib.escapeShellArg "${highlighter}/${
+        "share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
+      }"}
     '';
 
     programs.zsh.promptInit = ''
