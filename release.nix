@@ -172,7 +172,7 @@ in with pkgsUpstream.lib; with builtins; {
       inherit system;
     };
 
-    patchedDocbookXSL = overrideDerivation pkgsUpstream.docbook5_xsl_ns (drv: {
+    patchedDocbookXSL = overrideDerivation pkgsUpstream.docbook_xsl_ns (drv: {
       # Don't chunk off <preface/>
       postPatch = (drv.postPatch or "") + ''
         sed -i -e '
