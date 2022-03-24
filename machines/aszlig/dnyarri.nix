@@ -22,6 +22,16 @@ in {
 
   nix.maxJobs = 24;
 
+  hardware.printers.ensureDefaultPrinter = "Bunti";
+  hardware.printers.ensurePrinters = lib.singleton {
+    name = "Bunti";
+    deviceUri = "hp:/usb/HP_Color_LaserJet_2700?serial=00CNFNL14079";
+    model = "HP/hp-color_laserjet_2700-ps.ppd.gz";
+    location = "Living room";
+    description = "Color laser printer";
+    ppdOptions.PageSize = "A4";
+  };
+
   boot = {
     loader.systemd-boot.enable = true;
     loader.grub.enable = false;
