@@ -47,7 +47,7 @@ in
         description = ''
           The upower configuration.
 
-          If null, the default values in <literal>${pkg}/etc/UPower/UPower.conf<literal> are used.
+          If null, the default values in <literal>${pkg}/etc/UPower/UPower.conf</literal> are used.
 
           So far it looks like there is always only one Section called <literal>UPower</literal>
         '';
