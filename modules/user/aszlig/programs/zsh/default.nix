@@ -8,10 +8,10 @@ let
 
 in {
   options.vuizvui.user.aszlig.programs.zsh = {
-    enable = mkEnableOption "zsh";
+    enable = lib.mkEnableOption "zsh";
 
-    machineColor = mkOption {
-      type = types.enum [
+    machineColor = lib.mkOption {
+      type = lib.types.enum [
         "black" "red" "green" "yellow" "blue" "magenta" "cyan" "white"
       ];
       default = "red";
@@ -22,15 +22,15 @@ in {
     };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     environment.shellInit = ''
       export EDITOR="vim"
       export EMAIL="aszlig@nix.build"
     '';
 
-    nixpkgs.overlays = singleton (lib.const (super: {
-      zsh = overrideDerivation super.zsh (o: {
-        postConfigure = (o.postConfigure or "") + ''
+    nixpkgs.overlays = lib.singleton (lib.const (super: {
+      zsh = super.zsh.overrideAttrs (drv: {
+        postConfigure = (drv.postConfigure or "") + ''
           sed -i -e '/^name=zsh\/newuser/d' config.modules
         '';
       });
@@ -97,7 +97,7 @@ in {
           "$fixThemeColors"
         '';
       });
-    in mkAfter ''
+    in lib.mkAfter ''
       export HISTFILE=~/.histfile
       export HISTSIZE=100000
       export SAVEHIST=100000
