@@ -55,6 +55,14 @@ in {
     pkgs.paperwork
   ];
 
+  services.fwupd.enable = true;
+  services.fwupd.package = pkgs.fwupd.overrideAttrs (drv: {
+    # This is to disable reports because they include identifying information.
+    postInstall = (drv.postInstall or "") + ''
+      sed -i -e '/ReportURI/d' "$out"/etc/fwupd/remotes.d/*.conf
+    '';
+  });
+
   hardware.cpu.amd.updateMicrocode = true;
 
   hardware.sane.enable = true;
