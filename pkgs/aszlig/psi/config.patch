@@ -1,5 +1,5 @@
 diff --git a/options/default.xml b/options/default.xml
-index d8dddeb2..a04dc50a 100644
+index f4b71f53..387793a0 100644
 --- a/options/default.xml
 +++ b/options/default.xml
 @@ -19,7 +19,7 @@
@@ -56,7 +56,7 @@ index d8dddeb2..a04dc50a 100644
                  </main>
                  <status comment="Options for the status menu">
                      <chat comment="Enable free for chat" type="bool">true</chat>
-@@ -343,7 +343,7 @@ QLineEdit#le_status_text {
+@@ -344,7 +344,7 @@ QLineEdit#le_status_text {
              </spell-check>
              <disable-send-button type="bool">true</disable-send-button>
              <systemtray comment="Options related to the system tray">
@@ -65,7 +65,7 @@ index d8dddeb2..a04dc50a 100644
                  <use-double-click type="bool">false</use-double-click>
              </systemtray>
              <flash-windows comment="Allow windows to flash upon activity" type="bool">true</flash-windows>
-@@ -361,8 +361,8 @@ QLineEdit#le_status_text {
+@@ -362,8 +362,8 @@ QLineEdit#le_status_text {
                      <contactlist>
                          <background type="QColor"/>
                          <grouping>
@@ -76,7 +76,7 @@ index d8dddeb2..a04dc50a 100644
                          </grouping>
                          <profile>
                              <header-background type="QColor">#969696</header-background>
-@@ -372,16 +372,16 @@ QLineEdit#le_status_text {
+@@ -373,16 +373,16 @@ QLineEdit#le_status_text {
                              <away type="QColor">#004bb4</away>
                              <do-not-disturb type="QColor">#7e0000</do-not-disturb>
                              <offline type="QColor">#646464</offline>
@@ -96,7 +96,7 @@ index d8dddeb2..a04dc50a 100644
                      </tooltip>
                      <muc>
                          <nick-colors type="QStringList" >
-@@ -392,21 +392,21 @@ QLineEdit#le_status_text {
+@@ -393,21 +393,21 @@ QLineEdit#le_status_text {
                              <item>Red</item>
                          </nick-colors>
                          <role-moderator type="QColor">#910000</role-moderator>
@@ -123,7 +123,7 @@ index d8dddeb2..a04dc50a 100644
                          <unread-message-color type="QColor">red</unread-message-color>
                          <inactive-color type="QColor">grey</inactive-color>
                      </chat>
-@@ -419,10 +419,10 @@ QLineEdit#le_status_text {
+@@ -420,10 +420,10 @@ QLineEdit#le_status_text {
                      <use-slim-group-headings type="bool">false</use-slim-group-headings>
                  </contactlist>
                  <font>
@@ -138,7 +138,7 @@ index d8dddeb2..a04dc50a 100644
                  </font>
                  <css type="QString" />
              </look>
-@@ -470,20 +470,20 @@ QLineEdit#le_status_text {
+@@ -471,20 +471,20 @@ QLineEdit#le_status_text {
                      <suppress-while-away type="bool">false</suppress-while-away>
                  </popup-dialogs>
                  <sounds>
@@ -172,16 +172,16 @@ index d8dddeb2..a04dc50a 100644
                      <unix-sound-player type="QString"/>
                  </sounds>
                  <successful-subscription type="bool">true</successful-subscription>
-@@ -503,7 +503,7 @@ QLineEdit#le_status_text {
+@@ -504,7 +504,7 @@ QLineEdit#le_status_text {
                  <mouse-middle-button type="QString">close</mouse-middle-button> <!-- hide|close|detach -->
                  <mouse-doubleclick-action type="QString">detach</mouse-doubleclick-action>
                  <size type="QString"></size> <!-- will be invalid when converted to QSize so we can detect first load -->
 -                <grouping type="QString" comment="A ':' seperated list of groups of kinds of tabs to keep in the same tabset. 'C' for chat and 'M' for mucs. 'A' means using all in one window patch.">CM</grouping>
 +                <grouping type="QString" comment="A ':' seperated list of groups of kinds of tabs to keep in the same tabset. 'C' for chat and 'M' for mucs. 'A' means using all in one window patch.">ACM</grouping>
-                 <group-state comment="Saved state data of the tabsets defined by options.ui.tabs.grouping"/>
-                 <tab-singles type="QString" comment="Tab types that would have been untabbed are given their own tabset. 'C' for chat and 'M' for mucs"/>
-                 <use-tab-shortcuts type="bool">true</use-tab-shortcuts>
-@@ -717,7 +717,7 @@ QLineEdit#le_status_text {
+                 <group-state comment="Saved state data of the tabsets defined by options.ui.tabs.grouping">
+                     <CM>
+                         <size-frame type="QRect">
+@@ -735,7 +735,7 @@ QLineEdit#le_status_text {
              <last-activity type="bool">true</last-activity>
          </service-discovery>
          <status>
@@ -190,7 +190,7 @@ index d8dddeb2..a04dc50a 100644
              <ask-for-message-on-online type="bool">false</ask-for-message-on-online>
              <ask-for-message-on-chat type="bool">true</ask-for-message-on-chat>
              <ask-for-message-on-away type="bool">true</ask-for-message-on-away>
-@@ -740,7 +740,20 @@ QLineEdit#le_status_text {
+@@ -758,7 +758,20 @@ QLineEdit#le_status_text {
                  <by-template type="bool">true</by-template>
                  <by-status type="bool">false</by-status>
              </last-overwrite>
@@ -212,7 +212,7 @@ index d8dddeb2..a04dc50a 100644
              <presets-in-status-menus type="QString" comment="'yes', 'no' or 'submenu'">submenu</presets-in-status-menus>
              <show-only-online-offline type="bool">false</show-only-online-offline>
              <show-choose type="bool">true</show-choose>
-@@ -779,5 +792,9 @@ QLineEdit#le_status_text {
+@@ -797,5 +810,9 @@ QLineEdit#le_status_text {
          </keychain>
      </options>
      <accounts comment="Account definitions and options"/>
@@ -224,7 +224,7 @@ index d8dddeb2..a04dc50a 100644
 +    </plugins>
  </psi>
 diff --git a/src/psi_profiles.cpp b/src/psi_profiles.cpp
-index a3d441c0..ede53edf 100644
+index 97c44218..d5fa9d53 100644
 --- a/src/psi_profiles.cpp
 +++ b/src/psi_profiles.cpp
 @@ -74,8 +74,8 @@ void UserAccount::reset()
@@ -247,7 +247,7 @@ index a3d441c0..ede53edf 100644
      priority                  = 55;
      ibbOnly                   = false;
      opt_keepAlive             = true;
-@@ -127,7 +127,7 @@ void UserAccount::reset()
+@@ -128,7 +128,7 @@ void UserAccount::reset()
                << "stun.voipbuster.com"
                << "stun.voxgratia.org";
  
