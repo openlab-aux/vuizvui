@@ -174,6 +174,7 @@ in {
         enable = true;
         temperature.day = 5500;
         temperature.night = 3500;
+        brightness.night = "0.5";
       };
 
       xserver = {
