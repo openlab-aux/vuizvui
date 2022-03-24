@@ -1,6 +1,4 @@
-{ config, lib, ... }:
-
-with lib;
+{ config, pkgs, lib, ... }:
 
 let
   cfg = config.vuizvui.user.aszlig.programs.zsh;
