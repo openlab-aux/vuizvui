@@ -82,7 +82,7 @@ in {
     gnome.nautilus
     browser.pkg
     nix-output-monitor
-    # TODO(sterni) depot.users.sterni.clhs-lookup
+    vuizvui.tvl.users.sterni.clhs-lookup
     hunspell
   ] ++ (with hunspellDicts; [ de-de en-gb-large en-us ]);
 

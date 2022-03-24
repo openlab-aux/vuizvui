@@ -48,6 +48,7 @@
       nmap
       ffmpeg graphicsmagick
       pavucontrol
+      vuizvui.tvl.users.sterni.emacs
     ] ++ pkgs.vuizvui.sternenseemann.scripts.default;
 
     services.earlyoom = {
