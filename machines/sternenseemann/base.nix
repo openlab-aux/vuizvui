@@ -6,11 +6,13 @@ let
     getBins
     ;
 
-  bins = (getBins pkgs.neovim [ "nvim" ])
-      // (getBins pkgs.less [ "less" ])
-      ;
+  bins = getBins pkgs.less [ "less" ];
 
 in {
+  imports = [
+    ./vim-basic.nix
+  ];
+
   config = {
     boot.cleanTmpDir = true;
 
@@ -103,12 +105,9 @@ in {
       man-pages-posix
       gitFull
       file htop psmisc tmux
-      neovim
     ];
 
     environment.variables = {
-      EDITOR = bins.nvim;
-      VISUAL = bins.nvim;
       PAGER = "${bins.less} -R";
       # git-diff without the extra options passed to less
       GIT_PAGER = bins.less;

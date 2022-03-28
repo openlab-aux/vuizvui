@@ -38,18 +38,30 @@
 
     programs.mosh.enable = true;
 
-    environment.systemPackages = with pkgs; [
-      lr
-      lowdown
-      lynx sacc
-      zip unzip
-      stow
-      silver-searcher
-      nmap
-      ffmpeg graphicsmagick
-      pavucontrol
-      vuizvui.tvl.users.sterni.emacs
-    ] ++ pkgs.vuizvui.sternenseemann.scripts.default;
+    environment = let inherit (pkgs.vuizvui.tvl.users.sterni) emacs; in {
+      systemPackages = with pkgs; [
+        lr
+        lowdown
+        lynx sacc
+        zip unzip
+        stow
+        silver-searcher
+        nmap
+        ffmpeg graphicsmagick
+        pavucontrol
+        emacs
+      ] ++ pkgs.vuizvui.sternenseemann.scripts.default;
+
+      variables = {
+        EDITOR = "${emacs}/bin/emacsclient";
+        VISUAL = "${emacs}/bin/emacsclient";
+      };
+    };
+
+    # To accomodate old habits
+    programs.fish.shellInit = ''
+      alias nvim emacsclient
+    '';
 
     services.earlyoom = {
       enable = true;
