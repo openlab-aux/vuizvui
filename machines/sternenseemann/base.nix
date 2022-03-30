@@ -103,6 +103,7 @@ in {
       curl wget
       man-pages
       man-pages-posix
+      vuizvui.tvl.users.sterni.dot-time-man-pages
       gitFull
       file htop psmisc tmux
     ];
