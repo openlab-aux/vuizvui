@@ -1,5 +1,5 @@
 diff --git a/internal/action/list.go b/internal/action/list.go
-index 05fb5155..7e70ffc2 100644
+index abfe0fda..e4269f67 100644
 --- a/internal/action/list.go
 +++ b/internal/action/list.go
 @@ -9,7 +9,6 @@ import (
@@ -7,10 +7,10 @@ index 05fb5155..7e70ffc2 100644
  	"strings"
  
 -	"github.com/fatih/color"
+ 	"github.com/gopasspw/gopass/internal/action/exit"
+ 	"github.com/gopasspw/gopass/internal/store/leaf"
  	"github.com/gopasspw/gopass/internal/tree"
- 	"github.com/gopasspw/gopass/pkg/ctxutil"
- 	"golang.org/x/crypto/ssh/terminal"
-@@ -111,7 +110,6 @@ func redirectPager(ctx context.Context, subtree *tree.Root) (io.Writer, *bytes.B
+@@ -117,7 +116,6 @@ func redirectPager(ctx context.Context, subtree *tree.Root) (io.Writer, *bytes.B
  	if pager := os.Getenv("PAGER"); pager == "" {
  		return stdout, nil
  	}
