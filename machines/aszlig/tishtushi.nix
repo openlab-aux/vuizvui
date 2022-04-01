@@ -3,33 +3,22 @@
 {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
-  vuizvui.system.kernel.bfq.enable = true;
-
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.loader = {
     grub.enable = true;
-    grub.device = "/dev/disk/by-id/ata-Hitachi_HTS543232A7A384_E2P31243FGB6PJ";
+    grub.device =
+      "/dev/disk/by-id/ata-Samsung_SSD_860_EVO_500GB_S3Z2NB0KA77896M";
     timeout = 1;
   };
 
-  boot.initrd = {
-    luks.devices = {
-      "00vault" = {
-        device = "/dev/disk/by-uuid/812f19f1-9096-4367-b2e4-0c9537c52a67";
-      };
-      tishtushi-swap = {
-        device = "/dev/disk/by-uuid/2934df87-5fda-4b2e-9f3b-c4c96f571407";
-        keyFile = "/dev/mapper/00vault";
-      };
-      tishtushi-root = {
-        device = "/dev/disk/by-uuid/cf65f144-9205-40a5-a239-b660695a6740";
-        keyFile = "/dev/mapper/00vault";
-      };
+  boot.initrd.luks.devices = {
+    tishtushi-swap = {
+      device = "/dev/disk/by-uuid/db144d14-9268-4f12-a421-e9c41fc207a3";
     };
-    postDeviceCommands = lib.mkAfter ''
-      cryptsetup luksClose /dev/mapper/00vault
-    '';
+    tishtushi-root = {
+      device = "/dev/disk/by-uuid/e8eafbdd-6056-41c7-88bc-51bfb8a98e22";
+    };
   };
 
   hardware.cpu.intel.updateMicrocode = true;
@@ -46,7 +35,7 @@
   fileSystems."/" = {
     device = "/dev/mapper/tishtushi-root";
     fsType = "btrfs";
-    options = [ "space_cache" "compress=zstd" "noatime" ];
+    options = [ "space_cache=v2" "compress=zstd" "noatime" "discard=async" ];
   };
 
   swapDevices = lib.singleton {
