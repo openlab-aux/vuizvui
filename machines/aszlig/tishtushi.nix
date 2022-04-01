@@ -12,6 +12,7 @@
     timeout = 1;
   };
 
+  boot.initrd.availableKernelModules = [ "xxhash_generic" ];
   boot.initrd.luks.devices = {
     tishtushi-swap = {
       device = "/dev/disk/by-uuid/db144d14-9268-4f12-a421-e9c41fc207a3";
