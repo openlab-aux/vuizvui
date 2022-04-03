@@ -94,6 +94,7 @@ in {
       dua
       duf
       e2fsprogs
+      easyeffects
       element-desktop
       ethtool
       exfat
