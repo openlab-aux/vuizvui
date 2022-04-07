@@ -76,7 +76,6 @@ in {
       ccrypt
       chromaprint
       cifs-utils
-      cipherscan
       cmatrix
       colmena
       cryptsetup
