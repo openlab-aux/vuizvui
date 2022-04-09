@@ -25,10 +25,10 @@ let
           src = fetchFromGitHub {
             owner = "sternenseemann";
             repo = "emoji-generic";
-            rev = "59355e813fb01487011d0b6d1408b5c789434fc1";
-            sha256 = "0sk7fhh6n2k684lzic5z23kyk7i91k33j38wkk41xd92cv3xzsss";
+            rev = "936167ca50bc22718b66b74db06da17b1197b21e";
+            sha256 = "0gj58nh5agjqxim64pb2s32rd9s3hy02p4x5klfshgf25qpcwmvs";
           };
-          version = "unstable-2021-03-26";
+          version = "unstable-2022-04-09";
         };
     };
   };
