@@ -16,7 +16,7 @@ runCommand "acme-${plan9port.version}" {
     description = "Standalone version of Plan 9 from Userspace's acme";
   };
 } ''
-  for cmd in 9 9pserve acme devdraw win; do
+  for cmd in 9 9pserve acme devdraw plumb plumber rc win; do
     makeWrapper "${plan9port}/plan9/bin/$cmd" "$out/bin/$cmd" --prefix PATH : "$out/bin"
   done
 ''
