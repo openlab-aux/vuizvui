@@ -2,7 +2,6 @@
 
 {
   vuizvui.user.devhell.profiles.base.enable = true;
-  vuizvui.system.kernel.bfq.enable = true;
 
   boot = {
     loader = {
@@ -62,11 +61,11 @@
 
   networking = {
     hostName = "hildr";
-    wireless.enable = true;
+    wireless.iwd.enable = true;
     useNetworkd = true;
     interfaces = {
       enp0s31f6.useDHCP = true;
-      wlp2s0.useDHCP = true;
+      wlan0.useDHCP = true;
     };
   };
 
@@ -98,7 +97,6 @@
     gnome.gnome-keyring.enable = true;
     printing = {
       enable = true;
-      drivers = [ pkgs.foo2zjs pkgs.cups-brother-hl1110 ];
     };
     offlineimap = {
       enable = true;
@@ -183,18 +181,13 @@
 
   environment.systemPackages = with pkgs; [
     aircrack-ng
-    cdrtools
-    dvdplusrwtools
     horst
     ipmitool
     iw
     libva
-    libvdpau-va-gl
     minicom
     acpica-tools
     pmutils
-    reaverwps
-    snort
     teams
     vaapiVdpau
     vdpauinfo
