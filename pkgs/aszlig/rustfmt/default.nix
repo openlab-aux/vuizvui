@@ -20,7 +20,6 @@ let
 
 in rustfmt.overrideAttrs (drv: {
   patches = (drv.patches or []) ++ [ ./config.patch ];
-  patchFlags = [ "-p1" "-d" "src/tools/rustfmt" ];
   DEFAULT_CONFIG_FILE = runCommand "rustfmt.conf" {
     nativeBuildInputs = [ remarshal ];
     value = builtins.toJSON defaultConfig;
