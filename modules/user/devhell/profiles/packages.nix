@@ -166,7 +166,6 @@ in {
       mkvtoolnix
       mmv
       mnamer
-      monkeysAudio
       mosh
       mp3gain
       mpc_cli
