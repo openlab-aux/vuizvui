@@ -15,7 +15,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         minimap-vim
         sleuth
         tabular
-#        vim-clap
+        vim-clap
         vim-illuminate
         vim-better-whitespace
         vim-lastplace
