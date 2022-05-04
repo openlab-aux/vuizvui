@@ -26,6 +26,7 @@
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 
     vuizvui.hardware.thinkpad.enable = lib.mkDefault true;
+    services.thermald.enable = true;
     services.upower = {
       enable = true;
       usePercentageForPolicy = true;
