@@ -61,7 +61,7 @@
 
     # To accomodate old habits
     programs.fish.shellInit = ''
-      alias nvim emacsclient
+      alias nvim "emacsclient -n"
     '';
 
     services.earlyoom = {
