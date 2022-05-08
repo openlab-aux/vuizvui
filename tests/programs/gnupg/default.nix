@@ -53,8 +53,10 @@ in {
     machine.wait_for_x()
 
     def ssh(cmd: str) -> str:
+      # XXX: Redirecting stdout to /dev/null is a workaround and we ideally
+      #      should *ONLY* get stdout on error.
       return "ssh -q -i /root/id_ed25519 -o StrictHostKeyChecking=no" \
-             f" alice@127.0.0.1 -- {quote(cmd)}"
+             f" alice@127.0.0.1 -- {quote(cmd)} > /dev/null"
 
     def xsu(cmd: str) -> str:
       return f"DISPLAY=:0 su alice -c {quote(cmd)}"
