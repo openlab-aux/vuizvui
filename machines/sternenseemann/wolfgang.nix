@@ -66,7 +66,6 @@ in {
     vuizvui.sternenseemann.texlive jabref
     youtube-dl mpv spotify
     ghc cabal-install cabal2nix
-    direnv
     sbcl rlwrap
     valgrind gdb
     docker-compose

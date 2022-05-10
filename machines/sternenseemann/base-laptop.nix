@@ -51,6 +51,7 @@
         ffmpeg graphicsmagick
         pavucontrol
         emacs
+        direnv
       ] ++ pkgs.vuizvui.sternenseemann.scripts.default;
 
       variables = {
@@ -58,6 +59,10 @@
         VISUAL = "${emacs}/bin/emacsclient";
       };
     };
+
+    programs.bash.interactiveShellInit = ''
+      eval "$(direnv hook bash)"
+    '';
 
     # To accomodate old habits
     programs.fish.shellInit = ''
