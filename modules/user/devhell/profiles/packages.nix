@@ -184,6 +184,7 @@ in {
       nixfmt
       nixopsUnstable
       nixpkgs-fmt
+      nixpkgs-review
       nload
       nmap
       notmuch
