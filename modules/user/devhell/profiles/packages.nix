@@ -171,7 +171,6 @@ in {
       mpc_cli
       mpv
       msmtp
-      musikcube
       ncdu
       ncmpcpp
       neofetch
