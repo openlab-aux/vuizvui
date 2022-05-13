@@ -71,6 +71,8 @@ in {
       socketActivation = true;
     };
 
+    systemd.user.services.pipewire-pulse.path = [ pkgs.pulseaudio ];
+
     services.xserver = {
       displayManager.defaultSession = "none+i3";
       displayManager.lightdm = {

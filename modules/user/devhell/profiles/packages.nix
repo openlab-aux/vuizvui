@@ -285,7 +285,7 @@ in {
       xh
       xorg.xev
       xsv
-      youtube-dl
+      youtube-dlp
       zathura
       zbar
       zellij
