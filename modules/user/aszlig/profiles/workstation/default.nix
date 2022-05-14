@@ -14,6 +14,9 @@ in {
     boot.kernelParams = [ "panic=1800" ];
     boot.cleanTmpDir = true;
 
+    # Allow sync, sak and unraw
+    boot.kernel.sysctl."kernel.sysrq" = 20;
+
     environment.systemPackages = with lib; let
       mkRandrConf = acc: rcfg: acc ++ singleton {
         name = rcfg.output;
