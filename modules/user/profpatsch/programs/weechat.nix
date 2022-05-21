@@ -17,12 +17,21 @@ let
     getBins
     ;
 
+  weechat-with-scripts = pkgs.weechat.override {
+    configure = { availablePlugins, ... }: {
+      scripts = [
+        pkgs.weechatScripts.weechat-matrix
+      ];
+    };
+  };
+
   bins = getBins pkgs.tmux [ "tmux" ]
-    // getBins pkgs.weechat [ "weechat" ]
+    // getBins weechat-with-scripts [ "weechat" ]
     // getBins pkgs.dash [ "dash" ]
     // getBins pkgs.s6-portable-utils [ "s6-sleep" "s6-test" ]
     // getBins pkgs.mosh [ "mosh-server" ]
     ;
+
 
   until = { delaySec }: writeExecline "until" {} [
       "if" "-tn" [ "$@" ]
