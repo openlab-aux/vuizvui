@@ -80,6 +80,7 @@ in {
     imv zathura
     gnome.nautilus
     browser.pkg
+    castor
     nix-output-monitor
     vuizvui.tvl.users.sterni.clhs-lookup
     hunspell

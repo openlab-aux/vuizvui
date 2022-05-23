@@ -43,7 +43,7 @@
       systemPackages = with pkgs; [
         lr
         lowdown
-        lynx sacc
+        lynx
         zip unzip
         stow
         silver-searcher
