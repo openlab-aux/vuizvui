@@ -86,9 +86,15 @@ in {
       jack.enable = true;
       pulse.enable = true;
     };
-    # steam
-    # needed by some games (TODO: general module for games)
-    # hardware.opengl.driSupport32Bit = true;
+
+    # needed by steam to run
+    programs.steam.enable = true;
+    hardware.opengl.driSupport32Bit = true;
+    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+      "steam"
+      "steam-original"
+      "steam-runtime"
+    ];
 
     hardware.bluetooth.enable = true;
     services.blueman.enable = true;
@@ -258,7 +264,6 @@ in {
         ranger               # CLI file browser
         remind               # calender & reminder program
         taskwarrior tasksh   # task manager
-        unfreeAndNonDistributablePkgs.steam # the one gaming platform
         youtube-dl           # download videos
         zathura              # pdf viewer
         ghc                  # powerful pocket calculator
