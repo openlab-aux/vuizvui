@@ -34,6 +34,18 @@ in {
     boot.loader.systemd-boot.enable = true;
     boot.loader.grub.enable = false;
 
+    # enable video loopback devices
+    # via https://gist.github.com/TheSirC/93130f70cc280cdcdff89faf8d4e98ab
+    boot.extraModulePackages = [
+       config.boot.kernelPackages.v4l2loopback
+    ];
+    boot.kernelModules = [
+      "v4l2loopback"
+    ];
+    boot.extraModprobeConfig = ''
+      options v4l2loopback exclusive_caps=1
+    '';
+
     ###########
     # Hardware
 
