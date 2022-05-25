@@ -73,7 +73,6 @@ in {
       git.enable = true;
       liboping.enable = true;
       htop.enable = true;
-      noisetorch.enable = true;
       gnupg = {
         agent.enable = true;
         agent.pinentryFlavor = "gnome3";
