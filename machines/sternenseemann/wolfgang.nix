@@ -79,6 +79,7 @@ in {
     networkmanagerapplet       # for nm-connection-ediotr
     imv zathura
     gnome.nautilus
+    gnome.gedit
     browser.pkg
     castor
     nix-output-monitor
