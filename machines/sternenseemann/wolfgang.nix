@@ -62,7 +62,7 @@ in {
     exfat borgbackup
     gnupg pinentry-gnome signing-party gpgme
     thunderbird-wayland
-    jackline dino
+    jackline gajim fractal
     vuizvui.sternenseemann.texlive jabref
     youtube-dl mpv spotify
     ghc cabal-install cabal2nix
