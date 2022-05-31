@@ -67,7 +67,6 @@ in {
       binutils
       blender
       bmon
-      borgbackup
       bottom
       brave
       broot
@@ -129,7 +128,6 @@ in {
       gptfdisk
       graphviz
       grex
-      grv
       gurk-rs
       handlr
       hdparm
@@ -223,7 +221,6 @@ in {
       ripgrep
       rq
       rsync
-      rustscan
       safecopy
       screen
       sd
