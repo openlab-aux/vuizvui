@@ -69,7 +69,7 @@ in {
     sbcl rlwrap
     valgrind gdb
     docker-compose
-    scribusUnstable gimp inkscape libreoffice
+    scribus gimp inkscape libreoffice
     audacity
     signal-desktop discord
     vuizvui.profpatsch.nman
