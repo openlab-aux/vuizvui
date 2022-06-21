@@ -1,6 +1,6 @@
 { stdenv, lib, fetchurl, fetchFromGitHub, writeText, writeTextFile, writeScript
 , runCommand, writers, python3Packages, ledger, meson, vim, buildGoPackage
-, rustc, rustfmt
+, rustc, rustfmt, ansifilter
 }:
 
 let
@@ -695,16 +695,49 @@ let
     )
   '';
 
-in lib.overrideDerivation vim (drv: {
   # Fix elflord color theme to use the 16 color terminal colors in GUI mode as
   # well for consistence. Also, I'm already used to the colors and I don't for
   # example like the "Statement" guifg color.
+  colorscheme = stdenv.mkDerivation {
+    name = "elflord.vim";
+
+    src = fetchFromGitHub {
+      owner = "vim";
+      repo = "colorschemes";
+      rev = "2c1ab01646baa29a8908b674d6178e3c7fd5b25c";
+      hash = "sha256-4jcjyv9BPCW3QFZrM5xvkwnBwu+OINcnraEigr1cowQ";
+    };
+
+    patches = [ ./elflord.patch ];
+
+    colortemplate = fetchFromGitHub {
+      owner = "lifepillar";
+      repo = "vim-colortemplate";
+      rev = "v2.2.0";
+      hash = "sha256-DAdMvhRkvb+KA9/mYygvVBBfGEYNURspvRtvu9/WxoI";
+    };
+
+    nativeBuildInputs = [ vim ansifilter ];
+
+    buildPhase = ''
+      rm -r colors
+      vim --not-a-term --clean -n --cmd "set rtp+=$colortemplate" \
+        -c "Colortemplate! generated" -c 'qall' \
+        colortemplate/elflord.colortemplate > vim-build.log 2>&1
+      if [ ! -e colors/elflord.vim ]; then
+        ansifilter vim-build.log >&2
+        exit 1
+      fi
+    '';
+
+    installPhase = ''
+      cp colors/elflord.vim "$out"
+    '';
+  };
+
+in lib.overrideDerivation vim (drv: {
   patchPhase = (drv.patchPhase or "") + ''
-    sed -i -e '
-      /^hi Normal/c hi Normal guifg=#bebebe guibg=black
-      s/ctermfg=\([^ ]*\)\(.*guifg=\)[^ ]*/ctermfg=\1\2\1/
-      s/guifg=LightBlue\>/guifg=#5fd7ff/g
-    ' runtime/colors/elflord.vim
+    cp ${lib.escapeShellArg colorscheme} runtime/colors/elflord.vim
   '';
 
   postInstall = (drv.postInstall or "") + ''

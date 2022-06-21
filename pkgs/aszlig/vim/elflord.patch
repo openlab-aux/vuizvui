@@ -1,0 +1,68 @@
+diff --git a/colortemplate/elflord.colortemplate b/colortemplate/elflord.colortemplate
+index 66816f1..a9bd204 100644
+--- a/colortemplate/elflord.colortemplate
++++ b/colortemplate/elflord.colortemplate
+@@ -90,10 +90,9 @@ Color: ToolbarLine    #7f7f7f          244               darkgrey
+ Color: Underlined     #80a0ff          111               blue
+ 
+ ; Specific to elflord
+-Color: elfComment     #80a0ff          111               blue
+ Color: elfIdentifier  #40ffff          87                cyan
+ Color: elfStatement   #aa4444          131               darkred
+-Color: elfPreProc     #ff80ff          213               magenta
++Color: elfPreProc     #5fd7ff          81                cyan
+ Color: elfType        #60ff60          83                green
+ Color: elfBlue        #0000ff          21                blue
+ 
+@@ -106,7 +105,7 @@ Term colors: xterm14 xterm15
+ 
+ ; Default highlight groups {{{
+ Variant: gui 256 16
+-Normal                xterm14          xterm0
++Normal                rgbGrey          xterm0
+ 
+ QuickFixLine          xterm15          rgbSeaGreen
+ 
+@@ -162,7 +161,7 @@ VisualNOS             none             xterm0            t=underline g=underline
+ WarningMsg            WarningMsg       none
+ WildMenu              xterm0           xterm11
+ ; Other conventional group names (see `:help group-name`)
+-Comment               elfComment       none
++Comment               rgbDarkCyan      none
+ Constant              xterm13          none
+ Error                 xterm15          xterm9
+ Function              xterm15          none
+@@ -171,8 +170,8 @@ Ignore                xterm0           xterm0
+ Operator              xterm9           none
+ PreProc               elfPreProc       none
+ Repeat                xterm15          none
+-Special               xterm9           none
+-Statement             elfStatement     none              bold
++Special               xterm5           none
++Statement             xterm11          none              bold
+ Todo                  elfBlue          xterm11
+ Type                  elfType          none              bold
+ Underlined            Underlined       none              underline
+@@ -187,7 +186,7 @@ LineNrBelow        -> LineNr
+ 
+ Variant: 8
+ ; Group               Foreground       Background        Attributes
+-Normal                xterm6           xterm0
++Normal                rgbGrey          xterm0
+ 
+ QuickFixLine          xterm7           xterm2
+ 
+@@ -240,10 +239,10 @@ Function              xterm7           none
+ Identifier            xterm6           none
+ Ignore                xterm0           none
+ Operator              xterm1           none
+-PreProc               xterm5           none
++PreProc               xterm6           none
+ Repeat                xterm7           none
+-Special               xterm1           none
+-Statement             xterm1           none
++Special               xterm5           none
++Statement             xterm3           none
+ Todo                  xterm4           xterm3
+ Type                  xterm2           none
+ Underlined            xterm4           none              underline
