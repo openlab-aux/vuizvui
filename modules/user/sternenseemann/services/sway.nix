@@ -292,6 +292,7 @@ in {
 
         order += "volume master"
         order += "battery all"
+        order += "tztime kalenderwoche"
         order += "tztime dotdate"
         order += "tztime dottime"
         order += "tztime offset"
@@ -309,6 +310,11 @@ in {
           status_unk = "❓"
           status_full = "💯"
           low_threshold = 10
+        }
+
+        tztime kalenderwoche {
+          timezone = "UTC"
+          format = "KW %V"
         }
 
         tztime dotdate {
