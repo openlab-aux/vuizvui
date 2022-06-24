@@ -26,7 +26,19 @@ in {
       };
     };
 
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs = {
+      config.allowUnfree = true;
+      # Use local depot if rebuilding on a machine where it's available
+      overlays = lib.optionals (builtins.pathExists "/home/lukas/src/depot") [
+        (self: super: {
+          vuizvui = super.vuizvui // {
+            tvl = super.vuizvui.tvl.override {
+              tvlSrc = /home/lukas/src/depot;
+            };
+          };
+        })
+      ];
+    };
 
     services.journald.extraConfig = lib.mkDefault "SystemMaxUse=500M";
 
