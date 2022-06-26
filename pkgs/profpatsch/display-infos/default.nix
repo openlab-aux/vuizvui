@@ -48,7 +48,7 @@ let
     bat = round( now/full, 2 )
     ac = "⚡ " if charging else ""
     sft_remaining = seconds_to_sft(seconds_remaining)
-    date = sub.run(["date", "+%d.%m. %a %T"], stdout=sub.PIPE).stdout.strip().decode()
+    date = sub.run(["date", "+%d.%m. [%V] %a %T"], stdout=sub.PIPE).stdout.strip().decode()
     dottime = sub.run(["date", "--utc", "+%H·%M"], stdout=sub.PIPE).stdout.strip().decode()
     sftdate = sub.run(["@sfttime@"], stdout=sub.PIPE).stdout.strip().decode()
     notify = "BAT: {percent}% {ac}{charge}| {date} | {sftdate} | {dottime}".format(
