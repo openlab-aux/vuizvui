@@ -31,14 +31,6 @@ in {
       keyMap = "neo";
     };
 
-    # the kernel OOM is not good enough without swap,
-    # and I don’t like swap. This kills the most hoggy
-    # processes when the system goes under a free space limit
-    services.earlyoom = {
-      enable = true;
-      freeMemThreshold = 5; # <5% free
-    };
-
     vuizvui.services.upower = {
       enable = true;
       settings = {
@@ -124,18 +116,10 @@ in {
     let
       # of utmost necessity for me to function
       basePkgs = [
-        ripgrep           # file content searcher, > ag > ack > grep
-        lr                # list recursively, ls & find replacement
-        dos2unix          # text file conversion
-        man-pages          # system manpages (not included by default)
-        mkpasswd          # UNIX password creator
-        ncdu              # disk size checker
         smartmontools     # check disk state
         stow              # dotfile management
-        traceroute        # trace ip routes
         wirelesstools     # iwlist (wifi scan)
         gitFull           # git with send-email
-        binutils          # debugging binary files
       ];
       # minimal set of gui applications
       guiPkgs = [

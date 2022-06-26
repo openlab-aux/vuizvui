@@ -17,6 +17,14 @@ in
     # /tmp should never be depended on
     boot.cleanTmpDir = true;
 
+    # the kernel OOM is not good enough without swap,
+    # and I don’t like swap. This kills the most hoggy
+    # processes when the system goes under a free space limit
+    services.earlyoom = {
+      enable = true;
+      freeMemThreshold = 5; # <5% free
+    };
+
     # bounded journal size
     services.journald.extraConfig = "SystemMaxUse=500M";
 
@@ -39,15 +47,22 @@ in
 
     environment.systemPackages = with pkgs; [
       curl              # transfer data to/from a URL
+      binutils          # debugging binary files
+      dos2unix          # text file conversion
       file              # file information
       htop              # top replacement
+      ncdu              # disk size checker
       nmap              # stats about clients in the network
+      man-pages          # system manpages (not included by default)
+      mkpasswd          # UNIX password creator
+      lr                # list recursively, ls & find replacement
+      ripgrep           # file content searcher, > ag > ack > grep
       rsync             # file syncing tool
       strace            # tracing syscalls
       tmux              # detachable terminal multiplexer
+      traceroute        # trace ip routes
       wget              # the other URL file fetcher
       myPkgs.vim        # slight improvement over vi
-      lr                # list recursively, ls & find replacement
       xe                # xargs with a modern interface
     ];
 
