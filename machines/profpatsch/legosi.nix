@@ -19,6 +19,7 @@ let
   xandikosPort = 2345;
   tailscaleInterface = "tailscale0";
   tailscaleAddress = "100.89.52.54";
+  siteServerPort = 2346;
 
 in {
   imports = [
@@ -165,10 +166,39 @@ in {
       virtualHosts.${"profpatsch.de"} = {
         forceSSL = true;
         enableACME = true;
+        # pass exactly / to the static index
         locations."/" = {
           index = "index.html";
           root = pkgs.vuizvui.profpatsch.websiteStatic;
         };
+        # pass the rest to the site server (TODO: make static!)
+        locations."/notes" = {
+          proxyPass = "http://localhost:${toString siteServerPort}";
+        };
+        locations."/projects" = {
+          proxyPass = "http://localhost:${toString siteServerPort}";
+        };
+        locations."/posts" = {
+          proxyPass = "http://localhost:${toString siteServerPort}";
+        };
+
+      };
+    };
+
+    systemd.services.notes-server = {
+      description   = "notes for my website";
+      wantedBy      = [ "multi-user.target" ];
+      after         = [ "network.target" ];
+      serviceConfig = {
+        ExecStart = pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.blog.site-server {
+          port = toString siteServerPort;
+          # TODO: css has to be adjusted for articles
+          # cssFile = pkgs.vuizvui.profpatsch.concatenatedCss;
+          cssFile = null;
+        };
+        Restart = "always";
+        RestartSec = "1s";
+        DynamicUser = true;
       };
     };
 
