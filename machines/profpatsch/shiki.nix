@@ -13,15 +13,18 @@ let
     trap revert HUP INT TERM EXIT
     # turn off the screen after 5 seconds of inactivity
     ${pkgs.xorg.xset}/bin/xset +dpms dpms 5 5 5
+
+    # A little dark maroon-ish hue so it’s easy to see when the screen lock is active
     ${pkgs.i3lock}/bin/i3lock \
       --nofork \
-      --color=000000
+      --color=300000
   '';
 
 in {
 
   imports = [
     ./base-workstation.nix
+    ./possehl-specific-do-not-check-in.nix
   ];
 
   config = {
