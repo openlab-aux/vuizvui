@@ -14,6 +14,7 @@ let
   gpgPublicKeyId = "4ACFD7592710266E18CEBB28C5CFD08B22247CDF";
 
   myKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNMQvmOfon956Z0ZVdp186YhPHtSBrXsBwaCt0JAbkf/U/P+4fG0OROA++fHDiFM4RrRHH6plsGY3W6L26mSsCM2LtlHJINFZtVILkI26MDEIKWEsfBatDW+XNAvkfYEahy16P5CBtTVNKEGsTcPD+VDistHseFNKiVlSLDCvJ0vMwOykHhq+rdJmjJ8tkUWC2bNqTIH26bU0UbhMAtJstWqaTUGnB0WVutKmkZbnylLMICAvnFoZLoMPmbvx8efgLYY2vD1pRd8Uwnq9MFV1EPbkJoinTf1XSo8VUo7WCjL79aYSIvHmXG+5qKB9ed2GWbBLolAoXkZ00E4WsVp9H philip@nyx";
+  qwerkyKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM3ORvMbdHaJfgPgMhWTqgVrP1L7kkvuETQpzl0IjP2G tc@windoof";
 
   xandikosPort = 2345;
   tailscaleAddress = "100.89.52.54";
@@ -119,21 +120,27 @@ in {
       root.openssh.authorizedKeys.keys = [ myKey ];
     };
 
-    vuizvui.user.profpatsch.programs.weechat = {
-      enable = true;
-      userName = "weechat";
-      # give this user access to the bitlbee group and socket
-      extraGroups = [ "bitlbee" ];
-      weechatDataDir = "/var/lib/weechat";
-      authorizedKeys = [ myKey ];
-      # redirect the bitlbee unix socket to a fake domain
-      # because weechat is unable to connect to unix sockets.
-      wrapExecStart = [
-        "${pkgs.ip2unix}/bin/ip2unix"
-        "-r"
-        "addr=1.2.3.4,port=6667,path=${config.vuizvui.user.profpatsch.services.bitlbee.socketFile}"
-      ];
-    };
+    vuizvui.user.profpatsch.programs.weechat = [
+      {
+        userName = "weechat";
+        # give this user access to the bitlbee group and socket
+        extraGroups = [ "bitlbee" ];
+        weechatDataDir = "/var/lib/weechat";
+        authorizedKeys = [ myKey ];
+        # redirect the bitlbee unix socket to a fake domain
+        # because weechat is unable to connect to unix sockets.
+        wrapExecStart = [
+          "${pkgs.ip2unix}/bin/ip2unix"
+          "-r"
+          "addr=1.2.3.4,port=6667,path=${config.vuizvui.user.profpatsch.services.bitlbee.socketFile}"
+        ];
+      }
+      {
+        userName = "weechat-qwerky";
+        weechatDataDir = "/var/lib/weechat-qwerky";
+        authorizedKeys = [ qwerkyKey ];
+      }
+    ];
 
     vuizvui.user.profpatsch.services.bitlbee = {
        enable = true;

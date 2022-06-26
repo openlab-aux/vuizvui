@@ -8,7 +8,6 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.vuizvui.user.profpatsch.programs.weechat;
   # tmux session name weechat runs in
   sessionName = "weechat";
 
@@ -69,12 +68,8 @@ let
         "attach-session"
           "-t" sessionName
   ];
-in
 
-{
-  options.vuizvui.user.profpatsch.programs.weechat = {
-    enable = lib.mkEnableOption "weechat";
-
+  weechatServiceOptions = {
     authorizedKeys = lib.mkOption {
       description = "ssh keys that should be able to connect to the weechat tmux session";
       type = lib.types.listOf lib.types.str;
@@ -88,13 +83,13 @@ in
     extraGroups = lib.mkOption {
       description = "extra groups to add to the weechat user";
       type = lib.types.listOf lib.types.str;
+      default = [];
     };
 
     weechatDataDir = lib.mkOption {
       description = "the data directory used for keeping configuration, logs and other state";
       type = lib.types.path;
     };
-
 
     wrapExecStart = lib.mkOption {
       description = "bernstein-chaining command wrapped around weechat";
@@ -103,39 +98,62 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  # map over the configs defined in the list option below
+  allCfgsString = f:
+    lib.concatStrings
+      (map f config.vuizvui.user.profpatsch.programs.weechat);
+  allCfgsMerge = f:
+    lib.foldl' lib.mergeAttrs {}
+      (map f config.vuizvui.user.profpatsch.programs.weechat);
+
+in
+
+{
+  options.vuizvui.user.profpatsch.programs.weechat = lib.mkOption {
+    description = "the weechat services to start";
+    type = lib.types.listOf (lib.types.submodule {
+      options = weechatServiceOptions;
+    });
+    default = [];
+  };
+
+  config = {
     users = {
       groups.weechat = {};
-      users.${cfg.userName} = {
-        isSystemUser = true;
-        createHome = true;
-        shell = bins.dash;
-        group = "weechat";
-        home = cfg.weechatDataDir;
-        openssh.authorizedKeys.keys = cfg.authorizedKeys;
-        extraGroups = cfg.extraGroups;
-      };
+      users = allCfgsMerge (cfg: {
+        ${cfg.userName} = {
+          isSystemUser = true;
+          createHome = true;
+          shell = bins.dash;
+          group = "weechat";
+          home = cfg.weechatDataDir;
+          openssh.authorizedKeys.keys = cfg.authorizedKeys;
+          extraGroups = cfg.extraGroups;
+        };
+      });
     };
 
     # make sure the only use-case for this account
     # is attaching the tmux session.
-    services.openssh.extraConfig = ''
+    services.openssh.extraConfig = allCfgsString (cfg: ''
       Match User ${cfg.userName}
           ForceCommand ${attachWeechatTmuxSession}
-    '';
+    '');
 
-    systemd.services."weechat-${cfg.userName}" = {
-      environment.WEECHAT_HOME = cfg.weechatDataDir;
-      serviceConfig = {
-        ExecStart = startWeechatTmuxSession cfg.wrapExecStart;
-        Restart = "always";
-        RestartSec = "3s";
-        User = cfg.userName;
-        Group = "weechat";
+    systemd.services = allCfgsMerge (cfg: {
+      "weechat-${cfg.userName}" = {
+        environment.WEECHAT_HOME = cfg.weechatDataDir;
+        serviceConfig = {
+          ExecStart = startWeechatTmuxSession cfg.wrapExecStart;
+          Restart = "always";
+          RestartSec = "3s";
+          User = cfg.userName;
+          Group = "weechat";
+        };
+        wantedBy = [ "multi-user.target" ];
+        wants = [ "network.target" ];
       };
-      wantedBy = [ "multi-user.target" ];
-      wants = [ "network.target" ];
-    };
+    });
 
     # This enables “lingering” for the CI user.
     # Inspired by the discussion (and linked code)
@@ -146,9 +164,10 @@ in
         # remove all existing lingering users
         rm -r /var/lib/systemd/linger
         mkdir /var/lib/systemd/linger
+      '' + allCfgsString (cfg: ''
         # enable for the subset of declared users
         touch /var/lib/systemd/linger/${cfg.userName}
-      '';
+    #   '');
     };
 
   };
