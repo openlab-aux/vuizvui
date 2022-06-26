@@ -7,5 +7,7 @@
   config = {
     # Enables drivers, acpi, power management
     vuizvui.hardware.thinkpad.enable = true;
+
+    vuizvui.services.upower.enable = lib.mkDefault true;
   };
 }
