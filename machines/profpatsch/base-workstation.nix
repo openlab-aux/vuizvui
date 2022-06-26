@@ -28,11 +28,6 @@ in {
       };
     };
 
-    console = {
-      font = "lat9w-16";
-      keyMap = "neo";
-    };
-
     vuizvui.services.upower = {
       enable = true;
       settings = {
