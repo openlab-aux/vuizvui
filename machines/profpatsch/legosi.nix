@@ -155,7 +155,7 @@ in {
     };
 
     security.acme.acceptTerms = true;
-    security.acme.email = "mail@profpatsch.de";
+    security.acme.defaults.email = "mail@profpatsch.de";
 
     services.nginx = {
       enable = true;
