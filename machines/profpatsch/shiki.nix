@@ -27,6 +27,7 @@ in {
 
   imports = [
     ./base-workstation.nix
+    ./thinkpad.nix
     # ./possehl-specific-do-not-check-in.nix
   ];
 

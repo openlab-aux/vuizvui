@@ -1,4 +1,4 @@
-# A base configuration for Thinkpads.
+# A base configuration for my workstations.
 { pkgs, lib, ... }:
 let
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
@@ -30,9 +30,6 @@ in {
       font = "lat9w-16";
       keyMap = "neo";
     };
-
-    # Enables drivers, acpi, power management
-    vuizvui.hardware.thinkpad.enable = true;
 
     # the kernel OOM is not good enough without swap,
     # and I don’t like swap. This kills the most hoggy
