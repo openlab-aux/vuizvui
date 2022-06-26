@@ -36,10 +36,7 @@ in {
     #########
     # Kernel
 
-    boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "xhci_pci" "nvme" "usb_storage" "sd_mod" ];
     boot.initrd.luks.devices.cryptroot.device = "/dev/disk/by-label/root";
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.grub.enable = false;
 
     # enable video loopback devices
     # via https://gist.github.com/TheSirC/93130f70cc280cdcdff89faf8d4e98ab
