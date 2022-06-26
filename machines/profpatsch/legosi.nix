@@ -87,6 +87,7 @@ in {
 
     services.duplicity = {
       enable = true;
+      frequency = "daily";
 
       root = "/";
       # exclude all the system-related dirs
@@ -113,7 +114,7 @@ in {
 
       extraFlags = [
         "--name" "legosi-root"
-        "--verbosity" "notice"
+        "--verbosity" "info"
         "--full-if-older-than" "60D"
         "--num-retries" "3"
         # I hate GPG from the bottom of my heart
