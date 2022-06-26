@@ -14,6 +14,8 @@ in {
 
   config = {
 
+    time.timeZone = "Europe/Paris";
+
     networking = {
       # better for untrusted networks
       firewall = {
@@ -135,8 +137,6 @@ in {
     # Services
 
     # services.openssh.enable = true;
-
-    time.timeZone = "Europe/Paris";
 
     vuizvui.programs.fish.fasd.enable = true;
 

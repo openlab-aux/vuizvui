@@ -17,6 +17,9 @@ in
     # /tmp should never be depended on
     boot.cleanTmpDir = true;
 
+    # Setting it to UTC explicitely makes it impossible to override at runtime
+    time.timeZone = lib.mkDefault "UTC";
+
     # the kernel OOM is not good enough without swap,
     # and I don’t like swap. This kills the most hoggy
     # processes when the system goes under a free space limit
