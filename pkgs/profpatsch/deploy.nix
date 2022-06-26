@@ -22,7 +22,7 @@ let
       "$VUIZVUI"
 
     ${bins.nix-copy-closure} \
-      --to "ssh://$MACHINE?compress=true" \
+      --to "$MACHINE?compress=true" \
       --use-substitutes \
       "$OUT_LINK"
 
