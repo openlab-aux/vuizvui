@@ -12,6 +12,11 @@ in
   };
 
   config = mkIf cfg.enable {
+
+    # We need to update the Intel microcode on every update,
+    # otherwise there can be problems with newers kernels.
+    hardware.cpu.intel.updateMicrocode = mkDefault true;
+
     # read acpi stats (e.g. battery)
     environment.systemPackages = [ pkgs.acpi ];
 

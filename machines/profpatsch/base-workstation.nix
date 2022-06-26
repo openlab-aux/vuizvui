@@ -14,11 +14,6 @@ in {
 
   config = {
 
-    ###########
-    # Hardware
-
-    hardware.cpu.intel.updateMicrocode = true;
-
     networking = {
       # better for untrusted networks
       firewall = {
