@@ -17,6 +17,7 @@ let
   qwerkyKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM3ORvMbdHaJfgPgMhWTqgVrP1L7kkvuETQpzl0IjP2G tc@windoof";
 
   xandikosPort = 2345;
+  tailscaleInterface = "tailscale0";
   tailscaleAddress = "100.89.52.54";
 
 in {
@@ -57,9 +58,13 @@ in {
       firewall = {
         allowedTCPPorts = [
           80 443
-          # only binds against tailscale subnet
-          xandikosPort
         ];
+
+        interfaces.${tailscaleInterface} = {
+          allowedTCPPorts = [
+            xandikosPort
+          ];
+        };
       };
 
       interfaces.ens3 = {
@@ -75,7 +80,10 @@ in {
       };
     };
 
-    services.tailscale.enable = true;
+    services.tailscale = {
+      enable = true;
+      interfaceName = tailscaleInterface;
+    };
 
     services.duplicity = {
       enable = true;
