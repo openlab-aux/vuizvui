@@ -4,7 +4,10 @@ let
   myLib  = import ./lib.nix  { inherit pkgs lib; };
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib unfreeAndNonDistributablePkgs; };
 
+  tailscaleInterface = "tailscale0";
+
   lock-screen = pkgs.writers.writeDashBin "lock-screen" ''
+
     set -e
     revert() {
       # never turn off the screen (disable dpms)
@@ -164,8 +167,16 @@ in {
 
     networking.networkmanager.enable = true;
 
-    services.tailscale.enable = true;
+    services.tailscale = {
+      enable = true;
+      interfaceName = tailscaleInterface;
+    };
 
+    networking.firewall.interfaces.${tailscaleInterface} = {
+      allowedTCPPorts = [
+        # Open ports that should be accessible via tailscale VPN here
+      ];
+    } ;
 
     services.mullvad-vpn.enable = true;
 
