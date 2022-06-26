@@ -5,4 +5,4 @@ version = "0.0.1"
 [vuizvui.user.profpatsch.server.sshPort]
 description = "ssh port"
 type = "port"
-default = 6879
+default = 7001

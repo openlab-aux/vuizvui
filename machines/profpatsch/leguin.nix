@@ -5,8 +5,8 @@ let
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
 
   tailscaleInterface = "tailscale0";
-  # tailscaleAddress = "100.76.60.85";
-  # ethernetInterface = "enp0s20";
+
+  hostname = "leguin";
 
   myKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNMQvmOfon956Z0ZVdp186YhPHtSBrXsBwaCt0JAbkf/U/P+4fG0OROA++fHDiFM4RrRHH6plsGY3W6L26mSsCM2LtlHJINFZtVILkI26MDEIKWEsfBatDW+XNAvkfYEahy16P5CBtTVNKEGsTcPD+VDistHseFNKiVlSLDCvJ0vMwOykHhq+rdJmjJ8tkUWC2bNqTIH26bU0UbhMAtJstWqaTUGnB0WVutKmkZbnylLMICAvnFoZLoMPmbvx8efgLYY2vD1pRd8Uwnq9MFV1EPbkJoinTf1XSo8VUo7WCjL79aYSIvHmXG+5qKB9ed2GWbBLolAoXkZ00E4WsVp9H philip@nyx";
 
@@ -15,31 +15,25 @@ in
 {
   imports = [
     ./base-server.nix
+    ./thinkpad.nix
   ];
 
   config = {
 
     # TODO abstract out
     vuizvui.modifyNixPath = false;
-    nix.nixPath = [
-      "nixpkgs=${with pkgs.vuizvui.profpatsch; filterSourceGitignoreWith {
-          gitignoreLines =
-            readGitignoreFile "${toString pkgs.path}/.gitignore";
-          globMap = glob:
-            # filter out the non-rooted file globs,
-            # because those take forever to filter
-            # (10(!) seconds evaluation time in my test).
-            if (!glob.isDir && !glob.isRooted)
-            then null
-            else glob;
-        } pkgs.path}"
-      # TODO?
-      # "vuizvui=/root/vuizvui"
-      # TODO: nicer?
-      "nixos-config=${pkgs.writeText "leguin-configuration.nix" ''
-        (import <vuizvui/machines>).profpatsch.leguin.config
-      ''}"
-    ];
+    nix = {
+      nixPath = [
+        # cop out, if you really need a tool locally on the server, just use latest unstable
+        "nixpkgs=https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz"
+      ];
+
+      extraOptions = ''
+        auto-optimise-store = true
+        min-free = ${toString (3 * 1024 * 1024 * 1024)}
+      '';
+
+    };
 
     boot.loader.grub.device = "/dev/sda";
 
@@ -54,21 +48,18 @@ in
       };
     };
 
+    vuizvui.user.profpatsch.server.sshPort = 7001;
+
     users.users = {
       root.openssh.authorizedKeys.keys = [ myKey ];
     };
 
     security.acme.acceptTerms = true;
-    security.acme.email = "mail@profpatsch.de";
+    security.acme.defaults.email = "mail@profpatsch.de";
 
     networking = {
-      nat = {
-        # enable = true;
-        # externalInterface = ethernetInterface;
-        # internalInterfaces = [ wireguard.interface ];
-      };
 
-      hostName = "leguin";
+      hostName = hostname;
       firewall = {
         allowedTCPPorts = [
           80 443
@@ -82,14 +73,13 @@ in
         };
       };
 
-      # nameservers = [
-      #   "62.210.16.6"
-      #   "62.210.16.7"
     };
 
     services.tailscale = {
       enable = true;
-      # interfaceName = tailscaleInterface;
+      interfaceName = tailscaleInterface;
     };
+    # strict filtering breaks some tailscale features
+    networking.firewall.checkReversePath = "loose";
   };
 }
