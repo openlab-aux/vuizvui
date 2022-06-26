@@ -86,45 +86,44 @@ in {
       interfaceName = tailscaleInterface;
     };
 
-    services.duplicity = {
-      enable = true;
-      frequency = "daily";
+    # services.duplicity = {
+    #   enable = true;
+    #   frequency = "daily";
 
-      root = "/";
-      # exclude all the system-related dirs
-      exclude = [
-        "/bin"
-        "/boot"
-        "/dev"
-        "/nix"
-        "/proc"
-        "/run"
-        "/sys"
-        "/tmp"
-        "/usr"
-        # /var/lib is what we want because it contains all services,
-        # but let’s be generous and keep everything in /var except log
-        "/var/log"
-      ];
+    #   root = "/";
+    #   # exclude all the system-related dirs
+    #   exclude = [
+    #     "/bin"
+    #     "/boot"
+    #     "/dev"
+    #     "/nix"
+    #     "/proc"
+    #     "/run"
+    #     "/sys"
+    #     "/tmp"
+    #     "/usr"
+    #     # /var/lib is what we want because it contains all services,
+    #     # but let’s be generous and keep everything in /var except log
+    #     "/var/log"
+    #   ];
 
-      targetUrl = "b2://000efe88f7148a00000000003@profpatsch-legosi/";
+    #   targetUrl = "b2://000efe88f7148a00000000003@profpatsch-legosi/";
 
-      # this uses the internal stateDirectory of the duplicity module
-      # Has to be set manually once of course.
-      secretFile = "/var/lib/duplicity/secrets";
+    #   # this uses the internal stateDirectory of the duplicity module
+    #   # Has to be set manually once of course.
+    #   secretFile = "/var/lib/duplicity/secrets";
 
-      extraFlags = [
-        "--name" "legosi-root"
-        "--verbosity" "info"
-        "--full-if-older-than" "60D"
-        "--num-retries" "3"
-        # I hate GPG from the bottom of my heart
-        "--encrypt-key" gpgPublicKeyId
-        "--gpg-options" "--keyring ${gpgPublicKeyring} --trust-model always"
-      ];
+    #   extraFlags = [
+    #     "--name" "legosi-root"
+    #     "--verbosity" "info"
+    #     "--full-if-older-than" "60D"
+    #     "--num-retries" "3"
+    #     # I hate GPG from the bottom of my heart
+    #     "--encrypt-key" gpgPublicKeyId
+    #     "--gpg-options" "--keyring ${gpgPublicKeyring} --trust-model always"
+    #   ];
 
-    };
-
+    # };
 
     users.users = {
       root.openssh.authorizedKeys.keys = [ myKey ];
