@@ -35,17 +35,18 @@ in
 
     };
 
-    boot.loader.grub.device = "/dev/sda";
+    boot.initrd.luks.devices.cryptroot.device = "/dev/disk/by-label/root";
 
-    fileSystems = {
-      "/" = {
-        device = "/dev/sda3";
-        fsType = "ext4";
-      };
-      "/boot" = {
-        device = "/dev/sda2";
-        fsType = "ext4";
-      };
+    fileSystems."/" = {
+      device = "/dev/disk/by-label/nixos";
+      fsType = "btrfs";
+      options = [ "ssd" "subvol=/root" ];
+    };
+
+    fileSystems."/boot" = {
+      device = "/dev/disk/by-label/BOOT";
+      fsType = "vfat";
+      options = ["nofail"];
     };
 
     vuizvui.user.profpatsch.server.sshPort = 7001;
