@@ -27,7 +27,7 @@ in {
 
   imports = [
     ./base-workstation.nix
-    ./possehl-specific-do-not-check-in.nix
+    # ./possehl-specific-do-not-check-in.nix
   ];
 
   config = {
