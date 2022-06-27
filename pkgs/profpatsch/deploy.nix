@@ -4,7 +4,7 @@
 let
   bins = getBins pkgs.coreutils [ "realpath" ]
       // getBins pkgs.openssh [ "ssh" ]
-      // getBins pkgs.nix [ "nix-build" "nix-copy-closure" ]
+      // getBins pkgs.nix [ "nix-build" "nix-copy-closure" "nix-env" ]
       ;
 
   deploy = pkgs.writers.writeDash "deploy-machine-profpatsch" ''
@@ -21,16 +21,25 @@ let
       -A "machines.profpatsch.$MACHINE.build" \
       "$VUIZVUI"
 
+    # copy all required paths to the machine
     ${bins.nix-copy-closure} \
       --to "$MACHINE?compress=true" \
       --use-substitutes \
+      ${create-system-profile-and-switch} \
       "$OUT_LINK"
 
-
+    # activate the system
     ${bins.ssh} \
       "root@$MACHINE" \
-      "$(${bins.realpath} $OUT_LINK)/bin/switch-to-configuration" \
-      "switch"
+      ${create-system-profile-and-switch} \
+      "$(${bins.realpath} $OUT_LINK)"
+  '';
+
+  create-system-profile-and-switch = pkgs.writers.writeDash "create-system-profile-and-switch" ''
+    set -e
+    system="$1"
+    ${bins.nix-env} -p /nix/var/nix/profiles/system --set $system
+    $system/bin/switch-to-configuration switch
   '';
 
 in {
