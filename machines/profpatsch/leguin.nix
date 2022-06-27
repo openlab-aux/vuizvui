@@ -76,6 +76,20 @@ in
 
     };
 
+    services.logind.extraConfig = lib.generators.toKeyValue {} {
+
+      # I don’t want the machine to go off immediately
+      # when I accidentally touch the power button.
+      HandlePowerKey = "ignore";
+      HandlePowerKeyLongPress = "poweroff";
+
+      # as long as the machine is connected to power,
+      # it needs to be closed to preserve the monitor
+      HandleLidSwitchExternalPower = "ignore";
+      HandleLidSwitchDocked = "ignore";
+
+    };
+
     services.tailscale = {
       enable = true;
       interfaceName = tailscaleInterface;
