@@ -1,3 +1,5 @@
+# NB: this is an experiment whether we can express configuration files as TOML;
+# so far I’m not 100% sure it is a good idea :)
 [module]
 type = "nixos-config"
 version = "0.0.1"
