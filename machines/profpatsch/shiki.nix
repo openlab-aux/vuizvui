@@ -356,10 +356,17 @@ in {
     # Automount
     services.udisks2.enable = true;
 
-    services.logind.extraConfig = ''
+    services.logind.extraConfig = lib.generators.toKeyValue {} {
+
+      # I don’t want the machine to go off immediately
+      # when I accidentally touch the power button.
+      HandlePowerKey = "ignore";
+      HandlePowerKeyLongPress = "poweroff";
+
       # want to be able to listen to music while laptop closed
-      LidSwitchIgnoreInhibited=no
-    '';
+      LidSwitchIgnoreInhibited = "no";
+
+    };
 
     # TMP
 
