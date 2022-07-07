@@ -48,6 +48,11 @@ in {
 
     i18n = {
       defaultLocale = "en_US.UTF-8";
+      supportedLocales = [
+        (config.i18n.defaultLocale + "/UTF-8")
+        "C.UTF-8/UTF-8"
+        "de_DE.UTF-8/UTF-8"
+      ];
     };
 
     programs.fish = {
