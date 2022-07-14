@@ -257,8 +257,7 @@ let
     }
     { check = with config.services.graphite; carbon.enableCache
            || carbon.enableAggregator || carbon.enableRelay
-           || web.enable || api.enable || seyren.enable
-           || beacon.enable;
+           || web.enable || seyren.enable;
       path  = ["nixos" "graphite"];
     }
     { check = config.services.graylog.enable;
