@@ -21,8 +21,5 @@ in
         "https://cache.tvl.su"
       ];
     };
-
-    # TVL short DNS
-    networking.domain = lib.mkDefault "tvl.su";
   };
 }
