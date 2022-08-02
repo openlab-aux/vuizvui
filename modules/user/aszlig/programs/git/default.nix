@@ -15,7 +15,7 @@ let
 
   libgit2Patched = pkgs.libgit2.overrideAttrs (drv: {
     postPatch = (drv.postPatch or "") + ''
-      substituteInPlace src/sysdir.c \
+      substituteInPlace src/libgit2/sysdir.c \
         --replace '"/etc"' ${lib.escapeShellArg "\"${cfg.configFile}\""}
     '';
   });
