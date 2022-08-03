@@ -27,8 +27,23 @@
 
   networking.hostName = "slylandro";
   networking.wireless.enable = lib.mkForce true;
-  networking.interfaces.enp1s0.useDHCP = true;
-  networking.interfaces.wlp3s0.useDHCP = true;
+  networking.interfaces.bond0.useDHCP = true;
+
+  # This is because the "primary" option below is only supported for the
+  # scripted networking configuration.
+  systemd.network.networks."40-enp1s0" = {
+    networkConfig.PrimarySlave = true;
+  };
+
+  networking.bonds.bond0 = {
+    interfaces = [ "enp1s0" "wlp3s0" ];
+    driverOptions = {
+      miimon = "1000";
+      mode = "active-backup";
+      primary = "enp1s0";
+      primary_reselect = "always";
+    };
+  };
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/DF50-CD44";
