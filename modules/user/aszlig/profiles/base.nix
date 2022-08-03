@@ -26,7 +26,8 @@ in {
     networking.useNetworkd = true;
     networking.useDHCP = false;
 
-    console.keyMap = "dvorak";
+    services.xserver.layout = "dvorak";
+    console.useXkbConfig = true;
     console.font = "lat9w-16";
 
     programs.ssh.startAgent = false;
