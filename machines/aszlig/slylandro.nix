@@ -11,6 +11,7 @@
 
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "nvme" ];
+      kernelModules = [ "amdgpu" ];
       luks.devices = {
         slylandro-swap = {
           device = "/dev/disk/by-uuid/30904e53-cc8f-4039-9244-fc648dc6f801";
