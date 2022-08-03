@@ -26,6 +26,7 @@
 
   hardware.video.hidpi.enable = true;
   services.xserver.dpi = 188;
+  services.xserver.xkbOptions = "caps:none";
 
   networking.hostName = "slylandro";
   networking.wireless.enable = lib.mkForce true;
