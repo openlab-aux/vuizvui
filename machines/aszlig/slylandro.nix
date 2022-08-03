@@ -23,6 +23,7 @@
   };
 
   hardware.cpu.amd.updateMicrocode = true;
+  hardware.firmware = [ pkgs.linux-firmware ];
 
   hardware.video.hidpi.enable = true;
   services.xserver.dpi = 188;
