@@ -23,7 +23,9 @@
   };
 
   hardware.cpu.amd.updateMicrocode = true;
+
   hardware.video.hidpi.enable = true;
+  services.xserver.dpi = 188;
 
   networking.hostName = "slylandro";
   networking.wireless.enable = lib.mkForce true;
