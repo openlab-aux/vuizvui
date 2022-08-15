@@ -138,7 +138,7 @@ let
       repo = "vaxe";
       rev = "d5f905f806c7c90bb116d4b06a78924341840021";
       sha256 = "0axvavzxbi3m4shva1m0cm6finl1i2rwqgn6lnklxnr2g9sfi4j7";
-      extraPostFetch = ''
+      postFetch = ''
         # Do not highlight ',' and ';'.
         sed -i -e '/\<haxeOperator2\>/d' "$out/syntax/haxe.vim"
       '';
@@ -286,7 +286,7 @@ let
       repo = "csv.vim";
       rev = "443fa8bd2a1a017b26cc421a9494e1a1e33f4acf";
       sha256 = "1pbgl9f00kqxr2dpxmxg9jnk5q41sxzgan7hn16hc2b4as3zbihd";
-      extraPostFetch = ''
+      postFetch = ''
         # Use sane (non-UTF8) settings for separators
         sed -i -e 's/(&enc *[=~#]\+ *.utf-8. *?[^:]*: *\([^)]*\))/\1/g' \
           "$out/ftplugin/csv.vim" "$out/syntax/csv.vim"
@@ -305,7 +305,7 @@ let
       repo = "org.ats-lang.toolats";
       rev = "e0c5499dfa5c65b4aa3bf031247c768f826f3de8";
       sha256 = "0g1qrq4f4gq0yrnlslrjz03m0997rd343b22w21w7359hydlqzax";
-      extraPostFetch = ''
+      postFetch = ''
         mv -t "$out" "$out/org.ats-lang.toolats.vim/ftdetect" \
                      "$out/org.ats-lang.toolats.vim/syntax"
         rm -rf "$out/org.ats-lang.toolats"* \
