@@ -25,15 +25,18 @@ in {
               + optionalString (acc != []) " --right-of '${(head acc).name}'";
       };
       randrConf = map (getAttr "value") (foldl mkRandrConf [] xrandrHeads);
-    in singleton (pkgs.writeScriptBin "xreset" ''
-      #!${pkgs.stdenv.shell}
-      ${pkgs.xorg.xrandr}/bin/xrandr ${concatStringsSep " " randrConf}
-    '') ++ import ./packages.nix pkgs ++ [
+      xreset = pkgs.writeScriptBin "xreset" ''
+        #!${pkgs.stdenv.shell}
+        ${pkgs.xorg.xrandr}/bin/xrandr ${concatStringsSep " " randrConf}
+      '';
+    in [
+      xreset
+      config.boot.kernelPackages.perf
       (pkgs.vuizvui.aszlig.psi.override {
         jid = "aszlig@aszlig.net";
         resource = config.networking.hostName;
       })
-    ];
+    ] ++ import ./packages.nix pkgs;
 
     vuizvui.requiresTests = [
       ["vuizvui" "aszlig" "programs" "psi"]
