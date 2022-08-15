@@ -163,10 +163,6 @@ let
     { check = config.virtualisation.oci-containers.containers != {};
       path  = ["nixos" "oci-containers"];
     }
-    { check = with config.virtualisation.docker; enable
-           && package.name == pkgs.docker-edge.name;
-      path  = ["nixos" "docker-edge"];
-    }
     { check = config.services.dockerRegistry.enable;
       path  = ["nixos" "docker-registry"];
     }
