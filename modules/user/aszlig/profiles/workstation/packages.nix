@@ -32,7 +32,6 @@ pkgs: with pkgs; [
   i3
   i3lock
   imagemagick
-  jwhois
   jq
   keychain
   ltrace
@@ -78,6 +77,7 @@ pkgs: with pkgs; [
   vorbis-tools
   w3m
   wcc
+  whois
   wireshark
   xorg.xhost
   youtube-dl
