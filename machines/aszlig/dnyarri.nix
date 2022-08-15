@@ -20,7 +20,7 @@ let
 in {
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
-  nix.maxJobs = 24;
+  nix.settings.max-jobs = 24;
 
   hardware.printers.ensureDefaultPrinter = "Bunti";
   hardware.printers.ensurePrinters = lib.singleton {

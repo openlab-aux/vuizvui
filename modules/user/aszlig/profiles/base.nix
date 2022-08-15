@@ -9,14 +9,11 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    nix = {
-      useSandbox = true;
-      readOnlyStore = true;
-      buildCores = 0;
-      extraOptions = ''
-        auto-optimise-store = true
-        experimental-features = nix-command flakes
-      '';
+    nix.readOnlyStore = true;
+    nix.settings = {
+      sandbox = true;
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" "flakes" ];
     };
 
     users.defaultUserShell = "/var/run/current-system/sw/bin/zsh";

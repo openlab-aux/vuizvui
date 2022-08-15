@@ -63,7 +63,7 @@ in {
       fsType = "ext3";
     };
 
-    nix.maxJobs = 4;
+    nix.settings.max-jobs = 4;
 
     vuizvui.user.profpatsch.server.sshPort = 22;
 

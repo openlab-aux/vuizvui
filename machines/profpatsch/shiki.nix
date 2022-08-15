@@ -152,11 +152,8 @@ in {
     nix.settings.trusted-public-keys = [
       "digitallyinduced.cachix.org-1:y+wQvrnxQ+PdEsCt91rmvv39qRCYzEgGQaldK26hCKE="
     ];
-
-    nix.extraOptions = ''
-      builders-use-substitutes = true
-      auto-optimise-store = true
-    '';
+    nix.settings.builders-use-substitutes = true;
+    nix.settings.auto-optimise-store = true;
 
     ##########
     # Network

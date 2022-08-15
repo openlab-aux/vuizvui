@@ -35,11 +35,8 @@ in {
         "nixpkgs=https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz"
       ];
 
-      extraOptions = ''
-        auto-optimise-store = true
-        min-free = ${toString (3 * 1024 * 1024 * 1024)}
-      '';
-
+      settings.auto-optimise-store = true;
+      settings.min-free = 3 * 1024 * 1024 * 1024;
     };
 
     vuizvui.user.profpatsch.server.sshPort = 7001;

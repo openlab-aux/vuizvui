@@ -88,10 +88,9 @@ in {
     networking.firewall.enable = false;
     networking.networkmanager.enable = true;
 
-    nix.autoOptimiseStore = true;
-    nix.buildCores = 0;
     nix.readOnlyStore = true;
-    nix.useSandbox = true;
+    nix.settings.sandbox = true;
+    nix.settings.auto-optimise-store = true;
 
     nixpkgs.config.pulseaudio = true;
 

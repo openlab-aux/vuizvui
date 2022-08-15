@@ -67,7 +67,7 @@
       enableIntel2200BGFirmware = true;
     };
 
-    nix.maxJobs = 2;
+    nix.settings.max-jobs = 2;
 
     vuizvui.profiles.tvl.enable = true;
   };

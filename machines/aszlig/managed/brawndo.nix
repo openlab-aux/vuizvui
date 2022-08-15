@@ -31,7 +31,7 @@ in {
 
   networking.hostName = "brawndo";
 
-  nix.maxJobs = 4;
+  nix.settings.max-jobs = 4;
 
   nixpkgs.config.allowUnfree = true; # XXX: More granularity!
 

@@ -14,7 +14,7 @@
 
   networking.hostName = "meshuggah";
 
-  nix.maxJobs = 2;
+  nix.settings.max-jobs = 2;
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/9bddc8d3-88ee-4aac-b885-c9abca36b863";

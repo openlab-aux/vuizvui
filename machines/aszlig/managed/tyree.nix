@@ -53,7 +53,7 @@
 
   hardware.cpu.intel.updateMicrocode = true;
 
-  nix.maxJobs = 4;
+  nix.settings.max-jobs = 4;
 
   # English within the shell, German otherwise (like in KDE).
   programs.bash.interactiveShellInit = lib.mkBefore ''

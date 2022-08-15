@@ -73,5 +73,5 @@
   services.xserver.videoDrivers = [ "amdgpu" ];
   services.xserver.libinput.enable = true;
 
-  nix.maxJobs = 16;
+  nix.settings.max-jobs = 16;
 }
