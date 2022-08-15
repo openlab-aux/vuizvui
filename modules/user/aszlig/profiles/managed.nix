@@ -97,8 +97,6 @@ in {
 
     programs.bash.enableCompletion = true;
 
-    services.tlp.enable = true;
-
     time.timeZone = "Europe/Berlin";
 
     users.users.${mainUser} = {
