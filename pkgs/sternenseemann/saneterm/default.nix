@@ -30,6 +30,10 @@ buildPythonApplication {
     gobject-introspection
   ];
 
+  checkInputs = [
+    gobject-introspection # need the setup hook here as well
+  ];
+
   postInstall = ''
     wrapProgram "$out/bin/saneterm" \
       --prefix GI_TYPELIB_PATH : "$GI_TYPELIB_PATH" \
