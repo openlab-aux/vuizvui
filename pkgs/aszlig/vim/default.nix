@@ -376,6 +376,9 @@ let
         fetchSubmodules = true;
       };
       postPatch = ''
+        # We don't want to highlight 0xaabbcc, only #aabbcc.
+        sed -i -e 's/|0x)/)/g' hexokinase/hex.go
+
         sed -i -n -e '/^let g:Hexokinase_executable_path/ {
           :l; n; /^ *\\/bl
           i let g:Hexokinase_executable_path = '"'$bin/bin/hexokinase'"'
@@ -587,6 +590,8 @@ let
     let g:Hexokinase_highlighters = ['background']
     let g:Hexokinase_refreshEvents =
       \ ['TextChanged', 'TextChangedI', 'InsertLeave', 'BufRead']
+    let g:Hexokinase_optInPatterns =
+      \ ['full_hex', 'rgb', 'rgba', 'hsl', 'hsla']
 
     " rust
     if !executable('rustc')
