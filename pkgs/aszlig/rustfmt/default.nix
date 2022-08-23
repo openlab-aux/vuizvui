@@ -18,7 +18,7 @@ let
     wrap_comments = true;
   };
 
-in rustfmt.overrideAttrs (drv: {
+in (rustfmt.override { asNightly = true; }).overrideAttrs (drv: {
   patches = (drv.patches or []) ++ [ ./config.patch ];
   DEFAULT_CONFIG_FILE = runCommand "rustfmt.conf" {
     nativeBuildInputs = [ remarshal ];
