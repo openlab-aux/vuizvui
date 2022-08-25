@@ -7,6 +7,7 @@
   ./hardware/rtl8192cu
   ./hardware/t100ha
   ./hardware/thinkpad.nix
+  ./hardware/tuxedo-pulse1502
   ./profiles/tvl.nix
   ./programs/gnupg
   ./programs/fish/fasd.nix

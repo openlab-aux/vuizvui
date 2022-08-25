@@ -26,6 +26,7 @@
   hardware.cpu.amd.updateMicrocode = true;
   hardware.firmware = [ pkgs.linux-firmware ];
   hardware.tuxedo-keyboard.enable = true;
+  vuizvui.hardware.tuxedo.pulse15.gen2.enable = true;
 
   hardware.video.hidpi.enable = true;
   services.xserver.dpi = 188;

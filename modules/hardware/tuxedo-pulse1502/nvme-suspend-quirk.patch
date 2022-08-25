@@ -1,0 +1,47 @@
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index 1bdf714dcd9e..4014a2e17c70 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -149,6 +149,12 @@ enum nvme_quirks {
+ 	 * Reports garbage in the namespace identifiers (eui64, nguid, uuid).
+ 	 */
+ 	NVME_QUIRK_BOGUS_NID			= (1 << 18),
++
++	/*
++	 * Disables entering D3cold state for devices that might not wake up
++	 * again afterwards.
++	 */
++	NVME_QUIRK_NO_D3_COLD			= (1 << 19),
+ };
+ 
+ /*
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 3a1c37f32f30..1cedc6d0ec5f 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3070,6 +3070,15 @@ static unsigned long check_vendor_combination_bug(struct pci_dev *pdev)
+ 		if ((dmi_match(DMI_BOARD_VENDOR, "LENOVO")) &&
+ 		     dmi_match(DMI_BOARD_NAME, "LNVNB161216"))
+ 			return NVME_QUIRK_SIMPLE_SUSPEND;
++	} else if (pdev->vendor == 0x144d && (pdev->device == 0xa80a ||
++	           pdev->device == 0xa808)) {
++		/*
++		 * Some Samsung SSDs on TUXEDO Pulse 15 Gen2 do not seem to
++		 * wake up from D3cold.
++		 */
++		if (dmi_match(DMI_BOARD_VENDOR, "NB02") &&
++		    dmi_match(DMI_BOARD_NAME, "PF5LUXG"))
++			return NVME_QUIRK_NO_D3_COLD;
+ 	}
+ 
+ 	return 0;
+@@ -3134,6 +3143,9 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		quirks |= NVME_QUIRK_SIMPLE_SUSPEND;
+ 	}
+ 
++	if (quirks & NVME_QUIRK_NO_D3_COLD)
++		pci_d3cold_disable(pdev);
++
+ 	/*
+ 	 * Double check that our mempool alloc size will cover the biggest
+ 	 * command we support.
