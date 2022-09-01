@@ -64,7 +64,7 @@ in {
     thunderbird-wayland
     jackline gajim fractal
     vuizvui.sternenseemann.texlive jabref
-    youtube-dl mpv spotify
+    yt-dlp mpv spotify
     ghc cabal-install cabal2nix
     sbcl rlwrap
     valgrind gdb
