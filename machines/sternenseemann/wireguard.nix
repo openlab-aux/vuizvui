@@ -10,8 +10,8 @@ in
       interfaces = {
         wg1 = {
           address = [
-            "fd03:1337::158/64"
-            "10.13.37.158/24"
+            "fd03:1337::216/64"
+            "10.13.37.216/24"
           ];
           dns = [
             "95.215.19.53"
@@ -21,13 +21,13 @@ in
 
           peers = [
             {
-              endpoint = "wg006.njalla.no:51820";
-              publicKey = "y0zGwVuzZwKqkNkxP1P9A2Zw9H79cRjTZZlXL8+PrVM=";
+              endpoint = "wg009.njalla.no:51820";
+              publicKey = "5qO6a8iN7eU7/vQkG/0I31Aks1WNbAeJHwJ+ds1llGY=";
               allowedIPs = [
                 "0.0.0.0/0"
                 "::/0"
               ];
-              persistentKeepalive = 60;
+              persistentKeepalive = 25;
             }
           ];
         };
