@@ -117,6 +117,8 @@ in
         inherit (pkgs.xorg) xsetroot;
         inherit wsConfig barConfig;
 
+        faceSize = if config.hardware.video.hidpi.enable then 10 else 12;
+
         # XXX: Decouple this by making the i3 bindsym directives available to
         #      the NixOS module system.
         flameshot = config.vuizvui.user.aszlig.programs.flameshot.package;

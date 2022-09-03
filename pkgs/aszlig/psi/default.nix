@@ -6,6 +6,7 @@
 
 , jid ? "something@example.org"
 , resource ? "psi-aszlig"
+, faceSize ? 12
 }:
 
 let
@@ -55,7 +56,7 @@ in stdenv.mkDerivation rec {
     ./keep-urgency-hint.patch
     (substituteAll {
       src = ./config.patch;
-      inherit jid resource;
+      inherit jid resource faceSize;
     })
   ];
 
