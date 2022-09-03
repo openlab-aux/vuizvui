@@ -3,7 +3,8 @@
 let
   cfg = config.vuizvui.user.aszlig.profiles.workstation;
   inherit (config.services.xserver) xrandrHeads;
-  faceSize = if config.hardware.video.hidpi.enable then 10 else 12;
+  hidpi = config.hardware.video.hidpi.enable;
+  faceSize = if hidpi then 10 else 12;
 in {
   options.vuizvui.user.aszlig.profiles.workstation = {
     enable = lib.mkEnableOption "Workstation profile for aszlig";
@@ -190,24 +191,32 @@ in {
         enable = true;
         layout = "dvorak";
 
-        displayManager.lightdm.enable = true;
-        displayManager.defaultSession = "none+i3";
-        displayManager.sessionCommands = ''
-          ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
-            XTerm*termName:            xterm-direct
-            XTerm*directColor:         true
-            XTerm*faceName:            MxPlus IBM VGA 8x16
-            XTerm*faceSize:            ${toString faceSize}
-            XTerm*renderFont:          true
-            XTerm*saveLines:           10000
-            XTerm*bellIsUrgent:        true
-            XTerm*background:          black
-            XTerm*foreground:          grey
+        displayManager = {
+          lightdm.enable = true;
+          defaultSession = "none+i3";
+          sessionCommands = ''
+            ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
+              XTerm*termName:            xterm-direct
+              XTerm*directColor:         true
+              XTerm*faceName:            MxPlus IBM VGA 8x16
+              XTerm*faceSize:            ${toString faceSize}
+              XTerm*renderFont:          true
+              XTerm*saveLines:           10000
+              XTerm*bellIsUrgent:        true
+              XTerm*background:          black
+              XTerm*foreground:          grey
 
-            XTerm*backarrowKeyIsErase: true
-            XTerm*ptyInitialErase:     true
-          ''}"
-        '';
+              XTerm*backarrowKeyIsErase: true
+              XTerm*ptyInitialErase:     true
+            ''}"
+          '';
+        } // lib.optionalAttrs (config.boot.initrd.luks.devices != {}) {
+          # All of my workstations are single-user machines with encrypted root
+          # and swap, so there is no need to prompt another time for a password
+          # or passphrase.
+          autoLogin.enable = true;
+          autoLogin.user = "aszlig";
+        };
       };
     };
 
