@@ -67,17 +67,7 @@ in {
       fontDir.enable = true;
       enableGhostscriptFonts = true;
       fontconfig.useEmbeddedBitmaps = true;
-      # TODO: Switch to nixpkgs version once version 2.0 lands.
-      fonts = lib.singleton (pkgs.fetchzip {
-        name = "oldschool-pc-font-pack-2.0";
-        url = "https://int10h.org/oldschool-pc-fonts/download/"
-            + "oldschool_pc_font_pack_v2.0_ttf.zip";
-        sha256 = "0z0fw6ni7iq806y4m83xrfx46r14xxxql09ch2gxjqi062awqyh8";
-        postFetch= ''
-          mkdir -p $out/share/fonts/truetype
-          unzip -j $downloadedFile \*.ttf -d "$out/share/fonts/truetype"
-        '';
-      });
+      fonts = lib.singleton pkgs.ultimate-oldschool-pc-font-pack;
     };
 
     vuizvui.user.aszlig.services.i3.enable = true;
