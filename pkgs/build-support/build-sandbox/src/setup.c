@@ -714,11 +714,11 @@ static bool setup_runtime_debug(void)
 {
     char *injected_files, *buf, *ptr, *equals, *target;
 
-    if ((injected_files = getenv("NIX_SANDBOX_DEBUG_INJECT_FILES")) == NULL)
+    if ((injected_files = getenv("NIX_SANDBOX_DEBUG_INJECT_DIRS")) == NULL)
         return true;
 
     if ((buf = strdup(injected_files)) == NULL) {
-        perror("strdup NIX_SANDBOX_DEBUG_INJECT_FILES");
+        perror("strdup NIX_SANDBOX_DEBUG_INJECT_DIRS");
         return false;
     }
 
@@ -733,8 +733,14 @@ static bool setup_runtime_debug(void)
                 return false;
             }
 
+            if (!makedirs(target, true)) {
+                free(target);
+                free(buf);
+                return false;
+            }
+
             if (mount(ptr, target, "", MS_BIND, NULL) == -1) {
-                fprintf(stderr, "mount injected file %s to %s: %s\n",
+                fprintf(stderr, "mount injected directory %s to %s: %s\n",
                         ptr, target, strerror(errno));
                 free(target);
                 free(buf);
@@ -742,7 +748,8 @@ static bool setup_runtime_debug(void)
             }
 
             free(target);
-            fprintf(stderr, "Injected file '%s' to '%s'.\n", ptr, equals + 1);
+            fprintf(stderr, "Injected directory '%s' to '%s'.\n",
+                    ptr, equals + 1);
         }
 
         ptr = strtok(NULL, ":");
