@@ -82,4 +82,5 @@ pkgs: with pkgs; [
   xorg.xhost
   youtube-dl
   zathura
+  zbar
 ]
