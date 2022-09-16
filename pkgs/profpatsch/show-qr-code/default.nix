@@ -4,7 +4,14 @@ let script = writeScriptBin "show-qr-code" ''
   #!/bin/sh
   TMP=$(mktemp)
   trap 'rm "$TMP"' EXIT
-  ${qrencode}/bin/qrencode -s 8 -o "$TMP" -t PNG
+
+  if [ "$1" = "" ]; then
+    # read from stdin
+    ${qrencode}/bin/qrencode -s 8 --8bit -o "$TMP" -t PNG
+  else
+    # read from first arg
+    ${qrencode}/bin/qrencode -s 8 -o "$TMP" -t PNG "$1"
+  fi
 
   export DIALOG='
   <vbox>
