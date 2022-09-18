@@ -1,4 +1,4 @@
-{ callPackage, vim_configurable, gopass, mutt, xterm, rustfmt }:
+{ callPackage, vim_configurable, gopass, mutt, xterm, radare2, rustfmt }:
 
 {
   aacolorize = callPackage ./aacolorize { };
@@ -12,6 +12,7 @@
   nlast = callPackage ./nlast { };
   psi = callPackage ./psi { };
   pvolctrl = callPackage ./pvolctrl { };
+  radare2 = callPackage ./radare2 { inherit radare2; };
   rustfmt = callPackage ./rustfmt { inherit rustfmt; };
   vim = callPackage ./vim { vim = vim_configurable; };
   xterm = callPackage ./xterm { inherit xterm; };
