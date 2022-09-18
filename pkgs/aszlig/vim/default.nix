@@ -415,6 +415,13 @@ let
       rev = "4aa69b84c8a58fcec6b6dad6fe244b916b1cf830";
       sha256 = "07nh8gvkwq91i7qcz0rk5jlc8sb4d3af4zq2892kmmw576zg1wd8";
     };
+
+    quick-scope = fetchFromGitHub {
+      owner = "unblevable";
+      repo = "quick-scope";
+      rev = "428e8698347f254d24b248af9f656194a80081e5";
+      sha256 = "0vindr83v4q26a7jxfwk87vpl1kymsh6cclhvpkmb6cpq0iv3yii";
+    };
   };
 
   generic = ''
