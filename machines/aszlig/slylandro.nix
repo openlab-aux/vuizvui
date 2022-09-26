@@ -35,6 +35,8 @@
   networking.wireless.enable = lib.mkForce true;
   networking.interfaces.bond0.useDHCP = true;
 
+  location.provider = "geoclue2";
+
   # This is because the "primary" option below is only supported for the
   # scripted networking configuration.
   systemd.network.networks."40-enp1s0" = {
