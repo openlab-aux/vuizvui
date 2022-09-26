@@ -23,8 +23,8 @@ let
       ] ++ extraMounts;
       # chain execlines and exit immediately if one fails
       all = builtins.concatMap (c: [ "if" c ]);
-      mount = "${pkgs.utillinux}/bin/mount";
-      unshare = "${pkgs.utillinux}/bin/unshare";
+      mount = "${pkgs.util-linux}/bin/mount";
+      unshare = "${pkgs.util-linux}/bin/unshare";
       # this is the directory the sandbox runs under (in a separate mount namespace)
       newroot = pkgs.runCommandLocal "sandbox-root" {} ''mkdir "$out"'';
       # this runs in a separate namespace, sets up a chroot root
