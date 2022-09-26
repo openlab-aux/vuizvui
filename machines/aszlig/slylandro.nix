@@ -37,6 +37,17 @@
 
   location.provider = "geoclue2";
 
+  # XXX: Only on Slylandro for now since Dnyarri has a more complicated setup.
+  hardware.pulseaudio.enable = lib.mkForce false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
+  };
+
   # This is because the "primary" option below is only supported for the
   # scripted networking configuration.
   systemd.network.networks."40-enp1s0" = {
