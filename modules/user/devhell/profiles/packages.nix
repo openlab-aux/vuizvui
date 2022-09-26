@@ -257,8 +257,8 @@ in {
       urlview
       usbutils
       vanilla-dmz
+      virt-manager
       virt-viewer
-      virtmanager
       visidata
       viu
       vivid
