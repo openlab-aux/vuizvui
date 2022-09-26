@@ -108,6 +108,8 @@ let
 
 in rec {
 
+  inherit tvl;
+
   inherit (nixperiments)
     # canonical pattern matching primitive
     match
