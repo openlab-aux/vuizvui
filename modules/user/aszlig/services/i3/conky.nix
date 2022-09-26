@@ -80,7 +80,7 @@ let
 
     tries=0
     while ! raw_netinfo="$(${
-      "${pkgs.iproute}/sbin/ip route get 8.8.8.8 2> /dev/null"
+      "${pkgs.iproute2}/sbin/ip route get 8.8.8.8 2> /dev/null"
     })"; do
       if [ $tries -ge ${toString timeout} ]; then
         upspeed_disabled=N/A
