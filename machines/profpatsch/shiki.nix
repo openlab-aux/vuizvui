@@ -380,9 +380,7 @@ in {
     fonts = {
       fonts = [
         unfreeAndNonDistributablePkgs.corefonts
-        pkgs.source-han-sans-japanese
-        pkgs.source-han-sans-korean
-        pkgs.source-han-sans-simplified-chinese
+        pkgs.source-han-sans
         pkgs.source-code-pro
         pkgs.hasklig
         pkgs.dejavu_fonts
