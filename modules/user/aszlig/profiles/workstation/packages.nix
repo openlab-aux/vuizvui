@@ -36,6 +36,7 @@ pkgs: with pkgs; [
   keychain
   ltrace
   man-pages
+  man-pages-posix
   mmv
   mosh
   mtr
@@ -48,7 +49,6 @@ pkgs: with pkgs; [
   openssl
   p7zip
   pavucontrol
-  posix_man_pages
   pulseaudio
   vuizvui.aszlig.pvolctrl
   pv

@@ -158,6 +158,7 @@ in {
       lxd
       maim
       man-pages
+      man-pages-posix
       mapcidr
       mediainfo
       menyoki
@@ -204,7 +205,6 @@ in {
       pixz
       podman
       podman-compose
-      posix_man_pages
       powertop
       procs
       profanity
