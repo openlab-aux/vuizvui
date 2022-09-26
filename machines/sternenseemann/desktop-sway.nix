@@ -60,7 +60,7 @@ in
         size = 10;
       };
       extraConfig = ''
-        exec ${pkgs.gnome3.gnome-keyring}/bin/gnome-keyring-daemon --start --components=secrets
+        exec ${pkgs.gnome.gnome-keyring}/bin/gnome-keyring-daemon --start --components=secrets
 
         exec ${pkgs.nextcloud-client}/bin/nextcloud
       '';
@@ -126,7 +126,7 @@ in
       grim slurp screenshot      # screenshots
       mako                       # notifications
       nextcloud-client
-      gnome3.adwaita-icon-theme
+      gnome.adwaita-icon-theme
     ];
 
     programs.fish.shellAliases = {
