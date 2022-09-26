@@ -73,5 +73,11 @@
   services.xserver.videoDrivers = [ "amdgpu" ];
   services.xserver.libinput.enable = true;
 
+  services.xserver.libinput.touchpad = {
+    clickMethod = "clickfinger";
+    sendEventsMode = "disabled-on-external-mouse";
+    middleEmulation = false;
+  };
+
   nix.settings.max-jobs = 16;
 }
