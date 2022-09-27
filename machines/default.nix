@@ -15,7 +15,7 @@ with import ../lib;
     sigrun    = callMachine devhell/sigrun.nix {};
     hildr     = callMachine devhell/hildr.nix {};
     gunnr     = callMachine devhell/gunnr.nix {};
-    herja     = callMachine devhell/herja.nix {}; 
+    herja     = callMachine devhell/herja.nix {};
   };
   profpatsch = {
     shiki = callMachine ./profpatsch/shiki.nix {};
@@ -25,7 +25,7 @@ with import ../lib;
     # mikiya = callMachine ./profpatsch/mikiya.nix {};
   };
   sternenseemann = {
-    # racker = callMachine ./sternenseemann/racker.nix {};
+    ludwig = callMachine ./sternenseemann/ludwig.nix {};
     wolfgang = callMachine ./sternenseemann/wolfgang.nix {};
   };
   misc = {

@@ -16,7 +16,7 @@
       config = "i686-unknown-linux-gnu";
     };
 
-    system.stateVersion = "21.05";
+    system.stateVersion = "22.05";
 
     boot = {
       loader.grub = {
@@ -63,11 +63,14 @@
     hardware.enableRedistributableFirmware = true;
 
     networking = {
-      hostName = "racker";
+      hostName = "ludwig";
       enableIntel2200BGFirmware = true;
     };
 
-    nix.settings.max-jobs = 2;
+    nix.settings = {
+      max-jobs = 2;
+      cores = 2;
+    };
 
     vuizvui.profiles.tvl.enable = true;
   };
