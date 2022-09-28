@@ -29,17 +29,6 @@
             # https://gitlab.freedesktop.org/upower/upower/-/issues/214
             doCheck = false;
           });
-
-          spidermonkey_91 = super.spidermonkey_91.overrideAttrs (old: {
-            # Work around spidermonkey not compiling with newer versions of glibc
-            # https://bugzilla.mozilla.org/show_bug.cgi?id=1729459#
-            patches = old.patches or [] ++ [
-              (pkgs.fetchpatch {
-                url = "https://bug1729459.bmoattachments.org/attachment.cgi?id=9250378";
-                sha256 = "00qzvzd4sjyr142lhfpw8wq2k88llh22xp60w5js821w6q9x3pf1";
-              })
-            ];
-          });
         })
       ];
     };
