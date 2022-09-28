@@ -1,3 +1,6 @@
 # nix-build symlinks
 result-*
 result
+
+# local-only configuration
+/machines/sternenseemann/local.nix

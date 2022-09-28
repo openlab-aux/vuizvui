@@ -12,6 +12,8 @@ in {
     ./desktop-sway.nix
     ./wireguard.nix
     ./user-lukas.nix
+  ] ++ lib.optionals (builtins.pathExists ./local.nix) [
+    ./local.nix
   ];
 
   boot.initrd.availableKernelModules = [
