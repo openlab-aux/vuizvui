@@ -568,8 +568,8 @@ let
     { check = config.security.pam.u2f.enable;
       path  = ["nixos" "pam-u2f"];
     }
-    { check = config.services.paperless-ng.enable;
-      path  = ["nixos" "paperless-ng"];
+    { check = config.services.paperless.enable;
+      path  = ["nixos" "paperless"];
     }
     { check = config.services.peerflix.enable;
       path  = ["nixos" "peerflix"];
