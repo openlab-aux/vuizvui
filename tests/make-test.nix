@@ -32,4 +32,4 @@ testFun:
     nodes = lib.mapAttrs injectCommon nodes;
   };
 
-in testLib.makeTest testArgsWithCommon
+in (testLib.makeTest testArgsWithCommon).test
