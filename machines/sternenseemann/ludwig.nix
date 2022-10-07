@@ -56,25 +56,25 @@
       ];
 
       initrd.luks.devices = {
-        crypted-main.device = "/dev/disk/by-uuid/84dc044f-3137-435f-a7ee-67112e56cfaa";
-        crypted-swap.device = "/dev/disk/by-uuid/f84ab2a9-2687-4674-a870-d037bbd84640";
+        "crypt-main".device = "/dev/disk/by-uuid/d21e8b57-74bc-4884-b7ac-570e14b6456a";
+        "crypt-swap".device = "/dev/disk/by-uuid/9d067c39-26e0-4d2f-a99f-f2d55e75a85d";
       };
     };
 
     fileSystems = {
       "/" = {
-        device = "/dev/mapper/crypted-main";
-        fsType = "ext4";
+        device = "/dev/disk/by-uuid/2f7ec1c7-734d-446e-afdb-0b490efa591e";
+        fsType = "btrfs";
       };
 
       "/boot" = {
-        device = "/dev/disk/by-label/boot";
-        fsType = "ext4";
+        device = "/dev/disk/by-uuid/61bfe5c8-4d72-4324-b64a-dfe3d0f7c357";
+        fsType = "ext2";
       };
     };
 
     swapDevices = [
-      { device = "/dev/mapper/crypted-swap"; }
+      { device = "/dev/disk/by-uuid/1ea845d7-e491-47b0-b3ac-62f4d789056f"; }
     ];
 
     hardware.enableRedistributableFirmware = true;
