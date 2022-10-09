@@ -4,7 +4,6 @@
   imports = [
     ./base.nix
     ./base-laptop.nix
-    ./fonts.nix
     ./user-lukas.nix
   ];
 
@@ -78,6 +77,14 @@
     ];
 
     hardware.enableRedistributableFirmware = true;
+
+    vuizvui.user.sternenseemann.profiles.desktop-sway = {
+      enable = true;
+      nextcloud.enable = true;
+      screenshot.enable = true;
+      saneterm.enable = false;
+      tep.enable = false;
+    };
 
     networking = {
       hostName = "ludwig";
