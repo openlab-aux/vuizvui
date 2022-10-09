@@ -158,10 +158,11 @@ in {
 
     xdg.portal = {
       enable = true;
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-wlr
-        xdg-desktop-portal-gtk
+      wlr.enable = true;
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
       ];
+      # TODO(sterni): look into the proper™ way to do this today
       gtkUsePortal = true;
     };
 
