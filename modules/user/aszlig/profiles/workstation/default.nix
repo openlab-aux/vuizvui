@@ -92,6 +92,7 @@ in {
       rerere.autoupdate = true;
       commit.gpgsign = true;
       pull.rebase = false;
+      branch.sort = "-committerdate";
 
       merge.tool = "vimdiff3";
       merge.conflictstyle = "diff3";
