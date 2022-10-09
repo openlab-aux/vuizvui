@@ -35,6 +35,7 @@ let
   '';
 
   defaultFont = builtins.head config.fonts.fontconfig.defaultFonts.monospace;
+  defaultEmojiFont = builtins.head config.fonts.fontconfig.defaultFonts.emoji;
 
   mkDefEnableOption = text: lib.mkEnableOption text // {
     default = true;
@@ -102,7 +103,7 @@ in
               options = { size = 8; };
             }
             {
-              font = "Noto Color Emoji";
+              font = defaultEmojiFont;
               options = { size = 8; };
             }
           ];
