@@ -9,7 +9,6 @@ let
 in {
   imports = [
     ./base-laptop.nix
-    ./desktop-sway.nix
     ./wireguard.nix
     ./user-lukas.nix
   ] ++ lib.optionals (builtins.pathExists ./local.nix) [
@@ -55,8 +54,7 @@ in {
 
   networking.hostName = "wolfgang";
 
-  # useful for debugging native compilation of packages on another platform
-  boot.binfmt.emulatedSystems = [ /* "aarch64-linux" */ ];
+  vuizvui.user.sternenseemann.profiles.desktop-sway.enable = true;
 
   environment.systemPackages = with pkgs; [
     vuizvui.sternenseemann.pass
