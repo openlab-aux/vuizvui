@@ -76,6 +76,12 @@ in {
         default = [];
       };
 
+      modifier = lib.mkOption {
+        type = lib.types.str;
+        default = "Mod4";
+        description = "Key to use as the main modifier";
+        example = "Mod1";
+      };
       additionalBinds = lib.mkOption {
         type = with lib.types; attrsOf str;
         default = {};
@@ -182,7 +188,7 @@ in {
         exec ${bins.dbus-update-activation-environment} --all --systemd
 
         # set the one true modifier
-        set $mod Mod4
+        set $mod ${cfg.modifier}
 
         # neo arrow keys
         set $left i

@@ -85,6 +85,7 @@
       saneterm.enable = false;
       tep.enable = false;
     };
+    vuizvui.user.sternenseemann.services.sway.modifier = "Mod1";
 
     networking = {
       hostName = "ludwig";
