@@ -154,6 +154,8 @@ in {
 
     services.pipewire.enable = true;
 
+    qt5.platformTheme = "gtk";
+
     xdg.portal = {
       enable = true;
       extraPortals = with pkgs; [
