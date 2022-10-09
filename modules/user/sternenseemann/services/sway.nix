@@ -23,10 +23,15 @@ let
     Xft.dpi: 96
   '';
 
-  workspaceConfig = lib.concatMapStringsSep "\n" (n: ''
-    bindsym $mod+${n} workspace number ${n}
-    bindsym $mod+Shift+${n} move container to workspace number ${n}
-  '') (builtins.map builtins.toString [ 0 1 2 3 4 5 6 7 8 9 ]);
+  workspaceConfig =
+    let
+      key = n: builtins.substring (builtins.stringLength n - 1) 1 n;
+    in
+
+    lib.concatMapStringsSep "\n" (n: ''
+      bindsym $mod+${key n} workspace number ${n}
+      bindsym $mod+Shift+${key n} move container to workspace number ${n}
+    '') (builtins.map builtins.toString (builtins.genList (builtins.add 1) 10));
 
   additionalBindsConfig = lib.concatStringsSep "\n"
     (lib.mapAttrsToList (bind: cmd: ''
