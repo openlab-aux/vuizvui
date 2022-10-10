@@ -160,6 +160,7 @@ in {
       man-pages
       man-pages-posix
       mapcidr
+      mdbook
       mediainfo
       menyoki
       mkvtoolnix
