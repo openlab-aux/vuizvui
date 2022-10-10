@@ -212,6 +212,7 @@ in {
       pulsemixer
       pv
       pxz
+      python3 # needed for timewarrior-taskwarrior hook
       qemu
       qrencode
       radeontop
@@ -245,6 +246,7 @@ in {
       termusic
       testdisk
       tig
+      timewarrior
       toilet
       tokei
       tree
@@ -277,6 +279,7 @@ in {
       wireguard-tools
       wordgrinder
       writedisk
+      wtf
       wuzz
       xfsprogs
       xh
