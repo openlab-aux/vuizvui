@@ -5,6 +5,7 @@
     fonts = {
       fonts = with pkgs; [
         corefonts            # microsoft fonts
+        atkinson-hyperlegible
         ttf_bitstream_vera   # dejavu without b&w emojis
         libertine
         liberation_ttf       # free replacements for times …
