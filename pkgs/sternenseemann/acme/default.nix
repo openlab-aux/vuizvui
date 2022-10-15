@@ -17,6 +17,6 @@ runCommand "acme-${plan9port.version}" {
   };
 } ''
   for cmd in 9 9pserve acme devdraw plumb plumber rc win; do
-    makeWrapper "${plan9port}/plan9/bin/$cmd" "$out/bin/$cmd" --prefix PATH : "$out/bin"
+    makeWrapper "${plan9port}/plan9/bin/$cmd" "$out/bin/$cmd" --prefix PATH : "$out/bin" --set PLAN9 "${plan9port}/plan9"
   done
 ''
