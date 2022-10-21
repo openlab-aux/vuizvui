@@ -71,12 +71,13 @@ in {
 
     services.pipewire = {
       enable = true;
+      audio.enable = true;
       alsa.enable = true;
       pulse.enable = true;
+      jack.enable = true;
+      wireplumber.enable = true;
       socketActivation = true;
     };
-
-    systemd.user.services.pipewire-pulse.path = [ pkgs.pulseaudio ];
 
     services.xserver = {
       displayManager.defaultSession = "none+i3";
