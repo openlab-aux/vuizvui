@@ -55,6 +55,7 @@ in {
       apg
       aria2
       ascii
+      asn
       aspell
       aspellDicts.de
       aspellDicts.en
@@ -99,6 +100,7 @@ in {
       fd
       feh
       ffmpeg-full
+      ffsend
       figlet
       file
       firefox
@@ -144,7 +146,6 @@ in {
       iptraf-ng
       ipv6calc
       jq
-      jwhois
       kmon
       ldns
       lfs
@@ -157,10 +158,12 @@ in {
       lsof
       lxd
       maim
+      mako
       man-pages
       man-pages-posix
       mapcidr
       mdbook
+      mdbook-mermaid
       mediainfo
       menyoki
       mkvtoolnix
@@ -217,6 +220,7 @@ in {
       qemu
       qrencode
       radeontop
+      rclone
       recode
       reptyr
       restic
@@ -253,6 +257,7 @@ in {
       tree
       treefmt
       tty-clock
+      tuifeed
       ugrep
       units
       unrar
@@ -275,6 +280,7 @@ in {
       wavpack
       wget
       which
+      whois
       wiki-tui
       wipe
       wireguard-tools
@@ -282,6 +288,8 @@ in {
       writedisk
       wtf
       wuzz
+      xbindkeys
+      xdg-utils
       xfsprogs
       xh
       xorg.xev
