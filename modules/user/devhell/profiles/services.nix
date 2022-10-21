@@ -43,6 +43,11 @@ in {
         submitData = true;
       };
 
+      globalprotect = {
+        enable = true;
+        csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
+      };
+
       picom = {
         enable = true;
         vSync = true;
