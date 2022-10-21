@@ -31,6 +31,7 @@ in {
         fuse
         cryptsetup
       ];
+      copySystemConfiguration = true;
     };
 
     hardware = {
@@ -71,6 +72,7 @@ in {
       htop.enable = true;
       gnupg = {
         agent.enable = true;
+        agent.enableSSHSupport = true;
         agent.pinentryFlavor = "gnome3";
       };
       ssh = {
