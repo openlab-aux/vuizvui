@@ -31,7 +31,6 @@ in {
         fuse
         cryptsetup
       ];
-      copySystemConfiguration = true;
     };
 
     hardware = {
