@@ -284,7 +284,7 @@ in {
       wiki-tui
       wipe
       wireguard-tools
-      wordgrinder
+#      wordgrinder
       writedisk
       wtf
       wuzz
