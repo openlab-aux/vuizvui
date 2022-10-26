@@ -3,6 +3,7 @@
 {
   aacolorize = callPackage ./aacolorize { };
   axbo = callPackage ./axbo { };
+  firefox = callPackage ./firefox { };
   git-detach = callPackage ./git-detach { };
   gopass = callPackage ./gopass { inherit gopass; };
   grandpa = callPackage ./grandpa { };

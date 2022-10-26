@@ -1,0 +1,12 @@
+diff --git a/browser/components/enterprisepolicies/Policies.sys.mjs b/browser/components/enterprisepolicies/Policies.sys.mjs
+index 21e3e8804f60..106ec235c5c0 100644
+--- a/browser/components/enterprisepolicies/Policies.sys.mjs
++++ b/browser/components/enterprisepolicies/Policies.sys.mjs
+@@ -2615,6 +2615,7 @@ function clearBlockedAboutPages() {
+ }
+ 
+ function blockAboutPage(manager, feature, neededOnContentProcess = false) {
++  return;
+   addChromeURLBlocker();
+   gBlockedAboutPages.push(feature);
+ 

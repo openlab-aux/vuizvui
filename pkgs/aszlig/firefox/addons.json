@@ -1,0 +1,18 @@
+{
+  "ff2mpv": {
+    "url": "https://addons.mozilla.org/firefox/downloads/file/3898765/ff2mpv-4.0.0.xpi",
+    "hash": "sha256:88312a84fc0a5d8e32100664af900a252a86875ee51869c30fd68054e990c992"
+  },
+  "styl-us": {
+    "url": "https://addons.mozilla.org/firefox/downloads/file/3995806/styl_us-1.5.26.xpi",
+    "hash": "sha256:b30b14e9c4fa0c8d490d57e6b7d8afe6cc71e2f459b974b5c6fa2bfa32210294"
+  },
+  "tridactyl-vim": {
+    "url": "https://addons.mozilla.org/firefox/downloads/file/3926466/tridactyl_vim-1.22.1.xpi",
+    "hash": "sha256:ed0337dd67516142d1f02a77cab910c7cb95ca575ec1ee4b1f5cf8971918b0f6"
+  },
+  "multi-account-containers": {
+    "url": "https://addons.mozilla.org/firefox/downloads/file/3932862/multi_account_containers-8.0.7.xpi",
+    "hash": "sha256:0e60e00c13dcc372b43ddb2e5428c2e3c1e79d2b23d7166df82d45245edc4f10"
+  }
+}

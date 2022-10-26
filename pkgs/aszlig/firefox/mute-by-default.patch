@@ -1,0 +1,20 @@
+diff --git a/dom/media/autoplay/AutoplayPolicy.cpp b/dom/media/autoplay/AutoplayPolicy.cpp
+index 77c53ce58acd..688af016a72c 100644
+--- a/dom/media/autoplay/AutoplayPolicy.cpp
++++ b/dom/media/autoplay/AutoplayPolicy.cpp
+@@ -78,15 +78,6 @@ static bool IsWindowAllowedToPlay(nsPIDOMWindowInner* aWindow) {
+     return true;
+   }
+ 
+-  WindowContext* topContext =
+-      aWindow->GetBrowsingContext()->GetTopWindowContext();
+-  if (topContext && topContext->HasBeenUserGestureActivated()) {
+-    AUTOPLAY_LOG(
+-        "Allow autoplay as top-level context has been activated by user "
+-        "gesture.");
+-    return true;
+-  }
+-
+   Document* currentDoc = aWindow->GetExtantDoc();
+   if (!currentDoc) {
+     return false;

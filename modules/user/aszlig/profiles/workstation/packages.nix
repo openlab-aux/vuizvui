@@ -16,7 +16,7 @@ pkgs: with pkgs; [
   feh
   ffmpeg
   figlet
-  firefox
+  vuizvui.aszlig.firefox
   flac
   gdb
   ghostscript
