@@ -46,12 +46,9 @@ in wrapFirefox firefoxNoSigning {
       text = builtins.toJSON {
         name = "tridactyl";
         description = "Tridactyl native command handler";
-        path = "${tridactyl-native}/share/tridactyl/native_main.py";
+        path = "${tridactyl-native}/bin/native_main";
         type = "stdio";
-        allowed_extensions = [
-          extensions.tridactyl-vim.extid
-          "tridactyl.vim@cmcaine.co.uk"
-        ];
+        allowed_extensions = [ extensions.tridactyl-vim.extid ];
       };
     })
   ];
