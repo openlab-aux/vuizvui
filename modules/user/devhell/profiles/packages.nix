@@ -224,6 +224,7 @@ in {
       recode
       reptyr
       restic
+      ripasso-cursive
       ripgrep
       rq
       rsync
@@ -284,7 +285,6 @@ in {
       wiki-tui
       wipe
       wireguard-tools
-#      wordgrinder
       writedisk
       wtf
       wuzz
@@ -302,6 +302,7 @@ in {
       zip
       zotero
       zstd
+#      wordgrinder
     ];
   };
 }
