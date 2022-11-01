@@ -47,7 +47,10 @@ let
     allowBinSh = true;
   };
 
-  mumble = pkgs.mumble.override { speechdSupport = true; };
+  mumble =
+    pkgs.mumble;
+    # speechdSupport is broken
+    # pkgs.mumble.override { speechdSupport = true; };
 
   # The implementation is buggy and produces an error like
   # Name Error (Connection ":1.4380" is not allowed to own the service "org.linuxtv.Zbar" due to security policies in the configuration file)
