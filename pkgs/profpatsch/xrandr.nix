@@ -135,21 +135,21 @@ let
     eDP1 = connected['eDP1']
 
     # laptop screen is active
-    assert('current' in eDP1)
+    assert 'current' in eDP1
 
     # how far the laptop screen should be offset to end
     # at the bottom of the monitor
     h_offset = 0
     for k, v in connected.items():
         if k == 'eDP1':
-            assert('current' in v)
+            assert 'current' in v
 
         else:
             h = int(v['native']['height'])
             h_offset = h - int(eDP1['native']['height'])
             external_monitor = (k, v)
             # can’t handle bigger laptop screens atm
-            assert(h_offset >= 0)
+            assert h_offset >= 0
 
     xrandr_command = [
         "--verbose",
