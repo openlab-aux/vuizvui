@@ -14,7 +14,12 @@ let
     VUIZVUI="$HOME/vuizvui"
     OUT_LINK="$VUIZVUI/machines/profpatsch/system-$MACHINE"
 
-    ${bins.nix-build} \
+    cmd() {
+      echo "$" "$@" 1>&2
+      "$@"
+    }
+
+    cmd ${bins.nix-build} \
       --show-trace \
       --out-link "$OUT_LINK" \
       -I "nixpkgs=$HOME/nixpkgs" \
@@ -22,14 +27,14 @@ let
       "$VUIZVUI"
 
     # copy all required paths to the machine
-    ${bins.nix-copy-closure} \
+    cmd ${bins.nix-copy-closure} \
       --to "$MACHINE?compress=true" \
       --use-substitutes \
       ${create-system-profile-and-switch} \
       "$OUT_LINK"
 
     # activate the system
-    ${bins.ssh} \
+    cmd ${bins.ssh} \
       "root@$MACHINE" \
       ${create-system-profile-and-switch} \
       "$(${bins.realpath} $OUT_LINK)"
