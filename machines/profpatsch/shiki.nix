@@ -147,6 +147,7 @@ in {
         supportedFeatures = [ "kvm" "big-parallel" "nixos-test" "benchmark" ];
       }
     ];
+
     nix.settings.substituters = [
       "https://digitallyinduced.cachix.org"
     ];
@@ -155,6 +156,19 @@ in {
     ];
     nix.settings.builders-use-substitutes = true;
     nix.settings.auto-optimise-store = true;
+    # nix.settings.substituters = [
+    #   "https://digitallyinduced.cachix.org"
+    # ];
+    # nix.settings.trusted-public-keys = [
+    #   "digitallyinduced.cachix.org-1:y+wQvrnxQ+PdEsCt91rmvv39qRCYzEgGQaldK26hCKE="
+    # ];
+    # nix.settings.substituters = [ "ssh://nix-ssh@whitby.tvl.fyi" ];
+    # nix.settings.trusted-public-keys = [ "cache.tvl.fyi:fd+9d1ceCPvDX/xVhcfv8nAa6njEhAGAEe+oGJDEeoc=" ];
+
+    nix.extraOptions = ''
+      builders-use-substitutes = true
+      auto-optimise-store = true
+    '';
 
     ##########
     # Network
