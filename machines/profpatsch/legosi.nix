@@ -213,24 +213,24 @@ in {
       ];
     };
 
-    services.syncthing = {
-      enable = true;
-      openDefaultPorts = true;
-      devices = {
-        mushu = {
-          name = "mushu";
-          id = "B5H23ZS-NANQF55-2TW7V4F-22I7B34-7OIZ3ND-PHWL6JP-IIEVBBK-32RKWQR";
-        };
-      };
+    # services.syncthing = {
+    #   enable = true;
+    #   openDefaultPorts = true;
+    #   devices = {
+    #     mushu = {
+    #       name = "mushu";
+    #       id = "B5H23ZS-NANQF55-2TW7V4F-22I7B34-7OIZ3ND-PHWL6JP-IIEVBBK-32RKWQR";
+    #     };
+    #   };
 
-      folders.mushu-data = {
-        id = "so6nv-oq5wu";
-        path = "/sync/mushu-data";
-        type = "receiveonly";
-        watch = false;
-        devices = [ "mushu" ];
-      };
-    };
+    #   folders.mushu-data = {
+    #     id = "so6nv-oq5wu";
+    #     path = "/sync/mushu-data";
+    #     type = "receiveonly";
+    #     watch = false;
+    #     devices = [ "mushu" ];
+    #   };
+    # };
 
   };
 }
