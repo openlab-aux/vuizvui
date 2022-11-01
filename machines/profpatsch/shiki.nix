@@ -273,7 +273,6 @@ in {
         ranger               # CLI file browser
         remind               # calender & reminder program
         taskwarrior tasksh   # task manager
-        youtube-dl           # download videos
         zathura              # pdf viewer
         ghc                  # powerful pocket calculator
       ];
