@@ -20,6 +20,9 @@ enable = true
   addr = "0.0.0.0"
   port._configVariable.server = "sshPort"
 
+[networking]
+enableIPv6 = false
+
 [networking.firewall]
 enable = true
 allowPing = true
