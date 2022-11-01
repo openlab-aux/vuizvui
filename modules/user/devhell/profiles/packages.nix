@@ -183,6 +183,7 @@ in {
       netrw
       netsniff-ng
       nitrogen
+      nix-output-monitor
       nixfmt
       nixopsUnstable
       nixpkgs-fmt
