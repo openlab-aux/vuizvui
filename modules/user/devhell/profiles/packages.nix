@@ -241,6 +241,7 @@ in {
       spek
       ssdeep
       starship
+      steam
       stow
       strace
       tasksh
