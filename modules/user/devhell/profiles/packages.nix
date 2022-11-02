@@ -89,6 +89,7 @@ in {
       dmidecode
       dogdns
       dos2unix
+      dstask
       du-dust
       dua
       duf
