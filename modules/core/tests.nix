@@ -774,7 +774,7 @@ let
       path  = ["nixos" "trickster"];
     }
     { check = config.services.miniupnpd.enable
-           || hasPackage pkgs.miniupnpc_2;
+           || hasPackage pkgs.miniupnpc;
       path  = ["nixos" "upnp"];
     }
     { check = config.services.uwsgi.enable;
