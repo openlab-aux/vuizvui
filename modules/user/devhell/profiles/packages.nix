@@ -118,6 +118,7 @@ in {
       git
       git-trim
       gitui
+      glab
       glow
       gnome.adwaita-icon-theme
       gnufdisk
