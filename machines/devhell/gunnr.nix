@@ -148,7 +148,6 @@
      glxinfo
      libva
      libvdpau-va-gl
-     teams
      vaapiVdpau
      vdpauinfo
      xbindkeys

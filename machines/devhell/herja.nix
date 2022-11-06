@@ -180,7 +180,6 @@
     minicom
     acpica-tools
     pmutils
-    teams
     vaapiVdpau
     vdpauinfo
     xbindkeys
