@@ -181,6 +181,7 @@ in {
       mpc_cli
       mpv
       msmtp
+      navi
       ncdu
       ncmpcpp
       neofetch
