@@ -251,6 +251,7 @@ in {
       ssdeep
       starship
       steam
+      steam-tui
       stow
       strace
       tasksh
