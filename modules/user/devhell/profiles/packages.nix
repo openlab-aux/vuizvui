@@ -97,6 +97,7 @@ in {
       easyeffects
       element-desktop
       ethtool
+      eva
       exfat
       fd
       feh
@@ -140,6 +141,7 @@ in {
       hicolor-icon-theme
       hplipWithPlugin
       htop
+      hydra-check
       imagemagick
       imv
       inetutils
@@ -150,6 +152,7 @@ in {
       jq
       kmon
       ldns
+      lemmeknow
       lfs
       lftp
       libarchive
@@ -159,6 +162,7 @@ in {
       lsd
       lsof
       lxd
+      macchina
       maim
       mako
       man-pages
@@ -168,6 +172,7 @@ in {
       mdbook-mermaid
       mediainfo
       menyoki
+      miniserve
       mkvtoolnix
       mmv
       mnamer
@@ -293,6 +298,7 @@ in {
       wtf
       wuzz
       xbindkeys
+      xcp
       xdg-utils
       xfsprogs
       xh
