@@ -63,7 +63,8 @@ in {
     gnupg pinentry-gnome signing-party gpgme
     thunderbird-wayland
     jackline gajim fractal
-    vuizvui.sternenseemann.texlive jabref
+    vuizvui.sternenseemann.texlive
+    # jabref # depends on insecure JDK version
     yt-dlp mpv spotify
     ghc cabal-install cabal2nix
     sbcl rlwrap
