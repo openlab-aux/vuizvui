@@ -196,7 +196,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.foot ];
+    environment.systemPackages = [ pkgs.foot pkgs.foot.terminfo ];
 
     environment.etc."xdg/foot/foot.ini".source =
       format.generate "foot.ini" (iniReady cfg.settings);
