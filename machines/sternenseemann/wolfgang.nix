@@ -78,7 +78,7 @@ in {
     xdg-utils                  # xdg-open etc.
     networkmanagerapplet       # for nm-connection-ediotr
     imv zathura
-    gnome.nautilus
+    pcmanfm
     gnome.gedit
     browser.pkg
     castor
