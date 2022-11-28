@@ -298,7 +298,7 @@ in {
       wireguard-tools
       writedisk
       wtf
-      wuzz
+      #wuzz
       xbindkeys
       xcp
       xdg-utils
