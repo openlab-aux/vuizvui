@@ -25,7 +25,7 @@ pkgs.vim_configurable.overrideAttrs (drv: {
         vim-toml
         vim-hexokinase
         vim-shellcheck
-        vim-markdown
+        markdown-preview-nvim
       ];
       opt = [ vimtex ];
     };
