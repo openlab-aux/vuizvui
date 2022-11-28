@@ -58,7 +58,6 @@ lib.fix (self: {
 
   scripts = dontRecurseIntoAttrs (callPackage ./scripts {
     inherit (writers) writeBashBin;
-    inherit (self) shakti;
     inherit getBins;
   });
 
@@ -111,6 +110,4 @@ lib.fix (self: {
 
   # packaged 3rd party software
   saneterm = pkgs.python39Packages.callPackage ./saneterm { };
-
-  shakti = callPackage ./shakti { };
 })

@@ -5,7 +5,6 @@
 , ghostscript
 , openssl
 , perl, mandoc
-, shakti
 , gpp
 }:
 
@@ -32,10 +31,7 @@ let
     /home/lukas/files/serverkram/minecraft/
   '';
 
-  bins = (getBins shakti [ "k-repl" ])
-      // (getBins gpp [ "gpp" ])
-      // (getBins perl [ "perl" ])
-      // (getBins cryptsetup [ "cryptsetup" ])
+  bins = (getBins cryptsetup [ "cryptsetup" ])
       // (getBins borgbackup [ "borg" ])
       // (getBins mandoc [ "man" ])
       // (getBins openssl [ "openssl" ])
@@ -195,25 +191,6 @@ lib.fix (self: {
     if [[ $3 != "connect" ]]; then
       ${bins.notify-send} "jackline" "IM received"
       printf '\a'
-    fi
-  '';
-
-  k-gpp = writeBashBin "k-gpp" ''
-    if [[ $# > 1 ]]; then
-      echo "$0: max one argument allowed" >&2
-      exit 1
-    fi
-
-    if [[ ! -z "$1" ]]; then
-      preprocessed="$(mktemp --suffix=".k")"
-      echo "gpp $1 -o $preprocessed" >&2
-      ${bins.gpp} "$1" -o "$preprocessed"
-      ${bins.k-repl} "$preprocessed"
-      status=$?
-      rm "$preprocessed"
-      exit $status
-    else
-      ${bins.k-repl}
     fi
   '';
 })
