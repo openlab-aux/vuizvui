@@ -9,12 +9,13 @@
         ttf_bitstream_vera   # dejavu without b&w emojis
         libertine
         liberation_ttf       # free replacements for times …
-        google-fonts         # vollkorn, source * pro, inconsolata
         freefont_ttf
         noto-fonts           # noto fonts: great for fallbacks
         noto-fonts-extra
         noto-fonts-cjk
         noto-fonts-emoji     # emoji primary
+        open-sans
+        vollkorn
         twemoji-color-font   # emoji fallback
         unifont              # bitmap font, good fallback
         unifont_upper        # upper unicode ranges of unifont
