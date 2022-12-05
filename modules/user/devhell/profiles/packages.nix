@@ -202,6 +202,7 @@ in {
       ntfs3g
       ntfsprogs
       obs-studio
+      onefetch
       oneshot
       openssl
       p7zip

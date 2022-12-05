@@ -119,6 +119,16 @@ in {
     };
 
     environment = {
+      sessionVariables = {
+        XDG_SESSION_TYPE = "wayland";
+        XDG_CURRENT_DESKTOP = "sway";
+        MOZ_ENABLE_WAYLAND = "1";
+        MOZ_USE_XINPUT2 = "1";
+        SDL_VIDEODRIVER = "wayland";
+        QT_QPA_PLATFORM = "wayland-egl";
+        QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+        XKB_DEFAULT_LAYOUT = "gb";
+      };
       shellInit = ''
         export GPG_AGENT_INFO=$HOME/.gnupg/S.gpg-agent
         export LIBVIRT_DEFAULT_URI=qemu:///system
@@ -133,6 +143,11 @@ in {
         export EDITOR='vim'
       '';
       shells = [ pkgs.zsh ];
+    };
+
+    xdg.portal = {
+      enable = true;
+      extraPortals = with pkgs; [ xdg-desktop-portal-wlr xdg-desktop-portal-gtk ];
     };
 
     fonts = {

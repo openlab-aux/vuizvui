@@ -25,13 +25,44 @@ in {
 
     location.provider = "geoclue2";
 
+    programs.sway = {
+      enable = true;
+      wrapperFeatures.gtk = true;
+      extraPackages = with pkgs; [
+        rofi-wayland
+        alacritty
+        waybar
+        i3status-rust
+        swayidle
+        swaylock-effects
+        wl-clipboard
+        swaybg
+      ];
+    };
+
+    services.greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd sway";
+          user = "greeter";
+          vt = 3;
+        };
+      };
+    };
+
+    services.dbus.packages = [ pkgs.mako ];
+
     services = {
       pcscd.enable = true;
       gpm.enable = true;
       openssh.enable = true;
       udisks2.enable = true;
-      redshift.enable = true;
       haveged.enable = true;
+      redshift = {
+        enable = true;
+        package = pkgs.gammastep;
+      };
       geoclue2 = {
         enable = true;
         enable3G = false;
@@ -49,7 +80,7 @@ in {
       };
 
       picom = {
-        enable = true;
+        enable = false;
         vSync = true;
         backend = "glx";
         fade = true;
@@ -76,39 +107,6 @@ in {
       jack.enable = true;
       wireplumber.enable = true;
       socketActivation = true;
-    };
-
-    services.xserver = {
-      displayManager.defaultSession = "none+i3";
-      displayManager.lightdm = {
-        enable = true;
-        greeters.mini = {
-          enable = true;
-          user = "dev";
-          extraConfig = ''
-            [greeter]
-            show-password-label = true
-            password-label-text = ❯
-            show-input-cursor = false
-            [greeter-theme]
-            border-color = "#3B4252"
-            text-color = "#4C566A"
-            window-color = "#3B4252"
-            layout-space = 5
-            password-background-color = "#3B4252"
-            border-width = 0px
-            password-border-width = 0px
-          '';
-        };
-      };
-    };
-
-    services.xserver.windowManager.i3 = {
-      enable = true;
-      package = pkgs.i3-gaps;
-      extraPackages = with pkgs; [
-        polybar multilockscreen rofi i3-auto-layout
-      ];
     };
 
     services.journald.extraConfig = ''

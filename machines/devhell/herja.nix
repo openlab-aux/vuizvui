@@ -41,7 +41,6 @@
     };
   };
 
-
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/34c21c91-6722-427d-882b-6da0e2f57f50";
     fsType = "btrfs";
@@ -119,45 +118,6 @@
   services.tlp.enable = true;
   services.illum.enable = true;
   services.fwupd.enable = true;
-
-  services.xserver = {
-    enable = true;
-    layout = "gb";
-    videoDrivers = [ "amdgpu" ];
-
-    libinput = {
-      enable = true;
-      touchpad = {
-        disableWhileTyping = true;
-        middleEmulation = true;
-      };
-    };
-#    synaptics = {
-#      enable = true;
-#      twoFingerScroll = true;
-#      palmDetect = true;
-#    };
-
-    # XXX: Factor out and make DRY, because a lot of the stuff here is
-    # duplicated in the other machine configurations.
-    displayManager.sessionCommands = ''
-      ${pkgs.xbindkeys}/bin/xbindkeys &
-      ${pkgs.nitrogen}/bin/nitrogen --restore &
-      ${pkgs.rofi}/bin/rofi &
-      ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
-        Xft.dpi:                     96
-        Xft.antialias:               true
-        Xft.hinting:                 full
-        Xft.hintstyle:               hintslight
-        Xft.rgba:                    rgb
-        Xft.lcdfilter:               lcddefault
-        Xft.autohint:                1
-        Xcursor.theme:               Vanilla-DMZ-AA
-        Xcursor.size:                22
-        *.charClass:33:48,35:48,37:48,43:48,45-47:48,61:48,63:48,64:48,95:48,126:48,35:48,58:48
-      ''}"
-    '';
-  };
 
   #### Machine-specific packages configuration ####
 
