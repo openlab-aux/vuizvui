@@ -19,6 +19,7 @@
         twemoji-color-font   # emoji fallback
         unifont              # bitmap font, good fallback
         unifont_upper        # upper unicode ranges of unifont
+        lmodern
       ];
 
       fontDir.enable = true;
