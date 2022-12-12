@@ -59,43 +59,9 @@ in {
       openssh.enable = true;
       udisks2.enable = true;
       haveged.enable = true;
-      redshift = {
-        enable = true;
-        package = pkgs.gammastep;
-      };
-      geoclue2 = {
-        enable = true;
-        enable3G = false;
-        enableCDMA = false;
-        enableDemoAgent = true;
-        enableModemGPS = false;
-        enableNmea = false;
-        enableWifi = true;
-        submitData = true;
-      };
-
       globalprotect = {
         enable = true;
         csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
-      };
-
-      picom = {
-        enable = false;
-        vSync = true;
-        backend = "glx";
-        fade = true;
-        fadeDelta = 1;
-        shadow = true;
-        shadowExclude = [
-          "window_type = 'menu'"
-          "window_type = 'utility'"
-          "window_type = 'dropdown_menu'"
-          "window_type = 'popup_menu'"
-        ];
-        settings = {
-          inactive-dim = 0.2;
-          unredir-if-possible = false;
-        };
       };
     };
 
