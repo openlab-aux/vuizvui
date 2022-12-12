@@ -59,6 +59,7 @@ in {
       openssh.enable = true;
       udisks2.enable = true;
       haveged.enable = true;
+      automatic-timezoned.enable = true;
       globalprotect = {
         enable = true;
         csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
