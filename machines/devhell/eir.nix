@@ -62,9 +62,6 @@
 
   swapDevices = [ ];
 
-  # FIXME Check if this is still necessary in the future
-  systemd.services.systemd-networkd-wait-online.enable = false;
-
   # XXX Make networkd ignore virtual network interfaces
   systemd.network.networks."99-libvirt" = {
     matchConfig.Name = "virbr* vnet*";

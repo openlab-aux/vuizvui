@@ -50,9 +50,6 @@
     { device = "/dev/disk/by-uuid/ff725995-b9a1-453f-9e6d-ba9bd6579db6"; }
   ];
 
-  # FIXME Check if this is still necessary in the future
-  systemd.services.systemd-networkd-wait-online.enable = false;
-
   # XXX Make networkd ignore virtual network interfaces
   systemd.network.networks."99-libvirt" = {
     matchConfig.Name = "virbr* vnet*";
