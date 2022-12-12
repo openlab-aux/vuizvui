@@ -21,10 +21,6 @@ in {
       experimental-features = [ "nix-command" "flakes" ];
     };
 
-    time = {
-      timeZone = "Europe/London";
-    };
-
     system = {
       fsPackages = with pkgs; [
         sshfs-fuse
