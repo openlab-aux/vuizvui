@@ -193,7 +193,7 @@ in {
       nitrogen
       nix-output-monitor
       nixfmt
-      nixopsUnstable
+      #nixopsUnstable
       nixpkgs-fmt
       nixpkgs-review
       nload
