@@ -8,8 +8,8 @@
     "hash": "sha256:b30b14e9c4fa0c8d490d57e6b7d8afe6cc71e2f459b974b5c6fa2bfa32210294"
   },
   "tridactyl-vim": {
-    "url": "https://addons.mozilla.org/firefox/downloads/file/3926466/tridactyl_vim-1.22.1.xpi",
-    "hash": "sha256:ed0337dd67516142d1f02a77cab910c7cb95ca575ec1ee4b1f5cf8971918b0f6"
+    "url": "https://addons.mozilla.org/firefox/downloads/file/4036604/tridactyl_vim-1.23.0.xpi",
+    "hash": "sha256:08b7af97bef05300ab3ac3ad721322ff00505631233482568fc4489c16d51b71"
   },
   "multi-account-containers": {
     "url": "https://addons.mozilla.org/firefox/downloads/file/3932862/multi_account_containers-8.0.7.xpi",
