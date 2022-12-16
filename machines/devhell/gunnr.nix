@@ -65,6 +65,9 @@
 
   zramSwap.enable = true;
 
+  # FIXME Check if this is still necessary in the future
+  systemd.services.systemd-networkd-wait-online.enable = false;
+
   networking = {
     hostName = "gunnr";
     hostId = "29e6affc";
