@@ -53,6 +53,12 @@ in {
 
     services.dbus.packages = [ pkgs.mako ];
 
+    services.redshift = {
+      enable = true;
+      package = pkgs.gammastep;
+      executable = "/bin/gammastep";
+    };
+
     services = {
       pcscd.enable = true;
       gpm.enable = true;
