@@ -29,10 +29,11 @@ in {
       enable = true;
       wrapperFeatures.gtk = true;
       extraPackages = with pkgs; [
+        slurp
+        grim
         rofi-wayland
         alacritty
         waybar
-        i3status-rust
         swayidle
         swaylock-effects
         wl-clipboard
