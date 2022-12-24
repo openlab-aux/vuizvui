@@ -12,8 +12,6 @@ with import ../lib;
   };
   devhell = {
     eir       = callMachine devhell/eir.nix {};
-    sigrun    = callMachine devhell/sigrun.nix {};
-    hildr     = callMachine devhell/hildr.nix {};
     gunnr     = callMachine devhell/gunnr.nix {};
     herja     = callMachine devhell/herja.nix {};
   };
