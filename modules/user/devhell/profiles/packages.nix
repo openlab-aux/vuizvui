@@ -190,7 +190,6 @@ in {
       nethogs
       netrw
       netsniff-ng
-      nitrogen
       nix-output-monitor
       nixfmt
       #nixopsUnstable
@@ -300,12 +299,10 @@ in {
       writedisk
       wtf
       #wuzz
-      xbindkeys
       xcp
       xdg-utils
       xfsprogs
       xh
-      xorg.xev
       xsv
       yt-dlp
       zathura
