@@ -24,6 +24,7 @@
     hardware.cpu.intel.updateMicrocode = true;
 
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
+    powerManagement.powertop.enable = lib.mkDefault true;
 
     vuizvui.hardware.thinkpad.enable = lib.mkDefault true;
     services.thermald.enable = true;
