@@ -33,9 +33,9 @@
       usePercentageForPolicy = true;
       criticalPowerAction = "Hibernate";
 
-      percentageLow = 15;
-      percentageCritical = 10;
-      percentageAction = 8;
+      percentageLow = 10;
+      percentageCritical = 5;
+      percentageAction = 2;
     };
 
     programs.mosh.enable = true;
