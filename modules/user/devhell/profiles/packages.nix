@@ -49,6 +49,8 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
+      #nixopsUnstable
+      #wuzz
       abook
       accountsservice
       alacritty
@@ -192,7 +194,6 @@ in {
       netsniff-ng
       nix-output-monitor
       nixfmt
-      #nixopsUnstable
       nixpkgs-fmt
       nixpkgs-review
       nload
@@ -237,6 +238,7 @@ in {
       ripgrep
       rq
       rsync
+      rustic
       safecopy
       screen
       sd
@@ -298,7 +300,6 @@ in {
       wireguard-tools
       writedisk
       wtf
-      #wuzz
       xcp
       xdg-utils
       xfsprogs
