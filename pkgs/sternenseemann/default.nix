@@ -104,7 +104,7 @@ lib.fix (self: {
       scheme-medium minted titlesec units collection-bibtexextra wrapfig
       libertine enumitem dashrule ifmtarg xstring xgreek adjustbox
       collectbox csquotes biblatex-philosophy quoting breakurl
-      capt-of hyphen-greek;
+      capt-of hyphen-greek chemfig chemformula;
   };
 
   # packaged 3rd party software
