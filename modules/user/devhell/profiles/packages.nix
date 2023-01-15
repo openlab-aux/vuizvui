@@ -238,7 +238,7 @@ in {
       ripgrep
       rq
       rsync
-      rustic
+      rustic-rs
       safecopy
       screen
       sd
