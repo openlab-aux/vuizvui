@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os
 import sys
 
-from optparse import Option, OptionParser
+from argparse import ArgumentParser
 
 COLORS = {
     "k": (30, "Black"),
@@ -17,8 +17,10 @@ COLORS = {
 
 ESC = chr(27)
 
+
 class ColorizeError(Exception):
     pass
+
 
 class Color(object):
     def __init__(self, ident=None):
@@ -131,11 +133,13 @@ class Color(object):
         else:
             return "<Color %s>" % self.name.lower()
 
+
 def print_colortable():
-    for ident in COLORS.iterkeys():
+    for ident in COLORS.keys():
         normal = Color(ident).describe()
         bold = Color(ident.upper()).describe()
         sys.stdout.write("%-35s%s\n" % (normal, bold))
+
 
 def colorize_art(art, colmap):
     if len(art) != len(colmap):
@@ -154,6 +158,7 @@ def colorize_art(art, colmap):
 
     return out
 
+
 def colorize_file(artfile, mapfile=None):
     if mapfile is None:
         mapfile = os.path.splitext(artfile)[0]+'.colmap'
@@ -163,20 +168,30 @@ def colorize_file(artfile, mapfile=None):
 
     return colorize_art(asciiart, colormap)
 
-if __name__ == "__main__":
-    parser = OptionParser(usage="%prog [options] artfile [mapfile]")
-    parser.add_option("-t", "--table", action="store_true", dest="table",
-                      help="Show color table and exit.")
 
-    (options, args) = parser.parse_args()
+if __name__ == "__main__":
+    parser = ArgumentParser()
+
+    table_or_merge = parser.add_mutually_exclusive_group(required=True)
+    table_or_merge.add_argument(
+        '-t', '--table', action='store_true', dest='table',
+        help="Show color table and exit."
+    )
+    table_or_merge.add_argument(
+        'artfile', nargs='?',
+        help="ASCII art file to colorize"
+    )
+
+    parser.add_argument(
+        'mapfile', nargs='?',
+        help="The file with the color information."
+             " (Default: artfile with .colmap suffix)"
+    )
+
+    options = parser.parse_args()
 
     if options.table:
         print_colortable()
-        parser.exit()
-
-    if not len(args) in (1, 2):
-        parser.print_help()
-        parser.exit()
     else:
-        colorized = colorize_file(*args)
+        colorized = colorize_file(options.artfile, options.mapfile)
         sys.stdout.write(colorized)

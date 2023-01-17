@@ -1,6 +1,6 @@
-{ pythonPackages, runCommand }:
+{ python3Packages, runCommand }:
 
-pythonPackages.buildPythonPackage {
+python3Packages.buildPythonPackage {
   name = "aacolorize";
   src = runCommand "aacolorize-src" {} ''
     mkdir -p "$out"
