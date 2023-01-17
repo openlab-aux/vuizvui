@@ -52,11 +52,10 @@ pkgs: with pkgs; [
   pulseaudio
   vuizvui.aszlig.pvolctrl
   pv
-  python
   python3
-  pythonPackages.hetzner
-  pythonPackages.pep8
-  pythonPackages.polib
+  python3Packages.hetzner
+  python3Packages.pep8
+  python3Packages.polib
   vuizvui.aszlig.radare2
   rlwrap
   rsync
