@@ -70,11 +70,6 @@
       alias nvim "emacsclient -n"
     '';
 
-    services.earlyoom = {
-      enable = true;
-      freeMemThreshold = 5;
-    };
-
     networking = {
       firewall = {
         enable = true;
