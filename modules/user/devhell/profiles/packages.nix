@@ -49,6 +49,7 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
+      #dogdns
       #nixopsUnstable
       #wuzz
       abook
@@ -89,7 +90,6 @@ in {
       di
       diskus
       dmidecode
-      dogdns
       dos2unix
       dstask
       du-dust
