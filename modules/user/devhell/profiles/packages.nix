@@ -51,6 +51,8 @@ in {
     environment.systemPackages = with pkgs; [
       #dogdns
       #nixopsUnstable
+      #onefetch
+      #wordgrinder
       #wuzz
       abook
       accountsservice
@@ -202,7 +204,6 @@ in {
       ntfs3g
       ntfsprogs
       obs-studio
-      onefetch
       oneshot
       openssl
       p7zip
@@ -313,7 +314,6 @@ in {
       zip
       zotero
       zstd
-#      wordgrinder
     ];
   };
 }
