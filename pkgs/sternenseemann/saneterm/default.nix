@@ -19,6 +19,7 @@ buildPythonApplication {
 
   nativeBuildInputs = [
     makeWrapper
+    gobject-introspection
   ];
 
   propagatedBuildInputs = [
@@ -27,11 +28,6 @@ buildPythonApplication {
 
   buildInputs = [
     gtk3
-    gobject-introspection
-  ];
-
-  checkInputs = [
-    gobject-introspection # need the setup hook here as well
   ];
 
   postInstall = ''
