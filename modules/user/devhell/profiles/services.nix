@@ -30,7 +30,6 @@ in {
       wrapperFeatures.gtk = true;
       extraPackages = with pkgs; [
         gammastep
-        wlsunset
         slurp
         grim
         rofi-wayland
