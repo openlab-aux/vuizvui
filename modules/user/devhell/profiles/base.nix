@@ -162,7 +162,7 @@ in {
         freefont_ttf
         google-fonts
         junicode
-        nerdfonts
+        (nerdfonts.override { fonts = [ "DejaVuSansMono" "CascadiaCode" "FiraMono" "Inconsolata" "NerdFontsSymbolsOnly" "Noto" ]; })
         siji
         tewi-font
         tt2020
