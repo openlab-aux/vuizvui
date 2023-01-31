@@ -39,6 +39,7 @@ in {
         swaylock-effects
         wl-clipboard
         swaybg
+        wf-recorder
       ];
     };
 
