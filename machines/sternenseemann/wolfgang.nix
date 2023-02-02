@@ -68,7 +68,7 @@ in {
     yt-dlp mpv vlc spotify
     ghc cabal-install cabal2nix
     sbcl rlwrap
-    BQN ngn-k
+    cbqn ngn-k
     valgrind gdb
     scribus gimp inkscape libreoffice
     audacity
