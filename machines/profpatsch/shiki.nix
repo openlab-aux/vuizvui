@@ -106,9 +106,11 @@ in {
 
     i18n = {
       inputMethod = {
-        enabled = "fcitx";
+        enabled = "fcitx5";
+
+        # TODO: broken because python 2.7
         # Japanese input
-        fcitx.engines = with pkgs.fcitx-engines; [ mozc ];
+        # fcitx.engines = with pkgs.fcitx-engines; [ mozc ];
       };
     };
 
