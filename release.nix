@@ -172,78 +172,55 @@ in with pkgsUpstream.lib; with builtins; {
       inherit system;
     };
 
-    patchedDocbookXSL = overrideDerivation pkgsUpstream.docbook_xsl_ns (drv: {
-      # Don't chunk off <preface/>
-      postPatch = (drv.postPatch or "") + ''
-        sed -i -e '
-          /<xsl:when.*preface/d
-          /<xsl:for-each/s!|//d:preface \+!!g
-          /<xsl:variable/s!|[a-z]\+::d:preface\[1\] \+!!g
-        ' xhtml/chunk-common.xsl
-
-        sed -i -e '
-          /<xsl:when.*preface/,/<\/xsl:when>/d
-          /<xsl:template/s!|d:preface!!g
-        ' xhtml/chunk-code.xsl
-      '';
-    });
-
-    isVuizvui = opt: head (splitString "." opt.name) == "vuizvui";
-    filterDoc = filter (opt: isVuizvui opt && opt.visible && !opt.internal);
-    optionsXML = toXML (filterDoc (optionAttrSetToDocList modules.options));
-    optionsFile = toFile "options.xml" (unsafeDiscardStringContext optionsXML);
-
-    mkXsltFlags = flags: let
-      mkParam = flag: valFun: opt: val: [ "--${flag}" opt (valFun val) ];
-      mkStrParam = mkParam "stringparam" id;
-      mkBoolParam = mkParam "param" (b: if b then "1" else "0");
-      mkFlag = path: value: let
-        opt = concatStringsSep "." path;
-      in if isString value then mkStrParam opt value
-         else if isBool value then mkBoolParam opt value
-         else throw "Invalid value for '${opt}': ${toString value}";
-      result = collect isList (mapAttrsRecursive mkFlag flags);
-    in concatMapStringsSep " " escapeShellArg (concatLists result);
-
-    xsltFlags = mkXsltFlags {
-      section.autolabel = true;
-      section.label.includes.component.label = true;
-      html.stylesheet = "style.css overrides.css highlightjs/mono-blue.css";
-      html.script = "highlightjs/highlight.pack.js highlightjs/loader.js";
-      xref."with".number.and.title = true;
-      admon.style = "";
+    optionsDoc = pkgsUpstream.nixosOptionsDoc {
+      documentType = "none";
+      warningsAreErrors = false;
+      options = {
+        # TODO(sterni): do we need to filter out invisible and/or internal options?
+        inherit (modules.options) vuizvui;
+      };
     };
 
-    xsltPath = "${nixpkgs}/nixos/lib/make-options-doc";
+    optionsJSON = "${optionsDoc.optionsJSON}/share/doc/nixos/options.json";
+  in
+  pkgsUpstream.runCommand "vuizvui-options" {
+    # Interestingly, optionsJSON doesn't create references to vuizvuiSrc
+    allowedReferences = [ "out" ];
+    nativeBuildInputs = [ pkgsUpstream.nixos-render-docs ];
+  } ''
+    dest="$out/share/doc/vuizvui"
+    mkdir -p "$dest"
 
-  in pkgsUpstream.stdenv.mkDerivation {
-    name = "vuizvui-options";
+    cp "${nixpkgs + "/doc/style.css"}" "$dest/style.css"
+    cp "${nixpkgs + "/doc/anchor.min.js"}" "$dest/anchor.min.js"
+    cp "${nixpkgs + "/doc/anchor-use.js"}" "$dest/anchor-use.js"
+    cp -r ${pkgsUpstream.documentation-highlighter} "$dest/highlightjs"
 
-    nativeBuildInputs = singleton pkgsUpstream.libxslt;
+    cp -r "${./doc}" doc
+    chmod -R +w doc
 
-    buildCommand = ''
-      cp -r "${./doc}" doc
-      chmod -R +w doc
-      xsltproc -o intermediate.xml \
-        "${xsltPath}/options-to-docbook.xsl" \
-        ${optionsFile}
-      xsltproc -o doc/options-db.xml \
-        "${xsltPath}/postprocess-option-descriptions.xsl" \
-        intermediate.xml
+    substituteInPlace doc/index.md \
+      --replace-fail @VUIZVUI_VERSION@ "${vuizvuiVersion}"
+    substituteInPlace doc/options.md \
+      --replace-fail @VUIZVUI_OPTIONS_JSON@ "${optionsJSON}"
 
-      dest="$out/share/doc/vuizvui"
-      mkdir -p "$dest"
+    # N. B. nixos-render-docs always assumes we are building a NixOS manual.
+    # As such, source code references will link to https://github.com/NixOS/nixpkgs/…
+    # if it doesn't know an absolute path to the declaring module. This should
+    # never be the case for us, but --revision (as in nixpkgs) is a required flag.
+    nixos-render-docs -j $NIX_BUILD_CORES manual html \
+      --revision bogus \
+      --manpage-urls ${nixpkgs + "/doc/manpage-urls.json"} \
+      --stylesheet style.css \
+      --stylesheet highlightjs/mono-blue.css \
+      --script ./highlightjs/highlight.pack.js \
+      --script ./highlightjs/loader.js \
+      --script ./anchor.min.js \
+      --script ./anchor-use.js \
+      doc/index.md \
+      "$dest/index.html"
 
-      xsltproc -o "$dest/" ${xsltFlags} -nonet -xinclude \
-        ${patchedDocbookXSL}/xml/xsl/docbook/xhtml/chunk.xsl \
-        doc/index.xml
-
-      cp "${nixpkgs}/doc/style.css" "$dest/style.css"
-      cp "${nixpkgs}/doc/overrides.css" "$dest/overrides.css"
-      cp -r ${pkgsUpstream.documentation-highlighter} "$dest/highlightjs"
-
-      mkdir -p "$out/nix-support"
-      echo "doc manual $dest" > "$out/nix-support/hydra-build-products"
-    '';
-  };
+    mkdir -p "$out/nix-support"
+    echo "doc manual $dest" > "$out/nix-support/hydra-build-products"
+  '';
 }
