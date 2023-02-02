@@ -65,7 +65,7 @@ in {
     jackline gajim
     vuizvui.sternenseemann.texlive
     # jabref # depends on insecure JDK version
-    yt-dlp mpv spotify
+    yt-dlp mpv vlc spotify
     ghc cabal-install cabal2nix
     sbcl rlwrap
     valgrind gdb
