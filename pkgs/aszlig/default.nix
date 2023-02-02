@@ -6,7 +6,6 @@
   firefox = callPackage ./firefox { };
   git-detach = callPackage ./git-detach { };
   gopass = callPackage ./gopass { inherit gopass; };
-  grandpa = callPackage ./grandpa { };
   librxtx_java = callPackage ./librxtx-java { };
   lockdev = callPackage ./lockdev { };
   mutt = callPackage ./mutt { inherit mutt; };
