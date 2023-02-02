@@ -62,14 +62,13 @@ in {
     exfat borgbackup
     gnupg pinentry-gnome signing-party gpgme
     thunderbird-wayland
-    jackline gajim fractal
+    jackline gajim
     vuizvui.sternenseemann.texlive
     # jabref # depends on insecure JDK version
     yt-dlp mpv spotify
     ghc cabal-install cabal2nix
     sbcl rlwrap
     valgrind gdb
-    docker-compose
     scribus gimp inkscape libreoffice
     audacity
     signal-desktop discord
@@ -80,31 +79,16 @@ in {
     networkmanagerapplet       # for nm-connection-ediotr
     imv zathura
     pcmanfm
-    gnome.gedit
     browser.pkg
-    castor
-    nix-output-monitor
-    vuizvui.tvl.users.sterni.clhs-lookup
-    hunspell
-  ] ++ (with hunspellDicts; [ de-de en-gb-large en-us ]);
+    # hunspell
+    # (with hunspellDicts; [ de-de en-gb-large en-us ])
+  ];
 
   environment.variables = {
     BROWSER = browser.bin;
   };
 
   services.lorri.enable = true;
-
-  services.tor = {
-    enable = true;
-
-    torsocks = {
-      enable = true;
-    };
-
-    client = {
-      enable = true;
-    };
-  };
 
   services.xserver = {
     videoDrivers = [ "intel" ];
