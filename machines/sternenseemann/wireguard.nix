@@ -33,5 +33,22 @@ in
         };
       };
     };
+
+    vuizvui.user.sternenseemann.services.sway.extraStatus = builtins.listToAttrs (
+      builtins.concatLists (
+        builtins.map (
+          iface:
+          builtins.map (
+            ip:
+            {
+              name = "path_exists ${iface}${ip}";
+              value = ''
+                path = "/proc/sys/net/ip${ip}/conf/${iface}"
+              '';
+            }
+          ) [ "v4" "v6" ]
+        ) (builtins.attrNames config.networking.wg-quick.interfaces)
+      )
+    );
   };
 }

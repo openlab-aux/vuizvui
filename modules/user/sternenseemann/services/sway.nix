@@ -132,6 +132,17 @@ in {
           Additional lines to append to the configuration.
         '';
       };
+
+      extraStatus = lib.mkOption {
+        type = lib.types.attrsOf lib.types.lines;
+        default = {};
+        description = "Additional i3status entries to prepend to the bar.";
+        example = {
+          "path_exists LOCK" = ''
+            path = "/run/lock"
+          '';
+        };
+      };
     };
   };
 
@@ -304,6 +315,13 @@ in {
           interval = 1
         }
 
+        ${
+          lib.concatStrings (
+            lib.mapAttrsToList
+              (name: _: "order += \"${name}\"\n")
+              cfg.extraStatus
+          )
+        }
         order += "volume master"
         order += "battery all"
         order += "tztime kalenderwoche"
@@ -343,6 +361,17 @@ in {
 
         tztime offset {
           format = "%z"
+        }
+
+        ${
+          lib.concatStrings (
+            lib.mapAttrsToList (name: config: ''
+              ${name} {
+                ${builtins.replaceStrings [ "\n" ] [ "\n  " ] config}
+              }
+            ''
+            ) cfg.extraStatus
+          )
         }
       '';
     };
