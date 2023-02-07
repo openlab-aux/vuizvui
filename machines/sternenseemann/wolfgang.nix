@@ -62,7 +62,6 @@ in {
     exfat borgbackup
     gnupg pinentry-gnome signing-party gpgme
     thunderbird-wayland
-    jackline gajim
     vuizvui.sternenseemann.texlive
     # jabref # depends on insecure JDK version
     yt-dlp mpv vlc spotify
