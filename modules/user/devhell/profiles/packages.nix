@@ -161,7 +161,6 @@ in {
       lftp
       libarchive
       libreoffice
-      librespeed-cli
       lm_sensors
       lsd
       lsof
@@ -250,6 +249,7 @@ in {
       smartmontools
       so
       sox
+      speedtest-rs
       spek
       ssdeep
       starship
