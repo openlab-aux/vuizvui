@@ -9,7 +9,8 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    nix.readOnlyStore = true;
+    boot.readOnlyNixStore = true;
+
     nix.settings = {
       sandbox = true;
       auto-optimise-store = true;
@@ -51,9 +52,11 @@ in {
       MaxRetentionSec=3month
     '';
 
-    services.openssh.passwordAuthentication = lib.mkOverride 500 false;
-    services.openssh.permitRootLogin = lib.mkOverride 500 "no";
-    services.openssh.kbdInteractiveAuthentication = lib.mkOverride 500 false;
+    services.openssh.settings = {
+      PasswordAuthentication = lib.mkOverride 500 false;
+      PermitRootLogin = lib.mkOverride 500 "no";
+      KbdInteractiveAuthentication = lib.mkOverride 500 false;
+    };
 
     environment.systemPackages = with pkgs; [
       binutils
