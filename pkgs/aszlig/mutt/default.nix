@@ -109,6 +109,7 @@ let
     use_domain = true;
     sort.__raw = "threads";
     sort_aux.__raw = "last-date-received";
+    reply_regexp = "^(re|aw)(\\[[0-9]+\\])*:[ \t]*";
 
     index_format = "%4C %Z %{%b %d %Y %H:%M} %-15.15L (%?l?%4l&%4c?) %s";
   };
