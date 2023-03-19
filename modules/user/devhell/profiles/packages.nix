@@ -273,6 +273,7 @@ in {
       treefmt
       tty-clock
       tuifeed
+      tut
       ugrep
       units
       unrar
