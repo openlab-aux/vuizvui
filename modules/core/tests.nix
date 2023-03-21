@@ -695,9 +695,6 @@ let
     { check = config.services.snapper.configs != {};
       path  = ["nixos" "snapper"];
     }
-    { check = config.services.solr.enable;
-      path  = ["nixos" "solr"];
-    }
     { check = config.services.spacecookie.enable;
       path  = ["nixos" "spacecookie"];
     }
