@@ -80,6 +80,7 @@ in {
     imv zathura
     pcmanfm
     browser.pkg
+    msr-tools
     # hunspell
     # (with hunspellDicts; [ de-de en-gb-large en-us ])
   ];
