@@ -31,6 +31,7 @@ in {
   fileSystems."/" = {
     device = "/dev/mapper/main";
     fsType = "btrfs";
+    options = [ "compress=zstd" ];
   };
 
   fileSystems."/boot" = {
