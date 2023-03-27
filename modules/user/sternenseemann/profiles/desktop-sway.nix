@@ -20,8 +20,8 @@ let
       // (getBins pkgs.mako [ "makoctl" ])
       // (getBins screenshot [ "screenshot" ])
       // (getBins pkgs.foot [ "foot" ])
-      // (getBins pkgs.dash [ "dash" ])
       // (getBins config.vuizvui.user.sternenseemann.programs.saneterm.package [ "saneterm" ])
+      // (getBins pkgs.bash [ "sh" ])
       ;
 
   screenshot = pkgs.writers.writeDashBin "screenshot" ''
@@ -141,7 +141,7 @@ in
       vuizvui.user.sternenseemann = {
         programs.saneterm.enable = true;
         services.sway.additionalBinds = {
-          "$mod+Shift+Return" = "${bins.saneterm} -- ${bins.dash} -l";
+          "$mod+Shift+Return" = "${bins.saneterm} -- ${bins.sh} -l";
         };
       };
     })
