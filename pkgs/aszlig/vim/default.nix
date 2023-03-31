@@ -497,8 +497,8 @@ let
 
     # Other markup languages I think are pretty unlikely to be included in
     # Markdown code blocks.
-    "asciidoc" "docbk" "docbksgml" "docbkxml" "doxygen" "groff" "nroff" "rst"
-    "rtf"
+    "asciidoc" "dircolors" "docbk" "docbksgml" "docbkxml" "doxygen" "groff"
+    "nroff" "rst" "rtf"
   ];
 
   transformer = writers.writePython3Bin "transform-languages" {
