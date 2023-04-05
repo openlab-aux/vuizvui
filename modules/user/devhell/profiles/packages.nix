@@ -292,6 +292,7 @@ in {
       vorbisgain
       vscodium
       vuizvui.devhell.vim
+      vuizvui.devhell.nvim
       w3m
       wavpack
       wget

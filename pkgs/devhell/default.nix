@@ -2,4 +2,5 @@
 
 {
   vim = callPackage ./vim { };
+  nvim = callPackage ./nvim { };
 }
