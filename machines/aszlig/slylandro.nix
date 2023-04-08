@@ -27,7 +27,6 @@
   hardware.firmware = [ pkgs.linux-firmware ];
   vuizvui.hardware.tuxedo.pulse15.gen2.enable = true;
 
-  hardware.video.hidpi.enable = true;
   services.xserver.dpi = 188;
   services.xserver.xkbOptions = "caps:none";
 

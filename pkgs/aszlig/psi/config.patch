@@ -131,10 +131,10 @@ index f4b71f53..387793a0 100644
 -                    <contactlist type="QString">Sans Serif,11,-1,5,50,0,0,0,0,0</contactlist>
 -                    <message type="QString">Sans Serif,11,-1,5,50,0,0,0,0,0</message>
 -                    <passive-popup type="QString">Sans Serif,9,-1,5,50,0,0,0,0,0</passive-popup>
-+                    <chat type="QString">Monospace,@faceSize@,-1,5,50,0,0,0,0,0</chat>
-+                    <contactlist type="QString">Monospace,@faceSize@,-1,5,50,0,0,0,0,0</contactlist>
-+                    <message type="QString">Monospace,@faceSize@,-1,5,50,0,0,0,0,0</message>
-+                    <passive-popup type="QString">Monospace,@faceSize@,-1,5,50,0,0,0,0,0</passive-popup>
++                    <chat type="QString">Monospace,12,-1,5,50,0,0,0,0,0</chat>
++                    <contactlist type="QString">Monospace,12,-1,5,50,0,0,0,0,0</contactlist>
++                    <message type="QString">Monospace,12,-1,5,50,0,0,0,0,0</message>
++                    <passive-popup type="QString">Monospace,12,-1,5,50,0,0,0,0,0</passive-popup>
                  </font>
                  <css type="QString" />
              </look>

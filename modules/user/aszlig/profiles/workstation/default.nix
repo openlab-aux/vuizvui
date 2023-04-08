@@ -3,8 +3,6 @@
 let
   cfg = config.vuizvui.user.aszlig.profiles.workstation;
   inherit (config.services.xserver) xrandrHeads;
-  hidpi = config.hardware.video.hidpi.enable;
-  faceSize = if hidpi then 10 else 12;
 in {
   options.vuizvui.user.aszlig.profiles.workstation = {
     enable = lib.mkEnableOption "Workstation profile for aszlig";
@@ -37,7 +35,6 @@ in {
       (pkgs.vuizvui.aszlig.psi.override {
         jid = "aszlig@aszlig.net";
         resource = config.networking.hostName;
-        inherit faceSize;
       })
     ] ++ import ./packages.nix pkgs;
 
@@ -49,7 +46,6 @@ in {
 
     # The default theme hurts my eyes.
     environment.variables.GTK_THEME = "Adwaita:dark";
-    environment.variables.QT_AUTO_SCREEN_SCALE_FACTOR = lib.mkIf hidpi "1";
 
     vuizvui.lazyPackages = import ./lazy-packages.nix pkgs;
 
@@ -190,7 +186,7 @@ in {
               XTerm*termName:            xterm-direct
               XTerm*directColor:         true
               XTerm*faceName:            MxPlus IBM VGA 8x16
-              XTerm*faceSize:            ${toString faceSize}
+              XTerm*faceSize:            12
               XTerm*renderFont:          true
               XTerm*saveLines:           10000
               XTerm*bellIsUrgent:        true
