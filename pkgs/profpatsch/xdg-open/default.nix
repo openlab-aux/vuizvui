@@ -17,7 +17,7 @@ let
       // getBins pkgs.coreutils [ "printf" "ln" "echo" ]
       // getBins pkgs.fdtools [ "multitee" ]
       // getBins pkgs.s6 [ "s6-ioconnect" ]
-      // getBins pkgs.s6-portable-utils [ "s6-test" ]
+      // getBins pkgs.execline [ "eltest" ]
       // getBins pkgs.s6-networking [ "s6-tcpclient" ]
       // getBins pkgs.libressl.nc [ "nc" ]
       // getBins pkgs.dmenu [ "dmenu" "dmenu_path" ]
@@ -199,8 +199,8 @@ let
 
   http-request = writeExecline "http-request" { } [
     "importas" "-i" "protocol" "protocol"
-    "ifelse" [ bins.s6-test "$protocol" "=" "http" ] [ (http-https-request false) ]
-    "ifelse" [ bins.s6-test "$protocol" "=" "https" ] [ (http-https-request true) ]
+    "ifelse" [ bins.eltest "$protocol" "=" "http" ] [ (http-https-request false) ]
+    "ifelse" [ bins.eltest "$protocol" "=" "https" ] [ (http-https-request true) ]
     eprintf "protocol \${protocol} not supported"
   ];
 
@@ -274,7 +274,7 @@ let
       record-get [ "status" "status-text" "headers" ]
       "importas" "-ui" "status" "status"
       # TODO: a test util for netencode values
-      "ifelse" [ bins.s6-test "$status" "=" "n6:301," ]
+      "ifelse" [ bins.eltest "$status" "=" "n6:301," ]
       # retry the redirection location
       [ as-stdin "headers"
         record-get [ "Location" ]

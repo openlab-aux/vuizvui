@@ -13,7 +13,6 @@ runExecline name {
         (toNetstring dest + (toNetstring orig)))
       links;
     passAsFile = [ "pathTuples" ];
-    # bah! coreutils just for cat :(
     PATH = lib.makeBinPath [ s6-portable-utils ];
   };
 } [
@@ -31,7 +30,7 @@ runExecline name {
       "s6-mkdir" "-p" "$d"
     ]
 
-    "ifthenelse" [ "s6-test" "-L" "$orig" ] [
+    "ifthenelse" [ "eltest" "-L" "$orig" ] [
       "backtick" "-n" "res" [ "s6-linkname" "-f" "$orig" ]
       "importas" "-ui" "res" "res"
       "s6-ln" "-fs" "$res" "$dest"

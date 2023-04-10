@@ -2,7 +2,7 @@
 let
 
   bins = getBins pkgs.rlwrap [ "rlwrap" ]
-    // getBins pkgs.s6-portable-utils [ { use = "s6-cat"; as = "cat"; } "s6-test" ]
+    // getBins pkgs.s6-portable-utils [ { use = "s6-cat"; as = "cat"; } ]
     // getBins pkgs.execline [ "execlineb" ];
 
   # minimal execline shell
