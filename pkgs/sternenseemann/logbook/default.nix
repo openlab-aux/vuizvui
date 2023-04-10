@@ -5,6 +5,8 @@ buildDunePackage rec {
   version = "0.3";
   pname = "logbook";
 
+  duneVersion = "3";
+
   src = fetchFromGitHub {
     owner  = "sternenseemann";
     repo   = pname;
@@ -14,8 +16,6 @@ buildDunePackage rec {
 
   buildInputs = [ cow ocaml_lwt jingoo ];
   propagatedBuildInputs = [ ptime angstrom astring ];
-
-  useDune2 = true;
 
   meta = with lib; {
     description = "A tool for personal log files";
