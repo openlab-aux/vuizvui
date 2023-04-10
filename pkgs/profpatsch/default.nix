@@ -87,11 +87,12 @@ let
         inherit stdenv;
         bin = (getBins pkgs.execline [
                  "execlineb"
+                 "eltest"
                  { use = "if"; as = "execlineIf"; }
                  "redirfd" "importas"
                ])
            // (getBins pkgs.s6-portable-utils
-                [ "s6-cat" "s6-grep" "s6-touch" "s6-test" "s6-chmod" ]);
+                [ "s6-cat" "s6-grep" "s6-touch" "s6-chmod" ]);
        };
     in {
       runExecline = it;

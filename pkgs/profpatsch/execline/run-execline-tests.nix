@@ -81,7 +81,7 @@ let
     };
   } [
     "importas" "-ui" "v" "myvar"
-    "if" [ bin.s6-test "myvalue" "=" "$v" ]
+    "if" [ bin.eltest "myvalue" "=" "$v" ]
       "importas" "out" "out"
       bin.s6-touch "$out"
   ];
