@@ -294,9 +294,6 @@ let
     { check = config.programs.iftop.enable;
       path  = ["nixos" "iftop"];
     }
-    { check = config.services.ihatemoney.enable;
-      path  = ["nixos" "ihatemoney"];
-    }
     { check = config.services.incron.enable;
       path  = ["nixos" "incron"];
     }
