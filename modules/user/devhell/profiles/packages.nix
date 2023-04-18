@@ -253,7 +253,6 @@ in {
       spek
       ssdeep
       starship
-      steam
       steam-tui
       stow
       strace

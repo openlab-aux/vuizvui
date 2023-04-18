@@ -51,12 +51,20 @@ in {
       shell = "${pkgs.zsh}/bin/zsh";
     };
 
+    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+      "steam"
+      "steam-original"
+      "steam-runtime"
+      "steam-run"
+    ];
+
     programs = {
       dconf.enable = true;
       iftop.enable = true;
       iotop.enable = true;
       usbtop.enable = true;
       less.enable = true;
+      steam.enable = true;
       tmux.enable = true;
       traceroute.enable = true;
       wireshark.enable = true;
