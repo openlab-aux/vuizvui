@@ -44,6 +44,8 @@ in {
 
     security.rtkit.enable = true;
 
+    zramSwap.enable = true;
+
     users.users.dev = {
       isNormalUser = true;
       extraGroups = [ "nitrokey" "plugdev" "docker" "vboxusers" "wheel" "libvirtd" "wireshark" "video" "audio" ];

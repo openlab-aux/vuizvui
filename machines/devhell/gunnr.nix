@@ -63,8 +63,6 @@
     fsType = "ext4";
   };
 
-  zramSwap.enable = true;
-
   # FIXME Check if this is still necessary in the future
   systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
 
