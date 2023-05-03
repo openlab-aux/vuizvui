@@ -194,6 +194,7 @@ in {
       netrw
       netsniff-ng
       nix-output-monitor
+      nix-update
       nixfmt
       nixpkgs-fmt
       nixpkgs-review
@@ -290,8 +291,8 @@ in {
       vorbis-tools
       vorbisgain
       vscodium
-      vuizvui.devhell.vim
       vuizvui.devhell.nvim
+      vuizvui.devhell.vim
       w3m
       wavpack
       wget
