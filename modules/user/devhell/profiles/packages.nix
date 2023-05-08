@@ -133,7 +133,6 @@ in {
       gopass
       gpg-tui
       gpgme
-      gpodder
       gptfdisk
       graphviz
       grex
