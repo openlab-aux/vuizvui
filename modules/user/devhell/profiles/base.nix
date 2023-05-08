@@ -11,7 +11,7 @@ in {
   config = lib.mkIf cfg.enable {
     boot = {
       kernelPackages = pkgs.linuxPackages_latest;
-      cleanTmpDir = true;
+      tmp.cleanOnBoot = true;
     };
 
     nix.settings = {
