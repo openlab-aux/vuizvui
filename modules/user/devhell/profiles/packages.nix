@@ -285,7 +285,6 @@ in {
       visidata
       viu
       vivid
-      vlc
       vlock
       vorbis-tools
       vorbisgain
