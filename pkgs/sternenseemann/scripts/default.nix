@@ -1,10 +1,8 @@
-# TODO(sterni): port to dash
 { lib, writeBashBin, writeText, getBins
-, libnotify
 , borgbackup, cryptsetup
 , ghostscript
 , openssl
-, perl, mandoc
+, mandoc
 , gpp
 , sternenseemann
 }:
@@ -41,9 +39,7 @@ let
       // (getBins borgbackup [ "borg" ])
       // (getBins mandoc [ "man" ])
       // (getBins openssl [ "openssl" ])
-      // (getBins perl [ "pod2man" ])
       // (getBins ghostscript [ "gs" ])
-      // (getBins libnotify [ "notify-send" ])
       ;
 
 in
@@ -54,7 +50,6 @@ in
     self.lowview
     self.pdfcombine
     self.pdfrange
-    self.xmpp-notify
     self.certprint
   ];
 
@@ -163,12 +158,6 @@ in
     lowdown -Tterm $@ | less -R
   '';
 
-  opam-env = writeBashBin "opam-env" ''
-    nix-shell -p pkgs.opam \
-      pkgs.m4 pkgs.gnumake pkgs.binutils pkgs.gcc pkgs.gmp pkgs.glib pkgs.pkg-config \
-      --command ". $HOME/.opam/opam-init/init.sh; eval \`opam config env\`; return" \
-  '';
-
   pdfcombine = writeBashBin "pdfcombine" ''
     out=$1
     shift
@@ -187,16 +176,5 @@ in
        -dLastPage="''${2}" \
        -sOutputFile="''${3%.pdf}_p''${1}-p''${2}.pdf" \
        "''${3}"
-  '';
-
-  podview = writeBashBin "podview" ''
-    ${bins.pod2man} "$1" | ${bins.man} -l
-  '';
-
-  xmpp-notify = writeBashBin "xmpp-notify" ''
-    if [[ $3 != "connect" ]]; then
-      ${bins.notify-send} "jackline" "IM received"
-      printf '\a'
-    fi
   '';
 }
