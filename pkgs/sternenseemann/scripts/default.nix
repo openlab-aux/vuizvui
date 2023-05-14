@@ -6,9 +6,12 @@
 , openssl
 , perl, mandoc
 , gpp
+, sternenseemann
 }:
 
 let
+  self = sternenseemann.scripts;
+
   backupExcludes = writeText "backup-excludes" ''
     /home/lukas/.cache
     /home/lukas/.config/chromium
@@ -42,7 +45,7 @@ let
 
 in
 
-lib.fix (self: {
+{
   default = [
     self.borg-wrapper
     self.lowview
@@ -193,4 +196,4 @@ lib.fix (self: {
       printf '\a'
     fi
   '';
-})
+}

@@ -1,8 +1,7 @@
-{ pkgs, lib, profpatsch }:
+{ pkgs, lib, profpatsch, callPackage }:
 
 let
   inherit (pkgs)
-    callPackage
     dontRecurseIntoAttrs
     fetchurl
     fetchFromGitHub
@@ -74,7 +73,7 @@ lib.fix (self: {
 
   vuizvui-update-programs-sqlite = python3Packages.callPackage ./vuizvui-update-programs-sqlite {
     inherit (pkgs.writers) writePython3;
-    inherit (profpatsch) getBins;
+    inherit getBins;
   };
 
   # customized third party software
