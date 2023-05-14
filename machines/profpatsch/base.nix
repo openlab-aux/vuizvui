@@ -15,7 +15,7 @@ in
     nix.settings.max-jobs = "auto";
 
     # /tmp should never be depended on
-    boot.cleanTmpDir = true;
+    boot.tmp.cleanOnBoot = true;
 
     # Setting it to UTC explicitely makes it impossible to override at runtime
     time.timeZone = lib.mkDefault "UTC";

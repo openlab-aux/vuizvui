@@ -14,7 +14,7 @@ in {
   ];
 
   config = {
-    boot.cleanTmpDir = true;
+    boot.tmp.cleanOnBoot = true;
 
     nix = {
       # new --show-trace is so noisy, I wouldn't be able to debug something to save my life

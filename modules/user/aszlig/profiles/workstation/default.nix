@@ -12,7 +12,7 @@ in {
     vuizvui.user.aszlig.profiles.base.enable = true;
 
     boot.kernelParams = [ "panic=1800" ];
-    boot.cleanTmpDir = true;
+    boot.tmp.cleanOnBoot = true;
 
     # Allow sync, sak and unraw
     boot.kernel.sysctl."kernel.sysrq" = 20;
