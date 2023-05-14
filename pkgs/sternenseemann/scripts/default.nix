@@ -26,12 +26,15 @@ let
     /home/lukas/.npm
     /home/lukas/.meteor
     /home/lukas/tmp
-    /home/lukas/Videos/tmp
     /home/lukas/.mozilla
     /home/lukas/.cabal
     /home/lukas/.bundle
     /home/lukas/.opam
     /home/lukas/files/serverkram/minecraft/
+    /home/lukas/Videos/movies
+    /home/lukas/Videos/dok
+    /home/lukas/Videos/series
+    /home/lukas/Videos/dl
   '';
 
   bins = (getBins cryptsetup [ "cryptsetup" ])
