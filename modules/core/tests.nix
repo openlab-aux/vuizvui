@@ -310,9 +310,6 @@ let
            || lib.any (s: s.encrypted.enable) config.swapDevices;
       path  = ["nixos" "installer" "encryptedFSWithKeyfile"];
     }
-    { check = config.boot.loader.grub.version == 1;
-      path  = ["nixos" "installer" "grub1"];
-    }
     { check = config.boot.initrd.luks.devices != {};
       paths = [
         ["nixos" "installer" "luksroot-format1"]
