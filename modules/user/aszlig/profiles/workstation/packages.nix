@@ -79,7 +79,7 @@ pkgs: with pkgs; [
   whois
   wireshark
   xorg.xhost
-  youtube-dl
+  yt-dlp
   zathura
   zbar
 ]
