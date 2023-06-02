@@ -1,0 +1,54 @@
+diff --git a/share/gpodder/ui/gtk/menus.ui b/share/gpodder/ui/gtk/menus.ui
+index c2c30093..07f655d3 100644
+--- a/share/gpodder/ui/gtk/menus.ui
++++ b/share/gpodder/ui/gtk/menus.ui
+@@ -13,10 +13,6 @@
+         <attribute name="action">app.gotoMygpo</attribute>
+         <attribute name="label" translatable="yes">Go to gpodder.net</attribute>
+       </item>
+-      <item>
+-        <attribute name="action">app.checkForUpdates</attribute>
+-        <attribute name="label" translatable="yes">Software updates</attribute>
+-      </item>
+     </section>
+     <section>
+       <item>
+diff --git a/src/gpodder/config.py b/src/gpodder/config.py
+index e22b4cf8..ec49265f 100644
+--- a/src/gpodder/config.py
++++ b/src/gpodder/config.py
+@@ -92,13 +92,6 @@ defaults = {
+ 
+     'check_connection': True,
+ 
+-    # Software updates from gpodder.org
+-    'software_update': {
+-        'check_on_startup': True,  # check for updates on start
+-        'last_check': 0,  # unix timestamp of last update check
+-        'interval': 5,  # interval (in days) to check for updates
+-    },
+-
+     'ui': {
+         # Settings for the Command-Line Interface
+         'cli': {
+diff --git a/src/gpodder/gtkui/main.py b/src/gpodder/gtkui/main.py
+index 63c2c346..66338054 100644
+--- a/src/gpodder/gtkui/main.py
++++ b/src/gpodder/gtkui/main.py
+@@ -247,7 +247,7 @@ class gPodder(BuilderWidget, dbus.service.Object):
+             util.idle_add(self.subscribe_to_url, self.options.subscribe)
+         elif not self.channels:
+             self.on_itemUpdate_activate()
+-        elif self.config.software_update.check_on_startup:
++        elif False and self.config.software_update.check_on_startup:
+             # Check for software updates from gpodder.org
+             diff = time.time() - self.config.software_update.last_check
+             if diff > (60 * 60 * 24) * self.config.software_update.interval:
+@@ -3489,6 +3489,7 @@ class gPodder(BuilderWidget, dbus.service.Object):
+         If silent=False, a message will be shown even if no updates are
+         available (set silent=False when the check is manually triggered).
+         """
++        return
+         try:
+             up_to_date, version, released, days = util.get_update_info()
+         except Exception as e:

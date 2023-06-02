@@ -1,4 +1,6 @@
-{ callPackage, vim-full, gopass, mutt, xterm, radare2, rustfmt }:
+{ callPackage, vim-full, gopass, gpodder, mutt, xterm, radare2
+, rustfmt
+}:
 
 {
   aacolorize = callPackage ./aacolorize { };
@@ -6,6 +8,7 @@
   firefox = callPackage ./firefox { };
   git-detach = callPackage ./git-detach { };
   gopass = callPackage ./gopass { inherit gopass; };
+  gpodder = callPackage ./gpodder { inherit gpodder; };
   librxtx_java = callPackage ./librxtx-java { };
   lockdev = callPackage ./lockdev { };
   mutt = callPackage ./mutt { inherit mutt; };
