@@ -6,7 +6,7 @@ index 7118ea75..c6f58e35 100644
  set(RESOURCES
      ${PROJECT_SOURCE_DIR}/psi.qrc
      ${ICONSETSQRC_OUTPUT_FILE}
-+    ${QDARKSTYLE_PATH}/qdarkstyle/style.qrc
++    ${QDARKSTYLE_PATH}/qdarkstyle/dark/darkstyle.qrc
  )
  qt5_add_resources(QRC_SOURCES ${RESOURCES})
  
@@ -19,7 +19,7 @@ index b45fbab0..1cbead4a 100644
  # endif
      PsiApplication app(argc, argv);
 +
-+    QFile darkstyle(":qdarkstyle/style.qss");
++    QFile darkstyle(":qdarkstyle/dark/darkstyle.qss");
 +    if (!darkstyle.exists()) {
 +        qWarning() << "Unable to set dark style";
 +    } else {
