@@ -47,7 +47,7 @@ in {
   };
 
   environment.systemPackages = [
-    pkgs.aszlig.gpodder
+    pkgs.vuizvui.aszlig.gpodder
     pkgs.paperwork
   ];
 
