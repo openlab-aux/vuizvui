@@ -1,4 +1,4 @@
-{ pkgs, lib, profpatsch, callPackage }:
+{ pkgs, profpatsch, callPackage }:
 
 let
   inherit (pkgs)
@@ -9,6 +9,7 @@ let
     python3Packages
     writers
     haskell
+    lib
     ;
 
   inherit (profpatsch)
@@ -43,7 +44,7 @@ in
 
 lib.fix (self: {
   # nix utilities
-  lib = callPackage ./lib { };
+  lib = import ./lib { inherit lib; };
 
   # packaged sterniware
   inherit (haskellPackages) emoji-generic;
