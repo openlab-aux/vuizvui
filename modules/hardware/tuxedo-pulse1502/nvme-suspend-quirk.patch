@@ -3,15 +3,15 @@ index 1bdf714dcd9e..4014a2e17c70 100644
 --- a/drivers/nvme/host/nvme.h
 +++ b/drivers/nvme/host/nvme.h
 @@ -149,6 +149,12 @@ enum nvme_quirks {
- 	 * Reports garbage in the namespace identifiers (eui64, nguid, uuid).
+ 	 * No temperature thresholds for channels other than 0 (Composite).
  	 */
- 	NVME_QUIRK_BOGUS_NID			= (1 << 18),
+ 	NVME_QUIRK_NO_SECONDARY_TEMP_THRESH	= (1 << 19),
 +
 +	/*
 +	 * Disables entering D3cold state for devices that might not wake up
 +	 * again afterwards.
 +	 */
-+	NVME_QUIRK_NO_D3_COLD			= (1 << 19),
++	NVME_QUIRK_NO_D3_COLD			= (1 << 20),
  };
  
  /*
