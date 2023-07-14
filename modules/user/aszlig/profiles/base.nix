@@ -93,6 +93,14 @@ in {
       w3m = super.w3m.override {
         graphicsSupport = true;
       };
+
+      # Doesn't build with latest Nix unstable and since I rarely use it, I
+      # don't mind if it's using an older Nix version.
+      nixos-option = super.nixos-option.override {
+        # Note: This is *super*, not *self* because self already has nix
+        # replaced by nixUnstable.
+        inherit (super) nix;
+      };
     }));
 
     system.fsPackages = with pkgs; [ sshfs-fuse ];
