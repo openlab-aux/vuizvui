@@ -142,6 +142,10 @@ in {
     location.latitude = 48.4284;
     location.longitude = 10.866;
 
+    # I occasionally run wg setups and I don't really care whether they're
+    # online or not.
+    systemd.network.wait-online.anyInterface = true;
+
     services = {
       openssh.enable = true;
 
