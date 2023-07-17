@@ -46,7 +46,7 @@ _tryUnpackGogMakeSelf() {
   # into "./...", so all we need to do in the end is to strip 2 components from
   # the resulting path. This discards every path that has been renamed to
   # "skip".
-  tail -c"+$zipfileOffset" "$curSrc" | bsdtar -xf - \
+  tail -c"+$zipfileOffset" "$curSrc" | LANG=C.UTF-8 bsdtar -xf - \
     -s '!^data/noarch/game/\(.*\)$!/_/game/\1!' \
     -s '!^data/noarch/support/icon\.png$!/_/game/xdg-icon.png!' \
     -s '!^[^/].*!skip!' --strip-components=2
