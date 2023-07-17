@@ -1,7 +1,7 @@
 { stdenv, lib, file, unzip, buildSandbox, autoPatchelfHook, gogUnpackHook
 
 , withPulseAudio ? true, libpulseaudio ? null
-, alsaLib
+, alsa-lib
 }:
 
 assert withPulseAudio -> libpulseaudio != null;
@@ -39,7 +39,7 @@ buildSandbox (stdenv.mkDerivation ({
   '';
 
   runtimeDependencies = let
-    deps = lib.singleton alsaLib
+    deps = lib.singleton alsa-lib
         ++ lib.optional withPulseAudio libpulseaudio
         ++ runtimeDependencies;
   in map (dep: dep.lib or dep) deps;

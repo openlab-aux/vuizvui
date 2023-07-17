@@ -1,5 +1,5 @@
-{ stdenv, lib, buildGame, makeWrapper, gtk2-x11, gdk_pixbuf, glib
-, libGL, xorg, libpulseaudio, libudev, zlib
+{ stdenv, lib, buildGame, makeWrapper, gtk2-x11, gdk-pixbuf, glib
+, libGL, xorg, libpulseaudio, udev, zlib
 }:
 
 { name, version, fullName
@@ -24,10 +24,10 @@ in buildGame ({
 
   nativeBuildInputs = [ makeWrapper ] ++ nativeBuildInputs;
 
-  buildInputs = [ gtk2-x11 gdk_pixbuf glib ] ++ buildInputs;
+  buildInputs = [ gtk2-x11 gdk-pixbuf glib ] ++ buildInputs;
 
   runtimeDependencies = [
-    libGL xorg.libX11 xorg.libXcursor xorg.libXrandr libudev zlib
+    libGL xorg.libX11 xorg.libXcursor xorg.libXrandr udev zlib
   ] ++ runtimeDependencies;
 
   sandbox = sandbox // {
