@@ -46,7 +46,7 @@ in buildGame ({
 
     mkdir -p "$out/bin"
     makeWrapper "$out/libexec/$slugName/$slugName" "$out/bin/$slugName" \
-      --run "cd '$out/share/$slugName'"
+      --run "cd '$out/share/$slugName'" $makeWrapperArgs
 
     iconpath="$out/share/$slugName/Resources/UnityPlayer.png"
     mkdir -p "$out/share/applications"
