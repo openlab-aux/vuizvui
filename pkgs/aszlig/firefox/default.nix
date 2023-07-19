@@ -65,14 +65,28 @@ in wrapFirefox firefoxNoSigning {
     lockPref('browser.newtab.privateAllowed', false);
     lockPref('browser.newtabpage.enabled', false);
     lockPref('browser.rights.3.shown', true);
+    lockPref('browser.safebrowsing.downloads.remote.enabled', false);
     lockPref('browser.safebrowsing.malware.enabled', false);
     lockPref('browser.safebrowsing.phishing.enabled', false);
     lockPref('browser.shell.checkDefaultBrowser', false);
     lockPref('devtools.theme', 'dark');
+    lockPref('extensions.getAddons.cache.enabled', false);
+    lockPref('extensions.blocklist.enabled', false);
     lockPref('extensions.webextensions.restrictedDomains', "");
+    lockPref('network.captive-portal-service.enabled', false);
+    lockPref('network.connectivity-service.enabled', false);
     lockPref('privacy.donottrackheader.enabled', true);
     lockPref('privacy.query_stripping.enabled', true);
     lockPref('privacy.query_stripping.enabled.pbmode', true);
+    lockPref('privacy.query_stripping.strip_list', '${toString [
+      # Stolen from <https://github.com/yokoffing/Betterfox>:
+      "__hsfp" "__hssc" "__hstc" "__s" "_hsenc" "_openstat" "dclid" "fbclid"
+      "gbraid" "gclid" "hsCtaTracking" "igshid" "mc_eid" "ml_subscriber"
+      "ml_subscriber_hash" "msclkid" "oft_c" "oft_ck" "oft_d" "oft_id"
+      "oft_ids" "oft_k" "oft_lk" "oft_sk" "oly_anon_id" "oly_enc_id"
+      "rb_clickid" "s_cid" "twclid" "vero_conv" "vero_id" "wbraid" "wickedid"
+      "yclid"
+    ]}');
     lockPref('privacy.trackingprotection.enabled', true);
     lockPref('privacy.trackingprotection.socialtracking.enabled', true);
     lockPref('reader.color_scheme', 'dark');
