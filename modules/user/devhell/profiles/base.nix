@@ -162,7 +162,7 @@ in {
         useEmbeddedBitmaps = true;
       };
       enableGhostscriptFonts = true;
-      fonts = let
+      packages = let
         mkNerdFont = src: pkgs.stdenv.mkDerivation {
           name = lib.removeSuffix ".zip" src.name;
           inherit src;
