@@ -97,6 +97,7 @@ in
         settings = {
           include = "${pkgs.foot.themes}/share/foot/themes/selenized-white";
 
+          dpi-aware = true;
           font = [
             {
               font = defaultFont;
