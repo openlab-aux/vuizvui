@@ -1,13 +1,13 @@
 { gpodder, fetchFromGitHub, python3Packages, buildSandbox }:
 
 buildSandbox (gpodder.overridePythonAttrs (drv: {
-  version = "git-2023-04-29";
+  version = "git-2023-07-24";
 
   src = fetchFromGitHub {
     owner = "gpodder";
     repo = "gpodder";
-    rev = "0267b448eb97e3db3ebfad1bcf8ae348a44ff856";
-    hash = "sha256-LVlwmNI1EZOdWdIvc4HuN2zwCn+1ouS/upFAP0sge08";
+    rev = "b5f95d9f20508a6cb2b7a1109c8f6bd1c00cfbc1";
+    hash = "sha256-wyx8eIyz/cdQHKlC7hV7nNetzPKV0LMD/el5bt/akZ4";
   };
 
   patches = [ ./disable-autoupdate.patch ];
