@@ -180,7 +180,6 @@ in {
 
       xserver = {
         enable = true;
-        layout = "dvorak";
 
         displayManager = {
           lightdm.enable = true;
