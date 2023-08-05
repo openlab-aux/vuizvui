@@ -82,6 +82,8 @@ in {
           '';
       };
 
+      # TODO: libinput?
+      libinput.enable = false;
       synaptics = {
         enable = true;
         minSpeed = "0.6";
