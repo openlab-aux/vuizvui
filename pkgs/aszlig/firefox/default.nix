@@ -91,13 +91,6 @@ in wrapFirefox firefoxNoSigning {
     lockPref('privacy.trackingprotection.socialtracking.enabled', true);
     lockPref('reader.color_scheme', 'dark');
 
-    // Make flash of unstyled content less annoying by defaulting to
-    // Startpage's dark color scheme.
-    lockPref('browser.display.background_color', '#171B25');
-    lockPref('browser.display.foreground_color', '#EBECF7');
-    lockPref('browser.anchor_color', '#A7B1FC');
-    lockPref('browser.visited_color', '#AD71BC');
-
     pref('browser.uiCustomization.state', ${jsString (builtins.toJSON {
       placements = {
         widget-overflow-fixed-list = [];
