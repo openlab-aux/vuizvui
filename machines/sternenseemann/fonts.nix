@@ -3,7 +3,7 @@
 {
   config = {
     fonts = {
-      fonts = with pkgs; [
+      packages = with pkgs; [
         corefonts            # microsoft fonts
         atkinson-hyperlegible
         ttf_bitstream_vera   # dejavu without b&w emojis
@@ -24,7 +24,7 @@
 
       fontDir.enable = true;
       enableGhostscriptFonts = true;
-      enableDefaultFonts = true;
+      enableDefaultPackages = true;
 
       fontconfig = {
         enable = true;
