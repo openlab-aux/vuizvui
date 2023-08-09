@@ -120,6 +120,8 @@ in
             font-increase = "Control+Shift+b";
             font-decrease = "Control+Shift+t";
             font-reset = "Control+Shift+0";
+            unicode-input = "none";
+            show-urls-launch = "Control+Shift+u";
           };
 
           mouse-bindings = {
