@@ -81,6 +81,7 @@ in {
     imv zathura
     pcmanfm
     browser.pkg
+    gpxsee
     msr-tools
     # hunspell
     # (with hunspellDicts; [ de-de en-gb-large en-us ])
