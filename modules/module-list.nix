@@ -20,7 +20,6 @@
   ./system/kernel/rckernel.nix
   ./system/kernel/zswap.nix
   ./user/aszlig/profiles/base.nix
-  ./user/aszlig/profiles/managed.nix
   ./user/aszlig/profiles/workstation
   ./user/aszlig/programs/flameshot
   ./user/aszlig/programs/git
