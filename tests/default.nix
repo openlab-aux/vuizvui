@@ -20,7 +20,4 @@ in {
     gnupg = callTest ./programs/gnupg;
   };
   sandbox = callTest ./sandbox.nix;
-  system = {
-    kernel.bfq = callTest ./system/kernel/bfq.nix;
-  };
 }

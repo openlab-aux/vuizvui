@@ -5,10 +5,6 @@ with import ../lib;
     dnyarri   = callMachine ./aszlig/dnyarri.nix {};
     meshuggah = callMachine ./aszlig/meshuggah.nix {};
     slylandro = callMachine ./aszlig/slylandro.nix {};
-    managed = {
-      brawndo = callMachine ./aszlig/managed/brawndo.nix {};
-      tyree   = callMachine ./aszlig/managed/tyree.nix {};
-    };
   };
   devhell = {
     eir       = callMachine devhell/eir.nix {};

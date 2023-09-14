@@ -5,7 +5,6 @@
   ./core/lazy-packages.nix
   ./hardware/gamecontroller.nix
   ./hardware/rtl8192cu
-  ./hardware/t100ha
   ./hardware/thinkpad.nix
   ./hardware/tuxedo-pulse1502
   ./profiles/tvl.nix
@@ -18,7 +17,6 @@
   ./services/guix.nix
   ./services/upower-minimal.nix
   ./system/iso.nix
-  ./system/kernel/bfq
   ./system/kernel/rckernel.nix
   ./system/kernel/zswap.nix
   ./user/aszlig/profiles/base.nix
