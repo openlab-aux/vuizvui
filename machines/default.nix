@@ -22,7 +22,4 @@ with import ../lib;
     ludwig = callMachine ./sternenseemann/ludwig.nix {};
     wolfgang = callMachine ./sternenseemann/wolfgang.nix {};
   };
-  misc = {
-    mailserver = callMachine ./misc/mailserver.nix {};
-  };
 }
