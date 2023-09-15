@@ -157,9 +157,6 @@ in {
 
     services.nginx = {
       enable = true;
-      package = pkgs.nginx.override {
-        openssl = pkgs.openssl_1_1;
-      };
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       virtualHosts.${"profpatsch.de"} = {
