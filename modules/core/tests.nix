@@ -173,7 +173,7 @@ let
     { check = config.services.documize.enable;
       path  = ["nixos" "documize"];
     }
-    { check = config.services.dokuwiki != {};
+    { check = config.services.dokuwiki.sites != {};
       path  = ["nixos" "dokuwiki"];
     }
     { check = config.services.dovecot2.enable;
@@ -807,7 +807,7 @@ let
     { check = config.networking.wg-quick.interfaces != {};
       path  = ["nixos" "wireguard" "wireguard-wg-quick-${wgTestSuffix}"];
     }
-    { check = config.services.wordpress != {};
+    { check = config.services.wordpress.sites != {};
       path  = ["nixos" "wordpress"];
     }
     { check = config.services.xandikos.enable;
