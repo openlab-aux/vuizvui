@@ -62,7 +62,7 @@ in {
     vuizvui.sternenseemann.acme
     exfat borgbackup
     gnupg pinentry-gnome signing-party gpgme
-    thunderbird-wayland
+    thunderbird
     vuizvui.sternenseemann.texlive
     # jabref # depends on insecure JDK version
     yt-dlp mpv vlc spotify
