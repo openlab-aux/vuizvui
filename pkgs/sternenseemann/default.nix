@@ -108,5 +108,5 @@ lib.fix (self: {
   };
 
   # packaged 3rd party software
-  saneterm = pkgs.python39Packages.callPackage ./saneterm { };
+  saneterm = pkgs.python3Packages.callPackage ./saneterm { };
 })
