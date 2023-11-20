@@ -183,8 +183,7 @@ let
       path  = ["nixos" "ejabberd"];
     }
     { check = config.services.logstash.enable
-           || config.services.elasticsearch.enable
-           || config.services.kibana.enable;
+           || config.services.elasticsearch.enable;
       path  = ["nixos" "elk"];
     }
     { check = config.services.etcd.enable;
