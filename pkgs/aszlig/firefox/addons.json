@@ -12,7 +12,7 @@
     "hash": "sha256:08b7af97bef05300ab3ac3ad721322ff00505631233482568fc4489c16d51b71"
   },
   "multi-account-containers": {
-    "url": "https://addons.mozilla.org/firefox/downloads/file/4058426/multi_account_containers-8.1.2.xpi",
-    "hash": "sha256:0ab8f0222853fb68bc05fcf96401110910dfeb507aaea2cf88c5cd7084d167fc"
+    "url": "https://addons.mozilla.org/firefox/downloads/file/4186050/multi_account_containers-8.1.3.xpi",
+    "hash": "sha256:33edd98d0fc7d47fa310f214f897ce4dfe268b0f868c9d7f32b4ca50573df85c"
   }
 }
