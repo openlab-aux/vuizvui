@@ -4,6 +4,7 @@
   vuizvui.user.devhell.profiles.base.enable = true;
 
   boot = {
+    swraid.enable = true;
     loader = {
       grub  = {
         enable = true;
