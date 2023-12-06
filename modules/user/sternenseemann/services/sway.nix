@@ -158,6 +158,7 @@ in {
       cfg.package
     ];
 
+    # TODO(@sternenseemann): maybe some of those should be set more ad-hoc
     environment.sessionVariables = {
       # firefox screencapture
       XDG_SESSION_TYPE = "wayland";
@@ -176,7 +177,7 @@ in {
 
     services.pipewire.enable = true;
 
-    qt5.platformTheme = "gtk";
+    qt.platformTheme = "gtk";
 
     xdg.portal = {
       enable = true;
@@ -184,8 +185,12 @@ in {
       extraPortals = [
         pkgs.xdg-desktop-portal-gtk
       ];
-      # TODO(sterni): look into the proper™ way to do this today
-      gtkUsePortal = true;
+      config.common = {
+        default = [
+          "wlr"
+          "gtk"
+        ];
+      };
     };
 
     security.pam.services.swaylock = {};
