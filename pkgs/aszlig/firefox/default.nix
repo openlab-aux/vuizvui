@@ -1,5 +1,5 @@
 { lib, writeTextFile, writers, wrapFirefox, fetchFirefoxAddon
-, firefox-unwrapped, tridactyl-native
+, firefoxPackages, buildMozillaMach, tridactyl-native
 }:
 
 let
@@ -9,7 +9,14 @@ let
 
   extensions = lib.mapAttrs mkExtension (lib.importJSON ./addons.json);
 
-  firefoxNoSigning = (firefox-unwrapped.override {
+  firefoxNoSigning = ((firefoxPackages.override {
+    # XXX: The buildMozillaMach gets passed its options via a non-overridable
+    # attribute set, so we need to wrap it here.
+    buildMozillaMach = opts: buildMozillaMach (opts // {
+      requireSigning = false;
+      allowAddonSideload = true;
+    });
+  }).firefox.override {
     crashreporterSupport = false;
     drmSupport = false;
     googleAPISupport = false;
@@ -18,15 +25,19 @@ let
       ./mute-by-default.patch
       ./dont-block-about-pages.patch
     ];
-    MOZ_REQUIRE_SIGNING = false;
-  });
+  }) // {
+    # XXX: This is needed because the requireSigning and allowAddonSideload are
+    # not passed through with the new buildMozillaMach function.
+    requireSigning = false;
+    allowAddonSideload = true;
+  };
 
   jsString = str: builtins.toJSON (toString str);
 
 in wrapFirefox firefoxNoSigning {
   nixExtensions = lib.attrValues extensions;
 
-  extraNativeMessagingHosts = [
+  nativeMessagingHosts = [
     (writeTextFile {
       name = "ff2mpv-native";
       destination = "/lib/mozilla/native-messaging-hosts/ff2mpv.json";
