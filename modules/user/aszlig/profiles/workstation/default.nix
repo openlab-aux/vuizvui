@@ -92,6 +92,7 @@ in {
 
       merge.tool = "vimdiff3";
       merge.conflictstyle = "diff3";
+      mergetool.keepBackup = false;
 
       delta = {
         commit-decoration-style = "bold yellow box";
