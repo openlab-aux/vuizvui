@@ -276,7 +276,7 @@ in {
       units
       unrar
       unzip
-      urlview
+      urlscan
       usbutils
       vanilla-dmz
       virt-manager
