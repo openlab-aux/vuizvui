@@ -1,28 +1,28 @@
 diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 1bdf714dcd9e..4014a2e17c70 100644
+index 74f74b459f5f..dbf79f2f0060 100644
 --- a/drivers/nvme/host/nvme.h
 +++ b/drivers/nvme/host/nvme.h
-@@ -149,6 +149,12 @@ enum nvme_quirks {
- 	 * No temperature thresholds for channels other than 0 (Composite).
+@@ -161,6 +161,12 @@ enum nvme_quirks {
+ 	 * Disables simple suspend/resume path.
  	 */
- 	NVME_QUIRK_NO_SECONDARY_TEMP_THRESH	= (1 << 19),
+ 	NVME_QUIRK_FORCE_NO_SIMPLE_SUSPEND	= (1 << 20),
 +
 +	/*
 +	 * Disables entering D3cold state for devices that might not wake up
 +	 * again afterwards.
 +	 */
-+	NVME_QUIRK_NO_D3_COLD			= (1 << 20),
++	NVME_QUIRK_NO_D3_COLD			= (1 << 21),
  };
  
  /*
 diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 3a1c37f32f30..1cedc6d0ec5f 100644
+index 5c2a3af26d4d..a2615e2d543c 100644
 --- a/drivers/nvme/host/pci.c
 +++ b/drivers/nvme/host/pci.c
-@@ -3070,6 +3070,15 @@ static unsigned long check_vendor_combination_bug(struct pci_dev *pdev)
- 		if ((dmi_match(DMI_BOARD_VENDOR, "LENOVO")) &&
- 		     dmi_match(DMI_BOARD_NAME, "LNVNB161216"))
- 			return NVME_QUIRK_SIMPLE_SUSPEND;
+@@ -2915,6 +2915,15 @@ static unsigned long check_vendor_combination_bug(struct pci_dev *pdev)
+ 		    dmi_match(DMI_BOARD_NAME, "NS5x_7xPU") ||
+ 		    dmi_match(DMI_BOARD_NAME, "PH4PRX1_PH6PRX1"))
+ 			return NVME_QUIRK_FORCE_NO_SIMPLE_SUSPEND;
 +	} else if (pdev->vendor == 0x144d && (pdev->device == 0xa80a ||
 +	           pdev->device == 0xa808)) {
 +		/*
@@ -35,13 +35,13 @@ index 3a1c37f32f30..1cedc6d0ec5f 100644
  	}
  
  	return 0;
-@@ -3134,6 +3143,9 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		quirks |= NVME_QUIRK_SIMPLE_SUSPEND;
- 	}
+@@ -2976,6 +2985,9 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
+ 		NVME_MAX_KB_SZ << 1, dma_opt_mapping_size(&pdev->dev) >> 9);
+ 	dev->ctrl.max_segments = NVME_MAX_SEGS;
  
 +	if (quirks & NVME_QUIRK_NO_D3_COLD)
 +		pci_d3cold_disable(pdev);
 +
  	/*
- 	 * Double check that our mempool alloc size will cover the biggest
- 	 * command we support.
+ 	 * There is no support for SGLs for metadata (yet), so we are limited to
+ 	 * a single integrity segment for the separate metadata pointer.
