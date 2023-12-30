@@ -33,6 +33,7 @@ let
     /home/lukas/Videos/dok
     /home/lukas/Videos/series
     /home/lukas/Videos/dl
+    /home/lukas/src/cpp/llvm-project
   '';
 
   bins = (getBins cryptsetup [ "cryptsetup" ])
