@@ -38,7 +38,7 @@ writePython3 "vuizvui-update-programs-sqlite" {
   def latest_nixexprs_url():
     r = requests.head('https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz')
 
-    assert r.status_code == 301
+    assert r.status_code == 301 or r.status_code == 302
     return r.headers['location']
 
   def nixos_version_for_url(url):
