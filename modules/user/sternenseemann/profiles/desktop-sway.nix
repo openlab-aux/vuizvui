@@ -83,6 +83,7 @@ in
         wl-clipboard               # instead of xsel
         mako                       # notifications
         gnome.adwaita-icon-theme
+        wdisplays                  # display layout GUI
       ];
 
       programs.fish.shellAliases = {
