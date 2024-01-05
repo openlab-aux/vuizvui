@@ -72,9 +72,12 @@
   networking = {
     hostName = "gunnr";
     hostId = "29e6affc";
-    wireless.enable = false;
+    wireless.iwd.enable = true;
     useNetworkd = true;
-    interfaces.enp4s0.useDHCP = true;
+    interfaces = {
+      enp4s0.useDHCP = true;
+      wlan0.useDHCP = true;
+    };
   };
 
   nix = {
