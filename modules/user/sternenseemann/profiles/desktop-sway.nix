@@ -163,6 +163,9 @@ in
       # so libsecret works
       services.gnome.gnome-keyring.enable = true;
       programs.dconf.enable = true;
+
+      # for trash:// support in pcmanfm
+      services.gvfs.enable = true;
     })
 
     (lib.mkIf cfg.tep.enable {
