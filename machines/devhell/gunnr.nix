@@ -32,7 +32,7 @@
 
     kernelParams = [ "pcie_aspm=off" ];
     kernelModules = [ "kvm-amd" ];
-    extraModulePackages = [ ];
+    extraModulePackages = with config.boot.kernelPackages; [ rtl8812au ];
     blacklistedKernelModules = [ ];
     kernelPackages = lib.mkForce
       config.boot.zfs.package.latestCompatibleLinuxPackages;
