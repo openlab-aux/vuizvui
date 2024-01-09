@@ -199,8 +199,8 @@ let
       lnl7 = fetchFromGitHub {
         owner = "LnL7";
         repo = "vim-nix";
-        rev = "d733cb96707a2a6bdc6102b6d89f947688e0e959";
-        sha256 = "12k2gwm8b1n02361gpjhsldql99yd7qsh80a3lbwc5c5gz5j8jsb";
+        rev = "048c71f1ed2c679cd55acd2c807c2c96aea82e65";
+        hash = "sha256-IyLKu5sfD7RNHwI8kodQB4f1xKBLSEnnw6fBu3Zs5eg";
       };
 
       src = fetchFromGitHub {
