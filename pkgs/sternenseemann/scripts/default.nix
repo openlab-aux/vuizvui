@@ -24,7 +24,6 @@ let
     /home/lukas/.npm
     /home/lukas/.meteor
     /home/lukas/tmp
-    /home/lukas/.mozilla
     /home/lukas/.cabal
     /home/lukas/.bundle
     /home/lukas/.opam
