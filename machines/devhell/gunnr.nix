@@ -23,7 +23,7 @@
 
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      kernelModules = [ "fuse" "amdgpu" ];
+      kernelModules = [ "fuse" "amdgpu" "8812au" ];
       postDeviceCommands = ''
         echo none > /sys/block/sda/queue/scheduler
         echo none > /sys/block/sdb/queue/scheduler
