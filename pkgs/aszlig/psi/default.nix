@@ -12,19 +12,19 @@ let
   qdarkstyle = fetchFromGitHub {
     owner = "ColinDuquesnoy";
     repo = "QDarkStyleSheet";
-    rev = "6ff5fdfd7b1e2a538b6f22bd85dd05a817d24c45";
-    hash = "sha256-NyoIBKjSAtTPNAou+o2yy1jTo51/FEejKo8nbSjlNbE";
+    rev = "6f3962e63749893f951be73ebfec93e83fffebf2";
+    hash = "sha256-fPyavFjsyffFKgQzJYFHLUMcz44zv87P/WeBGHzlNew";
   };
 
   usrsctp = stdenv.mkDerivation {
     pname = "usrsctp";
-    version = "git20230524";
+    version = "git20240111";
 
     src = fetchFromGitHub {
       owner = "sctplab";
       repo = "usrsctp";
-      rev = "ac559d2a95277e5e0827e9ee5a1d3b1b50e0822a";
-      hash = "sha256-CIdLGBVCVjz3LFAZXc0IcYsQUOG2NpgEHsWNpzs97gI";
+      rev = "265f20562e4d3fa977c6d9e09d0631b8125ac949";
+      hash = "sha256-4EH67xFeLSad7klQNPKV0Nyq0KAV8LcqK9Wx9QsuboA";
     };
 
     nativeBuildInputs = [ cmake ];
@@ -32,13 +32,13 @@ let
 
 in stdenv.mkDerivation rec {
   name = "psi-${version}";
-  version = "2.0git20230530aszlig";
+  version = "2.0git20231104aszlig";
 
   src = fetchFromGitHub {
     owner = "psi-im";
     repo = "psi";
-    rev = "718c3dfef7f374e2de601b89a22421a139e17fa6";
-    hash = "sha256-514+4A+ij0rYBeGiIxHtkUFL/Tf6CQh2kRXVLYUdnTc";
+    rev = "83a8dfb87ad0b882be49fd43de75c805464a8c2b";
+    hash = "sha256-ya5qMh5kIMvPUOcfY+B3952Q8SBg+QstGI9/8GsoYRk";
     fetchSubmodules = true;
   };
 
