@@ -347,15 +347,15 @@ let
       path  = ["nixos" "keepalived"];
     }
     { check = let
-        isHeimdal = lib.hasPrefix "heimdal" config.krb5.kerberos.name;
+        isHeimdal = config.security.krb5.package.pname == "heimdal";
         isServer = config.services.kerberos_server.enable;
-      in isHeimdal && (isServer || config.krb5.enable);
+      in isHeimdal && (isServer || config.security.krb5.enable);
       path  = ["nixos" "kerberos" "heimdal"];
     }
     { check = let
-        isHeimdal = lib.hasPrefix "heimdal" config.krb5.kerberos.name;
+        isHeimdal = config.security.krb5.package.pname == "heimdal";
         isServer = config.services.kerberos_server.enable;
-      in !isHeimdal && (isServer || config.krb5.enable);
+      in !isHeimdal && (isServer || config.security.krb5.enable);
       path  = ["nixos" "kerberos" "mit"];
     }
     (let
