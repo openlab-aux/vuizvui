@@ -23,7 +23,7 @@
 
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      kernelModules = [ "fuse" "amdgpu" "8812au" ];
+      kernelModules = [ "fuse" "amdgpu" ];
       postDeviceCommands = ''
         echo none > /sys/block/sda/queue/scheduler
         echo none > /sys/block/sdb/queue/scheduler
@@ -32,7 +32,7 @@
 
     kernelParams = [ "pcie_aspm=off" ];
     kernelModules = [ "kvm-amd" ];
-    extraModulePackages = with config.boot.kernelPackages; [ rtl8812au ];
+    extraModulePackages = with config.boot.kernelPackages; [ rtl88xxau-aircrack ];
     blacklistedKernelModules = [ ];
     kernelPackages = lib.mkForce
       config.boot.zfs.package.latestCompatibleLinuxPackages;
