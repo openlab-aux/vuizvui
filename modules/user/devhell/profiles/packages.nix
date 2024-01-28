@@ -103,6 +103,7 @@ in {
       ethtool
       eva
       exfat
+      fastfetch
       fd
       feh
       ffmpeg-full
@@ -186,7 +187,6 @@ in {
       navi
       ncdu
       ncmpcpp
-      neofetch
       neomutt
       nethack
       nethogs
