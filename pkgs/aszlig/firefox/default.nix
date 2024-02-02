@@ -83,6 +83,7 @@ in wrapFirefox firefoxNoSigning {
     lockPref('devtools.theme', 'dark');
     lockPref('extensions.getAddons.cache.enabled', false);
     lockPref('extensions.blocklist.enabled', false);
+    lockPref('extensions.update.enabled', false);
     lockPref('extensions.webextensions.restrictedDomains', "");
     lockPref('network.captive-portal-service.enabled', false);
     lockPref('network.connectivity-service.enabled', false);
