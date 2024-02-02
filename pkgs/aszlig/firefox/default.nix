@@ -88,6 +88,7 @@ in wrapFirefox firefoxNoSigning {
     lockPref('network.captive-portal-service.enabled', false);
     lockPref('network.connectivity-service.enabled', false);
     lockPref('privacy.donottrackheader.enabled', true);
+    lockPref('privacy.globalprivacycontrol.enabled', true);
     lockPref('privacy.query_stripping.enabled', true);
     lockPref('privacy.query_stripping.enabled.pbmode', true);
     lockPref('privacy.query_stripping.strip_list', '${toString [
