@@ -99,7 +99,6 @@ in {
       duf
       e2fsprogs
       easyeffects
-      element-desktop
       ethtool
       eva
       exfat
@@ -112,7 +111,6 @@ in {
       file
       firefox
       flac
-      flameshot
       flavours
       fortune
       freerdpUnstable
@@ -155,7 +153,6 @@ in {
       ipv6calc
       jq
       kmon
-      ldns
       lemmeknow
       lfs
       lftp
@@ -225,7 +222,6 @@ in {
       pulsemixer
       pv
       pxz
-      python3 # needed for timewarrior-taskwarrior hook
       qemu
       qrencode
       radeontop
@@ -233,7 +229,6 @@ in {
       recode
       reptyr
       restic
-      ripasso-cursive
       ripgrep
       rq
       rsync
@@ -264,7 +259,6 @@ in {
       termusic
       testdisk
       tig
-      timewarrior
       toilet
       tokei
       tree
@@ -309,7 +303,6 @@ in {
       zathura
       zbar
       zellij
-      zettlr
       zip
       zotero
       zstd
