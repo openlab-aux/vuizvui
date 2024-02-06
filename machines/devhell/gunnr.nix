@@ -10,7 +10,6 @@
     loader = {
       grub  = {
         enable = true;
-        version = 2;
         copyKernels = true;
         devices = [ "/dev/sda" "/dev/sdb" ];
       };
