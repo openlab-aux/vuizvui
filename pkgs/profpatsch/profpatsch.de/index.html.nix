@@ -21,6 +21,7 @@
     TODO: create favicon
     -->
     <link rel="icon" href="data:,">
+    <link rel="me" href="https://mastodon.xyz/@Profpatsch">
 
     <link rel="preload" href="${jsTalkies}" as="script">
     <link rel="preload" href="${cssNormalize}" as="style">
