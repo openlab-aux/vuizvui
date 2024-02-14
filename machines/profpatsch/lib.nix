@@ -14,6 +14,7 @@ rec {
       "libvirtd"
       "scanner"
       "jackaudio"
+      "adbusers"
     ];
     uid = 1000;
     createHome = true;
