@@ -158,7 +158,11 @@ function appendTalkies(append_to_element) {
         { talk: "🙏 🌧 ⬇ 🌍"
         , link: "https://www.youtube.com/watch?v=QAo_Ycocl1E" },
         { talk: "Seal II"
-          , link: "https://www.youtube.com/watch?v=GRMLpJ-v7vk" }
+        , link: "https://www.youtube.com/watch?v=GRMLpJ-v7vk" },
+        { talk: "The ideal world for an imperfect being is an imperfect world"
+        , link: "https://www.sbnation.com/c/secret-base/21410129/20020/chapter-4" },
+        { talk: "boyrap premium"
+          , link: "https://cohost.org/jkap/post/696031-empty" }
     ];
     var talkie = talkies[Math.floor(Math.random()*talkies.length)];
     var elem = null;
