@@ -49,8 +49,16 @@ in {
     ###################
     # Graphical System
 
+    vuizvui.user.profpatsch.xserver.windowManager.xmonad = {
+      enable = true;
+      package = pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.my-xmonad;
+    };
     services.xserver = {
       enable = true;
+
+      # otherwise xterm is enabled, creating an xterm that spawns the window manager.
+      desktopManager.xterm.enable = false;
+
       layout = "de";
       xkbVariant = "neo";
       xkbOptions = "altwin:swap_alt_win";
@@ -59,14 +67,6 @@ in {
         Option "SuspendTime" "20"
         Option "OffTime" "30"
       '';
-
-      # otherwise xterm is enabled, creating an xterm that spawns the window manager.
-      desktopManager.xterm.enable = false;
-
-      windowManager.xmonad = {
-        enable = true;
-        enableContribAndExtras = true;
-      };
 
       displayManager = {
         sessionCommands = with pkgs; ''
