@@ -19,7 +19,7 @@ rec {
     uid = 1000;
     createHome = true;
     home = "/home/philip";
-    passwordFile = "${home}/.config/passwd";
+    hashedPasswordFile = "${home}/.config/passwd";
     shell = "${lib.getBin fish}/bin/fish";
     openssh.authorizedKeys.keys = authKeys;
     isNormalUser = true;
