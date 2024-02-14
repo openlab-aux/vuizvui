@@ -44,6 +44,8 @@ in {
       };
     };
 
+    services.fwupd.enable = true;
+
     ###################
     # Graphical System
 
