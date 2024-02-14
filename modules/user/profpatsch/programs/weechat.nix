@@ -58,6 +58,12 @@ let
       ]
   ];
 
+  stopWeechatTmuxSession = writeExecline "stop-weechat-tmux-session" {} [
+    bins.tmux
+      "kill-session"
+      "-t" sessionName
+  ];
+
   attachWeechatTmuxSession = writeExecline "attach-weechat-tmux-session" {} [
     "importas" "-u" "-D" "" "what" "SSH_ORIGINAL_COMMAND"
     # if the user passes "ssh" as argv, it will call tmux directly
@@ -146,6 +152,7 @@ in
         environment.WEECHAT_HOME = cfg.weechatDataDir;
         serviceConfig = {
           ExecStart = startWeechatTmuxSession cfg.wrapExecStart;
+          ExecStop = stopWeechatTmuxSession;
           Restart = "always";
           RestartSec = "3s";
           User = cfg.userName;
