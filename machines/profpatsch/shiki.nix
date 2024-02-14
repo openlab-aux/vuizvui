@@ -33,6 +33,15 @@ in {
 
   config = {
 
+    system.stateVersion = "23.11";
+
+    system.autoUpgrade = {
+      enable = true;
+      dates = "18:00";
+      channel = "https://nixos.org/channels/nixos-23.11";
+      allowReboot = false;
+    };
+
     #########
     # Kernel
 
@@ -49,6 +58,8 @@ in {
     boot.extraModprobeConfig = ''
       options v4l2loopback exclusive_caps=1
     '';
+    # make sure /boot does not run out of space
+    boot.loader.systemd-boot.configurationLimit = 20;
 
     ###########
     # Hardware
@@ -65,9 +76,13 @@ in {
       options = ["nofail"];
     };
 
+    zramSwap.enable = true;
+
     hardware.trackpoint = {
       speed = 280;
     };
+
+    powerManagement.cpuFreqGovernor = "powersave";
 
     # hardware.pulseaudio = {
     #   enable = true;
