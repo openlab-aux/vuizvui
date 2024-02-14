@@ -177,7 +177,9 @@ in {
         locations."/posts" = {
           proxyPass = "http://localhost:${toString siteServerPort}";
         };
-
+        locations."/mlp/" = {
+          alias = "/sync/www/mlp/";
+        };
       };
     };
 
