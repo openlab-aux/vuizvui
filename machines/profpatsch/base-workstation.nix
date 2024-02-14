@@ -17,6 +17,8 @@ in {
     time.timeZone = "Europe/Berlin";
 
     networking = {
+      # it will be ready when it’s ready,,
+      enableIPv6 = false;
       # better for untrusted networks
       firewall = {
         enable = true;
