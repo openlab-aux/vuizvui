@@ -145,7 +145,6 @@ in {
       htop
       hydra-check
       imagemagick
-      imv
       inetutils
       ipcalc
       iprange
@@ -199,6 +198,7 @@ in {
       notmuch
       ntfs3g
       ntfsprogs
+      oculanate
       oneshot
       openssl
       p7zip
