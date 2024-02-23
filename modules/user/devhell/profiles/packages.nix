@@ -198,7 +198,7 @@ in {
       notmuch
       ntfs3g
       ntfsprogs
-      oculanate
+      oculante
       oneshot
       openssl
       p7zip
