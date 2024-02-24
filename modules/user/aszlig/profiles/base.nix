@@ -29,7 +29,7 @@ in {
       LC_TIME = "C.UTF-8";
     };
 
-    users.defaultUserShell = "/var/run/current-system/sw/bin/zsh";
+    users.defaultUserShell = "/run/current-system/sw/bin/zsh";
 
     networking.wireless.enable = false;
     networking.firewall.enable = false;
