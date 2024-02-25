@@ -15,13 +15,6 @@ in {
         clockSupport = true;
       };
 
-      polybar = super.polybar.override {
-        nlSupport = true;
-        pulseSupport = true;
-        i3GapsSupport = true;
-        mpdSupport = true;
-      };
-
       sox = super.sox.override {
         enableLame = true;
       };
