@@ -115,7 +115,7 @@
       drivers = [ pkgs.foo2zjs pkgs.hplip ];
     };
     syncthing = {
-      enable = true;
+      enable = false;
     };
   };
 

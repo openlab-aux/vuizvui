@@ -106,7 +106,7 @@
       path = [ pkgs.notmuch ];
     };
     syncthing = {
-      enable = true;
+      enable = false;
     };
   };
 
