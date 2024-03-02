@@ -98,6 +98,7 @@ in {
       fastfetch
       fd
       feh
+      fend
       ffmpeg-full
       ffsend
       figlet
