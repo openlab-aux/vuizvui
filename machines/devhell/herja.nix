@@ -19,7 +19,7 @@
     };
 
     kernelModules = [ "kvm-amd" "acpi_call" ];
-    kernelParams = [ "acpi_backlight=native" ];
+    kernelParams = [ "acpi_backlight=native" "mem_sleep_default=deep" ];
     extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
   };
 
