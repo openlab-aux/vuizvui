@@ -231,6 +231,7 @@ in {
       screen
       sd
       shellcheck
+      shellharden
       signal-desktop
       silicon
       silver-searcher
