@@ -1,10 +1,10 @@
 extern crate temp;
 
 use std::ffi::{OsStr, OsString};
-use std::fs::{read_dir, DirEntry};
+use std::fs::read_dir;
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::process::ExitStatusExt;
-use std::path::{PathBuf, Path};
+use std::path::PathBuf;
 use std::process::{Stdio, ExitStatus, Command};
 use temp::TempDir;
 
@@ -89,9 +89,9 @@ enum DrvOutput<'a> {
     Man,
     DevMan,
     Out,
-    Doc,
+    // Doc,
     DevDoc,
-    Info,
+    // Info,
     Dev,
     Bin,
     Lib,
@@ -200,7 +200,7 @@ fn match_man_page_file(name: &str, section: &str, page: &str) -> bool {
 /// matches exist, the one with an alphanumerically lower section is preferred,
 /// e. g. section 1 is preferred over section 3.
 fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
-    let mut build = Command::new("nix-store")
+    let build = Command::new("nix-store")
                             .arg("--realise")
                             .arg(drv.render())
                             .arg("--add-root")
@@ -374,16 +374,15 @@ enum CliAction<'a> {
     Man(&'a str, Option<&'a str>, &'a str),
 }
 
-fn main() -> std::io::Result<()> {
-    fn dispatch_action(progname: &str, action: CliAction) -> std::io::Result<()> {
+fn main() {
+    fn dispatch_action(progname: &str, action: CliAction) {
         match action {
             CliAction::Usage => {
                 println!("Usage: {} ATTR [PAGE | SECTION [PAGE]]", progname);
-                Ok(())
             },
             CliAction::Man(attr, section, page) =>
                 match open_man_page(attr, section, page) {
-                    Ok(_) => Ok(()),
+                    Ok(_) => (),
                     Err(t) => {
                         let msg = t.msg();
                         eprint!("error: {}", msg);
@@ -456,7 +455,7 @@ mod tests {
         // lower =^= preferred
         assert!(DrvOutput::Man    < DrvOutput::Out);
         assert!(DrvOutput::DevMan < DrvOutput::Out);
-        assert!(DrvOutput::Out    < DrvOutput::Doc);
+        // assert!(DrvOutput::Out    < DrvOutput::Doc);
         assert!(DrvOutput::Out    < DrvOutput::DevDoc);
         assert!(DrvOutput::Out    < DrvOutput::Lib);
         assert!(DrvOutput::Out    < DrvOutput::Bin);

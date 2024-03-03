@@ -28,7 +28,7 @@
 use std::ffi::OsStr;
 use std::io::{Error, ErrorKind};
 use std::os::unix::ffi::{OsStrExt, OsStringExt};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 // libc interaction
 
@@ -73,7 +73,7 @@ impl AsRef<Path> for Temp {
 
 impl Drop for Temp {
     fn drop(&mut self) {
-        match self.kind {
+        let _ = match self.kind {
             TempKind::File => std::fs::remove_file(self.as_ref()),
             TempKind::Dir => std::fs::remove_dir_all(self.as_ref()),
         };
