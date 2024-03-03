@@ -271,6 +271,11 @@ enum OutputDirResult {
     FoundManPage(PathBuf),
 }
 
+struct FoundManSection {
+    man_section: String,
+    path: PathBuf,
+}
+
 impl Main {
     /// This function implements the main operation of `nman`:
     /// It instantiates the given attribute to get all outputs
@@ -408,59 +413,63 @@ impl Main {
 
         // expected sub directory of share/man or, if no section
         // is given, all potential sub directories
-        let mut section_dirs: Vec<(OsString, PathBuf)> = Self::enumerate_man_pages(&path)?;
-
+        let mut section_dirs: Vec<FoundManSection> = Self::enumerate_man_pages(&path)?;
         if let Some(sect) = section {
             let dir_name = OsString::from(format!("man{}", sect));
             let dir_path = path.join(dir_name.as_os_str());
             section_dirs = section_dirs
                 .into_iter()
-                .find(|(_, dp)| dp == &dir_path)
+                .find(|man| man.path == dir_path)
                 .map_or(Vec::new(), |x| vec![x]);
         }
 
         // sorting should be ascending in terms of numerics,
         // apart from that, not many requirements
-        section_dirs.sort_unstable_by(|(n1, _), (n2, _)| n1.cmp(n2));
+        section_dirs.sort_unstable_by(|man1, man2| man1.man_section.cmp(&man2.man_section));
 
-        for (dir_name, dir) in section_dirs {
-            // separate "man" prefix from section indicator,
-            // while validating the particular sub directory
-            let parsed_man_dir = dir_name
-                .to_str()
-                .filter(|d| d.len() > 3)
-                .map(|d| d.split_at(3));
+        for ref man_page in section_dirs {
+            // we have a valid man dir, check if it contains our page
+            let dir_content = read_dir(&man_page.path).map_err(NmanError::IO)?;
 
-            match parsed_man_dir {
-                Some(("man", s)) => {
-                    // we have a valid man dir, check if it contains our page
-                    let dir_content = read_dir(dir).map_err(NmanError::IO)?;
+            for entry in dir_content {
+                let file = entry.map_err(NmanError::IO)?;
+                let mmatch = file
+                    .file_name()
+                    .to_str()
+                    .map(|f| match_man_page_file(f, &man_page.man_section, page));
 
-                    for entry in dir_content {
-                        let file = entry.map_err(NmanError::IO)?;
-                        let mmatch = file
-                            .file_name()
-                            .to_str()
-                            .map(|f| match_man_page_file(f, s, page));
-
-                        if mmatch.unwrap_or(false) {
-                            return Ok(OutputDirResult::FoundManPage(file.path()));
-                        }
-                    }
+                if mmatch.unwrap_or(false) {
+                    return Ok(OutputDirResult::FoundManPage(file.path()));
                 }
-                _ => continue,
             }
         }
 
         Ok(OutputDirResult::NoManPageFound)
     }
 
-    fn enumerate_man_pages<'a>(path: &PathBuf) -> Result<Vec<(OsString, PathBuf)>, NmanError<'a>> {
+    fn enumerate_man_pages<'a>(path: &PathBuf) -> Result<Vec<FoundManSection>, NmanError<'a>> {
         Ok(read_dir(path.as_path())
             .map_err(NmanError::IO)?
-            // ignore directories/files that cannot be read
-            .filter_map(|entry| entry.ok())
-            .map(|e| (e.file_name(), e.path()))
+            .filter_map(|entry| {
+                // ignore directories/files that cannot be read
+                let e = entry.ok()?;
+                e.file_name()
+                    .to_str()
+                    // separate "man" prefix from section indicator,
+                    // while validating the particular sub directory
+                    .filter(|d| d.len() > 3)
+                    .map(|d| d.split_at(3))
+                    .and_then(|(prefix, man_section)| {
+                        if prefix == "man" {
+                            Some(FoundManSection {
+                                man_section: String::from(man_section),
+                                path: e.path(),
+                            })
+                        } else {
+                            None
+                        }
+                    })
+            })
             .collect())
     }
 
