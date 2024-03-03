@@ -408,23 +408,16 @@ impl Main {
 
         // expected sub directory of share/man or, if no section
         // is given, all potential sub directories
-        let mut section_dirs: Vec<(OsString, PathBuf)> = match section {
-            Some(s) => {
-                let dir_name = OsString::from(format!("man{}", s));
-                let dir_path = path.join(dir_name.as_os_str());
+        let mut section_dirs: Vec<(OsString, PathBuf)> = Self::enumerate_man_pages(&path)?;
 
-                if dir_path.exists() {
-                    vec![(dir_name, dir_path)]
-                } else {
-                    Vec::new()
-                }
-            }
-            None => read_dir(path.as_path())
-                .map_err(NmanError::IO)?
-                .filter_map(|entry| entry.ok())
-                .map(|e| (e.file_name(), e.path()))
-                .collect(),
-        };
+        if let Some(sect) = section {
+            let dir_name = OsString::from(format!("man{}", sect));
+            let dir_path = path.join(dir_name.as_os_str());
+            section_dirs = section_dirs
+                .into_iter()
+                .find(|(_, dp)| dp == &dir_path)
+                .map_or(Vec::new(), |x| vec![x]);
+        }
 
         // sorting should be ascending in terms of numerics,
         // apart from that, not many requirements
@@ -460,6 +453,15 @@ impl Main {
         }
 
         Ok(OutputDirResult::NoManPageFound)
+    }
+
+    fn enumerate_man_pages<'a>(path: &PathBuf) -> Result<Vec<(OsString, PathBuf)>, NmanError<'a>> {
+        Ok(read_dir(path.as_path())
+            .map_err(NmanError::IO)?
+            // ignore directories/files that cannot be read
+            .filter_map(|entry| entry.ok())
+            .map(|e| (e.file_name(), e.path()))
+            .collect())
     }
 
     /// Realises the given derivation output using `nix-store --realise` and
