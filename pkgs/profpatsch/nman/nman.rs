@@ -23,7 +23,6 @@ enum CliResult<'a> {
 
 fn main() {
     use CliResult::*;
-    // let main = Main{is_debug: false};
     let (opts, args) : (Vec<String>, Vec<String>) =
             std::env::args().partition(|s| s.starts_with("-"));
 
@@ -40,14 +39,18 @@ fn main() {
         _ => ShowUsage { err_msg: Some("Unexpected number of arguments") },
     };
 
+    let mut is_debug: bool = false;
     for opt in opts {
         match &opt[..] {
             "--help" | "--usage" | "-h" =>
                 cli_res = ShowUsage{err_msg: None},
+            "--verbose" | "-v" =>
+                is_debug = true,
             _ => cli_res = ShowUsage{err_msg: Some("Unknown option")},
         }
     }
 
+    let main = Main{is_debug};
     match cli_res {
         ShowUsage{err_msg} => {
             if let Some(msg) = err_msg {
@@ -58,7 +61,7 @@ fn main() {
         },
         Action(action) => match action {
             CliAction::Man(attr, section, page) =>
-            match Main::open_man_page(attr, section, page) {
+            match main.open_man_page(attr, section, page) {
                 Ok(_) => (),
                 Err(t) => {
                     let msg = t.msg();
@@ -230,7 +233,8 @@ impl<'a> DrvWithOutput<'a> {
 }
 
 struct Main {
-    // is_debug: bool
+    /// Whether the program is running in debug mode
+    is_debug: bool
 }
 
 impl Main {
@@ -243,12 +247,12 @@ impl Main {
     /// Both GNU's `man-db` and OpenBSD's `mandoc` work
     /// (any man implementation that implements `-l` should
     /// for that matter).
-    fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> Result<(), NmanError<'a>> {
+    fn open_man_page<'a>(&self, attr: &'a str, section: Option<&'a str>, page: &'a str) -> Result<(), NmanError<'a>> {
         let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
         // TODO(sterni): allow selecting other base package sets,
         //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
         let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
-        let inst = debug_log_command(
+        let inst = self.debug_log_command(
                             Command::new("nix-instantiate")
                                 .arg("-E")
                                 .arg(expr)
@@ -281,12 +285,12 @@ impl Main {
         drvs.sort_unstable_by(|a, b| a.output.cmp(&b.output));
 
         for drv in drvs {
-            let man_file = Main::build_man_page(drv, section, page, &tmpdir)?;
+            let man_file = self.build_man_page(drv, section, page, &tmpdir)?;
 
             match man_file {
                 None => continue,
                 Some(f) => {
-                    let res = debug_log_command(Command::new("man")
+                    let res = self.debug_log_command(Command::new("man")
                                     .arg("-l").arg(f))
                                     .and_then(|cmd| cmd.spawn())
                                     .and_then(|mut c| c.wait())
@@ -315,8 +319,8 @@ impl Main {
     /// then searches all man section directories for any matching page. If multiple
     /// matches exist, the one with an alphanumerically lower section is preferred,
     /// e. g. section 1 is preferred over section 3.
-    fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
-        let build = debug_log_command(
+    fn build_man_page<'a>(&self, drv: DrvWithOutput, section: Option<&str>, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
+        let build = self.debug_log_command(
                                 Command::new("nix-store")
                                 .arg("--realise")
                                 .arg(drv.render())
@@ -402,6 +406,24 @@ impl Main {
         Ok(None)
     }
 
+    /// Log the given command to stderr, but only in debug mode
+    fn debug_log_command<'a>(&self, cmd: &'a mut Command) -> Result<&'a mut Command, std::io::Error> {
+        if self.is_debug {
+            let mut formatted = vec![b'$', b' '];
+            formatted.extend(
+                vec![cmd.get_program()]
+                .into_iter()
+                .chain(cmd.get_args())
+                .map(|arg| simple_bash_escape(arg.as_bytes()))
+                .collect::<Vec<_>>()
+                .join(&b' '));
+            formatted.push(b'\n');
+            std::io::stderr().write_all(&formatted).map(|()| cmd)
+        } else {
+            Ok(cmd)
+        }
+    }
+
 }
 
 /// Match if a file name is a man file matching the given
@@ -443,20 +465,6 @@ fn parse_man_section(section: &str) -> Result<&str, &str> {
             Err(_)  => Err("Invalid man section: not a number and not \"3p\""),
         },
     }
-}
-
-fn debug_log_command(cmd: &mut Command) -> Result<&mut Command, std::io::Error> {
-
-    let mut formatted = vec![b'$', b' '];
-    formatted.extend(
-        vec![cmd.get_program()]
-        .into_iter()
-        .chain(cmd.get_args())
-        .map(|arg| simple_bash_escape(arg.as_bytes()))
-        .collect::<Vec<_>>()
-        .join(&b' '));
-    formatted.push(b'\n');
-    std::io::stderr().write_all(&formatted).map(|()| cmd)
 }
 
 /// Simple escaping for bash words. If they contain anything that’s not ascii chars

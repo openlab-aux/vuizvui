@@ -6,7 +6,7 @@
 .Nd nix-shell for man pages
 .Sh SYNOPSIS
 .Nm
-.Op Fl h
+.Op Fl hv
 .Ar ATTR
 .Op Ar PAGE | SECTION Op PAGE
 .Sh DESCRIPTION
@@ -70,11 +70,22 @@ just like invoking
 .Xr man 1
 with two arguments.
 .El
+
+The following options modify the behavior of nman:
+
+.Bl -tag -width Ds
+.It Fl -help | -usage | h
+Print usage information.
+.It Fl -verbose | v
+Put
+.Nm
+into verbose mode, where it prints all commands it executes.
+.El
+
 .Sh EXAMPLES
 .Bd -literal
 # open lowdown(1)
 nman lowdown
-
 # open lowdown(3) from the same package
 nman lowdown 3
 
