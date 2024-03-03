@@ -7,9 +7,8 @@ use std::io::Write;
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::process::ExitStatusExt;
 use std::path::PathBuf;
-use std::process::{Stdio, ExitStatus, Command};
+use std::process::{Command, ExitStatus, Stdio};
 use temp::TempDir;
-
 
 enum CliAction<'a> {
     /// attribute, section, page
@@ -17,51 +16,56 @@ enum CliAction<'a> {
 }
 
 enum CliResult<'a> {
-  ShowUsage{err_msg: Option<&'a str>},
-  Action(CliAction<'a>),
+    ShowUsage { err_msg: Option<&'a str> },
+    Action(CliAction<'a>),
 }
 
 fn main() {
     use CliResult::*;
-    let (opts, args) : (Vec<String>, Vec<String>) =
-            std::env::args().partition(|s| s.starts_with("-"));
+    let (opts, args): (Vec<String>, Vec<String>) =
+        std::env::args().partition(|s| s.starts_with("-"));
 
-    let mut cli_res : CliResult = match args.len() {
+    let mut cli_res: CliResult = match args.len() {
         2 => Action(CliAction::Man(&args[1], None, &args[1])),
         3 => match parse_man_section(&args[2]) {
             Ok(s) => Action(CliAction::Man(&args[1], Some(s), &args[1])),
             Err(_) => Action(CliAction::Man(&args[1], None, &args[2])),
         },
         4 => match parse_man_section(&args[2]) {
-            Err(err_msg) => ShowUsage{err_msg: Some(err_msg)},
+            Err(err_msg) => ShowUsage {
+                err_msg: Some(err_msg),
+            },
             Ok(s) => Action(CliAction::Man(&args[1], Some(s), &args[3])),
-        }
-        _ => ShowUsage { err_msg: Some("Unexpected number of arguments") },
+        },
+        _ => ShowUsage {
+            err_msg: Some("Unexpected number of arguments"),
+        },
     };
 
     let mut is_debug: bool = false;
     for opt in opts {
         match &opt[..] {
-            "--help" | "--usage" | "-h" =>
-                cli_res = ShowUsage{err_msg: None},
-            "--verbose" | "-v" =>
-                is_debug = true,
-            _ => cli_res = ShowUsage{err_msg: Some("Unknown option")},
+            "--help" | "--usage" | "-h" => cli_res = ShowUsage { err_msg: None },
+            "--verbose" | "-v" => is_debug = true,
+            _ => {
+                cli_res = ShowUsage {
+                    err_msg: Some("Unknown option"),
+                }
+            }
         }
     }
 
-    let main = Main{is_debug};
+    let main = Main { is_debug };
     match cli_res {
-        ShowUsage{err_msg} => {
+        ShowUsage { err_msg } => {
             if let Some(msg) = err_msg {
                 eprintln!("usage error: {}", msg);
             }
             println!("Usage: {} ATTR [PAGE | SECTION [PAGE]]", &args[0]);
             std::process::exit(NmanError::Usage.code());
-        },
+        }
         Action(action) => match action {
-            CliAction::Man(attr, section, page) =>
-            match main.open_man_page(attr, section, page) {
+            CliAction::Man(attr, section, page) => match main.open_man_page(attr, section, page) {
                 Ok(_) => (),
                 Err(t) => {
                     let msg = t.msg();
@@ -70,12 +74,11 @@ fn main() {
                         eprint!("\n");
                     }
                     std::process::exit(t.code())
-                },
+                }
             },
-        }
+        },
     }
 }
-
 
 /// Represents all errors that can occurr in `nman`.
 /// The inner structure of this type is rather messy
@@ -111,21 +114,29 @@ impl NmanError<'_> {
             // user error
             NmanError::Usage => 100,
             // everything else is an unexpected error
-            _ => 101
+            _ => 101,
         }
     }
 
     fn msg(&self) -> String {
         match self {
             NmanError::IO(err) => format!("unexpected IO error occurred: {}", err),
-            NmanError::Instantiate(attr, s) =>
-                format!("could not instantiate \"{}\", nix-instantiate {}.",
-                        attr, pretty_exit_status(s)),
-            NmanError::Build(drv_path, s) =>
-                format!("failed to build \"{}\", nix-store {}.",
-                        drv_path.to_string_lossy(), pretty_exit_status(s)),
+            NmanError::Instantiate(attr, s) => format!(
+                "could not instantiate \"{}\", nix-instantiate {}.",
+                attr,
+                pretty_exit_status(s)
+            ),
+            NmanError::Build(drv_path, s) => format!(
+                "failed to build \"{}\", nix-store {}.",
+                drv_path.to_string_lossy(),
+                pretty_exit_status(s)
+            ),
             NmanError::Man => String::from("man failed while opening while opening man page"),
-            NmanError::NotFound(page, sec) => format!("man page {}({}) could not be found", page, sec.unwrap_or("?")),
+            NmanError::NotFound(page, sec) => format!(
+                "man page {}({}) could not be found",
+                page,
+                sec.unwrap_or("?")
+            ),
             NmanError::ParseError(exec) => format!("could not parse output of {}", exec),
             NmanError::Execution(exec) => format!("could not execute {}", exec),
             NmanError::Usage => String::from("usage error"),
@@ -140,7 +151,7 @@ fn pretty_exit_status(status: &ExitStatus) -> String {
         None => match status.signal() {
             Some(s) => format!("was killed by signal {}", s),
             None => String::from("exited for unknown reason"),
-        }
+        },
     }
 }
 
@@ -188,7 +199,7 @@ impl<'a> DrvOutput<'a> {
 /// A derivation represented as a path
 /// coupled with a parsed [`DrvOutput`]
 /// for sorting purposes.
-#[derive (Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 struct DrvWithOutput<'a> {
     /// The original derivation path as printed
     /// by `nix-instantiate` _including_ the output
@@ -218,9 +229,7 @@ impl<'a> DrvWithOutput<'a> {
     fn parse(drv_path: &'a [u8]) -> Option<Self> {
         let mut split = drv_path.split(|c| char::from(*c) == '!');
         let _ = split.next().filter(|s| s.len() > 0)?;
-        let output = split.next()
-            .map(DrvOutput::parse)
-            .unwrap_or(DrvOutput::Out);
+        let output = split.next().map(DrvOutput::parse).unwrap_or(DrvOutput::Out);
 
         match split.next() {
             None => Some(DrvWithOutput {
@@ -234,11 +243,10 @@ impl<'a> DrvWithOutput<'a> {
 
 struct Main {
     /// Whether the program is running in debug mode
-    is_debug: bool
+    is_debug: bool,
 }
 
 impl Main {
-
     /// This function implements the main operation of `nman`:
     /// It instantiates the given attribute to get all outputs
     /// of the described derivation and checks the outputs
@@ -247,29 +255,41 @@ impl Main {
     /// Both GNU's `man-db` and OpenBSD's `mandoc` work
     /// (any man implementation that implements `-l` should
     /// for that matter).
-    fn open_man_page<'a>(&self, attr: &'a str, section: Option<&'a str>, page: &'a str) -> Result<(), NmanError<'a>> {
+    fn open_man_page<'a>(
+        &self,
+        attr: &'a str,
+        section: Option<&'a str>,
+        page: &'a str,
+    ) -> Result<(), NmanError<'a>> {
         let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
         // TODO(sterni): allow selecting other base package sets,
         //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
-        let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
-        let inst = self.debug_log_command(
-                            Command::new("nix-instantiate")
-                                .arg("-E")
-                                .arg(expr)
-                                .arg("--add-root")
-                                .arg(tmpdir.as_ref().join("instantiation-result"))
-                                .arg("--indirect")
-                                .stderr(Stdio::inherit()))
-                        .and_then(|cmd| cmd.output())
-                        .map_err(|_| NmanError::Execution("nix-instantiate"))?;
+        let expr = format!(
+            "with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
+            attr, attr
+        );
+        let inst = self
+            .debug_log_command(
+                Command::new("nix-instantiate")
+                    .arg("-E")
+                    .arg(expr)
+                    .arg("--add-root")
+                    .arg(tmpdir.as_ref().join("instantiation-result"))
+                    .arg("--indirect")
+                    .stderr(Stdio::inherit()),
+            )
+            .and_then(|cmd| cmd.output())
+            .map_err(|_| NmanError::Execution("nix-instantiate"))?;
 
         if !inst.status.success() {
             return Err(NmanError::Instantiate(attr, inst.status));
         }
 
-        let mut drvs: Vec<DrvWithOutput> =
-                inst.stdout.split(|c| char::from(*c) == '\n')
-                    .filter_map(DrvWithOutput::parse).collect();
+        let mut drvs: Vec<DrvWithOutput> = inst
+            .stdout
+            .split(|c| char::from(*c) == '\n')
+            .filter_map(DrvWithOutput::parse)
+            .collect();
 
         if drvs.len() <= 0 {
             return Err(NmanError::ParseError("nix-instantiate"));
@@ -290,24 +310,23 @@ impl Main {
             match man_file {
                 None => continue,
                 Some(f) => {
-                    let res = self.debug_log_command(Command::new("man")
-                                    .arg("-l").arg(f))
-                                    .and_then(|cmd| cmd.spawn())
-                                    .and_then(|mut c| c.wait())
-                                    .map(|c| c.success());
+                    let res = self
+                        .debug_log_command(Command::new("man").arg("-l").arg(f))
+                        .and_then(|cmd| cmd.spawn())
+                        .and_then(|mut c| c.wait())
+                        .map(|c| c.success());
 
                     return match res {
                         Ok(true) => Ok(()),
                         Ok(false) => Err(NmanError::Man),
                         Err(_) => Err(NmanError::Execution("man")),
                     };
-                },
+                }
             }
         }
 
         Err(NmanError::NotFound(page, section))
     }
-
 
     /// Realises the given derivation output using `nix-store --realise` and
     /// checks if the man page described by `section` and `page` can be found
@@ -319,17 +338,25 @@ impl Main {
     /// then searches all man section directories for any matching page. If multiple
     /// matches exist, the one with an alphanumerically lower section is preferred,
     /// e. g. section 1 is preferred over section 3.
-    fn build_man_page<'a>(&self, drv: DrvWithOutput, section: Option<&str>, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
-        let build = self.debug_log_command(
-                                Command::new("nix-store")
-                                .arg("--realise")
-                                .arg(drv.render())
-                                .arg("--add-root")
-                                .arg(tempdir.as_ref().join("build-result"))
-                                .arg("--indirect")
-                                .stderr(Stdio::inherit()))
-                                .and_then(|cmd| cmd.output())
-                                .map_err(|_| NmanError::Execution("nix-store"))?;
+    fn build_man_page<'a>(
+        &self,
+        drv: DrvWithOutput,
+        section: Option<&str>,
+        page: &str,
+        tempdir: &TempDir,
+    ) -> Result<Option<PathBuf>, NmanError<'a>> {
+        let build = self
+            .debug_log_command(
+                Command::new("nix-store")
+                    .arg("--realise")
+                    .arg(drv.render())
+                    .arg("--add-root")
+                    .arg(tempdir.as_ref().join("build-result"))
+                    .arg("--indirect")
+                    .stderr(Stdio::inherit()),
+            )
+            .and_then(|cmd| cmd.output())
+            .map_err(|_| NmanError::Execution("nix-store"))?;
 
         if !build.status.success() {
             return Err(NmanError::Build(drv.render(), build.status));
@@ -337,9 +364,12 @@ impl Main {
 
         // get the first line of the output, usually only one line
         // is printed, but this way we also get rid of the trailing '\n'
-        let first_path = build.stdout.split(|c| char::from(*c) == '\n')
-                            .next().filter(|l| l.len() > 0)
-                            .ok_or(NmanError::ParseError("nix-store"))?;
+        let first_path = build
+            .stdout
+            .split(|c| char::from(*c) == '\n')
+            .next()
+            .filter(|l| l.len() > 0)
+            .ok_or(NmanError::ParseError("nix-store"))?;
 
         let mut path = PathBuf::from(OsStr::from_bytes(first_path));
         path.push("share/man");
@@ -351,26 +381,23 @@ impl Main {
 
         // expected sub directory of share/man or, if no section
         // is given, all potential sub directories
-        let mut section_dirs: Vec<(OsString, PathBuf)> =
-            match section {
-                Some(s) => {
-                    let dir_name = OsString::from(format!("man{}", s));
-                    let dir_path = path.join(dir_name.as_os_str());
+        let mut section_dirs: Vec<(OsString, PathBuf)> = match section {
+            Some(s) => {
+                let dir_name = OsString::from(format!("man{}", s));
+                let dir_path = path.join(dir_name.as_os_str());
 
-                    if dir_path.exists() {
-                        vec![(dir_name, dir_path)]
-                    } else {
-                        Vec::new()
-                    }
-                },
-                None => {
-                    read_dir(path.as_path())
-                        .map_err(NmanError::IO)?
-                        .filter_map(|entry| entry.ok())
-                        .map(|e| (e.file_name(), e.path()))
-                        .collect()
-                },
-            };
+                if dir_path.exists() {
+                    vec![(dir_name, dir_path)]
+                } else {
+                    Vec::new()
+                }
+            }
+            None => read_dir(path.as_path())
+                .map_err(NmanError::IO)?
+                .filter_map(|entry| entry.ok())
+                .map(|e| (e.file_name(), e.path()))
+                .collect(),
+        };
 
         // sorting should be ascending in terms of numerics,
         // apart from that, not many requirements
@@ -379,7 +406,8 @@ impl Main {
         for (dir_name, dir) in section_dirs {
             // separate "man" prefix from section indicator,
             // while validating the particular sub directory
-            let parsed_man_dir = dir_name.to_str()
+            let parsed_man_dir = dir_name
+                .to_str()
                 .filter(|d| d.len() > 3)
                 .map(|d| d.split_at(3));
 
@@ -390,15 +418,16 @@ impl Main {
 
                     for entry in dir_content {
                         let file = entry.map_err(NmanError::IO)?;
-                        let mmatch =
-                            file.file_name().to_str()
-                                .map(|f| match_man_page_file(f, s, page));
+                        let mmatch = file
+                            .file_name()
+                            .to_str()
+                            .map(|f| match_man_page_file(f, s, page));
 
                         if mmatch.unwrap_or(false) {
-                            return Ok(Some(file.path()))
+                            return Ok(Some(file.path()));
                         }
                     }
-                },
+                }
                 _ => continue,
             }
         }
@@ -407,23 +436,26 @@ impl Main {
     }
 
     /// Log the given command to stderr, but only in debug mode
-    fn debug_log_command<'a>(&self, cmd: &'a mut Command) -> Result<&'a mut Command, std::io::Error> {
+    fn debug_log_command<'a>(
+        &self,
+        cmd: &'a mut Command,
+    ) -> Result<&'a mut Command, std::io::Error> {
         if self.is_debug {
             let mut formatted = vec![b'$', b' '];
             formatted.extend(
                 vec![cmd.get_program()]
-                .into_iter()
-                .chain(cmd.get_args())
-                .map(|arg| simple_bash_escape(arg.as_bytes()))
-                .collect::<Vec<_>>()
-                .join(&b' '));
+                    .into_iter()
+                    .chain(cmd.get_args())
+                    .map(|arg| simple_bash_escape(arg.as_bytes()))
+                    .collect::<Vec<_>>()
+                    .join(&b' '),
+            );
             formatted.push(b'\n');
             std::io::stderr().write_all(&formatted).map(|()| cmd)
         } else {
             Ok(cmd)
         }
     }
-
 }
 
 /// Match if a file name is a man file matching the given
@@ -446,12 +478,10 @@ fn match_man_page_file(name: &str, section: &str, page: &str) -> bool {
             let rem = &name[init_len..];
             rem.chars().nth(0) == Some('.')                       // remainder is an extension
                 && rem.chars().filter(|c| *c == '.').count() == 1 // only one extension
-                && parse_man_section(&rem[1..]).is_err()          // not a man extension
-
+                && parse_man_section(&rem[1..]).is_err() // not a man extension
         }
     }
 }
-
 
 /// Check if a string describes a man section,
 /// i. e. is a number or "3p" (Perl Developer's
@@ -462,7 +492,7 @@ fn parse_man_section(section: &str) -> Result<&str, &str> {
         "3p" => Ok(section),
         _ => match u8::from_str_radix(section, 10) {
             Ok(_) => Ok(section),
-            Err(_)  => Err("Invalid man section: not a number and not \"3p\""),
+            Err(_) => Err("Invalid man section: not a number and not \"3p\""),
         },
     }
 }
@@ -475,15 +505,16 @@ fn simple_bash_escape(arg: &[u8]) -> Cow<[u8]> {
     // any word that is just ascii characters is simple (no spaces or control characters)
     // or contains a few often-used characters like - or .
     for c in arg {
-      if ! (c.is_ascii_alphabetic() || c.is_ascii_digit() || [b'-', b'.', b':', b'/'].contains(c)) {
-        is_simple = false;
-      }
-      if *c == b'\'' {
-        number_of_single_quotes += 1;
-      }
+        if !(c.is_ascii_alphabetic() || c.is_ascii_digit() || [b'-', b'.', b':', b'/'].contains(c))
+        {
+            is_simple = false;
+        }
+        if *c == b'\'' {
+            number_of_single_quotes += 1;
+        }
     }
     if is_simple {
-        return Cow::Borrowed(arg)
+        return Cow::Borrowed(arg);
     }
     // Put the word in single quotes
     // If there is a single quote in the word,
@@ -504,7 +535,7 @@ fn simple_bash_escape(arg: &[u8]) -> Cow<[u8]> {
         return Cow::Owned(v);
     }
 
-    let mut v = Vec::with_capacity(arg.len() +2);
+    let mut v = Vec::with_capacity(arg.len() + 2);
     v.push(b'\'');
     v.extend(arg);
     v.push(b'\'');
@@ -545,13 +576,13 @@ mod tests {
     #[test]
     fn test_output_preference() {
         // lower =^= preferred
-        assert!(DrvOutput::Man    < DrvOutput::Out);
+        assert!(DrvOutput::Man < DrvOutput::Out);
         assert!(DrvOutput::DevMan < DrvOutput::Out);
         // assert!(DrvOutput::Out    < DrvOutput::Doc);
-        assert!(DrvOutput::Out    < DrvOutput::DevDoc);
-        assert!(DrvOutput::Out    < DrvOutput::Lib);
-        assert!(DrvOutput::Out    < DrvOutput::Bin);
-        assert!(DrvOutput::Out    < DrvOutput::Other(b"foo"));
+        assert!(DrvOutput::Out < DrvOutput::DevDoc);
+        assert!(DrvOutput::Out < DrvOutput::Lib);
+        assert!(DrvOutput::Out < DrvOutput::Bin);
+        assert!(DrvOutput::Out < DrvOutput::Other(b"foo"));
     }
 
     const OUT: &[u8] = b"/nix/store/3v06l2clmzxx4pna0yd0wiggqlh7b33s-lowdown-0.8.1.drv";
@@ -594,10 +625,7 @@ mod tests {
             path: DEVMAN,
             output: DrvOutput::DevMan,
         };
-        assert_eq!(
-            devman.render().as_os_str(),
-            OsStr::from_bytes(DEVMAN)
-        );
+        assert_eq!(devman.render().as_os_str(), OsStr::from_bytes(DEVMAN));
     }
 
     #[test]
@@ -623,13 +651,40 @@ mod tests {
     #[test]
     fn test_simple_bash_escape() {
         assert_eq!(&simple_bash_escape(b""), &vec![], "empty string");
-        assert_eq!(&simple_bash_escape(b"abc"), &"abc".as_bytes(), "simple word");
-        assert_eq!(&simple_bash_escape(b"12ab3c4"), &"12ab3c4".as_bytes(), "simple word with digits");
-        assert_eq!(&simple_bash_escape(b"a-b.c:d/e"), &"a-b.c:d/e".as_bytes(), "simple word with allowed special chars");
-        assert_eq!(&simple_bash_escape("a$bc€de".as_bytes()), &"'a$bc€de'".as_bytes(), "escaped word with special chars");
-        assert_eq!(&simple_bash_escape("a'bc'".as_bytes()), &"'a'\\''bc'\\'''".as_bytes(), "escaped word with single quotes");
-        assert_eq!(&simple_bash_escape("a'bc'".as_bytes()), &"'a'\\''bc'\\'''".as_bytes(), "escaped word with single quotes");
-        assert_eq!(get_bash_escaped_capacity("a'bc'".as_bytes(), 2), 13, "escaped vec capacity is correct");
-
+        assert_eq!(
+            &simple_bash_escape(b"abc"),
+            &"abc".as_bytes(),
+            "simple word"
+        );
+        assert_eq!(
+            &simple_bash_escape(b"12ab3c4"),
+            &"12ab3c4".as_bytes(),
+            "simple word with digits"
+        );
+        assert_eq!(
+            &simple_bash_escape(b"a-b.c:d/e"),
+            &"a-b.c:d/e".as_bytes(),
+            "simple word with allowed special chars"
+        );
+        assert_eq!(
+            &simple_bash_escape("a$bc€de".as_bytes()),
+            &"'a$bc€de'".as_bytes(),
+            "escaped word with special chars"
+        );
+        assert_eq!(
+            &simple_bash_escape("a'bc'".as_bytes()),
+            &"'a'\\''bc'\\'''".as_bytes(),
+            "escaped word with single quotes"
+        );
+        assert_eq!(
+            &simple_bash_escape("a'bc'".as_bytes()),
+            &"'a'\\''bc'\\'''".as_bytes(),
+            "escaped word with single quotes"
+        );
+        assert_eq!(
+            get_bash_escaped_capacity("a'bc'".as_bytes(), 2),
+            13,
+            "escaped vec capacity is correct"
+        );
     }
 }
