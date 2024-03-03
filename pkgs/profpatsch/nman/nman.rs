@@ -261,6 +261,12 @@ struct Main {
     is_debug: bool,
 }
 
+enum OutputDirResult {
+    NoManDir,
+    NoManPageFound,
+    FoundManPage(PathBuf),
+}
+
 impl Main {
     /// This function implements the main operation of `nman`:
     /// It instantiates the given attribute to get all outputs
@@ -340,7 +346,7 @@ impl Main {
             let man_file = self.build_man_page(&drv, section, page, &tmpdir)?;
 
             match man_file {
-                None => {
+                OutputDirResult::NoManDir | OutputDirResult::NoManPageFound => {
                     self.debug_log(format!(
                         r#"no manpage for {} found in output "{}""#,
                         manpage_display,
@@ -348,7 +354,7 @@ impl Main {
                     ));
                     continue;
                 }
-                Some(file) => {
+                OutputDirResult::FoundManPage(file) => {
                     self.debug_log(format!(
                         r#"found manpage {} in output "{}", opening …"#,
                         manpage_display,
@@ -388,7 +394,7 @@ impl Main {
         section: Option<&str>,
         page: &str,
         tempdir: &TempDir,
-    ) -> Result<Option<PathBuf>, NmanError<'a>> {
+    ) -> Result<OutputDirResult, NmanError<'a>> {
         let build = self
             .debug_log_command(
                 Command::new("nix-store")
@@ -420,7 +426,7 @@ impl Main {
 
         // no share/man, no man pages
         if !path.exists() {
-            return Ok(None);
+            return Ok(OutputDirResult::NoManDir);
         }
 
         // expected sub directory of share/man or, if no section
@@ -468,7 +474,7 @@ impl Main {
                             .map(|f| match_man_page_file(f, s, page));
 
                         if mmatch.unwrap_or(false) {
-                            return Ok(Some(file.path()));
+                            return Ok(OutputDirResult::FoundManPage(file.path()));
                         }
                     }
                 }
@@ -476,7 +482,7 @@ impl Main {
             }
         }
 
-        Ok(None)
+        Ok(OutputDirResult::NoManPageFound)
     }
 
     fn debug_log<S>(&self, msg: S)
