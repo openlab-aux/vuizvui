@@ -1,7 +1,9 @@
 extern crate temp;
 
+use std::borrow::Cow;
 use std::ffi::{OsStr, OsString};
 use std::fs::read_dir;
+use std::io::Write;
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::process::ExitStatusExt;
 use std::path::PathBuf;
@@ -240,14 +242,15 @@ fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> 
     // TODO(sterni): allow selecting other base package sets,
     //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
     let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
-    let inst = Command::new("nix-instantiate")
-                       .arg("-E")
-                       .arg(expr)
-                       .arg("--add-root")
-                       .arg(tmpdir.as_ref().join("instantiation-result"))
-                       .arg("--indirect")
-                       .stderr(Stdio::inherit())
-                       .output()
+    let inst = debug_log_command(
+                        Command::new("nix-instantiate")
+                            .arg("-E")
+                            .arg(expr)
+                            .arg("--add-root")
+                            .arg(tmpdir.as_ref().join("instantiation-result"))
+                            .arg("--indirect")
+                            .stderr(Stdio::inherit()))
+                       .and_then(|cmd| cmd.output())
                        .map_err(|_| NmanError::Execution("nix-instantiate"))?;
 
     if !inst.status.success() {
@@ -277,9 +280,9 @@ fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> 
         match man_file {
             None => continue,
             Some(f) => {
-                let res = Command::new("man")
-                                  .arg("-l").arg(f)
-                                  .spawn()
+                let res = debug_log_command(Command::new("man")
+                                  .arg("-l").arg(f))
+                                  .and_then(|cmd| cmd.spawn())
                                   .and_then(|mut c| c.wait())
                                   .map(|c| c.success());
 
@@ -307,14 +310,15 @@ fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> 
 /// matches exist, the one with an alphanumerically lower section is preferred,
 /// e. g. section 1 is preferred over section 3.
 fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
-    let build = Command::new("nix-store")
+    let build = debug_log_command(
+                            Command::new("nix-store")
                             .arg("--realise")
                             .arg(drv.render())
                             .arg("--add-root")
                             .arg(tempdir.as_ref().join("build-result"))
                             .arg("--indirect")
-                            .stderr(Stdio::inherit())
-                            .output()
+                            .stderr(Stdio::inherit()))
+                            .and_then(|cmd| cmd.output())
                             .map_err(|_| NmanError::Execution("nix-store"))?;
 
     if !build.status.success() {
@@ -433,6 +437,73 @@ fn parse_man_section(section: &str) -> Result<&str, &str> {
     }
 }
 
+
+fn debug_log_command(cmd: &mut Command) -> Result<&mut Command, std::io::Error> {
+
+    let mut formatted = vec![b'$', b' '];
+    formatted.extend(
+        vec![cmd.get_program()]
+        .into_iter()
+        .chain(cmd.get_args())
+        .map(|arg| simple_bash_escape(arg.as_bytes()))
+        .collect::<Vec<_>>()
+        .join(&b' '));
+    formatted.push(b'\n');
+    std::io::stderr().write_all(&formatted).map(|()| cmd)
+}
+
+/// Simple escaping for bash words. If they contain anything that’s not ascii chars
+/// and a bunch of often-used special characters, put the word in single quotes.
+fn simple_bash_escape(arg: &[u8]) -> Cow<[u8]> {
+    let mut is_simple: bool = true;
+    let mut number_of_single_quotes: usize = 0;
+    // any word that is just ascii characters is simple (no spaces or control characters)
+    // or contains a few often-used characters like - or .
+    for c in arg {
+      if ! (c.is_ascii_alphabetic() || c.is_ascii_digit() || [b'-', b'.', b':', b'/'].contains(c)) {
+        is_simple = false;
+      }
+      if *c == b'\'' {
+        number_of_single_quotes += 1;
+      }
+    }
+    if is_simple {
+        return Cow::Borrowed(arg)
+    }
+    // Put the word in single quotes
+    // If there is a single quote in the word,
+    // close the single quoted word, add a single quote, open the word again
+    // replace single quotes with `'\''` (i.e. escape from the string, then add a `'`, then open another string)
+    if number_of_single_quotes > 0 {
+        // we know the capacity we need to build the string, so vec will only allocate once
+        let mut v = Vec::with_capacity(get_bash_escaped_capacity(arg, number_of_single_quotes));
+        v.push(b'\'');
+        for c in arg {
+            if *c == b'\'' {
+                v.extend(b"'\\''")
+            } else {
+                v.push(*c)
+            }
+        }
+        v.push(b'\'');
+        return Cow::Owned(v);
+    }
+
+    let mut v = Vec::with_capacity(arg.len() +2);
+    v.push(b'\'');
+    v.extend(arg);
+    v.push(b'\'');
+    return Cow::Owned(v);
+}
+
+fn get_bash_escaped_capacity(arg: &[u8], number_of_single_quotes: usize) -> usize {
+    arg.len()
+    // initial `'` and final `'`
+    + 2
+    // replacing `'` with `'\''` adds three bytes
+    + number_of_single_quotes * 3
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -532,5 +603,18 @@ mod tests {
         assert!(!match_man_page_file("lowdown.3f", "3", "lowdown"));
         assert!(match_man_page_file("lowdown.", "", "lowdown"));
         assert!(!match_man_page_file("", "", ""));
+    }
+
+    #[test]
+    fn test_simple_bash_escape() {
+        assert_eq!(&simple_bash_escape(b""), &vec![], "empty string");
+        assert_eq!(&simple_bash_escape(b"abc"), &"abc".as_bytes(), "simple word");
+        assert_eq!(&simple_bash_escape(b"12ab3c4"), &"12ab3c4".as_bytes(), "simple word with digits");
+        assert_eq!(&simple_bash_escape(b"a-b.c:d/e"), &"a-b.c:d/e".as_bytes(), "simple word with allowed special chars");
+        assert_eq!(&simple_bash_escape("a$bc€de".as_bytes()), &"'a$bc€de'".as_bytes(), "escaped word with special chars");
+        assert_eq!(&simple_bash_escape("a'bc'".as_bytes()), &"'a'\\''bc'\\'''".as_bytes(), "escaped word with single quotes");
+        assert_eq!(&simple_bash_escape("a'bc'".as_bytes()), &"'a'\\''bc'\\'''".as_bytes(), "escaped word with single quotes");
+        assert_eq!(get_bash_escaped_capacity("a'bc'".as_bytes(), 2), 13, "escaped vec capacity is correct");
+
     }
 }
