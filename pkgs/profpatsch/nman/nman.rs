@@ -168,8 +168,8 @@ fn pretty_exit_status(status: &ExitStatus) -> String {
 enum DrvOutput<'a> {
     Man,
     DevMan,
+    Doc,
     Out,
-    // Doc,
     DevDoc,
     // Info,
     Dev,
@@ -187,11 +187,26 @@ impl<'a> DrvOutput<'a> {
             b"out" => DrvOutput::Out,
             b"bin" => DrvOutput::Bin,
             b"lib" => DrvOutput::Lib,
+            b"doc" => DrvOutput::Doc,
             b"man" => DrvOutput::Man,
             b"dev" => DrvOutput::Dev,
             b"devdoc" => DrvOutput::DevDoc,
             b"devman" => DrvOutput::DevMan,
             _ => DrvOutput::Other(output),
+        }
+    }
+
+    fn display(&self) -> Cow<str> {
+        match self {
+            DrvOutput::Out => Cow::Borrowed("out"),
+            DrvOutput::Bin => Cow::Borrowed("bin"),
+            DrvOutput::Lib => Cow::Borrowed("lib"),
+            DrvOutput::Doc => Cow::Borrowed("doc"),
+            DrvOutput::Man => Cow::Borrowed("man"),
+            DrvOutput::Dev => Cow::Borrowed("dev"),
+            DrvOutput::DevDoc => Cow::Borrowed("devdoc"),
+            DrvOutput::DevMan => Cow::Borrowed("devman"),
+            DrvOutput::Other(s) => String::from_utf8_lossy(s),
         }
     }
 }
@@ -295,6 +310,13 @@ impl Main {
             return Err(NmanError::ParseError("nix-instantiate"));
         }
 
+        self.debug_log(format!(
+            "Found derivation outputs: {:?}",
+            drvs.iter()
+                .map(|drv| drv.output.display())
+                .collect::<Vec<_>>()
+        ));
+
         // the sort order is such that the outputs where we
         // expect the man page to be are checked first.
         // This means we realise the least amount of outputs
@@ -304,14 +326,36 @@ impl Main {
         //               "3" and "3p" should prioritize DevMan
         drvs.sort_unstable_by(|a, b| a.output.cmp(&b.output));
 
+        let manpage_display = format!(
+            r#""{}{}""#,
+            page,
+            section.map_or(String::from(""), |m| format!("({})", m))
+        );
         for drv in drvs {
-            let man_file = self.build_man_page(drv, section, page, &tmpdir)?;
+            self.debug_log(format!(
+                r#"Searching for manpage {} in output "{}""#,
+                manpage_display,
+                drv.output.display()
+            ));
+            let man_file = self.build_man_page(&drv, section, page, &tmpdir)?;
 
             match man_file {
-                None => continue,
-                Some(f) => {
+                None => {
+                    self.debug_log(format!(
+                        r#"no manpage for {} found in output "{}""#,
+                        manpage_display,
+                        &drv.output.display()
+                    ));
+                    continue;
+                }
+                Some(file) => {
+                    self.debug_log(format!(
+                        r#"found manpage {} in output "{}", opening …"#,
+                        manpage_display,
+                        &drv.output.display()
+                    ));
                     let res = self
-                        .debug_log_command(Command::new("man").arg("-l").arg(f))
+                        .debug_log_command(Command::new("man").arg("--local-file").arg(file))
                         .and_then(|cmd| cmd.spawn())
                         .and_then(|mut c| c.wait())
                         .map(|c| c.success());
@@ -340,7 +384,7 @@ impl Main {
     /// e. g. section 1 is preferred over section 3.
     fn build_man_page<'a>(
         &self,
-        drv: DrvWithOutput,
+        drv: &DrvWithOutput,
         section: Option<&str>,
         page: &str,
         tempdir: &TempDir,
@@ -433,6 +477,16 @@ impl Main {
         }
 
         Ok(None)
+    }
+
+    fn debug_log<S>(&self, msg: S)
+    where
+        S: AsRef<str>,
+        S: std::fmt::Display,
+    {
+        if self.is_debug {
+            writeln!(std::io::stderr(), "{}", msg).unwrap()
+        }
     }
 
     /// Log the given command to stderr, but only in debug mode
