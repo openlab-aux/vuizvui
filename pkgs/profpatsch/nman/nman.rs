@@ -273,8 +273,18 @@ enum OutputDirResult {
     FoundManPage(PathBuf),
 }
 
-struct FoundManSection {
+struct FoundManPage {
     man_section: String,
+    file_name: String,
+}
+
+impl FoundManPage {
+    /// From a share/man path we can reconstruct the full manpage path.
+    fn manpage_path(&self, share_man: PathBuf) -> PathBuf {
+        return share_man
+            .join(String::from("man") + &self.man_section)
+            .join(&self.file_name);
+    }
 }
 
 impl Main {
@@ -413,57 +423,57 @@ impl Main {
 
         // expected sub directory of share/man or, if no section
         // is given, all potential sub directories
-        let mut section_dirs: Vec<FoundManSection> = Self::enumerate_man_pages(&drv_share_man)?;
-        if let Some(sect) = section {
-            section_dirs = section_dirs
-                .into_iter()
-                .find(|man| man.man_section == sect)
-                .map_or(Vec::new(), |x| vec![x]);
-        }
+        let mut manpages: Vec<FoundManPage> = Self::enumerate_man_pages(&drv_share_man)?;
 
         // sorting should be ascending in terms of numerics,
         // apart from that, not many requirements
-        section_dirs.sort_unstable_by(|man1, man2| man1.man_section.cmp(&man2.man_section));
+        manpages.sort_unstable_by(|man1, man2| man1.man_section.cmp(&man2.man_section));
 
-        for ref section_dir in section_dirs {
-            // we have a valid man dir, check if it contains our page section
-            let section_path = drv_share_man.join(String::from("man") + &section_dir.man_section);
-            let dir_content = read_dir(section_path).map_err(NmanError::IO)?;
-
-            for entry in dir_content {
-                let file = entry.map_err(NmanError::IO)?;
-                let mmatch = file
-                    .file_name()
-                    .to_str()
-                    .map(|f| match_man_page_file(f, &section_dir.man_section, page));
-
-                if mmatch.unwrap_or(false) {
-                    return Ok(OutputDirResult::FoundManPage(file.path()));
+        // take the first manpage that matches our criteria
+        for ref manpage in manpages {
+            // If we want to restrict to a section, skip manpages of the wrong section.
+            if let Some(sect) = section {
+                if sect != manpage.man_section {
+                    continue;
                 }
+            }
+            if match_man_page_file(&manpage.file_name, &manpage.man_section, page) {
+                return Ok(OutputDirResult::FoundManPage(
+                    manpage.manpage_path(drv_share_man),
+                ));
             }
         }
 
         Ok(OutputDirResult::NoManPageFound)
     }
 
-    fn enumerate_man_pages<'a>(path: &PathBuf) -> Result<Vec<FoundManSection>, NmanError<'a>> {
+    fn enumerate_man_pages<'a>(path: &PathBuf) -> Result<Vec<FoundManPage>, NmanError<'a>> {
         let dirs = read_dir(path.as_path()).map_err(NmanError::IO)?;
         let mut res = Vec::new();
         for entry in dirs.collect::<Vec<_>>() {
             // ignore directories/files that cannot be read
-            if let Ok(e) = entry {
+            if let Ok(section_dir) = entry {
                 // separate "man" prefix from section indicator,
                 // while validating the particular sub directory
-                if let Some((prefix, man_section)) = e
+                if let Some((prefix, man_section)) = section_dir
                     .file_name()
                     .to_str()
                     .filter(|d| d.len() > 3)
                     .map(|d| d.split_at(3))
                 {
                     if prefix == "man" {
-                        res.push(FoundManSection {
-                            man_section: String::from(man_section),
-                        })
+                        let manpages = read_dir(section_dir.path()).map_err(NmanError::IO)?;
+                        for manpage in manpages.collect::<Vec<_>>() {
+                            // ignore directories/files that cannot be read
+                            if let Ok(Some(file_name)) =
+                                manpage.map(|mp| mp.file_name().to_str().map(String::from))
+                            {
+                                res.push(FoundManPage {
+                                    man_section: String::from(man_section),
+                                    file_name,
+                                })
+                            }
+                        }
                     }
                 }
             }
