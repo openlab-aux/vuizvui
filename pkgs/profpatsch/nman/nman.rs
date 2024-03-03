@@ -447,28 +447,28 @@ impl Main {
     }
 
     fn enumerate_man_pages<'a>(path: &PathBuf) -> Result<Vec<FoundManSection>, NmanError<'a>> {
-        Ok(read_dir(path.as_path())
-            .map_err(NmanError::IO)?
-            .filter_map(|entry| {
-                // ignore directories/files that cannot be read
-                let e = entry.ok()?;
-                e.file_name()
+        let dirs = read_dir(path.as_path()).map_err(NmanError::IO)?;
+        let mut res = Vec::new();
+        for entry in dirs.collect::<Vec<_>>() {
+            // ignore directories/files that cannot be read
+            if let Ok(e) = entry {
+                // separate "man" prefix from section indicator,
+                // while validating the particular sub directory
+                if let Some((prefix, man_section)) = e
+                    .file_name()
                     .to_str()
-                    // separate "man" prefix from section indicator,
-                    // while validating the particular sub directory
                     .filter(|d| d.len() > 3)
                     .map(|d| d.split_at(3))
-                    .and_then(|(prefix, man_section)| {
-                        if prefix == "man" {
-                            Some(FoundManSection {
-                                man_section: String::from(man_section),
-                            })
-                        } else {
-                            None
-                        }
-                    })
-            })
-            .collect())
+                {
+                    if prefix == "man" {
+                        res.push(FoundManSection {
+                            man_section: String::from(man_section),
+                        })
+                    }
+                }
+            }
+        }
+        Ok(res)
     }
 
     /// Realises the given derivation output using `nix-store --realise` and
