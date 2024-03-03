@@ -261,8 +261,10 @@ struct Main {
     is_debug: bool,
 }
 
+struct DerivationOutputPath(PathBuf);
+
 struct BuildResult {
-    first_path: Vec<u8>,
+    first_path: DerivationOutputPath,
 }
 
 enum OutputDirResult {
@@ -273,7 +275,6 @@ enum OutputDirResult {
 
 struct FoundManSection {
     man_section: String,
-    path: PathBuf,
 }
 
 impl Main {
@@ -403,23 +404,20 @@ impl Main {
         page: &str,
         build_result: BuildResult,
     ) -> Result<OutputDirResult, NmanError<'a>> {
-        let mut path = PathBuf::from(OsStr::from_bytes(&build_result.first_path));
-        path.push("share/man");
+        let drv_share_man = build_result.first_path.0.join("share/man");
 
         // no share/man, no man pages
-        if !path.exists() {
+        if !drv_share_man.exists() {
             return Ok(OutputDirResult::NoManDir);
         }
 
         // expected sub directory of share/man or, if no section
         // is given, all potential sub directories
-        let mut section_dirs: Vec<FoundManSection> = Self::enumerate_man_pages(&path)?;
+        let mut section_dirs: Vec<FoundManSection> = Self::enumerate_man_pages(&drv_share_man)?;
         if let Some(sect) = section {
-            let dir_name = OsString::from(format!("man{}", sect));
-            let dir_path = path.join(dir_name.as_os_str());
             section_dirs = section_dirs
                 .into_iter()
-                .find(|man| man.path == dir_path)
+                .find(|man| man.man_section == sect)
                 .map_or(Vec::new(), |x| vec![x]);
         }
 
@@ -427,16 +425,17 @@ impl Main {
         // apart from that, not many requirements
         section_dirs.sort_unstable_by(|man1, man2| man1.man_section.cmp(&man2.man_section));
 
-        for ref man_page in section_dirs {
-            // we have a valid man dir, check if it contains our page
-            let dir_content = read_dir(&man_page.path).map_err(NmanError::IO)?;
+        for ref section_dir in section_dirs {
+            // we have a valid man dir, check if it contains our page section
+            let section_path = drv_share_man.join(String::from("man") + &section_dir.man_section);
+            let dir_content = read_dir(section_path).map_err(NmanError::IO)?;
 
             for entry in dir_content {
                 let file = entry.map_err(NmanError::IO)?;
                 let mmatch = file
                     .file_name()
                     .to_str()
-                    .map(|f| match_man_page_file(f, &man_page.man_section, page));
+                    .map(|f| match_man_page_file(f, &section_dir.man_section, page));
 
                 if mmatch.unwrap_or(false) {
                     return Ok(OutputDirResult::FoundManPage(file.path()));
@@ -463,7 +462,6 @@ impl Main {
                         if prefix == "man" {
                             Some(FoundManSection {
                                 man_section: String::from(man_section),
-                                path: e.path(),
                             })
                         } else {
                             None
@@ -506,7 +504,7 @@ impl Main {
             .filter(|l| l.len() > 0)
             .ok_or(NmanError::ParseError("nix-store"))
             .map(|path| BuildResult {
-                first_path: Vec::from(path),
+                first_path: DerivationOutputPath(PathBuf::from(OsStr::from_bytes(path))),
             })
     }
 
