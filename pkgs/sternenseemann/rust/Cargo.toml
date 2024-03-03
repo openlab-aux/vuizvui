@@ -1,0 +1,9 @@
+[package]
+name = "temp"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "temp.rs"
+
+[dependencies]
