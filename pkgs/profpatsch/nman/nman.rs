@@ -261,6 +261,10 @@ struct Main {
     is_debug: bool,
 }
 
+struct BuildResult {
+    first_path: Vec<u8>,
+}
+
 enum OutputDirResult {
     NoManDir,
     NoManPageFound,
@@ -343,7 +347,8 @@ impl Main {
                 manpage_display,
                 drv.output.display()
             ));
-            let man_file = self.build_man_page(&drv, section, page, &tmpdir)?;
+            let build_result = self.build_drv_with_output(&drv, &tmpdir)?;
+            let man_file = self.find_man_page(section, page, build_result)?;
 
             match man_file {
                 OutputDirResult::NoManDir | OutputDirResult::NoManPageFound => {
@@ -378,8 +383,7 @@ impl Main {
         Err(NmanError::NotFound(page, section))
     }
 
-    /// Realises the given derivation output using `nix-store --realise` and
-    /// checks if the man page described by `section` and `page` can be found
+    /// Checks if the man page described by `section` and `page` can be found
     /// within it. If that is the case, the path to is returned. If it can't
     /// be found, `None` is returned. `Err` is only used to describe unrecoverable
     /// errors.
@@ -388,40 +392,13 @@ impl Main {
     /// then searches all man section directories for any matching page. If multiple
     /// matches exist, the one with an alphanumerically lower section is preferred,
     /// e. g. section 1 is preferred over section 3.
-    fn build_man_page<'a>(
+    fn find_man_page<'a>(
         &self,
-        drv: &DrvWithOutput,
         section: Option<&str>,
         page: &str,
-        tempdir: &TempDir,
+        build_result: BuildResult,
     ) -> Result<OutputDirResult, NmanError<'a>> {
-        let build = self
-            .debug_log_command(
-                Command::new("nix-store")
-                    .arg("--realise")
-                    .arg(drv.render())
-                    .arg("--add-root")
-                    .arg(tempdir.as_ref().join("build-result"))
-                    .arg("--indirect")
-                    .stderr(Stdio::inherit()),
-            )
-            .and_then(|cmd| cmd.output())
-            .map_err(|_| NmanError::Execution("nix-store"))?;
-
-        if !build.status.success() {
-            return Err(NmanError::Build(drv.render(), build.status));
-        }
-
-        // get the first line of the output, usually only one line
-        // is printed, but this way we also get rid of the trailing '\n'
-        let first_path = build
-            .stdout
-            .split(|c| char::from(*c) == '\n')
-            .next()
-            .filter(|l| l.len() > 0)
-            .ok_or(NmanError::ParseError("nix-store"))?;
-
-        let mut path = PathBuf::from(OsStr::from_bytes(first_path));
+        let mut path = PathBuf::from(OsStr::from_bytes(&build_result.first_path));
         path.push("share/man");
 
         // no share/man, no man pages
@@ -483,6 +460,43 @@ impl Main {
         }
 
         Ok(OutputDirResult::NoManPageFound)
+    }
+
+    /// Realises the given derivation output using `nix-store --realise` and
+    /// returns the path to the output directory.
+    fn build_drv_with_output<'a>(
+        &self,
+        drv: &DrvWithOutput,
+        tempdir: &TempDir,
+    ) -> Result<BuildResult, NmanError<'a>> {
+        let build = self
+            .debug_log_command(
+                Command::new("nix-store")
+                    .arg("--realise")
+                    .arg(drv.render())
+                    .arg("--add-root")
+                    .arg(tempdir.as_ref().join("build-result"))
+                    .arg("--indirect")
+                    .stderr(Stdio::inherit()),
+            )
+            .and_then(|cmd| cmd.output())
+            .map_err(|_| NmanError::Execution("nix-store"))?;
+
+        if !build.status.success() {
+            return Err(NmanError::Build(drv.render(), build.status));
+        }
+
+        // get the first line of the output, usually only one line
+        // is printed, but this way we also get rid of the trailing '\n'
+        build
+            .stdout
+            .split(|c| char::from(*c) == '\n')
+            .next()
+            .filter(|l| l.len() > 0)
+            .ok_or(NmanError::ParseError("nix-store"))
+            .map(|path| BuildResult {
+                first_path: Vec::from(path),
+            })
     }
 
     fn debug_log<S>(&self, msg: S)
