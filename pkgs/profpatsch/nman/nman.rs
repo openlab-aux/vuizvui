@@ -226,31 +226,75 @@ impl<'a> DrvWithOutput<'a> {
     }
 }
 
-/// Match if a file name is a man file matching the given
-/// section and page. It is checked that the filename is
-/// of the form `<page>.<section>` or
-/// `<page>.<section>.<extra extension>` where extra
-/// extension may not be a valid man section to prevent
-/// mismatches if a man page name itself contains a valid
-/// section extension.
-fn match_man_page_file(name: &str, section: &str, page: &str) -> bool {
-    let init = format!("{}.{}", page, section);
-    let init_len = init.len();
 
-    if !name.starts_with(&init[..]) {
-        false
-    } else {
-        if name.len() == init_len {
-            true
-        } else {
-            let rem = &name[init_len..];
-            rem.chars().nth(0) == Some('.')                       // remainder is an extension
-                && rem.chars().filter(|c| *c == '.').count() == 1 // only one extension
-                && parse_man_section(&rem[1..]).is_err()          // not a man extension
+/// This function implements the main operation of `nman`:
+/// It instantiates the given attribute to get all outputs
+/// of the described derivation and checks the outputs
+/// for the desired man page using `build_man_page`.
+/// Finally the man page is opened using `man(1)`.
+/// Both GNU's `man-db` and OpenBSD's `mandoc` work
+/// (any man implementation that implements `-l` should
+/// for that matter).
+fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> Result<(), NmanError<'a>> {
+    let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
+    // TODO(sterni): allow selecting other base package sets,
+    //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
+    let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
+    let inst = Command::new("nix-instantiate")
+                       .arg("-E")
+                       .arg(expr)
+                       .arg("--add-root")
+                       .arg(tmpdir.as_ref().join("instantiation-result"))
+                       .arg("--indirect")
+                       .stderr(Stdio::inherit())
+                       .output()
+                       .map_err(|_| NmanError::Execution("nix-instantiate"))?;
 
+    if !inst.status.success() {
+        return Err(NmanError::Instantiate(attr, inst.status));
+    }
+
+    let mut drvs: Vec<DrvWithOutput> =
+            inst.stdout.split(|c| char::from(*c) == '\n')
+                .filter_map(DrvWithOutput::parse).collect();
+
+    if drvs.len() <= 0 {
+        return Err(NmanError::ParseError("nix-instantiate"));
+    }
+
+    // the sort order is such that the outputs where we
+    // expect the man page to be are checked first.
+    // This means we realise the least amount of outputs
+    // necessary
+    //
+    // TODO(sterni): change sorting depending on section:
+    //               "3" and "3p" should prioritize DevMan
+    drvs.sort_unstable_by(|a, b| a.output.cmp(&b.output));
+
+    for drv in drvs {
+        let man_file = build_man_page(drv, section, page, &tmpdir)?;
+
+        match man_file {
+            None => continue,
+            Some(f) => {
+                let res = Command::new("man")
+                                  .arg("-l").arg(f)
+                                  .spawn()
+                                  .and_then(|mut c| c.wait())
+                                  .map(|c| c.success());
+
+                return match res {
+                    Ok(true) => Ok(()),
+                    Ok(false) => Err(NmanError::Man),
+                    Err(_) => Err(NmanError::Execution("man")),
+                };
+            },
         }
     }
+
+    Err(NmanError::NotFound(page, section))
 }
+
 
 /// Realises the given derivation output using `nix-store --realise` and
 /// checks if the man page described by `section` and `page` can be found
@@ -348,72 +392,31 @@ fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tem
     Ok(None)
 }
 
-/// This function implements the main operation of `nman`:
-/// It instantiates the given attribute to get all outputs
-/// of the described derivation and checks the outputs
-/// for the desired man page using `build_man_page`.
-/// Finally the man page is opened using `man(1)`.
-/// Both GNU's `man-db` and OpenBSD's `mandoc` work
-/// (any man implementation that implements `-l` should
-/// for that matter).
-fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> Result<(), NmanError<'a>> {
-    let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
-    // TODO(sterni): allow selecting other base package sets,
-    //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
-    let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
-    let inst = Command::new("nix-instantiate")
-                       .arg("-E")
-                       .arg(expr)
-                       .arg("--add-root")
-                       .arg(tmpdir.as_ref().join("instantiation-result"))
-                       .arg("--indirect")
-                       .stderr(Stdio::inherit())
-                       .output()
-                       .map_err(|_| NmanError::Execution("nix-instantiate"))?;
 
-    if !inst.status.success() {
-        return Err(NmanError::Instantiate(attr, inst.status));
-    }
+/// Match if a file name is a man file matching the given
+/// section and page. It is checked that the filename is
+/// of the form `<page>.<section>` or
+/// `<page>.<section>.<extra extension>` where extra
+/// extension may not be a valid man section to prevent
+/// mismatches if a man page name itself contains a valid
+/// section extension.
+fn match_man_page_file(name: &str, section: &str, page: &str) -> bool {
+    let init = format!("{}.{}", page, section);
+    let init_len = init.len();
 
-    let mut drvs: Vec<DrvWithOutput> =
-            inst.stdout.split(|c| char::from(*c) == '\n')
-                .filter_map(DrvWithOutput::parse).collect();
+    if !name.starts_with(&init[..]) {
+        false
+    } else {
+        if name.len() == init_len {
+            true
+        } else {
+            let rem = &name[init_len..];
+            rem.chars().nth(0) == Some('.')                       // remainder is an extension
+                && rem.chars().filter(|c| *c == '.').count() == 1 // only one extension
+                && parse_man_section(&rem[1..]).is_err()          // not a man extension
 
-    if drvs.len() <= 0 {
-        return Err(NmanError::ParseError("nix-instantiate"));
-    }
-
-    // the sort order is such that the outputs where we
-    // expect the man page to be are checked first.
-    // This means we realise the least amount of outputs
-    // necessary
-    //
-    // TODO(sterni): change sorting depending on section:
-    //               "3" and "3p" should prioritize DevMan
-    drvs.sort_unstable_by(|a, b| a.output.cmp(&b.output));
-
-    for drv in drvs {
-        let man_file = build_man_page(drv, section, page, &tmpdir)?;
-
-        match man_file {
-            None => continue,
-            Some(f) => {
-                let res = Command::new("man")
-                                  .arg("-l").arg(f)
-                                  .spawn()
-                                  .and_then(|mut c| c.wait())
-                                  .map(|c| c.success());
-
-                return match res {
-                    Ok(true) => Ok(()),
-                    Ok(false) => Err(NmanError::Man),
-                    Err(_) => Err(NmanError::Execution("man")),
-                };
-            },
         }
     }
-
-    Err(NmanError::NotFound(page, section))
 }
 
 /// Check if a string describes a man section,
