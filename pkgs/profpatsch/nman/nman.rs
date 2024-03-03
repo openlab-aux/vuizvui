@@ -23,6 +23,7 @@ enum CliResult<'a> {
 
 fn main() {
     use CliResult::*;
+    // let main = Main{is_debug: false};
     let (opts, args) : (Vec<String>, Vec<String>) =
             std::env::args().partition(|s| s.starts_with("-"));
 
@@ -57,7 +58,7 @@ fn main() {
         },
         Action(action) => match action {
             CliAction::Man(attr, section, page) =>
-            match open_man_page(attr, section, page) {
+            match Main::open_man_page(attr, section, page) {
                 Ok(_) => (),
                 Err(t) => {
                     let msg = t.msg();
@@ -228,174 +229,180 @@ impl<'a> DrvWithOutput<'a> {
     }
 }
 
-
-/// This function implements the main operation of `nman`:
-/// It instantiates the given attribute to get all outputs
-/// of the described derivation and checks the outputs
-/// for the desired man page using `build_man_page`.
-/// Finally the man page is opened using `man(1)`.
-/// Both GNU's `man-db` and OpenBSD's `mandoc` work
-/// (any man implementation that implements `-l` should
-/// for that matter).
-fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> Result<(), NmanError<'a>> {
-    let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
-    // TODO(sterni): allow selecting other base package sets,
-    //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
-    let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
-    let inst = debug_log_command(
-                        Command::new("nix-instantiate")
-                            .arg("-E")
-                            .arg(expr)
-                            .arg("--add-root")
-                            .arg(tmpdir.as_ref().join("instantiation-result"))
-                            .arg("--indirect")
-                            .stderr(Stdio::inherit()))
-                       .and_then(|cmd| cmd.output())
-                       .map_err(|_| NmanError::Execution("nix-instantiate"))?;
-
-    if !inst.status.success() {
-        return Err(NmanError::Instantiate(attr, inst.status));
-    }
-
-    let mut drvs: Vec<DrvWithOutput> =
-            inst.stdout.split(|c| char::from(*c) == '\n')
-                .filter_map(DrvWithOutput::parse).collect();
-
-    if drvs.len() <= 0 {
-        return Err(NmanError::ParseError("nix-instantiate"));
-    }
-
-    // the sort order is such that the outputs where we
-    // expect the man page to be are checked first.
-    // This means we realise the least amount of outputs
-    // necessary
-    //
-    // TODO(sterni): change sorting depending on section:
-    //               "3" and "3p" should prioritize DevMan
-    drvs.sort_unstable_by(|a, b| a.output.cmp(&b.output));
-
-    for drv in drvs {
-        let man_file = build_man_page(drv, section, page, &tmpdir)?;
-
-        match man_file {
-            None => continue,
-            Some(f) => {
-                let res = debug_log_command(Command::new("man")
-                                  .arg("-l").arg(f))
-                                  .and_then(|cmd| cmd.spawn())
-                                  .and_then(|mut c| c.wait())
-                                  .map(|c| c.success());
-
-                return match res {
-                    Ok(true) => Ok(()),
-                    Ok(false) => Err(NmanError::Man),
-                    Err(_) => Err(NmanError::Execution("man")),
-                };
-            },
-        }
-    }
-
-    Err(NmanError::NotFound(page, section))
+struct Main {
+    // is_debug: bool
 }
 
+impl Main {
 
-/// Realises the given derivation output using `nix-store --realise` and
-/// checks if the man page described by `section` and `page` can be found
-/// within it. If that is the case, the path to is returned. If it can't
-/// be found, `None` is returned. `Err` is only used to describe unrecoverable
-/// errors.
-///
-/// `section == None` indicates that the section is not given. `build_man_page`
-/// then searches all man section directories for any matching page. If multiple
-/// matches exist, the one with an alphanumerically lower section is preferred,
-/// e. g. section 1 is preferred over section 3.
-fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
-    let build = debug_log_command(
-                            Command::new("nix-store")
-                            .arg("--realise")
-                            .arg(drv.render())
-                            .arg("--add-root")
-                            .arg(tempdir.as_ref().join("build-result"))
-                            .arg("--indirect")
-                            .stderr(Stdio::inherit()))
-                            .and_then(|cmd| cmd.output())
-                            .map_err(|_| NmanError::Execution("nix-store"))?;
+    /// This function implements the main operation of `nman`:
+    /// It instantiates the given attribute to get all outputs
+    /// of the described derivation and checks the outputs
+    /// for the desired man page using `build_man_page`.
+    /// Finally the man page is opened using `man(1)`.
+    /// Both GNU's `man-db` and OpenBSD's `mandoc` work
+    /// (any man implementation that implements `-l` should
+    /// for that matter).
+    fn open_man_page<'a>(attr: &'a str, section: Option<&'a str>, page: &'a str) -> Result<(), NmanError<'a>> {
+        let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
+        // TODO(sterni): allow selecting other base package sets,
+        //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
+        let expr = format!("with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs", attr, attr);
+        let inst = debug_log_command(
+                            Command::new("nix-instantiate")
+                                .arg("-E")
+                                .arg(expr)
+                                .arg("--add-root")
+                                .arg(tmpdir.as_ref().join("instantiation-result"))
+                                .arg("--indirect")
+                                .stderr(Stdio::inherit()))
+                        .and_then(|cmd| cmd.output())
+                        .map_err(|_| NmanError::Execution("nix-instantiate"))?;
 
-    if !build.status.success() {
-        return Err(NmanError::Build(drv.render(), build.status));
+        if !inst.status.success() {
+            return Err(NmanError::Instantiate(attr, inst.status));
+        }
+
+        let mut drvs: Vec<DrvWithOutput> =
+                inst.stdout.split(|c| char::from(*c) == '\n')
+                    .filter_map(DrvWithOutput::parse).collect();
+
+        if drvs.len() <= 0 {
+            return Err(NmanError::ParseError("nix-instantiate"));
+        }
+
+        // the sort order is such that the outputs where we
+        // expect the man page to be are checked first.
+        // This means we realise the least amount of outputs
+        // necessary
+        //
+        // TODO(sterni): change sorting depending on section:
+        //               "3" and "3p" should prioritize DevMan
+        drvs.sort_unstable_by(|a, b| a.output.cmp(&b.output));
+
+        for drv in drvs {
+            let man_file = Main::build_man_page(drv, section, page, &tmpdir)?;
+
+            match man_file {
+                None => continue,
+                Some(f) => {
+                    let res = debug_log_command(Command::new("man")
+                                    .arg("-l").arg(f))
+                                    .and_then(|cmd| cmd.spawn())
+                                    .and_then(|mut c| c.wait())
+                                    .map(|c| c.success());
+
+                    return match res {
+                        Ok(true) => Ok(()),
+                        Ok(false) => Err(NmanError::Man),
+                        Err(_) => Err(NmanError::Execution("man")),
+                    };
+                },
+            }
+        }
+
+        Err(NmanError::NotFound(page, section))
     }
 
-    // get the first line of the output, usually only one line
-    // is printed, but this way we also get rid of the trailing '\n'
-    let first_path = build.stdout.split(|c| char::from(*c) == '\n')
-                          .next().filter(|l| l.len() > 0)
-                          .ok_or(NmanError::ParseError("nix-store"))?;
 
-    let mut path = PathBuf::from(OsStr::from_bytes(first_path));
-    path.push("share/man");
+    /// Realises the given derivation output using `nix-store --realise` and
+    /// checks if the man page described by `section` and `page` can be found
+    /// within it. If that is the case, the path to is returned. If it can't
+    /// be found, `None` is returned. `Err` is only used to describe unrecoverable
+    /// errors.
+    ///
+    /// `section == None` indicates that the section is not given. `build_man_page`
+    /// then searches all man section directories for any matching page. If multiple
+    /// matches exist, the one with an alphanumerically lower section is preferred,
+    /// e. g. section 1 is preferred over section 3.
+    fn build_man_page<'a>(drv: DrvWithOutput, section: Option<&str>, page: &str, tempdir: &TempDir) -> Result<Option<PathBuf>, NmanError<'a>> {
+        let build = debug_log_command(
+                                Command::new("nix-store")
+                                .arg("--realise")
+                                .arg(drv.render())
+                                .arg("--add-root")
+                                .arg(tempdir.as_ref().join("build-result"))
+                                .arg("--indirect")
+                                .stderr(Stdio::inherit()))
+                                .and_then(|cmd| cmd.output())
+                                .map_err(|_| NmanError::Execution("nix-store"))?;
 
-    // no share/man, no man pages
-    if !path.exists() {
-        return Ok(None);
-    }
+        if !build.status.success() {
+            return Err(NmanError::Build(drv.render(), build.status));
+        }
 
-    // expected sub directory of share/man or, if no section
-    // is given, all potential sub directories
-    let mut section_dirs: Vec<(OsString, PathBuf)> =
-        match section {
-            Some(s) => {
-                let dir_name = OsString::from(format!("man{}", s));
-                let dir_path = path.join(dir_name.as_os_str());
+        // get the first line of the output, usually only one line
+        // is printed, but this way we also get rid of the trailing '\n'
+        let first_path = build.stdout.split(|c| char::from(*c) == '\n')
+                            .next().filter(|l| l.len() > 0)
+                            .ok_or(NmanError::ParseError("nix-store"))?;
 
-                if dir_path.exists() {
-                    vec![(dir_name, dir_path)]
-                } else {
-                    Vec::new()
-                }
-            },
-            None => {
-                read_dir(path.as_path())
-                    .map_err(NmanError::IO)?
-                    .filter_map(|entry| entry.ok())
-                    .map(|e| (e.file_name(), e.path()))
-                    .collect()
-            },
-        };
+        let mut path = PathBuf::from(OsStr::from_bytes(first_path));
+        path.push("share/man");
 
-    // sorting should be ascending in terms of numerics,
-    // apart from that, not many requirements
-    section_dirs.sort_unstable_by(|(n1, _), (n2, _)| n1.cmp(n2));
+        // no share/man, no man pages
+        if !path.exists() {
+            return Ok(None);
+        }
 
-    for (dir_name, dir) in section_dirs {
-        // separate "man" prefix from section indicator,
-        // while validating the particular sub directory
-        let parsed_man_dir = dir_name.to_str()
-            .filter(|d| d.len() > 3)
-            .map(|d| d.split_at(3));
+        // expected sub directory of share/man or, if no section
+        // is given, all potential sub directories
+        let mut section_dirs: Vec<(OsString, PathBuf)> =
+            match section {
+                Some(s) => {
+                    let dir_name = OsString::from(format!("man{}", s));
+                    let dir_path = path.join(dir_name.as_os_str());
 
-        match parsed_man_dir {
-            Some(("man", s)) => {
-                // we have a valid man dir, check if it contains our page
-                let dir_content = read_dir(dir).map_err(NmanError::IO)?;
-
-                for entry in dir_content {
-                    let file = entry.map_err(NmanError::IO)?;
-                    let mmatch =
-                        file.file_name().to_str()
-                            .map(|f| match_man_page_file(f, s, page));
-
-                    if mmatch.unwrap_or(false) {
-                        return Ok(Some(file.path()))
+                    if dir_path.exists() {
+                        vec![(dir_name, dir_path)]
+                    } else {
+                        Vec::new()
                     }
-                }
-            },
-            _ => continue,
+                },
+                None => {
+                    read_dir(path.as_path())
+                        .map_err(NmanError::IO)?
+                        .filter_map(|entry| entry.ok())
+                        .map(|e| (e.file_name(), e.path()))
+                        .collect()
+                },
+            };
+
+        // sorting should be ascending in terms of numerics,
+        // apart from that, not many requirements
+        section_dirs.sort_unstable_by(|(n1, _), (n2, _)| n1.cmp(n2));
+
+        for (dir_name, dir) in section_dirs {
+            // separate "man" prefix from section indicator,
+            // while validating the particular sub directory
+            let parsed_man_dir = dir_name.to_str()
+                .filter(|d| d.len() > 3)
+                .map(|d| d.split_at(3));
+
+            match parsed_man_dir {
+                Some(("man", s)) => {
+                    // we have a valid man dir, check if it contains our page
+                    let dir_content = read_dir(dir).map_err(NmanError::IO)?;
+
+                    for entry in dir_content {
+                        let file = entry.map_err(NmanError::IO)?;
+                        let mmatch =
+                            file.file_name().to_str()
+                                .map(|f| match_man_page_file(f, s, page));
+
+                        if mmatch.unwrap_or(false) {
+                            return Ok(Some(file.path()))
+                        }
+                    }
+                },
+                _ => continue,
+            }
         }
+
+        Ok(None)
     }
 
-    Ok(None)
 }
-
 
 /// Match if a file name is a man file matching the given
 /// section and page. It is checked that the filename is
@@ -423,6 +430,7 @@ fn match_man_page_file(name: &str, section: &str, page: &str) -> bool {
     }
 }
 
+
 /// Check if a string describes a man section,
 /// i. e. is a number or "3p" (Perl Developer's
 /// manual). Used to distinguish between man pages
@@ -436,7 +444,6 @@ fn parse_man_section(section: &str) -> Result<&str, &str> {
         },
     }
 }
-
 
 fn debug_log_command(cmd: &mut Command) -> Result<&mut Command, std::io::Error> {
 
