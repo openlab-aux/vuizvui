@@ -368,62 +368,63 @@ fn parse_man_section(section: &str) -> Result<&str, &str> {
 }
 
 enum CliAction<'a> {
-    /// print help
-    Usage,
     /// attribute, section, page
     Man(&'a str, Option<&'a str>, &'a str),
 }
 
-fn main() {
-    fn dispatch_action(progname: &str, action: CliAction) {
-        match action {
-            CliAction::Usage => {
-                println!("Usage: {} ATTR [PAGE | SECTION [PAGE]]", progname);
-            },
-            CliAction::Man(attr, section, page) =>
-                match open_man_page(attr, section, page) {
-                    Ok(_) => (),
-                    Err(t) => {
-                        let msg = t.msg();
-                        eprint!("error: {}", msg);
-                        if !msg.ends_with("\n") {
-                            eprint!("\n");
-                        }
-                        std::process::exit(t.code())
-                    },
-                },
-        }
-    }
+enum CliResult<'a> {
+  ShowUsage{err_msg: Option<&'a str>},
+  Action(CliAction<'a>),
+}
 
+fn main() {
+    use CliResult::*;
     let (opts, args) : (Vec<String>, Vec<String>) =
             std::env::args().partition(|s| s.starts_with("-"));
 
-    let mut action : Result<CliAction, &str> = match args.len() {
-        2 => Ok(CliAction::Man(&args[1], None, &args[1])),
-        3 => Ok(match parse_man_section(&args[2]) {
-            Ok(s) => CliAction::Man(&args[1], Some(s), &args[1]),
-            Err(_) => CliAction::Man(&args[1], None, &args[2]),
-        }),
-        4 => parse_man_section(&args[2])
-                .map(|s| CliAction::Man(&args[1], Some(s), &args[3])),
-        _ => Err("Unexpected number of arguments"),
+    let mut cli_res : CliResult = match args.len() {
+        2 => Action(CliAction::Man(&args[1], None, &args[1])),
+        3 => match parse_man_section(&args[2]) {
+            Ok(s) => Action(CliAction::Man(&args[1], Some(s), &args[1])),
+            Err(_) => Action(CliAction::Man(&args[1], None, &args[2])),
+        },
+        4 => match parse_man_section(&args[2]) {
+            Err(err_msg) => ShowUsage{err_msg: Some(err_msg)},
+            Ok(s) => Action(CliAction::Man(&args[1], Some(s), &args[3])),
+        }
+        _ => ShowUsage { err_msg: Some("Unexpected number of arguments") },
     };
 
     for opt in opts {
         match &opt[..] {
             "--help" | "--usage" | "-h" =>
-                action = Ok(CliAction::Usage),
-            _ => action = Err("Unknown option"),
+                cli_res = ShowUsage{err_msg: None},
+            _ => cli_res = ShowUsage{err_msg: Some("Unknown option")},
         }
     }
 
-    match action {
-        Ok(action) => dispatch_action(&args[0], action),
-        Err(msg) => {
-            eprintln!("usage error: {}", msg);
-            dispatch_action(&args[0], CliAction::Usage);
+    match cli_res {
+        ShowUsage{err_msg} => {
+            if let Some(msg) = err_msg {
+                eprintln!("usage error: {}", msg);
+            }
+            println!("Usage: {} ATTR [PAGE | SECTION [PAGE]]", &args[0]);
             std::process::exit(NmanError::Usage.code());
         },
+        Action(action) => match action {
+            CliAction::Man(attr, section, page) =>
+            match open_man_page(attr, section, page) {
+                Ok(_) => (),
+                Err(t) => {
+                    let msg = t.msg();
+                    eprint!("error: {}", msg);
+                    if !msg.ends_with("\n") {
+                        eprint!("\n");
+                    }
+                    std::process::exit(t.code())
+                },
+            },
+        }
     }
 }
 
