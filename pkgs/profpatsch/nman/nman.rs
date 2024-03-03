@@ -2,7 +2,7 @@ extern crate temp;
 
 use std::borrow::Cow;
 use std::ffi::{OsStr, OsString};
-use std::fs::read_dir;
+use std::fs::{canonicalize, read_dir};
 use std::io::Write;
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::process::ExitStatusExt;
@@ -59,7 +59,7 @@ fn main() {
     match cli_res {
         ShowUsage { err_msg } => {
             if let Some(msg) = err_msg {
-                eprintln!("usage error: {}", msg);
+                eprintln!("nman: usage error: {}", msg);
             }
             println!("Usage: {} ATTR [PAGE | SECTION [PAGE]]", &args[0]);
             std::process::exit(NmanError::Usage.code());
@@ -69,7 +69,7 @@ fn main() {
                 Ok(_) => (),
                 Err(t) => {
                     let msg = t.msg();
-                    eprint!("error: {}", msg);
+                    eprint!("nman: error: {}", msg);
                     if !msg.ends_with("\n") {
                         eprint!("\n");
                     }
@@ -133,7 +133,7 @@ impl NmanError<'_> {
             ),
             NmanError::Man => String::from("man failed while opening while opening man page"),
             NmanError::NotFound(page, sec) => format!(
-                "man page {}({}) could not be found",
+                "man page {}({}) could not be found. Run with `--verbose` to see more.",
                 page,
                 sec.unwrap_or("?")
             ),
@@ -261,6 +261,7 @@ struct Main {
     is_debug: bool,
 }
 
+#[derive(Debug)]
 struct DerivationOutputPath(PathBuf);
 
 struct BuildResult {
@@ -269,21 +270,23 @@ struct BuildResult {
 
 enum OutputDirResult {
     NoManDir,
-    NoManPageFound,
+    NoManPageFound { ignored_manpages: Vec<FoundManPage> },
     FoundManPage(PathBuf),
 }
 
+#[derive(Debug)]
 struct FoundManPage {
     man_section: String,
     file_name: String,
+    drv_share_man: PathBuf,
 }
 
 impl FoundManPage {
     /// From a share/man path we can reconstruct the full manpage path.
-    fn manpage_path(&self, share_man: PathBuf) -> PathBuf {
-        return share_man
+    fn manpage_path(&self) -> PathBuf {
+        self.drv_share_man
             .join(String::from("man") + &self.man_section)
-            .join(&self.file_name);
+            .join(&self.file_name)
     }
 }
 
@@ -357,6 +360,7 @@ impl Main {
             page,
             section.map_or(String::from(""), |m| format!("({})", m))
         );
+        let mut all_ignored_manpages = Vec::new();
         for drv in drvs {
             self.debug_log(format!(
                 r#"Searching for manpage {} in output "{}""#,
@@ -367,7 +371,15 @@ impl Main {
             let man_file = self.find_man_page(section, page, build_result)?;
 
             match man_file {
-                OutputDirResult::NoManDir | OutputDirResult::NoManPageFound => {
+                OutputDirResult::NoManDir => {
+                    self.debug_log(format!(
+                        r#"no share/man directory found in output "{}""#,
+                        &drv.output.display()
+                    ));
+                    continue;
+                }
+                OutputDirResult::NoManPageFound { ignored_manpages } => {
+                    all_ignored_manpages.extend(ignored_manpages);
                     self.debug_log(format!(
                         r#"no manpage for {} found in output "{}""#,
                         manpage_display,
@@ -396,6 +408,13 @@ impl Main {
             }
         }
 
+        self.debug_log(format!(
+            "We could not find a manpage. These are the ones we found in all outputs: {:#?}",
+            all_ignored_manpages
+                .into_iter()
+                .map(|mp| mp.manpage_path())
+                .collect::<Vec<_>>()
+        ));
         Err(NmanError::NotFound(page, section))
     }
 
@@ -430,7 +449,7 @@ impl Main {
         manpages.sort_unstable_by(|man1, man2| man1.man_section.cmp(&man2.man_section));
 
         // take the first manpage that matches our criteria
-        for ref manpage in manpages {
+        for manpage in &manpages {
             // If we want to restrict to a section, skip manpages of the wrong section.
             if let Some(sect) = section {
                 if sect != manpage.man_section {
@@ -438,17 +457,20 @@ impl Main {
                 }
             }
             if match_man_page_file(&manpage.file_name, &manpage.man_section, page) {
-                return Ok(OutputDirResult::FoundManPage(
-                    manpage.manpage_path(drv_share_man),
-                ));
+                return Ok(OutputDirResult::FoundManPage(manpage.manpage_path()));
             }
         }
 
-        Ok(OutputDirResult::NoManPageFound)
+        Ok(OutputDirResult::NoManPageFound {
+            ignored_manpages: manpages,
+        })
     }
 
-    fn enumerate_man_pages<'a>(path: &PathBuf) -> Result<Vec<FoundManPage>, NmanError<'a>> {
-        let dirs = read_dir(path.as_path()).map_err(NmanError::IO)?;
+    /// For the given manpage directory (`share/man`), return every manpage we can find.
+    fn enumerate_man_pages<'a>(
+        drv_share_man: &PathBuf,
+    ) -> Result<Vec<FoundManPage>, NmanError<'a>> {
+        let dirs = read_dir(drv_share_man.as_path()).map_err(NmanError::IO)?;
         let mut res = Vec::new();
         for entry in dirs.collect::<Vec<_>>() {
             // ignore directories/files that cannot be read
@@ -471,6 +493,7 @@ impl Main {
                                 res.push(FoundManPage {
                                     man_section: String::from(man_section),
                                     file_name,
+                                    drv_share_man: drv_share_man.clone(),
                                 })
                             }
                         }
@@ -513,8 +536,12 @@ impl Main {
             .next()
             .filter(|l| l.len() > 0)
             .ok_or(NmanError::ParseError("nix-store"))
-            .map(|path| BuildResult {
-                first_path: DerivationOutputPath(PathBuf::from(OsStr::from_bytes(path))),
+            .map(|path| {
+                let p = PathBuf::from(OsStr::from_bytes(path));
+                let store_path = canonicalize(&p).unwrap_or(p);
+                BuildResult {
+                    first_path: DerivationOutputPath(store_path),
+                }
             })
     }
 
