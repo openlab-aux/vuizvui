@@ -36,7 +36,7 @@ let
     { check = config.services.babeld.enable;
       path  = ["nixos" "babeld"];
     }
-    { check = elem "bcachefs" config.boot.supportedFilesystems;
+    { check = config.boot.supportedFilesystems.bcachefs or false;
       path  = ["nixos" "bcachefs"];
     }
     { check = config.services.beanstalkd.enable;
@@ -315,7 +315,7 @@ let
         ["nixos" "installer" "luksroot-format2"]
       ];
     }
-    { check = elem "ext3" config.boot.supportedFilesystems
+    { check = config.boot.supportedFilesystems.ext3 or false
            && config.specialisation != {};
       path  = ["nixos" "installer" "simpleClone"];
     }
@@ -328,7 +328,7 @@ let
            && config.specialisation != {};
       path  = ["nixos" "installer" "simpleUefiGrubClone"];
     }
-    { check = elem "zfs" config.boot.supportedFilesystems;
+    { check = config.boot.supportedFilesystems.zfs or false;
       path  = ["nixos" "installer" "zfsroot"];
     }
     { check = config.services.jackett.enable;
@@ -830,11 +830,11 @@ let
     { check = config.services.yggdrasil.enable;
       path  = ["nixos" "yggdrasil"];
     }
-    { check = elem "zfs" config.boot.supportedFilesystems
+    { check = config.boot.supportedFilesystems.zfs or false
            && !config.boot.zfs.enableUnstable;
       path  = ["nixos" "zfs" "stable"];
     }
-    { check = elem "zfs" config.boot.supportedFilesystems
+    { check = config.boot.supportedFilesystems.zfs or false
            && config.boot.zfs.enableUnstable;
       path  = ["nixos" "zfs" "unstable"];
     }
