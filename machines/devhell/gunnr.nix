@@ -139,6 +139,5 @@
      vaapiVdpau
      vdpauinfo
      xbindkeys
-     rwpspread
    ];
 }

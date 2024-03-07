@@ -227,6 +227,7 @@ in {
       rq
       rsync
       rustic-rs
+      rwpspread
       safecopy
       screen
       sd
