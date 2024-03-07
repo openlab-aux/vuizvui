@@ -831,11 +831,11 @@ let
       path  = ["nixos" "yggdrasil"];
     }
     { check = config.boot.supportedFilesystems.zfs or false
-           && !config.boot.zfs.enableUnstable;
+           && config.boot.zfs.package.version == pkgs.zfs.version;
       path  = ["nixos" "zfs" "stable"];
     }
     { check = config.boot.supportedFilesystems.zfs or false
-           && config.boot.zfs.enableUnstable;
+           && config.boot.zfs.package.version == pkgs.zfs_unstable.version;
       path  = ["nixos" "zfs" "unstable"];
     }
     { check = config.programs.zsh.enable;
