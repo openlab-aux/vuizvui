@@ -16,7 +16,7 @@
     };
 
     zfs = {
-      enableUnstable = true;
+      package = pkgs.zfs_unstable;
       requestEncryptionCredentials = true;
     };
 
