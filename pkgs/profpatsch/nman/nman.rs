@@ -394,7 +394,7 @@ impl Main {
                         &drv.output.display()
                     ));
                     let res = self
-                        .debug_log_command(Command::new("man").arg("--local-file").arg(file))
+                        .debug_log_command(Command::new("man").arg("-l").arg(file))
                         .and_then(|cmd| cmd.spawn())
                         .and_then(|mut c| c.wait())
                         .map(|c| c.success());
