@@ -78,7 +78,7 @@ in {
       gnupg = {
         agent.enable = true;
         agent.enableSSHSupport = true;
-        agent.pinentryFlavor = "gnome3";
+        agent.pinentryPackage = "gnome3";
       };
       ssh = {
         startAgent = false;
