@@ -61,7 +61,7 @@ in {
     vuizvui.sternenseemann.pass
     vuizvui.sternenseemann.acme
     exfat borgbackup
-    gnupg pinentry-gnome signing-party gpgme
+    gnupg pinentry-gnome3 signing-party gpgme
     thunderbird
     vuizvui.sternenseemann.texlive
     # jabref # depends on insecure JDK version
