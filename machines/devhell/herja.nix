@@ -4,6 +4,7 @@
   vuizvui.user.devhell.profiles.base.enable = true;
 
   boot = {
+    binfmt.emulatedSystems = [ "aarch64-linux" ];
     loader = {
       timeout = 2;
       systemd-boot = {
