@@ -85,6 +85,7 @@
 
   nix = {
     settings.max-jobs = lib.mkDefault 16;
+    extra-platforms = config.boot.binfmt.emulatedSystems;
   };
 
   i18n = {
