@@ -5,7 +5,6 @@ pkgs: with pkgs; [
   ascii
   aspellDicts.de
   aspellDicts.en
-  vuizvui.aszlig.axbo
   bc
   beets
   chromium

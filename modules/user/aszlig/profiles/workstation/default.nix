@@ -164,9 +164,6 @@ in {
       pcscd.plugins = [ pkgs.ccid pkgs.pcsc-cyberjack ];
 
       udev.extraRules = ''
-        # aXbo S.P.A.C.
-        SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", \
-          ATTRS{serial}=="0001", OWNER="aszlig", SYMLINK+="axbo"
         # Enttec DMX device
         SUBSYSTEM=="usb*|tty", ACTION=="add|change", ATTRS{idVendor}=="0403", \
           ATTRS{idProduct}=="6001", OWNER="aszlig"
