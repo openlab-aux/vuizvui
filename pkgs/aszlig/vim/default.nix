@@ -604,8 +604,10 @@ let
     if !executable('rustc')
       let g:rustc_path = '${rustc}/bin/rustc'
     endif
-    let g:rustfmt_command = '${rustfmt}/bin/rustfmt'
-    let g:rustfmt_autosave = 1
+    let g:rustfmt_command = '${rustfmt.override {
+      asNightly = true;
+    }}/bin/rustfmt'
+    let g:rustfmt_autosave_if_config_present = 1
     let g:rust_recommended_style = 0
   '';
 
