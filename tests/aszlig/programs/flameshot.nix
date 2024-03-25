@@ -3,13 +3,21 @@
 {
   name = "flameshot";
 
-  machine = { pkgs, ... }: {
+  machine = { lib, pkgs, ... }: {
     imports = [
       "${nixpkgsPath}/nixos/tests/common/user-account.nix"
       "${nixpkgsPath}/nixos/tests/common/x11.nix"
     ];
     test-support.displayManager.auto.user = "alice";
     vuizvui.user.aszlig.programs.flameshot.enable = true;
+
+    # Use "icewm" instead of "icewm-session" because the latter also starts
+    # icewmbg, which includes a default background image that is so noisy that
+    # we get bad OCR results.
+    services.xserver.windowManager.session = lib.mkForce (lib.singleton {
+      name = "icewm";
+      start = "${pkgs.icewm}/bin/icewm & waitPID=$!";
+    });
   };
 
   enableOCR = true;
