@@ -1,6 +1,6 @@
 { stdenv, lib, fetchurl, fetchFromGitHub, writeText, writeTextFile, writeScript
 , runCommand, writers, python3Packages, ledger, meson, vim, buildGoPackage
-, rustc, rustfmt, ansifilter
+, rustfmt, ansifilter
 }:
 
 let
@@ -601,9 +601,6 @@ let
       \ ['full_hex', 'rgb', 'rgba', 'hsl', 'hsla']
 
     " rust
-    if !executable('rustc')
-      let g:rustc_path = '${rustc}/bin/rustc'
-    endif
     let g:rustfmt_command = '${rustfmt.override {
       asNightly = true;
     }}/bin/rustfmt'
