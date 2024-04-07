@@ -155,7 +155,7 @@ in {
       lm_sensors
       lsd
       lsof
-      lxd
+      lxd-lts
       macchina
       maim
       mako
@@ -185,7 +185,7 @@ in {
       netsniff-ng
       nix-output-monitor
       nix-update
-      nixfmt
+      nixfmt-rfc-style
       nixpkgs-fmt
       nixpkgs-review
       nload
@@ -193,6 +193,7 @@ in {
       notmuch
       ntfs3g
       ntfsprogs
+      nvtopPackages.amd
       oculante
       oneshot
       openssl
