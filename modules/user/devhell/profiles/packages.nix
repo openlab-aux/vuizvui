@@ -144,6 +144,7 @@ in {
       iprange
       iptraf-ng
       ipv6calc
+      jq
       jql
       kmon
       lemmeknow
