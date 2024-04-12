@@ -68,10 +68,13 @@ in wrapFirefox firefoxNoSigning {
     lockPref('app.normandy.enabled', false);
     lockPref('app.normandy.first_run', false);
     lockPref('app.shield.optoutstudies.enabled', false);
+    lockPref('apz.allow_zooming', false);
     lockPref('browser.aboutConfig.showWarning', false);
     lockPref('browser.aboutwelcome.enabled', false);
     lockPref('browser.contentblocking.category', 'strict');
     lockPref('browser.download.open_pdf_attachments_inline', true);
+    lockPref('browser.gesture.pinch.in', "");
+    lockPref('browser.gesture.pinch.out', "");
     lockPref('browser.laterrun.enabled', false);
     lockPref('browser.newtab.extensionControlled', true);
     lockPref('browser.newtab.privateAllowed', false);
