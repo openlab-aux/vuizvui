@@ -71,6 +71,7 @@ in wrapFirefox firefoxNoSigning {
     lockPref('browser.aboutConfig.showWarning', false);
     lockPref('browser.aboutwelcome.enabled', false);
     lockPref('browser.contentblocking.category', 'strict');
+    lockPref('browser.download.open_pdf_attachments_inline', true);
     lockPref('browser.laterrun.enabled', false);
     lockPref('browser.newtab.extensionControlled', true);
     lockPref('browser.newtab.privateAllowed', false);
