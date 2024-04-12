@@ -228,6 +228,7 @@ in {
       ripgrep
       rq
       rsync
+      rustdesk
       rustic-rs
       rwpspread
       safecopy
