@@ -101,7 +101,7 @@ in {
         '';
         interactiveShellInit = ''
           zstyle ':completion:*' menu select
-          source ${pkgs.fzf}/share/fzf/shell/key-bindings.zsh
+          source ${pkgs.fzf}/share/fzf/key-bindings.zsh
         '';
         shellAliases = {
           ls = "lsd";
