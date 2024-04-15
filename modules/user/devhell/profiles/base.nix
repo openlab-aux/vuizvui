@@ -75,6 +75,10 @@ in {
       git.enable = true;
       liboping.enable = true;
       htop.enable = true;
+      fzf = {
+        keybindings = true;
+        fuzzyCompletion = true;
+      };
       gnupg = {
         agent.enable = true;
         agent.enableSSHSupport = true;
