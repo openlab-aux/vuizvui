@@ -117,6 +117,9 @@
     syncthing = {
       enable = false;
     };
+    openssh = {
+      enable = lib.mkForce false;
+    };
   };
 
   services.zfs.autoScrub.enable = true;
