@@ -78,6 +78,7 @@ in {
       colmena
       cryptsetup
       cuetools
+      curlie
       dcfldd
       ddrescue
       delta
