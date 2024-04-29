@@ -83,6 +83,7 @@ in {
     browser.pkg
     gpxsee
     msr-tools
+    quasselClient
     # hunspell
     # (with hunspellDicts; [ de-de en-gb-large en-us ])
   ];
