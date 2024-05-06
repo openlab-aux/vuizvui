@@ -229,6 +229,7 @@ in {
       ripgrep
       rq
       rsync
+      rustcat
       rustdesk
       rustic-rs
       rwpspread
