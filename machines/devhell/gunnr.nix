@@ -124,9 +124,9 @@
 
   services.zfs.autoScrub.enable = true;
 
-   services.timesyncd = {
-     servers = [ "ntp.canterbury.ac.uk" ];
-   };
+#   services.timesyncd = {
+#     servers = [ "ntp.canterbury.ac.uk" ];
+#   };
 
    #### Machine-specific packages configuration ####
 
