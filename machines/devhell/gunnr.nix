@@ -31,23 +31,9 @@
 
     kernelParams = [ "pcie_aspm=off" ];
     kernelModules = [ "kvm-amd" ];
-    extraModulePackages = [
-      (
-        config.boot.kernelPackages.rtl88xxau-aircrack.overrideAttrs
-        {
-          # https://github.com/aircrack-ng/rtl8812au/pull/1134
-          src = pkgs.fetchFromGitHub {
-            owner = "crivasr";
-            repo = "rtl8812au";
-            rev = "c0d16813f5af3b464cdb6dd415c83d1f238e3548";
-            hash = "sha256-jhX5apYbcYz6+kGGe1xZXXTerQJm3Gv4DoowDSSY8MY=";
-          };
-        }
-      )
-    ];
-    blacklistedKernelModules = [ ];
-    kernelPackages = lib.mkForce
-      config.boot.zfs.package.latestCompatibleLinuxPackages;
+    extraModulePackages = [ ];
+    blacklistedKernelModules = [ "btusb" ];
+    kernelPackages = [ ];
   };
 
   hardware = {
