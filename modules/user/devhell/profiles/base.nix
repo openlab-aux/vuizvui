@@ -61,7 +61,7 @@ in {
     ];
 
     programs = {
-      singularity = true;
+      singularity.enable = true;
       dconf.enable = true;
       iftop.enable = true;
       iotop.enable = true;
