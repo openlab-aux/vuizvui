@@ -176,7 +176,6 @@
 
   programs = {
     light.enable = true;
-    wavemon.enable = true;
   };
 
   environment.systemPackages = with pkgs; [
