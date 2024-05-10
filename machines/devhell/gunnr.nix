@@ -33,7 +33,6 @@
     kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
     blacklistedKernelModules = [ "btusb" ];
-    kernelPackages = [ ];
   };
 
   hardware = {
