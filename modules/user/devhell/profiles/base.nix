@@ -61,7 +61,6 @@ in {
     ];
 
     programs = {
-      singularity.enable = true;
       dconf.enable = true;
       iftop.enable = true;
       iotop.enable = true;
@@ -90,6 +89,12 @@ in {
       };
       bash = {
         enableCompletion = true;
+      };
+      singularity = {
+        enable = true;
+        package = pkgs.apptainer;
+        enableSuid = true;
+        enableFakeroot = true;
       };
       starship = {
         enable = true;
