@@ -92,8 +92,6 @@ in {
     BROWSER = browser.bin;
   };
 
-  services.lorri.enable = true;
-
   services.xserver = {
     videoDrivers = [ "intel" ];
   };
