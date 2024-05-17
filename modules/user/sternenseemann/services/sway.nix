@@ -92,10 +92,19 @@ in {
       };
 
       colors = {
-        background = mkColorOption "background" "#000000";
-        active = mkColorOption "active window" "#ffffff";
-        inactive = mkColorOption "inactive window" "#000000";
+        background = mkColorOption "background" "#ffffea";
+        statusBackground = mkColorOption "background of status bar" "#ffffea";
+        statusText = mkColorOption "status bar text color" "#000000";
+
+        active = mkColorOption "active window" "#9EEEEE";
+        activeText = mkColorOption "active window text" "#000000";
+
+        inactive = mkColorOption "inactive window" "#eaffff";
+        inactiveText = mkColorOption "inactive window text" "#000000";
+
         urgent = mkColorOption "urgent window" "#900000";
+        urgentText = mkColorOption "urgent window text" "#ffffff";
+
         indicate = mkColorOption "indicator" "#d0d0d0";
       };
 
@@ -279,19 +288,22 @@ in {
         font "${cfg.font.name} ${builtins.toString cfg.font.size}"
 
         # colors
-        set $bg     ${cfg.colors.background}
-        set $act    ${cfg.colors.active}
-        set $inact  ${cfg.colors.inactive}
-        set $urg    ${cfg.colors.urgent}
-        set $ind    ${cfg.colors.indicate}
+        set $bg          ${cfg.colors.background}
+        set $act         ${cfg.colors.active}
+        set $act_text    ${cfg.colors.activeText}
+        set $inact       ${cfg.colors.inactive}
+        set $inact_text  ${cfg.colors.inactiveText}
+        set $urg         ${cfg.colors.urgent}
+        set $urg_text    ${cfg.colors.urgentText}
+        set $ind         ${cfg.colors.indicate}
 
         output * bg $bg solid_color
 
-        # class                 border  backgr. text    indicator
-        client.focused          $act    $act    $inact  $ind
-        client.focused_inactive $inact  $inact  $act    $inact
-        client.unfocused        $inact  $inact  $act    $inact
-        client.urgent           $urg    $urg    $act    $urg
+        # class                 border  backgr. text         indicator
+        client.focused          $act    $act    $act_text    $ind
+        client.focused_inactive $inact  $inact  $inact_text  $ind
+        client.unfocused        $inact  $inact  $inact_text  $ind
+        client.urgent           $urg    $urg    $urg_text    $ind
 
         # bar aesthetics
         bar {
@@ -300,13 +312,13 @@ in {
           position top
           colors {
             font "${cfg.font.name} ${builtins.toString cfg.font.size}"
-            statusline $act
-            background $inact
+            statusline ${cfg.colors.statusText}
+            background ${cfg.colors.statusBackground}
             # type             border bg     text
-            focused_workspace  $act   $act   $inact
-            active_workspace   $act   $act   $ind
-            inactive_workspace $inact $inact $act
-            urgent_workspace   $urg   $urg   $act
+            focused_workspace  $act   $act   $act_text
+            active_workspace   $act   $act   $act_text
+            inactive_workspace $inact $inact $inact_text
+            urgent_workspace   $urg   $urg   $urg_text
           }
         }
 
