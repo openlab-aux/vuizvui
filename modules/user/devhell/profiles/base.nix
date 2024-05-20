@@ -115,7 +115,6 @@ in {
         '';
         shellAliases = {
           ls = "lsd";
-          grep = "rg";
           ip = "ip --color=auto";
           tree = "broot";
           ps = "procs";
