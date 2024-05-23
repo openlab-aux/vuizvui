@@ -86,7 +86,7 @@ in {
       netrw = super.netrw.override {
         checksumType = "mhash";
       };
-      nix = super.nixUnstable;
+      nix = super.nixVersions.latest;
       uqm = super.uqm.override {
         use3DOVideos = true;
         useRemixPacks = true;
