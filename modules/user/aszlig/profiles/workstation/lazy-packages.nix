@@ -13,7 +13,7 @@ pkgs: with pkgs; [
   libchipcard
   lftp
   mp3info
-  mpg321
+  mpg123
   mumble
   neko
   nixpkgs-lint
