@@ -36,8 +36,8 @@ in {
     networking.useNetworkd = true;
     networking.useDHCP = false;
 
-    services.xserver.layout = "us";
-    services.xserver.xkbVariant = "dvorak";
+    services.xserver.xkb.layout = "us";
+    services.xserver.xkb.variant = "dvorak";
     console.useXkbConfig = true;
     console.font = "lat9w-16";
 

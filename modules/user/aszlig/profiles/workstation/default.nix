@@ -63,7 +63,7 @@ in {
       fontDir.enable = true;
       enableGhostscriptFonts = true;
       fontconfig.useEmbeddedBitmaps = true;
-      fonts = lib.singleton pkgs.ultimate-oldschool-pc-font-pack;
+      packages = lib.singleton pkgs.ultimate-oldschool-pc-font-pack;
     };
 
     vuizvui.user.aszlig.services.i3.enable = true;
@@ -176,35 +176,33 @@ in {
         brightness.night = "0.5";
       };
 
-      xserver = {
-        enable = true;
+      xserver.enable = true;
+      xserver.displayManager.lightdm.enable = true;
+      xserver.displayManager.sessionCommands = ''
+        ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
+          XTerm*termName:            xterm-direct
+          XTerm*directColor:         true
+          XTerm*faceName:            MxPlus IBM VGA 8x16
+          XTerm*faceSize:            12
+          XTerm*renderFont:          true
+          XTerm*saveLines:           10000
+          XTerm*bellIsUrgent:        true
+          XTerm*background:          black
+          XTerm*foreground:          grey
 
-        displayManager = {
-          lightdm.enable = true;
-          defaultSession = "none+i3";
-          sessionCommands = ''
-            ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
-              XTerm*termName:            xterm-direct
-              XTerm*directColor:         true
-              XTerm*faceName:            MxPlus IBM VGA 8x16
-              XTerm*faceSize:            12
-              XTerm*renderFont:          true
-              XTerm*saveLines:           10000
-              XTerm*bellIsUrgent:        true
-              XTerm*background:          black
-              XTerm*foreground:          grey
+          XTerm*backarrowKeyIsErase: true
+          XTerm*ptyInitialErase:     true
+        ''}"
+      '';
 
-              XTerm*backarrowKeyIsErase: true
-              XTerm*ptyInitialErase:     true
-            ''}"
-          '';
-        } // lib.optionalAttrs (config.boot.initrd.luks.devices != {}) {
-          # All of my workstations are single-user machines with encrypted root
-          # and swap, so there is no need to prompt another time for a password
-          # or passphrase.
-          autoLogin.enable = true;
-          autoLogin.user = "aszlig";
-        };
+      displayManager = {
+        defaultSession = "none+i3";
+      } // lib.optionalAttrs (config.boot.initrd.luks.devices != {}) {
+        # All of my workstations are single-user machines with encrypted root
+        # and swap, so there is no need to prompt another time for a password
+        # or passphrase.
+        autoLogin.enable = true;
+        autoLogin.user = "aszlig";
       };
     };
 
