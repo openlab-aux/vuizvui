@@ -16,7 +16,7 @@
     };
 
     zfs = {
-      package = pkgs.zfs_unstable;
+      package = pkgs.passthru.latestCompatibleLinuxPackages;
       requestEncryptionCredentials = true;
     };
 
