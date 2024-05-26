@@ -16,7 +16,7 @@
     };
 
     zfs = {
-      package = passthru.latestCompatibleLinuxPackages;
+      package = pkgs.zfs_unstable;
       requestEncryptionCredentials = true;
     };
 
