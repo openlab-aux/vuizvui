@@ -75,6 +75,7 @@ in {
       git.enable = true;
       liboping.enable = true;
       htop.enable = true;
+      nh.enable = true;
       fzf = {
         keybindings = true;
         fuzzyCompletion = true;
