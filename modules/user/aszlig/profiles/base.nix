@@ -69,6 +69,7 @@ in {
       moreutils
       vuizvui.aszlig.nlast
       psmisc
+      termdown
       unfreePkgs.unrar
       unzip
       vlock
