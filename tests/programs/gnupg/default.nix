@@ -80,8 +80,7 @@ in {
       machine.succeed(ssh('ssh-keygen -t ed25519 -f ~/testkey -N ""'))
       machine.succeed(ssh('${mkExpect ''
         expect -regexp ---+.*Please.enter
-        send supersecret\r
-        expect -regexp ---+.*Please.re-en
+        send supersecret\t
         send supersecret\r
       '' "ssh-add ~/testkey"}'))
 
