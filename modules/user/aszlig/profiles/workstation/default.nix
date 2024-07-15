@@ -49,8 +49,6 @@ in {
 
     vuizvui.lazyPackages = import ./lazy-packages.nix pkgs;
 
-    sound.enable = true;
-
     hardware = {
       pulseaudio.enable = true;
       pulseaudio.package = pkgs.pulseaudioFull;
