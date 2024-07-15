@@ -454,9 +454,6 @@ let
            || config.services.munin-cron.enable;
       path  = ["nixos" "munin"];
     }
-    { check = config.services.mxisd.enable;
-      path  = ["nixos" "mxisd"];
-    }
     { check = config.services.mysql.enable;
       path  = ["nixos" "mysql"];
     }
