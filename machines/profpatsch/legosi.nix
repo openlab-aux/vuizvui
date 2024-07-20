@@ -39,6 +39,8 @@ in {
       settings.min-free = 3 * 1024 * 1024 * 1024;
     };
 
+    system.stateVersion = "23.11";
+
     vuizvui.user.profpatsch.server.sshPort = 7001;
 
     boot.loader.grub.device = "/dev/sda";
