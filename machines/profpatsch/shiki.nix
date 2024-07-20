@@ -119,15 +119,17 @@ in {
     hardware.bluetooth.enable = true;
     services.blueman.enable = true;
 
-    i18n = {
-      inputMethod = {
-        enabled = "fcitx5";
+    services.safeeyes.enable = true;
+
+    # i18n = {
+      # inputMethod = {
+      #   enabled = "fcitx5";
 
         # TODO: broken because python 2.7
         # Japanese input
         # fcitx.engines = with pkgs.fcitx-engines; [ mozc ];
-      };
-    };
+      # };
+    # };
 
     ######
     # Nix
