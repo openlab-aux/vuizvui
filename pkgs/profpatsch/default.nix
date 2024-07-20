@@ -144,6 +144,9 @@ in rec {
   read-qr-code = callPackage ./read-qr-code.nix {
     inherit writeExecline getBins;
   };
+  read-qr-code-from-camera = callPackage ./read-qr-code-from-camera.nix {
+    inherit writeExecline getBins;
+  };
   warpspeed = callPackage ./warpspeed {
     inherit (pkgs.haskellPackages) ghcWithPackages;
   };

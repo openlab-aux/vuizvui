@@ -319,6 +319,10 @@ in {
           exe = pkgs.vuizvui.profpatsch.read-qr-code;
           name = "read-qr-code";
         })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.read-qr-code-from-camera;
+          name = "read-qr-code-from-camera";
+        })
         backlight      # adjust laptop backlight
         sfttime        # geek time
       ];

@@ -2,8 +2,7 @@
 
 let
   bins = getBins zbar [ "zbarimg" ]
-      // getBins imagemagick [ "import" ]
-      // getBins libnotify [ "notify-send" ];
+      // getBins imagemagick [ "import" ];
 
   script = writeExecline "read-qr-code" {} [
     "pipeline" [
@@ -18,6 +17,6 @@ let
 
 in script // {
   meta = {
-    description = "Capture a screenshot, then display the content of the QR code, if any";
+    description = "Capture a screenshot, then return the content of the QR code, if any";
   };
 }
