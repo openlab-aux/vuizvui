@@ -24,9 +24,15 @@ in {
         enable = true;
         # for manual/temporary stuff
         allowedTCPPortRanges =
-          [{ from = 9990; to = 9999; }];
+          [
+          { from = 5037; to = 5037; }
+          # test.profpatsch.de forwarding
+          { from = 9999; to = 9999; }
+          ];
         allowedUDPPortRanges =
-          [{ from = 9990; to = 9999; }];
+          [
+          { from = 5037; to = 5037; }
+          ];
       };
     };
 
