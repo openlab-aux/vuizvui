@@ -43,6 +43,15 @@ in {
        type = lib.types.str;
      };
 
+     playlistsDir = lib.mkOption {
+       description = "path to the playlists directory; must exist beforehand and have the right group permissions";
+       type = lib.types.path;
+     };
+     playlistsDirGroup = lib.mkOption {
+       description = "user group to access playlists directory";
+       type = lib.types.str;
+     };
+
      scanIntervalMinutes = lib.mkOption {
        description = "interval (in minutes) to check for new music (automatic scanning disabled if omitted)";
        type = lib.types.nullOr lib.types.ints.positive;
@@ -52,6 +61,7 @@ in {
    };
 
    config = lib.mkIf cfg.enable {
+     users.groups.gonic = {};
      users.users.${userName} = {
        isSystemUser = true;
        createHome = true;
@@ -69,6 +79,7 @@ in {
            "-db-path" "${gonicDataDir}/db.sqlite"
            "-music-path" cfg.musicDir
            "-podcast-path" cfg.podcastDir
+           "-playlists-path" cfg.playlistsDir
          ]
          ++ lib.optionals (cfg.scanIntervalMinutes != null) [
            "-scan-interval" (toString cfg.scanIntervalMinutes)
