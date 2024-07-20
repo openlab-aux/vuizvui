@@ -15,7 +15,8 @@ let
 
   beets = pkgs.beets.override { enableAlternatives = true; };
 
-  vim = pkgs.vim-full;
+  # vim = pkgs.vim-full;
+  vim = pkgs.vim;
 
   fast-init = pkgs.haskellPackages.callPackage (import "${(pkgs.fetchFromGitHub {
     owner = "Profpatsch";
