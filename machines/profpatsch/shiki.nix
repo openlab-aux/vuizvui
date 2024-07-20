@@ -146,23 +146,23 @@ in {
     nix.settings.trusted-users = [ "@wheel" ];
     nix.buildMachines = [
       # access to the nix-community aarch64 build box
-      {
-        hostName = "aarch64.nixos.community";
-        maxJobs = 64;
-        sshKey = "/root/aarch64-build-box/ssh-key";
-        sshUser = "Profpatsch";
-        system = "aarch64-linux";
-        supportedFeatures = [ "big-parallel" ];
-      }
+      # {
+      #   hostName = "aarch64.nixos.community";
+      #   maxJobs = 64;
+      #   sshKey = "/root/aarch64-build-box/ssh-key";
+      #   sshUser = "Profpatsch";
+      #   system = "aarch64-linux";
+      #   supportedFeatures = [ "big-parallel" ];
+      # }
       # possehl analytics remote builder
-      {
-        hostName = "build01.possehl-analytics.com";
-        maxJobs = 24;
-        sshKey = "/root/.ssh/possehl-analytics-nix-builder";
-        sshUser = "nix-builder";
-        system = "x86_64-linux";
-        supportedFeatures = [ "kvm" "big-parallel" "nixos-test" "benchmark" ];
-      }
+      # {
+      #   hostName = "build01.possehl-analytics.com";
+      #   maxJobs = 24;
+      #   sshKey = "/root/.ssh/possehl-analytics-nix-builder";
+      #   sshUser = "nix-builder";
+      #   system = "x86_64-linux";
+      #   supportedFeatures = [ "kvm" "big-parallel" "nixos-test" "benchmark" ];
+      # }
     ];
 
     nix.settings.substituters = [
