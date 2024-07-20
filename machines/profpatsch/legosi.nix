@@ -158,6 +158,12 @@ in {
           index = "index.html";
           root = pkgs.vuizvui.profpatsch.websiteStatic;
         };
+        # gpg-wks-client --print-wkd-hash mail@profpatsch.de
+        locations."/.well-known/openpgpkey/hu".root = pkgs.linkFarm "well-known-pgp-keys" [
+          { name = ".well-known/openpgpkey/hu/dizb37aqa5h4skgu7jf1xjr4q71w4paq";
+            path = ./../../pkgs/profpatsch/profpatsch.de/key.asc;
+          }
+        ];
         # pass the rest to the site server (TODO: make static!)
         locations."/notes" = {
           proxyPass = "http://localhost:${toString siteServerPort}";
