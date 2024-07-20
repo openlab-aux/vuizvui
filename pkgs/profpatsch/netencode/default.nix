@@ -2,10 +2,10 @@
 
 let
   version-check = pkgs.buildRustCrate {
-    pname = "version-check";
-    version = "0.9.2";
-    crateName = "version-check";
-    sha256 = "1vwvc1mzwv8ana9jv8z933p2xzgj1533qwwl5zr8mi89azyhq21v";
+    pname = "version_check";
+    version = "0.9.4";
+    crateName = "version_check";
+    sha256 = "sha256-gqwGGKrA2DYqteb1R+yew32P9jE/mKVdSC/VmuEGIy8=";
   };
   memchr = pkgs.buildRustCrate {
     pname = "memchr";
