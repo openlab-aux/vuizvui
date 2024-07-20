@@ -16,7 +16,6 @@ with import ../lib;
     haku = callMachine ./profpatsch/haku.nix {};
     legosi = callMachine ./profpatsch/legosi.nix {};
     leguin = callMachine ./profpatsch/leguin.nix {};
-    # mikiya = callMachine ./profpatsch/mikiya.nix {};
   };
   sternenseemann = {
     ludwig = callMachine ./sternenseemann/ludwig.nix {};
