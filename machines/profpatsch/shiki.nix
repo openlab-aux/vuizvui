@@ -448,7 +448,7 @@ in {
     services.avahi.enable = true;
     # for being able to talk to ddns printers after finding them.
     # disable v6 for mdns (argh)
-    services.avahi.nssmdns = false;
+    services.avahi.nssmdns4 = false;
     system.nssModules = [ pkgs.nssmdns ];
     system.nssDatabases.hosts = (lib.mkMerge [
       (lib.mkBefore [ "mdns4_minimal [NOTFOUND=return]" ]) # before resolve

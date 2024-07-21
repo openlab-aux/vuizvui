@@ -59,15 +59,18 @@ in {
       enable = true;
       package = pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.my-xmonad;
     };
+
+    # TODO: libinput?
+    services.libinput.enable = false;
     services.xserver = {
       enable = true;
 
       # otherwise xterm is enabled, creating an xterm that spawns the window manager.
       desktopManager.xterm.enable = false;
 
-      layout = "de";
-      xkbVariant = "neo";
-      xkbOptions = "altwin:swap_alt_win";
+      xkb.layout = "de";
+      xkb.variant = "neo";
+      xkb.options = "altwin:swap_alt_win";
       serverFlagsSection = ''
         Option "StandbyTime" "10"
         Option "SuspendTime" "20"
@@ -91,9 +94,6 @@ in {
             ${lib.getBin autocutsel}/bin/autocutsel -s PRIMARY &
           '';
       };
-
-      # TODO: libinput?
-      libinput.enable = false;
       synaptics = {
         enable = true;
         minSpeed = "0.6";
