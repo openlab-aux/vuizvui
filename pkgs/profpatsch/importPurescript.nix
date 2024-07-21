@@ -1,4 +1,4 @@
-{ pkgs, exactSource }:
+{ pkgs, exactSource, haskellPackages }:
 let
 
   # import the purescript file as nix expression via purenix.
@@ -20,9 +20,9 @@ let
 
       convert = pkgs.runCommandLocal "${name}-purs-to-nix" { } ''
         export LC_ALL=C.UTF-8
-        ${pkgs.purescript}/bin/purs compile --codegen corefn '${src}/**/*.purs'
+        ${haskellPackages.purescript}/bin/purs compile --codegen corefn '${src}/**/*.purs'
         # converts everything in the ./output dir to nix
-        ${pkgs.purenix}/bin/purenix
+        ${haskellPackages.purenix}/bin/purenix
 
         mkdir -p $out
         cp -r ./output/* $out

@@ -3,11 +3,7 @@
 let
   inherit (pkgs) callPackage;
 
-  pkgsWithNewHaskell = import (import ../../nixpkgs-path.nix) {
-    config = {
-      packageOverrides = import ./haskell-overlay.nix;
-    };
-  };
+  haskellPackagesPurescript = import ./haskell-overlay.nix { inherit pkgs; };
 
   # Takes a derivation and a list of binary names
   # and returns an attribute set of `name -> path`.
@@ -245,7 +241,7 @@ in rec {
 
 
 
-  inherit (import ./importPurescript.nix { inherit exactSource; pkgs = pkgsWithNewHaskell; })
+  inherit (import ./importPurescript.nix { inherit pkgs exactSource; haskellPackages = haskellPackagesPurescript; })
     importPurescript
     ;
 
