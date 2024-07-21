@@ -9,6 +9,7 @@ let
 in
 {
   config = {
+    nix.package = pkgs.lix;
     # correctness before speed
     nix.settings.sandbox = true;
 
