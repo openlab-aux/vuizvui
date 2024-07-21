@@ -1,0 +1,5 @@
+{
+    "purescript.buildCommand": "purs compile --codegen corefn --json-errors **/*.purs",
+    "purescript.exportsCodeLens": false,
+    "editor.formatOnSave": true
+}

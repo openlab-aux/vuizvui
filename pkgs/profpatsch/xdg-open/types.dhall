@@ -5,7 +5,7 @@ let
     Executable =
       Text
 
-let Arg = < String : Text | Variable : Text >
+let Arg = < string : Text | variable : Text >
 
 let CommandTemplate =
       λ(templates : Type) → { exe : Executable, args : templates → List Arg }
@@ -25,7 +25,6 @@ let Special =
       , exec-in-terminal-emulator : ∀(args : Command) → Command
       , dmenu-list-binaries-and-exec : Command
       , notify : ∀(message : Text) → Command
-      , add-to-calendar : Command
       }
 
 let

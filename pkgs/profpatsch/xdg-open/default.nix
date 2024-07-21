@@ -1,5 +1,6 @@
 { pkgs, getBins, tvl,
 importDhall2,
+importPurescript,
 writeExecline,
 buildDhallPackage,
 runExeclineLocal,
@@ -7,7 +8,8 @@ writeRustSimple,
 netencode-rs,
 record-get,
 el-exec,
-lazy-packages
+lazy-packages,
+show-qr-code
 }:
 
 let
@@ -26,6 +28,7 @@ let
       // getBins pkgs.firefox [ "firefox" ]
       // getBins pkgs.ranger [ "ranger" ]
       // getBins pkgs.khal [ "khal" ]
+      // getBins show-qr-code [ "show-qr-code" ]
       ;
 
   notify = msg: {
@@ -34,7 +37,7 @@ let
             ("\${1} \${2}")
           ];
     args = file: [
-      ({String, Variable}: String msg)
+      ({string, variable}: string msg)
       file
     ];
   };
@@ -54,24 +57,17 @@ let
     args = file: [ file ];
   };
 
-  # TODO: interactive adding? Don’t want to add all ics files to my calendar
-  add-to-calendar = {
-    exe = writeExecline "add-to-calendar" { readNArgs = 1; } [
-      "if" [
-        bins.khal
-          "import"
-          "--batch"
-          # the private calendar is called calendar
-          "--include-calendar" "calendar"
-          "$1"
-      ]
-      "systemctl" "--user"
-        "start"
-        # defined as a user service (TODO: config variable?)
-        "calendar-sync"
-    ];
-    args = file: [ file ];
-  };
+  # show as qr code so I can import it with the google camera QR code reader!!!
+  # add-to-calendar = {
+  #   exe = writeExecline "ics-to-qr-code" { readNArgs = 1; } [
+  #     "pipeline" [
+  #       tvl.users.Profpatsch.ical-smolify "$1"
+  #     ]
+  #     # show contents of ics as qr code
+  #     bins.show-qr-code
+  #   ];
+  #   args = file: [ file ];
+  # };
 
   open-in-browser = {
     exe = bins.firefox;
@@ -97,8 +93,8 @@ let
   exec-in-terminal-emulator = {exe, args}: {
     exe = tvl.users.Profpatsch.alacritty;
     args = file: [
-      ({Variable, String}: String "--execute")
-      ({Variable, String}: String exe)
+      ({variable, string}: string "--execute")
+      ({variable, string}: string exe)
     ] ++ args file;
   };
 
@@ -123,34 +119,11 @@ let
       code = "${src.repo}/${src.mainFile}";
     };
 
-  xdg-open = importDhall2 {
-      type = ''
-  let Command = { args : < String : Text | Variable : Text >
-                  → List < String : Text | Variable : Text >
-                , exe : Text }
-  in
-  ∀(bins : { get-mime-type : Text })
-→ ∀(write-dash : Text → Text → Text)
-→ ∀(shellEscape : Text → Text)
-→ ∀(pkgs : { binary : Text, package : Text } → Text)
-→ ∀(pkgsOnDemand : { binary : Text, package : Text } → Text)
-→ ∀ ( special
-    : { compose-mail-to : Command
-      , dmenu-list-binaries-and-exec : Command
-      , exec-in-terminal-emulator : ∀ ( args: Command) → Command
-      , fetch-http-url-mime : Command
-      , open-in-browser : Command
-      , open-in-editor : Command
-      , notify : Text -> Command
-      , add-to-calendar : Command
-      }
-    )
-→ Text
-      '';
+  xdg-open-config = importDhall2 {
+      name = "xdg-open-config";
       root = ./.;
-      main = "xdg-open.dhall";
+      main = "config.dhall";
       files = [
-        "config.dhall"
         "types.dhall"
         "imports/Prelude/Text/concatSep"
         "imports/Prelude/Text/concatMap"
@@ -160,9 +133,6 @@ let
       ];
       deps = [ Prelude ];
     }
-    { inherit get-mime-type; }
-    pkgs.writers.writeDash
-    pkgs.lib.escapeShellArg
     ({binary, package}: "${lib.getBin pkgs.${package}}/bin/${binary}")
     ({binary, package}: "${lazy-packages.mkWrapper {
       package = (lib.getBin pkgs.${package});
@@ -177,9 +147,26 @@ let
         dmenu-list-binaries-and-exec
         exec-in-terminal-emulator
         notify
-        add-to-calendar
+        # add-to-calendar
         ;
     };
+
+  xdg-open-module = importPurescript {
+      name = "xdg-open-module";
+      root = ./purs;
+
+      mainModule = "XdgOpen";
+      files = [
+        "XdgOpen.purs"
+        "XdgOpen.nix"
+      ];
+    };
+
+  xdg-open = xdg-open-module.main {
+    writeDash = pkgs.writers.writeDash;
+    uriMimeGlobs = xdg-open-config.uriMimeGlobs;
+    orderedMimeMatchers = xdg-open-config.orderedMimeMatchers;
+  };
 
   httparse = pkgs.buildRustCrate {
     pname = "httparse";
@@ -314,6 +301,8 @@ let
 in {
   inherit
     xdg-open
+    xdg-open-module
+    xdg-open-config
     Prelude
     read-headers-and-follow-redirect
     mini-url

@@ -8,6 +8,7 @@ let
   # unions values are nix functions that take a record of match
   # functions for their alternatives.
   importDhall = dhallType: file: importDhall2 {
+    name = "dhall-to-nix";
     root = builtins.dirOf file;
     files = [];
     main = builtins.baseNameOf file;
@@ -16,7 +17,7 @@ let
   };
 
   # TODO: document
-  importDhall2 = { root, files, main, deps, type }:
+  importDhall2 = { name, root, files, main, deps, type ? null }:
     let
       src =
         exactSource
@@ -29,7 +30,7 @@ let
       cache = ".cache";
       cacheDhall = "${cache}/dhall";
 
-      convert = pkgs.runCommandLocal "dhall-to-nix" { inherit deps; } ''
+      convert = pkgs.runCommandLocal "${name}-dhall-to-nix" { inherit deps; } ''
         mkdir -p ${cacheDhall}
         for dep in $deps; do
           ${pkgs.xorg.lndir}/bin/lndir -silent $dep/${cacheDhall} ${cacheDhall}
@@ -39,9 +40,15 @@ let
         # go into the source directory, so that the type can import files.
         # TODO: This is a bit of a hack hrm.
         cd "${src}"
-        printf '%s' ${pkgs.lib.escapeShellArg "${src}/${main} : ${type}"} \
-          | ${pkgs.dhall-nix}/bin/dhall-to-nix \
-          > $out
+        ${if type != null then ''
+            printf '%s' ${pkgs.lib.escapeShellArg "${src}/${main} : ${type}"} \
+              | ${pkgs.dhall-nix}/bin/dhall-to-nix \
+              > $out
+          '' else ''
+            printf '%s' ${pkgs.lib.escapeShellArg "${src}/${main}"} \
+              | ${pkgs.dhall-nix}/bin/dhall-to-nix \
+              > $out
+          ''}
       '';
     in import convert;
 

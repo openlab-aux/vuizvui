@@ -1,0 +1,78 @@
+From 2dae563f887c7c8daf3dd3e292ee3580cb70d528 Mon Sep 17 00:00:00 2001
+From: Profpatsch <mail@profpatsch.de>
+Date: Tue, 26 Dec 2023 17:41:08 +0100
+Subject: [PATCH 1/2] chore: adjust to purescript 0.15.12 corefn changes
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Some of the constructors changed shape, but that shouldn’t influence
+purenix very much.
+---
+ src/PureNix/Convert.hs | 8 ++++----
+ src/PureNix/Expr.hs    | 9 ++++++++-
+ 2 files changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/src/PureNix/Convert.hs b/src/PureNix/Convert.hs
+index 8034580..83ff2d7 100644
+--- a/src/PureNix/Convert.hs
++++ b/src/PureNix/Convert.hs
+@@ -54,7 +54,7 @@ localSpan :: SourceSpan -> Convert a -> Convert a
+ localSpan spn = local (fmap $ const spn)
+ 
+ localAnn :: Ann -> Convert a -> Convert a
+-localAnn (spn, _, _, _) = localSpan spn
++localAnn (spn,  _, _) = localSpan spn
+ 
+ {-# ANN module' ("hlint: ignore Use list comprehension" :: String) #-}
+ module' ::
+@@ -106,7 +106,7 @@ expr :: Expr Ann -> Convert N.Expr
+ expr (Abs ann arg body) = localAnn ann $ fmap (N.lam (N.mkVar arg)) (expr body)
+ expr (Literal ann lit) = localAnn ann $ literal lit
+ -- Newtype wrappers can always be removed.
+-expr (App ann (Var (_, _, _, Just IsNewtype) _) x) = localAnn ann (expr x)
++expr (App ann (Var ( _, _, Just IsNewtype) _) x) = localAnn ann (expr x)
+ expr (App ann f x) = localAnn ann $ liftA2 N.app (expr f) (expr x)
+ expr (Var ann (P.Qualified mqual name)) = localAnn ann $ do
+   (_, thisModule, _) <- ask
+@@ -116,7 +116,7 @@ expr (Var ann (P.Qualified mqual name)) = localAnn ann $ do
+     _ -> N.var (N.mkVar name)
+ expr (Accessor ann sel body) = localAnn ann $ flip N.sel (N.stringKey sel) <$> expr body
+ expr (Let ann binds body) = localAnn ann $ liftA2 N.let' (bindings binds) (expr body)
+-expr (ObjectUpdate ann a b) = localAnn ann $ liftA2 (N.bin N.Update) (expr a) (attrs b)
++expr (ObjectUpdate ann a _ b ) = localAnn ann $ liftA2 (N.bin N.Update) (expr a) (attrs b)
+ expr (Constructor _ _ (P.ProperName dataName) fields) = pure $ N.constructor dataName (N.mkVar <$> fields)
+ expr (Case ann exprs cases) =
+   localAnn ann $ do
+@@ -171,7 +171,7 @@ zipBinders exprs binds = mconcat <$> zipWithM unbinder binds exprs
+ unbinder :: Binder Ann -> N.Expr -> Convert ([N.Expr], [(N.Var, N.Expr)])
+ unbinder (NullBinder _) _ = pure mempty
+ unbinder (VarBinder _ name) scrut = pure $ (\name' -> ([], [(name', scrut)])) $ N.mkVar name
+-unbinder (ConstructorBinder (_, _, _, Just IsNewtype) _ _ [field]) scrut = unbinder field scrut
++unbinder (ConstructorBinder ( _, _, Just IsNewtype) _ _ [field]) scrut = unbinder field scrut
+ unbinder (ConstructorBinder ann _ (P.Qualified _ (P.ProperName tag)) fields) scrut =
+   localAnn ann $
+     mappend ([N.bin N.Equals (N.sel scrut "__tag") (N.string tag)], []) . mconcat <$> zipWithM (\binder field -> unbinder binder (N.sel scrut field)) fields (N.numberedKeys "__field")
+diff --git a/src/PureNix/Expr.hs b/src/PureNix/Expr.hs
+index 6a8dab7..234240a 100644
+--- a/src/PureNix/Expr.hs
++++ b/src/PureNix/Expr.hs
+@@ -47,7 +47,14 @@ data ExprF f
+   | Path Text
+   deriving stock (Functor, Foldable, Traversable, Show)
+ 
+-data Op = Update | Equals | And
++-- | Nix binary operators
++data Op =
++  -- | nix @//@ operator (right-side keys overwrite left side attrset)
++  Update |
++  -- | nix @==@ operator (equality)
++  Equals |
++  -- | nix @&&@ operator (boolean @and@)
++  And
+   deriving (Eq, Show)
+ 
+ foldExpr :: (ExprF r -> r) -> Expr -> r
+-- 
+2.44.1
+

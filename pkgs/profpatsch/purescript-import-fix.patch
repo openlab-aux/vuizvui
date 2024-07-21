@@ -1,0 +1,113 @@
+diff --git a/app/Command/Docs.hs b/app/Command/Docs.hs
+index f0b6711..987023c 100644
+--- a/app/Command/Docs.hs
++++ b/app/Command/Docs.hs
+@@ -6,7 +6,7 @@ import Prelude
+ import Command.Docs.Html (asHtml, writeHtmlModules)
+ import Command.Docs.Markdown (asMarkdown, writeMarkdownModules)
+ import Control.Applicative (Alternative(..), optional)
+-import Control.Monad.Writer (when)
++import Control.Monad (when)
+ import Control.Monad.Trans.Except (runExceptT)
+ import Data.Maybe (fromMaybe)
+ import Data.Text qualified as T
+diff --git a/app/Command/Docs/Html.hs b/app/Command/Docs/Html.hs
+index 6ad5104..116cf0f 100644
+--- a/app/Command/Docs/Html.hs
++++ b/app/Command/Docs/Html.hs
+@@ -9,7 +9,7 @@ import Prelude
+ 
+ import Control.Applicative (Alternative(..))
+ import Control.Arrow ((&&&))
+-import Control.Monad.Writer (guard)
++import Control.Monad (guard)
+ import Data.List (sort)
+ import Data.Text (Text)
+ import Data.Text.Lazy (toStrict)
+diff --git a/src/Control/Monad/Supply.hs b/src/Control/Monad/Supply.hs
+index 8c64fd2..dd447a9 100644
+--- a/src/Control/Monad/Supply.hs
++++ b/src/Control/Monad/Supply.hs
+@@ -7,7 +7,8 @@ import Prelude
+ 
+ import Control.Applicative (Alternative)
+ import Control.Monad.Error.Class (MonadError(..))
+-import Control.Monad.Reader (MonadPlus, MonadReader, MonadTrans)
++import Control.Monad.Reader (MonadReader, MonadTrans)
++import Control.Monad (MonadPlus)
+ import Control.Monad.State (StateT(..))
+ import Control.Monad.Writer (MonadWriter)
+ 
+diff --git a/src/Language/PureScript/Errors.hs b/src/Language/PureScript/Errors.hs
+index 56d962b..6a15c36 100644
+--- a/src/Language/PureScript/Errors.hs
++++ b/src/Language/PureScript/Errors.hs
+@@ -13,7 +13,8 @@ import Control.Lens (both, head1, over)
+ import Control.Monad (forM, unless)
+ import Control.Monad.Error.Class (MonadError(..))
+ import Control.Monad.Trans.State.Lazy (State, evalState, get, put)
+-import Control.Monad.Writer (Last(..), MonadWriter(..), censor)
++import Control.Monad.Writer (MonadWriter(..), censor)
++import Data.Monoid (Last(..))
+ import Data.Bifunctor (first, second)
+ import Data.Bitraversable (bitraverse)
+ import Data.Char (isSpace)
+diff --git a/src/Language/PureScript/Renamer.hs b/src/Language/PureScript/Renamer.hs
+index a54e39f..aff42ca 100644
+--- a/src/Language/PureScript/Renamer.hs
++++ b/src/Language/PureScript/Renamer.hs
+@@ -5,7 +5,8 @@ module Language.PureScript.Renamer (renameInModule) where
+ 
+ import Prelude
+ 
+-import Control.Monad.State (MonadState(..), State, gets, modify, runState, (>=>))
++import Control.Monad.State (MonadState(..), State, gets, modify, runState)
++import Control.Monad ((>=>))
+ 
+ import Data.Functor ((<&>))
+ import Data.List (find)
+diff --git a/src/Language/PureScript/Sugar/Operators/Common.hs b/src/Language/PureScript/Sugar/Operators/Common.hs
+index 1a18f88..7fd6df9 100644
+--- a/src/Language/PureScript/Sugar/Operators/Common.hs
++++ b/src/Language/PureScript/Sugar/Operators/Common.hs
+@@ -2,7 +2,7 @@ module Language.PureScript.Sugar.Operators.Common where
+ 
+ import Prelude
+ 
+-import Control.Monad.State (guard, join)
++import Control.Monad (guard, join)
+ import Control.Monad.Except (MonadError(..))
+ 
+ import Data.Either (rights)
+diff --git a/src/Language/PureScript/TypeChecker/Entailment.hs b/src/Language/PureScript/TypeChecker/Entailment.hs
+index 7a3872c..85bdfee 100644
+--- a/src/Language/PureScript/TypeChecker/Entailment.hs
++++ b/src/Language/PureScript/TypeChecker/Entailment.hs
+@@ -15,9 +15,11 @@ import Protolude (ordNub, headMay)
+ 
+ import Control.Arrow (second, (&&&))
+ import Control.Monad.Error.Class (MonadError(..))
+-import Control.Monad.State (MonadState(..), MonadTrans(..), StateT(..), evalStateT, execStateT, foldM, gets, guard, join, modify, zipWithM, zipWithM_, (<=<))
++import Control.Monad.State (MonadState(..), MonadTrans(..), StateT(..), evalStateT, execStateT, gets, modify)
++import Control.Monad (foldM, guard, join, zipWithM, zipWithM_, (<=<))
+ import Control.Monad.Supply.Class (MonadSupply(..))
+-import Control.Monad.Writer (Any(..), MonadWriter(..), WriterT(..))
++import Control.Monad.Writer (MonadWriter(..), WriterT(..))
++import Data.Monoid (Any(..))
+ 
+ import Data.Either (lefts, partitionEithers)
+ import Data.Foldable (for_, fold, toList)
+diff --git a/src/Language/PureScript/TypeChecker/Monad.hs b/src/Language/PureScript/TypeChecker/Monad.hs
+index ba27d02..b6382e6 100644
+--- a/src/Language/PureScript/TypeChecker/Monad.hs
++++ b/src/Language/PureScript/TypeChecker/Monad.hs
+@@ -9,7 +9,8 @@ import Prelude
+ 
+ import Control.Arrow (second)
+ import Control.Monad.Error.Class (MonadError(..))
+-import Control.Monad.State (MonadState(..), StateT(..), forM_, gets, guard, join, modify, when, (<=<))
++import Control.Monad.State (MonadState(..), StateT(..), gets, modify)
++import Control.Monad (forM_, guard, join, when, (<=<))
+ import Control.Monad.Writer.Class (MonadWriter(..), censor)
+ 
+ import Data.Maybe (fromMaybe)

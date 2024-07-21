@@ -39,7 +39,7 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
                     , args =
                         λ(template : Arg) →
                             wrapper.args template
-                          # [ Arg.String cmd.exe ]
+                          # [ Arg.string cmd.exe ]
                           # cmd.args template
                     }
 
@@ -61,10 +61,6 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
                     }
                   , xml =
                     { mime = [ "text", "xml" ], cmd = special.open-in-browser }
-                  , ical =
-                    { mime = [ "text", "calendar" ]
-                    , cmd = special.add-to-calendar
-                    }
                   , csv =
                     { mime = [ "text", "csv" ]
                     , cmd = oneArg (pkgSameOnDemand "libreoffice")
@@ -110,9 +106,9 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
                     { exe = pkgs { package = "gnupg", binary = "gpg" }
                     , args =
                         λ(file : Arg) →
-                          [ Arg.String "--import"
-                          , Arg.String "--import-options"
-                          , Arg.String "show-only"
+                          [ Arg.string "--import"
+                          , Arg.string "--import-options"
+                          , Arg.string "show-only"
                           , file
                           ]
                     }
@@ -144,7 +140,6 @@ in  λ(pkgs : { package : Text, binary : Text } → Executable) →
             , mime.text.gemini
             , mime.text.gopher
             , mime.text.xml
-            , mime.text.ical
             , mime.text.csv
             , mime.text.any
             , mime.mail-address
