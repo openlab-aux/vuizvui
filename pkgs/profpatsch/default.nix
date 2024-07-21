@@ -3,6 +3,12 @@
 let
   inherit (pkgs) callPackage;
 
+  pkgsWithNewHaskell = import (import ../../nixpkgs-path.nix) {
+    config = {
+      packageOverrides = import ./haskell-overlay.nix;
+    };
+  };
+
   # Takes a derivation and a list of binary names
   # and returns an attribute set of `name -> path`.
   # The list can also contain renames in the form of
@@ -239,35 +245,21 @@ in rec {
 
 
 
-  # dhall-flycheck = (import /home/philip/kot/dhall/flycheck/overlay.nix pkgs pkgs).dhall-flycheck;
-
-  # FIXME: removed 2021-06-13 since it doesn't evaluate with the unstable channel anymore
-  # dhall-flycheck =
-  #   (import "${pkgs.fetchFromGitHub {
-  #     owner = "Profpatsch";
-  #     repo = "dhall-flycheck";
-  #     rev = "2ace6b38cec356d8821b3390b670d301d54623b";
-  #     sha256 = "0d6qjr245jmx1lvqdplvrshlkpfaqa46aizyhyb6hg37v8jq8rv7";
-  #   }}/overlay.nix" pkgs pkgs).dhall-flycheck;
-
-  buildDhallPackage = pkgs.callPackage ./dhall/build-dhall-package-improved.nix { };
-
-  inherit (import ./importDhall.nix { inherit pkgs exactSource; })
-    importDhall
-    importDhall2
-    readDhallFileAsJson
+  inherit (import ./importPurescript.nix { inherit exactSource; pkgs = pkgsWithNewHaskell; })
+    importPurescript
     ;
 
   rust-deps = (import ./rust-deps.nix { inherit (pkgs) buildRustCrate; });
 
-  inherit (import ./xdg-open { inherit pkgs tvl getBins importDhall2 writeExecline buildDhallPackage runExeclineLocal netencode-rs writeRustSimple record-get el-exec lazy-packages; })
+  inherit (import ./xdg-open { inherit pkgs tvl getBins importPurescript writeExecline runExeclineLocal netencode-rs writeRustSimple record-get el-exec lazy-packages show-qr-code; })
     xdg-open
-    Prelude
+    xdg-open-module
     read-headers-and-follow-redirect
     mini-url
     assert-printf
     as-stdin
     printenv
+    nix
     ;
 
   text-letter = import ./text-letter.nix { inherit pkgs rust-deps writeRustSimple writeExecline getBins; };

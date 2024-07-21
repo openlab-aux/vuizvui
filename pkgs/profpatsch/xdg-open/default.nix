@@ -1,8 +1,6 @@
 { pkgs, getBins, tvl,
-importDhall2,
 importPurescript,
 writeExecline,
-buildDhallPackage,
 runExeclineLocal,
 writeRustSimple,
 netencode-rs,
@@ -42,11 +40,11 @@ let
     ];
   };
 
-  get-mime-type = writeExecline "get-mime-type" { readNArgs = 1; } [
+  getMimeType = writeExecline "get-mime-type" { readNArgs = 1; } [
     bins.file "-E" "--brief" "--mime-type" "$1"
   ];
 
-  compose-mail-to = {
+  composeMailTo = {
     exe = writeExecline "emacs-mail" { readNArgs = 1; } [
       bins.emacsclient
         "--create-frame"
@@ -69,17 +67,17 @@ let
   #   args = file: [ file ];
   # };
 
-  open-in-browser = {
+  openInBrowser = {
     exe = bins.firefox;
     args = file: [ file ];
   };
 
-  open-in-editor = {
+  openInEditor = {
     exe = bins.emacsclient;
     args = file: [ file ];
   };
 
-  dmenu-list-binaries-and-exec = {
+  dmenuListBinariesAndExec = {
     exe = writeExecline "dmenu-query" { readNArgs = 1; } [
       "backtick" "-in" "cmd" [
         "pipeline" [ bins.dmenu_path ] bins.dmenu
@@ -90,7 +88,7 @@ let
     args = file: [ file ];
   };
 
-  exec-in-terminal-emulator = {exe, args}: {
+  execInTerminalEmulator = {exe, args}: {
     exe = tvl.users.Profpatsch.alacritty;
     args = file: [
       ({variable, string}: string "--execute")
@@ -98,11 +96,11 @@ let
     ] ++ args file;
   };
 
-  fetch-command-on-demand = cmd: lazy-packages.mkWrapper {
+  fetchCommandOnDemand = cmd: lazy-packages.mkWrapper {
     package = cmd;
   };
 
-  fetch-http-url-mime = {
+  fetchHttpUrlMime = {
     exe = writeExecline "fetch-http-url-mime" { readNArgs = 1; } [
       "pipeline" [ read-headers-and-follow-redirect "$1" ]
       record-get [ "content-type" ]
@@ -111,62 +109,43 @@ let
     args = file: [ file ];
   };
 
-  Prelude =
-    let src = (import ./imports.nix { inherit pkgs; }).Prelude;
-    # TODO: bs, make dhall version overridable
-    in buildDhallPackage {
-      name = "Prelude";
-      code = "${src.repo}/${src.mainFile}";
-    };
+  xdg-open-module = (importPurescript {
+    name = "xdg-open-module";
+    root = ./purs;
 
-  xdg-open-config = importDhall2 {
-      name = "xdg-open-config";
-      root = ./.;
-      main = "config.dhall";
-      files = [
-        "types.dhall"
-        "imports/Prelude/Text/concatSep"
-        "imports/Prelude/Text/concatMap"
-        "imports/Prelude/Text/concat"
-        "imports/Prelude/List/map"
-        "imports/Prelude/List/concatMap"
-      ];
-      deps = [ Prelude ];
-    }
-    ({binary, package}: "${lib.getBin pkgs.${package}}/bin/${binary}")
-    ({binary, package}: "${lazy-packages.mkWrapper {
-      package = (lib.getBin pkgs.${package});
-    }}/bin/${binary}")
+    mainModule = "Main";
+    files = [
+      "Main.purs"
+      "XdgOpen.purs"
+      "XdgOpen.nix"
+      "Config.purs"
+    ];
+  });
+
+  xdg-open = xdg-open-module.main
     {
-      inherit
-        compose-mail-to
-        open-in-browser
-        fetch-http-url-mime
-        fetch-command-on-demand
-        open-in-editor
-        dmenu-list-binaries-and-exec
-        exec-in-terminal-emulator
-        notify
-        # add-to-calendar
-        ;
+      writeDash = pkgs.writers.writeDash;
+      escapeShellArg = pkgs.lib.escapeShellArg;
+      pkgs = {
+        pkg = ({binary, package}: "${lib.getBin pkgs.${package}}/bin/${binary}");
+        pkgOnDemand = ({binary, package}: "${lazy-packages.mkWrapper {
+          package = (lib.getBin pkgs.${package});
+        }}/bin/${binary}");
+      };
+      special = {
+          inherit
+          composeMailTo
+          openInBrowser
+          fetchHttpUrlMime
+          fetchCommandOnDemand
+          openInEditor
+          dmenuListBinariesAndExec
+          execInTerminalEmulator
+          notify
+          # add-to-calendar
+          ;
+      };
     };
-
-  xdg-open-module = importPurescript {
-      name = "xdg-open-module";
-      root = ./purs;
-
-      mainModule = "XdgOpen";
-      files = [
-        "XdgOpen.purs"
-        "XdgOpen.nix"
-      ];
-    };
-
-  xdg-open = xdg-open-module.main {
-    writeDash = pkgs.writers.writeDash;
-    uriMimeGlobs = xdg-open-config.uriMimeGlobs;
-    orderedMimeMatchers = xdg-open-config.orderedMimeMatchers;
-  };
 
   httparse = pkgs.buildRustCrate {
     pname = "httparse";
@@ -302,8 +281,6 @@ in {
   inherit
     xdg-open
     xdg-open-module
-    xdg-open-config
-    Prelude
     read-headers-and-follow-redirect
     mini-url
     assert-printf

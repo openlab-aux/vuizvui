@@ -3,7 +3,6 @@ module XdgOpen where
 data Drv
 type Executable = String
 
-foreign import nixpkgs :: { hello :: Drv }
 foreign import lib
   :: { map :: forall a b. (a -> b) -> Array a -> Array b
      , concatMap :: forall a b. (a -> Array b) -> Array a -> Array b
@@ -40,10 +39,12 @@ prettyLines lines = lib.concatMapStrings (\line -> (lib.concatStrings [ repeatTe
 
 type Mime = Array String
 
-type Arg = forall r. { string :: String -> r, variable :: String -> r } -> r
+data Arg
+  = ArgString String
+  | ArgVariable String
 
 type CommandTemplate templates =
-  { exe :: Executable, args :: templates → Array Arg }
+  { exe :: Executable, args :: templates → Array templates }
 
 -- Given an executable and args to pass to the executable,
 -- which might be a bash variable or a simple command line string.
@@ -60,10 +61,11 @@ shellEscapeExecCommand :: (String -> String) -> String -> Command -> String
 shellEscapeExecCommand shellEscape file cmd =
   lib.concatStringsSep " "
     ( [ "exec", shellEscape cmd.exe ] ++ lib.map
-        ( \(arg :: Arg) ->
-            arg { string: \t -> shellEscape t, variable: \t -> t }
+        ( \(arg :: Arg) -> case arg of
+            ArgString t -> shellEscape t
+            ArgVariable t -> t
         )
-        (cmd.args (\{ variable } -> variable file))
+        (cmd.args (ArgVariable file))
     )
 
 mimeMatcherCase :: (String -> String) -> String -> MimeMatch -> Array String
@@ -91,16 +93,6 @@ mimeGlobCase shellEscape file g = lib.concatMap
       ]
   )
   g.glob
-
--- type Special =
---   { openInEditor :: Command
---   , openInBrowser :: Command
---   , fetchHttpUrlMime :: Command
---   , composeMailTo :: Command
---   , execInTerminalEmulator :: Command -> Command
---   , dmenuListBinariesAndExec :: Command
---   , notify :: String → Command
---   }
 
 type Config =
   { uriMimeGlobs :: Array UriMimeGlob
@@ -149,18 +141,3 @@ xdgOpen writeDash shellEscape config = writeDash "xdg-open"
       ]
 
   )
-
-type Opts =
-  { uriMimeGlobs :: Array UriMimeGlob
-  , orderedMimeMatchers :: Array MimeMatch
-  , writeDash :: String -> String -> String
-  }
-
-main
-  :: Opts
-  -> String
-main opts = xdgOpen opts.writeDash (\txt -> txt)
-  { uriMimeGlobs: opts.uriMimeGlobs
-  , orderedMimeMatchers:
-      opts.orderedMimeMatchers
-  }
