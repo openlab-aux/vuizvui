@@ -42,6 +42,7 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
+      #spek
       #dogdns
       #nixopsUnstable
       #onefetch
@@ -246,7 +247,6 @@ in {
       so
       sox
       speedtest-rs
-      spek
       ssdeep
       starship
       steam-tui
