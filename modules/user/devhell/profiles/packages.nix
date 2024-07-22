@@ -77,6 +77,7 @@ in {
       cmatrix
       colmena
       cryptsetup
+      csvlens
       cuetools
       curlie
       dcfldd
