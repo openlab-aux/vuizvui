@@ -42,10 +42,11 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
-      #spek
       #dogdns
+      #mnamer
       #nixopsUnstable
       #onefetch
+      #spek
       #wordgrinder
       #wuzz
       abook
@@ -172,7 +173,6 @@ in {
       miniserve
       mkvtoolnix
       mmv
-      mnamer
       mosh
       mp3gain
       mpc_cli
