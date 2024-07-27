@@ -28,7 +28,7 @@ in {
   imports = [
     ./base-workstation.nix
     ./thinkpad.nix
-    # ./possehl-specific-do-not-check-in.nix
+    ((import ../../nixos-hardware-path.nix) + "/lenovo/thinkpad/t480")
   ];
 
   config = {
