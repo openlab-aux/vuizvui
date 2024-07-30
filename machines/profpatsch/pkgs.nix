@@ -6,7 +6,7 @@ assert withUnfree -> unfreeAndNonDistributablePkgs != null;
 
 let
 
-  mpv = pkgs.wrapMpv pkgs.mpv-unwrapped {
+  mpv = pkgs.mpv.override {
     scripts = [
       (unfreeAndNonDistributablePkgs.mpvScripts.convert)
       (pkgs.mpvScripts.mpris)
