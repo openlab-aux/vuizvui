@@ -35,17 +35,19 @@ mime pkgs special = do
     pkgSameOnDemand :: String -> Executable
     pkgSameOnDemand name = pkgs.pkgOnDemand { package: name, binary: name }
 
+    pkgFromPath p = p
+
   let
     m =
       { text:
           { html: { mime: [ "text", "html" ], cmd: special.openInBrowser }
           , gemini:
               { mime: [ "text", "gemini" ]
-              , cmd: oneArg (pkgSame "lagrange")
+              , cmd: oneArg (pkgSameOnDemand "lagrange")
               }
           , gopher:
               { mime: [ "text", "gopher" ]
-              , cmd: oneArg (pkgSame "lagrange")
+              , cmd: oneArg (pkgSameOnDemand "lagrange")
               }
           , xml:
               { mime: [ "text", "xml" ], cmd: special.openInBrowser }
@@ -80,7 +82,7 @@ mime pkgs special = do
               { mime: [ "image", "gif" ], cmd: special.openInBrowser }
           , svg:
               { mime: [ "image", "svg+xml" ]
-              , cmd: oneArg (pkgSame "inkscape")
+              , cmd: oneArg (pkgFromPath "inkscape")
               }
           , any:
               { mime: [ "image", "*" ], cmd: oneArg (pkgSame "imv") }

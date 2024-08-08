@@ -22,10 +22,7 @@ let
       // getBins pkgs.libressl.nc [ "nc" ]
       // getBins pkgs.dmenu [ "dmenu" "dmenu_path" ]
       # TODO: make sure these are the ones from the environment
-      // getBins pkgs.emacs [ "emacsclient" ]
-      // getBins pkgs.firefox [ "firefox" ]
       // getBins pkgs.ranger [ "ranger" ]
-      // getBins pkgs.khal [ "khal" ]
       // getBins show-qr-code [ "show-qr-code" ]
       ;
 
@@ -46,7 +43,7 @@ let
 
   composeMailTo = {
     exe = writeExecline "emacs-mail" { readNArgs = 1; } [
-      bins.emacsclient
+      "emacsclient"
         "--create-frame"
         "--eval"
         # TODO: this obviously fails if the mail address contains "
@@ -68,12 +65,12 @@ let
   # };
 
   openInBrowser = {
-    exe = bins.firefox;
+    exe = "firefox";
     args = file: [ file ];
   };
 
   openInEditor = {
-    exe = bins.emacsclient;
+    exe = "emacsclient";
     args = file: [ file ];
   };
 
