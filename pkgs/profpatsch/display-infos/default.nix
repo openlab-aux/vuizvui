@@ -21,6 +21,10 @@ let
         p.terminate()
         return str(sft.strip().decode())
 
+    def get_5_min_load():
+        with open('/proc/loadavg', 'r') as f:
+            return f.read().split(' ')[1]
+
     charging = readint("/sys/class/power_supply/AC/online")
 
     full = 0
@@ -48,13 +52,15 @@ let
     bat = round( now/full, 2 )
     ac = "⚡ " if charging else ""
     sft_remaining = seconds_to_sft(seconds_remaining)
-    date = sub.run(["date", "+%d.%m. [%V] %a %T"], stdout=sub.PIPE).stdout.strip().decode()
+    date = sub.run(["date", "+%d.%m. KW%V %a %T"], stdout=sub.PIPE).stdout.strip().decode()
     dottime = sub.run(["date", "--utc", "+%H·%M"], stdout=sub.PIPE).stdout.strip().decode()
     sftdate = sub.run(["@sfttime@"], stdout=sub.PIPE).stdout.strip().decode()
-    notify = "BAT: {percent}% {ac}{charge}| {date} | {sftdate} | {dottime}".format(
+    load = get_5_min_load()
+    notify = "BAT: {percent}% {ac}{charge}{{{load}}} | {date} | {sftdate} | {dottime}".format(
       percent = int(bat*100),
       ac = ac,
       charge = "{} ".format(sft_remaining) if seconds_remaining else "",
+      load = load,
       date = date,
       sftdate = sftdate,
       dottime = dottime
