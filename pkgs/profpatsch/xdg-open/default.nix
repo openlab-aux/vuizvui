@@ -129,7 +129,7 @@ let
       pkgs = {
         pkg = ({binary, package}: "${lib.getBin pkgs.${package}}/bin/${binary}");
         pkgOnDemand = ({binary, package}: "${lazy-packages.mkWrapper {
-          package = (lib.getBin pkgs.${package});
+          package = pkgs.${package};
         }}/bin/${binary}");
       };
       special = {
