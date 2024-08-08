@@ -5,17 +5,24 @@ let
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
 
   hakuHostName = "haku.profpatsch.de";
+  testHostName = "test.profpatsch.de";
+  matrixHostName = "matrix.decentsoftwa.re";
 
   youtube2audiopodcastPort = 1339;
   youtube2audiopodcastSubdir = "/halp";
 
   sshPort = 7001;
   warpspeedPort = 1338;
+  httzipPort = 7070;
+  openlabToolsPort = 9099;
   wireguardPortUdp = 6889;
   tailscaleInterface = "tailscale0";
-  tailscaleAddress = "100.76.60.85";
+  tailscaleAddress = "100.122.12.129";
   gonicPortTailscale = 4747;
+  whatcdResolverPortTailscale = 9093;
+  whatcdResolverJaegerPortTailscale = 16686;
   sambaPortTailscale = 445;
+  dentritePort = 8008;
 
   ethernetInterface = "enp0s20";
   wireguard = {
@@ -94,15 +101,34 @@ in
       # pkgs.vuizvui.profpatsch.warpspeed # trivial http file server
     ];
 
-    # users.groups.data-seeding = {};
+    users.groups.data-seeding = {};
+    users.groups.whatcd-resolver = {};
+    users.groups.openlab-tools = {};
 
     users.users = {
       root.openssh.authorizedKeys.keys = [ myKey ];
 
-      # rtorrent = {
-      #   isNormalUser = true;
-      #   extraGroups = [ "data-seeding" ];
-      # };
+      seed = {
+        isNormalUser = true;
+        extraGroups = [ "data-seeding" ];
+        openssh.authorizedKeys.keys = [ myKey ];
+      };
+      zipped-transmission = {
+        isSystemUser = true;
+        group = "transmission";
+      };
+      whatcd-resolver = {
+        isSystemUser = true;
+        home = "/var/lib/whatcd-resolver";
+        createHome = true;
+        group = "whatcd-resolver";
+      };
+      openlab-tools = {
+        isSystemUser = true;
+        home = "/var/lib/openlab-tools";
+        createHome = true;
+        group = "openlab-tools";
+      };
 
       # youtube2audiopodcast = {
       #   isSystemUser = true;
@@ -160,16 +186,63 @@ in
     # systemd.services.samba-smbd.wants = [ "tailscaled.service" ];
     # systemd.services.samba-smbd.after = [ "tailscaled.service" ];
 
-    # systemd.services.warpspeed =
-    #   let user = config.users.users.rtorrent;
-    #   in {
-    #     description = "internally served public files (see nginx)";
-    #     wantedBy = [ "default.target" ];
-    #     serviceConfig.WorkingDirectory = "${user.home}/public";
-    #     # *6: all hosts, v6 preferred
-    #     script = ''${pkgs.vuizvui.profpatsch.warpspeed}/bin/warpspeed "*6" ${toString warpspeedPort}'';
-    #     serviceConfig.User = config.users.users.rtorrent.name;
-    #   };
+    systemd.services.warpspeed =
+      let user = config.users.users.seed;
+      in {
+        description = "internally served zipped stuff (see nginx)";
+        wantedBy = [ "default.target" ];
+        serviceConfig.WorkingDirectory = "${user.home}/public";
+        # *6: all hosts, v6 preferred
+        script = ''${pkgs.vuizvui.profpatsch.warpspeed}/bin/warpspeed "*6" ${toString warpspeedPort}'';
+        serviceConfig.User = user.name;
+      };
+
+    # TODO: this is horrible lol
+    systemd.services.httzip =
+      let user = config.users.users.zipped-transmission;
+      in {
+        description = "internally served public files (see nginx)";
+        wantedBy = [ "default.target" ];
+        serviceConfig.WorkingDirectory = "/var/lib/transmission/Downloads";
+        script = ''${pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.httzip}'';
+        serviceConfig.User = user.name;
+      };
+
+
+    # TODO: this is horrible lol
+    systemd.services.whatcd-resolver =
+      let user = config.users.users.whatcd-resolver;
+      in {
+        description = "what?";
+        wantedBy = [ "default.target" ];
+        serviceConfig.WorkingDirectory = "/var/lib/whatcd-resolver";
+        script = "${pkgs.vuizvui.profpatsch.writeExecline "run-whatcd-resolver-jaeger" {} [
+          "envfile" "/var/lib/whatcd-resolver/whatcd-resolver-env"
+          pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.whatcd-resolver
+        ]}";
+        serviceConfig.User = user.name;
+      };
+    systemd.services.whatcd-resolver-jaeger =
+      let user = config.users.users.whatcd-resolver;
+      in {
+        description = "what? jaeger";
+        wantedBy = [ "default.target" "whatcd-resolver.service" ];
+        serviceConfig.WorkingDirectory = "/var/lib/whatcd-resolver/jaeger";
+        # webui: 16686, otel: 4318
+        script = ''${pkgs.vuizvui.profpatsch.jaeger}/bin/jaeger-all-in-one'';
+        serviceConfig.User = user.name;
+      };
+
+    # TODO: this is horrible lol
+    systemd.services.openlab-tools =
+      let user = config.users.users.openlab-tools;
+      in {
+        description = "tooling for openlabs";
+        wantedBy = [ "default.target" ];
+        serviceConfig.WorkingDirectory = "/var/lib/openlab-tools";
+        script = ''${pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.openlab-tools}'';
+        serviceConfig.User = user.name;
+      };
 
     # systemd.services.youtube2audiopodcast =
     #   let user = config.users.users.youtube2audiopodcast;
@@ -187,35 +260,74 @@ in
     security.acme.acceptTerms = true;
     security.acme.defaults.email = "mail@profpatsch.de";
 
-    # services.nginx = {
-    #   enable = true;
-    #   virtualHosts.${hakuHostName} = {
-    #     forceSSL = true;
-    #     enableACME = true;
-    #     locations."/pub/" = {
-    #       proxyPass = "http://127.0.0.1:${toString warpspeedPort}/";
-    #     };
-    #     locations."${youtube2audiopodcastSubdir}/" = {
-    #       proxyPass = "http://127.0.0.1:${toString youtube2audiopodcastPort}/";
-    #     };
-    #     locations."/".root =
-    #       let lojbanistanSrc = pkgs.fetchFromGitHub {
-    #         owner = "lojbanistan";
-    #         repo = "lojbanistan.de";
-    #         rev = "ef02aa8f074d0d5209839cd12ba7a67685fdaa05";
-    #         sha256 = "1hr2si73lam463pcf25napfbk0zb30kgv3ncc0ahv6wndjpsvg7z";
-    #       };
-    #       in pkgs.runCommandLocal "lojbanistan-www" {} ''
-    #         mkdir $out
-    #         echo "coi do" > $out/index.html
-    #         ${pkgs.imagemagick}/bin/convert \
-    #           ${lojbanistanSrc}/design/flag-of-lojbanistan-icon.svg \
-    #           -define icon:auto-resize=64,48,32,16 \
-    #           $out/favicon.ico
-    #       '';
-    #     serverAliases = [ "lojbanistan.de" ];
-    #   };
-    # };
+    services.nginx = {
+      enable = true;
+      virtualHosts.${hakuHostName} = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/public/" = {
+          proxyPass = "http://127.0.0.1:${toString warpspeedPort}/";
+        };
+        locations."/zipped/" = {
+          proxyPass = "http://127.0.0.1:${toString httzipPort}/";
+        };
+        locations."/openlab-tools/" = {
+          proxyPass = "http://127.0.0.1:${toString openlabToolsPort}/";
+        };
+        # locations."${youtube2audiopodcastSubdir}/" = {
+        #   proxyPass = "http://127.0.0.1:${toString youtube2audiopodcastPort}/";
+        # };
+        locations."/".root =
+          let lojbanistanSrc = pkgs.fetchFromGitHub {
+            owner = "lojbanistan";
+            repo = "lojbanistan.de";
+            rev = "ef02aa8f074d0d5209839cd12ba7a67685fdaa05";
+            sha256 = "1hr2si73lam463pcf25napfbk0zb30kgv3ncc0ahv6wndjpsvg7z";
+          };
+          in pkgs.runCommandLocal "lojbanistan-www" {} ''
+            mkdir $out
+            echo "coi do" > $out/index.html
+            ${pkgs.imagemagick}/bin/convert \
+              ${lojbanistanSrc}/design/flag-of-lojbanistan-icon.svg \
+              -define icon:auto-resize=64,48,32,16 \
+              $out/favicon.ico
+          '';
+        serverAliases = [ "lojbanistan.de" ];
+      };
+      virtualHosts.${testHostName} = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://shiki:9999";
+          extraConfig = ''
+            # forward original host so we can validate mastodon http header signatures
+            proxy_set_header Host $host;
+          '';
+        };
+      };
+      virtualHosts.${matrixHostName} = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://localhost:${toString dentritePort}";
+          extraConfig = ''
+            # forward original host (necessary?)
+            proxy_set_header Host $host;
+          '';
+        };
+      };
+      virtualHosts.${"decentsoftwa.re"} = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/.well-known/matrix/".root = pkgs.linkFarm "well-known-decentsoftwa.re-matrix" [
+          { name = ".well-known/matrix/server";
+            path = pkgs.writers.writeJSON "matrix-server-well-known" {
+              "m.server" = "matrix.decentsoftwa.re:443";
+            };
+          }
+        ];
+      };
+    };
 
     networking = {
       hostName = "haku";
@@ -227,7 +339,7 @@ in
       firewall = {
         allowedTCPPorts = [
           80 443
-          6882
+          # 6882
           1337 2342 4223
           60100
         ];
@@ -241,20 +353,97 @@ in
         interfaces.${tailscaleInterface} = {
           allowedTCPPorts = [
             gonicPortTailscale
-            sambaPortTailscale
+            whatcdResolverPortTailscale
+            whatcdResolverJaegerPortTailscale
+            # sambaPortTailscale
           ];
         };
       };
 
-      nameservers = [
-        "62.210.16.6"
-        "62.210.16.7"
-      ];
+      # nameservers = [
+      #   "62.210.16.6"
+      #   "62.210.16.7"
+      # ];
     };
 
     services.tailscale = {
       enable = true;
-      # interfaceName = tailscaleInterface;
+      interfaceName = tailscaleInterface;
+    };
+
+    services.transmission = {
+      enable = true;
+      user = "transmission";
+      group = "transmission";
+      settings = {
+        rpc-port = 9091;
+        peer-port-random-on-start = true;
+        peer-port-random-low = 50000;
+        peer-port-random-high = 50010;
+      };
+      openFirewall = true;
+      openRPCPort = false;
+    };
+
+
+    services.dendrite =
+      let database = {
+        connection_string = "postgresql:///dendrite?host=/run/postgresql";
+        max_open_conns = 90;
+        max_idle_conns = 5;
+        conn_max_lifetime = (-1);
+      };
+      in {
+        enable = true;
+        httpPort = 8008;
+
+        loadCredential = [ "matrix-key:/var/lib/dendrite/matrix-key" ];
+        settings.global.private_key = "$CREDENTIALS_DIRECTORY/matrix-key";
+        settings.global.server_name = "decentsoftwa.re";
+        settings.global.database = database;
+        settings.app_service_api.database = database;
+        settings.federation_api.database = database;
+        settings.key_server.database = database;
+        settings.media_api.database = database;
+        settings.mscs.database = database;
+        settings.relay_api.database = database;
+        settings.room_server.database = database;
+        settings.sync_api.database = database;
+        settings.user_api.account_database.database = database;
+        settings.user_api.device_database.database = database;
+        settings.sync_api.search.enable = true;
+
+        settings.logging = [ { type = "std"; level = "debug"; } ];
+
+        # shared secret config
+        openRegistration = false;
+        environmentFile = "/var/lib/dendrite/registration_secret";
+        settings.client_api.registration_shared_secret = "$REGISTRATION_SHARED_SECRET";
+      };
+    systemd.services.dendrite = {
+      after = [ "postgresql.service" ];
+      serviceConfig = {
+        User = "dendrite";
+        Group = "dendrite";
+      };
+    };
+
+    services.postgresql = {
+      enable = true;
+      enableTCPIP = false;
+      package = pkgs.postgresql_15;
+
+      ensureDatabases = [
+        "dendrite"
+      ];
+      ensureUsers = [
+        {
+          name = "dendrite";
+          ensureDBOwnership = true;
+        }
+
+      ];
     };
   };
+
 }
