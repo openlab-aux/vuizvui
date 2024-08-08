@@ -23,7 +23,7 @@ in {
     hardware.sane = {
       enable = true;
       netConf = cfg.remoteScanners;
-      extraBackends = [ unfreeAndNonDistributablePkgs.hplipWithPlugin ];
+      # extraBackends = [ unfreeAndNonDistributablePkgs.hplipWithPlugin ];
 
       drivers.scanSnap = {
         enable = true;
