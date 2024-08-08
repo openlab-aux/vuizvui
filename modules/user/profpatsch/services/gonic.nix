@@ -80,6 +80,7 @@ in {
            "-music-path" cfg.musicDir
            "-podcast-path" cfg.podcastDir
            "-playlists-path" cfg.playlistsDir
+           "-scan-watcher-enabled"
          ]
          ++ lib.optionals (cfg.scanIntervalMinutes != null) [
            "-scan-interval" (toString cfg.scanIntervalMinutes)
