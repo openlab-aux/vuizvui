@@ -108,7 +108,7 @@ in {
       starship = {
         enable = true;
         settings = {
-          command_timeout = 1000;
+          command_timeout = 2000;
           nix_shell.disabled = false;
         };
       };
