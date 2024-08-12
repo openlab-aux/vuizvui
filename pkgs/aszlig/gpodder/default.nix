@@ -1,4 +1,4 @@
-{ gpodder, fetchFromGitHub, python3Packages, buildSandbox }:
+{ gpodder, fetchFromGitHub, python311Packages, buildSandbox }:
 
 buildSandbox (gpodder.overridePythonAttrs (drv: {
   version = "git-2023-07-24";
@@ -12,7 +12,7 @@ buildSandbox (gpodder.overridePythonAttrs (drv: {
 
   patches = [ ./disable-autoupdate.patch ];
 
-  propagatedBuildInputs = with python3Packages; [
+  propagatedBuildInputs = with python311Packages; [
     dbus-python
     mygpoclient
     pygobject3
@@ -23,7 +23,7 @@ buildSandbox (gpodder.overridePythonAttrs (drv: {
     yt-dlp
   ];
 
-  checkInputs = with python3Packages; [
+  checkInputs = with python311Packages; [
     pytest pytest-httpserver minimock
   ];
 
