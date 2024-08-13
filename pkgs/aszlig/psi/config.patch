@@ -1,5 +1,5 @@
 diff --git a/options/default.xml b/options/default.xml
-index f4b71f53..387793a0 100644
+index 970d3d63..723cc817 100644
 --- a/options/default.xml
 +++ b/options/default.xml
 @@ -19,7 +19,7 @@
@@ -11,7 +11,7 @@ index f4b71f53..387793a0 100644
          </auto-update>
          <enable-multicast comment="Enable multicasting messages to multiple recipients" type="bool">false</enable-multicast>
          <html comment="Hypertext markup options">
-@@ -89,7 +89,7 @@
+@@ -88,7 +88,7 @@
                  <security comment="Options related to the seciruty UI">
                      <show comment="Show the security UI" type="bool">true</show>
                  </security>
@@ -20,7 +20,7 @@ index f4b71f53..387793a0 100644
              </account>
              <message comment="Message options">
                  <enabled comment="Enable message (i.e. non-chat) functionality" type="bool">true</enabled>
-@@ -137,7 +137,7 @@ QWidget#bottomFrame>QWidget>QTextEdit[correction="true"] {
+@@ -136,7 +136,7 @@ QWidget#bottomFrame>QWidget>QTextEdit[correction="true"] {
                  <default-jid-mode comment="Default jid mode: barejid | auto" type="QString">auto</default-jid-mode>
                  <default-jid-mode-ignorelist comment="Default autojid mode ignore list: jid1,jid2,..." type="QString"></default-jid-mode-ignorelist>
                  <history comment="Message history options">
@@ -29,7 +29,7 @@ index f4b71f53..387793a0 100644
                  </history>
              </chat>
              <save>
-@@ -217,7 +217,7 @@ QLineEdit#le_status_text {
+@@ -221,7 +221,7 @@ QLineEdit#le_status_text {
                  <always-on-top type="bool">false</always-on-top>
                  <automatically-resize-roster type="bool">false</automatically-resize-roster>
                  <grow-roster-upwards type="bool">true</grow-roster-upwards>
@@ -38,7 +38,7 @@ index f4b71f53..387793a0 100644
                  <contact-sort-style type="QString">status</contact-sort-style>
                  <disable-service-discovery type="bool">false</disable-service-discovery>
                  <enable-groups type="bool">true</enable-groups>
-@@ -257,7 +257,7 @@ QLineEdit#le_status_text {
+@@ -261,7 +261,7 @@ QLineEdit#le_status_text {
                  <use-left-click type="bool">false</use-left-click>
                  <use-single-click type="bool">false</use-single-click>
                  <use-status-change-animation type="bool">true</use-status-change-animation>
@@ -47,7 +47,7 @@ index f4b71f53..387793a0 100644
                  <use-transport-icons type="bool">true</use-transport-icons>
                  <saved-window-geometry type="QRect" >
                      <x>64</x>
-@@ -293,7 +293,7 @@ QLineEdit#le_status_text {
+@@ -297,7 +297,7 @@ QLineEdit#le_status_text {
                      <custom-picture comment="Show the 'picture' menu" type="bool">true</custom-picture>
                  </contact>
                  <main comment="Options for the main menu">
@@ -56,7 +56,7 @@ index f4b71f53..387793a0 100644
                  </main>
                  <status comment="Options for the status menu">
                      <chat comment="Enable free for chat" type="bool">true</chat>
-@@ -344,7 +344,7 @@ QLineEdit#le_status_text {
+@@ -348,7 +348,7 @@ QLineEdit#le_status_text {
              </spell-check>
              <disable-send-button type="bool">true</disable-send-button>
              <systemtray comment="Options related to the system tray">
@@ -65,7 +65,7 @@ index f4b71f53..387793a0 100644
                  <use-double-click type="bool">false</use-double-click>
              </systemtray>
              <flash-windows comment="Allow windows to flash upon activity" type="bool">true</flash-windows>
-@@ -362,8 +362,8 @@ QLineEdit#le_status_text {
+@@ -366,8 +366,8 @@ QLineEdit#le_status_text {
                      <contactlist>
                          <background type="QColor"/>
                          <grouping>
@@ -76,7 +76,7 @@ index f4b71f53..387793a0 100644
                          </grouping>
                          <profile>
                              <header-background type="QColor">#969696</header-background>
-@@ -373,16 +373,16 @@ QLineEdit#le_status_text {
+@@ -377,16 +377,16 @@ QLineEdit#le_status_text {
                              <away type="QColor">#004bb4</away>
                              <do-not-disturb type="QColor">#7e0000</do-not-disturb>
                              <offline type="QColor">#646464</offline>
@@ -96,7 +96,7 @@ index f4b71f53..387793a0 100644
                      </tooltip>
                      <muc>
                          <nick-colors type="QStringList" >
-@@ -393,21 +393,21 @@ QLineEdit#le_status_text {
+@@ -397,21 +397,21 @@ QLineEdit#le_status_text {
                              <item>Red</item>
                          </nick-colors>
                          <role-moderator type="QColor">#910000</role-moderator>
@@ -123,7 +123,7 @@ index f4b71f53..387793a0 100644
                          <unread-message-color type="QColor">red</unread-message-color>
                          <inactive-color type="QColor">grey</inactive-color>
                      </chat>
-@@ -420,10 +420,10 @@ QLineEdit#le_status_text {
+@@ -424,10 +424,10 @@ QLineEdit#le_status_text {
                      <use-slim-group-headings type="bool">false</use-slim-group-headings>
                  </contactlist>
                  <font>
@@ -138,7 +138,7 @@ index f4b71f53..387793a0 100644
                  </font>
                  <css type="QString" />
              </look>
-@@ -471,20 +471,20 @@ QLineEdit#le_status_text {
+@@ -475,20 +475,20 @@ QLineEdit#le_status_text {
                      <suppress-while-away type="bool">false</suppress-while-away>
                  </popup-dialogs>
                  <sounds>
@@ -172,7 +172,7 @@ index f4b71f53..387793a0 100644
                      <unix-sound-player type="QString"/>
                  </sounds>
                  <successful-subscription type="bool">true</successful-subscription>
-@@ -504,7 +504,7 @@ QLineEdit#le_status_text {
+@@ -508,7 +508,7 @@ QLineEdit#le_status_text {
                  <mouse-middle-button type="QString">close</mouse-middle-button> <!-- hide|close|detach -->
                  <mouse-doubleclick-action type="QString">detach</mouse-doubleclick-action>
                  <size type="QString"></size> <!-- will be invalid when converted to QSize so we can detect first load -->
@@ -181,7 +181,7 @@ index f4b71f53..387793a0 100644
                  <group-state comment="Saved state data of the tabsets defined by options.ui.tabs.grouping">
                      <CM>
                          <size-frame type="QRect">
-@@ -735,7 +735,7 @@ QLineEdit#le_status_text {
+@@ -739,7 +739,7 @@ QLineEdit#le_status_text {
              <last-activity type="bool">true</last-activity>
          </service-discovery>
          <status>
@@ -190,7 +190,7 @@ index f4b71f53..387793a0 100644
              <ask-for-message-on-online type="bool">false</ask-for-message-on-online>
              <ask-for-message-on-chat type="bool">true</ask-for-message-on-chat>
              <ask-for-message-on-away type="bool">true</ask-for-message-on-away>
-@@ -758,7 +758,20 @@ QLineEdit#le_status_text {
+@@ -762,7 +762,20 @@ QLineEdit#le_status_text {
                  <by-template type="bool">true</by-template>
                  <by-status type="bool">false</by-status>
              </last-overwrite>
@@ -212,7 +212,7 @@ index f4b71f53..387793a0 100644
              <presets-in-status-menus type="QString" comment="'yes', 'no' or 'submenu'">submenu</presets-in-status-menus>
              <show-only-online-offline type="bool">false</show-only-online-offline>
              <show-choose type="bool">true</show-choose>
-@@ -797,5 +810,9 @@ QLineEdit#le_status_text {
+@@ -801,5 +814,9 @@ QLineEdit#le_status_text {
          </keychain>
      </options>
      <accounts comment="Account definitions and options"/>
@@ -224,21 +224,21 @@ index f4b71f53..387793a0 100644
 +    </plugins>
  </psi>
 diff --git a/src/psi_profiles.cpp b/src/psi_profiles.cpp
-index 97c44218..d5fa9d53 100644
+index c80f108f..fba2eee1 100644
 --- a/src/psi_profiles.cpp
 +++ b/src/psi_profiles.cpp
-@@ -74,8 +74,8 @@ void UserAccount::reset()
+@@ -66,8 +66,8 @@ void UserAccount::reset()
+     storeSaltedHashedPassword = false;
      req_mutual_auth           = false;
-     legacy_ssl_probe          = false;
      security_level            = QCA::SL_None;
--    ssl                       = SSL_Auto;
+-    ssl                       = TLS_Auto;
 -    jid                       = "";
-+    ssl                       = SSL_Yes;
++    ssl                       = TLS_Yes;
 +    jid                       = "@jid@";
      pass                      = "";
      scramSaltedHashPassword   = "";
      opt_pass                  = false;
-@@ -85,7 +85,7 @@ void UserAccount::reset()
+@@ -77,7 +77,7 @@ void UserAccount::reset()
      opt_automatic_resource    = true;
      priority_dep_on_status    = true;
      ignore_global_actions     = false;
@@ -247,9 +247,9 @@ index 97c44218..d5fa9d53 100644
      priority                  = 55;
      ibbOnly                   = false;
      opt_keepAlive             = true;
-@@ -128,7 +128,7 @@ void UserAccount::reset()
-               << "stun.voipbuster.com"
-               << "stun.voxgratia.org";
+@@ -106,7 +106,7 @@ void UserAccount::reset()
+               << "stun.phoneserve.com" << "stun.rnktel.com" << "stun.softjoys.com" << "stun.sipgate.net"
+               << "stun.sipgate.net:10000" << "stun.stunprotocol.org" << "stun.voipbuster.com" << "stun.voxgratia.org";
  
 -    stunHost = stunHosts[0];
 +    stunHost = "";

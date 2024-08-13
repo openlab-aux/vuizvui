@@ -1,5 +1,5 @@
 { stdenv, lib, fetchFromGitHub, cmake, makeWrapper
-, hunspell, libgcrypt, libgpg-error, libidn, libotr, libsForQt5
+, hunspell, libgcrypt, libgpg-error, libidn, libomemo-c, libotr, libsForQt5
 , libsignal-protocol-c, html-tidy, qt5
 
 , substituteAll
@@ -18,13 +18,13 @@ let
 
   usrsctp = stdenv.mkDerivation {
     pname = "usrsctp";
-    version = "git20240111";
+    version = "git20240510";
 
     src = fetchFromGitHub {
       owner = "sctplab";
       repo = "usrsctp";
-      rev = "265f20562e4d3fa977c6d9e09d0631b8125ac949";
-      hash = "sha256-4EH67xFeLSad7klQNPKV0Nyq0KAV8LcqK9Wx9QsuboA";
+      rev = "e711f82ad09eddef42859073c66242887c24a016";
+      hash = "sha256-lU0TVKdObF+sNa9BfSQN2D4bHqw80WsEOjNkrEcmOhM";
     };
 
     nativeBuildInputs = [ cmake ];
@@ -32,21 +32,21 @@ let
 
 in stdenv.mkDerivation rec {
   name = "psi-${version}";
-  version = "2.0git20231104aszlig";
+  version = "2.0git20240717aszlig";
 
   src = fetchFromGitHub {
     owner = "psi-im";
     repo = "psi";
-    rev = "83a8dfb87ad0b882be49fd43de75c805464a8c2b";
-    hash = "sha256-ya5qMh5kIMvPUOcfY+B3952Q8SBg+QstGI9/8GsoYRk";
+    rev = "b98f3936c4b6fa758668567f8460b922d2527b21";
+    hash = "sha256-43lcBbjtk6Q7jV5OmZ21bOeZHZROtjG/Pc4DyiB63mA";
     fetchSubmodules = true;
   };
 
   plugins = fetchFromGitHub {
     owner = "psi-im";
     repo = "plugins";
-    rev = "dfdb6d962ac92920861af900f41e8f590e500206";
-    hash = "sha256-xrKIP34aXkBX/H31m1Z9dWRcp9JkuQonLTlxX0UA+g4";
+    rev = "347230bf240992c74a7de2a7ac9c28545fa34401";
+    hash = "sha256-CL+m9yw0Dv28SPS/cOwYitXnWOKXAjpyzRMRZSHkMwM";
   };
 
   patches = [
@@ -76,6 +76,7 @@ in stdenv.mkDerivation rec {
     libgcrypt
     libgpg-error
     libidn
+    libomemo-c
     libotr
     libsForQt5.qca-qt5
     libsignal-protocol-c
