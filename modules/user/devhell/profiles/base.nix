@@ -32,8 +32,8 @@ in {
     hardware = {
       enableAllFirmware = true;
       nitrokey.enable = true;
-      opengl = {
-        driSupport32Bit = true;
+      graphics = {
+        enable32Bit = true;
       };
     };
 
@@ -97,7 +97,7 @@ in {
         startAgent = false;
       };
       bash = {
-        enableCompletion = true;
+        completion = true;
       };
       singularity = {
         enable = true;

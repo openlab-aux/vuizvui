@@ -51,6 +51,7 @@ in {
       #wuzz
       abook
       accountsservice
+      adwaita-icon-theme
       alacritty
       apg
       aria2
@@ -122,7 +123,6 @@ in {
       gitui
       glab
       glow
-      gnome.adwaita-icon-theme
       gnufdisk
       gnumake
       gnupg

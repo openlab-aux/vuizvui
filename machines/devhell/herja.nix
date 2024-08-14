@@ -31,7 +31,7 @@
       enable = true;
       emulateWheel = true;
     };
-    opengl = {
+    graphics = {
       enable = true;
       extraPackages = with pkgs; [
         libvdpau-va-gl
