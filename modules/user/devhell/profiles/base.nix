@@ -97,7 +97,7 @@ in {
         startAgent = false;
       };
       bash = {
-        completion = true;
+        completion.enable = true;
       };
       singularity = {
         enable = true;
