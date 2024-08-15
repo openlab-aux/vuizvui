@@ -204,7 +204,7 @@ in {
 
     security.pam.services.swaylock = {};
 
-    hardware.opengl.enable = true;
+    hardware.graphics.enable = true;
 
     environment.etc = {
       "sway/config".text = ''

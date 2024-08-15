@@ -82,7 +82,7 @@ in
         xwayland qt5.qtwayland
         wl-clipboard               # instead of xsel
         mako                       # notifications
-        gnome.adwaita-icon-theme
+        adwaita-icon-theme
         wdisplays                  # display layout GUI
       ];
 
@@ -152,7 +152,7 @@ in
 
     (lib.mkIf cfg.nextcloud.enable {
       vuizvui.user.sternenseemann.services.sway.extraConfig = ''
-        exec ${pkgs.gnome.gnome-keyring}/bin/gnome-keyring-daemon --start --components=secrets
+        exec ${pkgs.gnome-keyring}/bin/gnome-keyring-daemon --start --components=secrets
         exec ${pkgs.nextcloud-client}/bin/nextcloud
       '';
 
