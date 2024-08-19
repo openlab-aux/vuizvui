@@ -198,8 +198,10 @@ in {
       ntfsprogs
       nvtopPackages.amd
       oculante
+      ollama
       oneshot
       openssl
+      oterm
       p7zip
       pamixer
       pandoc
