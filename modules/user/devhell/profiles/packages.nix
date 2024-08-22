@@ -48,6 +48,7 @@ in {
       #nixopsUnstable
       #onefetch
       #spek
+      #visidata
       #wordgrinder
       #wuzz
       abook
@@ -254,8 +255,8 @@ in {
       steam-tui
       stow
       strace
-      taskwarrior3
       taskwarrior-tui
+      taskwarrior3
       tealdeer
       termdown
       termshark
@@ -278,7 +279,6 @@ in {
       vanilla-dmz
       virt-manager
       virt-viewer
-      visidata
       viu
       vivid
       vlock
