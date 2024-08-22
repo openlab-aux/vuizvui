@@ -43,6 +43,7 @@ in {
 
     environment.systemPackages = with pkgs; [
       #dogdns
+      #gomuks
       #mnamer
       #nixopsUnstable
       #onefetch
@@ -126,7 +127,6 @@ in {
       gnufdisk
       gnumake
       gnupg
-      gomuks
       gopass
       gpg-tui
       gpgme
@@ -254,8 +254,7 @@ in {
       steam-tui
       stow
       strace
-      tasksh
-      taskwarrior
+      taskwarrior3
       taskwarrior-tui
       tealdeer
       termdown
