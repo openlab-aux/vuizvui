@@ -57,12 +57,22 @@ in {
     services.dbus.packages = [ pkgs.mako ];
 
     services = {
+      avahi.enable = true;
       pcscd.enable = true;
       gpm.enable = true;
       openssh.enable = true;
       udisks2.enable = true;
       haveged.enable = true;
       automatic-timezoned.enable = true;
+      geoclue2 = {
+        enable = true;
+        geoProviderUrl = "https://beacondb.net/v1/geolocate";
+        enableWifi = true;
+        enableNmea = true;
+        enableModemGPS = false;
+        enableCDMA = false;
+        enable3G = false;
+      };
       globalprotect = {
         enable = true;
         csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
