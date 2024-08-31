@@ -3,9 +3,9 @@
 let
   inherit (lib) any elem;
 
-  isLatestKernel = config.boot.kernelPackages.kernel.version
-                == pkgs.linuxPackages_latest.kernel.version;
-  wgTestSuffix = "linux-${if isLatestKernel then "latest" else "5_4"}";
+  # TODO(@sternenseemann): tie this to boot.kernelPackages.kernel.version again
+  # after https://github.com/NixOS/nixpkgs/pull/338632 hits the channels.
+  wgTestSuffix = "linux-latest";
 
   mkTest = attrs: if attrs.check then attrs.paths or [ attrs.path ] else [];
 
