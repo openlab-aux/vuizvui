@@ -8,6 +8,7 @@ let
 
 in {
   imports = [
+    ((import ../../nixos-hardware-path.nix) + "/lenovo/thinkpad/x270")
     ./base-laptop.nix
     ./wireguard.nix
     ./user-lukas.nix
