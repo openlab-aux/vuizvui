@@ -3,9 +3,15 @@
 let
   inherit (lib) any elem;
 
-  # TODO(@sternenseemann): tie this to boot.kernelPackages.kernel.version again
-  # after https://github.com/NixOS/nixpkgs/pull/338632 hits the channels.
-  wgTestSuffix = "linux-latest";
+  isLatestKernel = config.boot.kernelPackages.kernel.version
+                == pkgs.linuxPackages_latest.kernel.version;
+  # Assumes nixpkgs has a test for the latest and default kernel
+  wgTestSuffix = "linux-" + (
+    if isLatestKernel
+    then "latest"
+    else lib.replaceStrings [ "." ] [ "_" ]
+      (lib.versions.majorMinor pkgs.linuxPackages.kernel.version)
+  );
 
   mkTest = attrs: if attrs.check then attrs.paths or [ attrs.path ] else [];
 
