@@ -18,6 +18,9 @@ let
     /home/lukas/.stack
     /home/lukas/.notmuch
     /home/lukas/.local/share/
+    /home/lukas/.local/state/cabal
+    /home/lukas/.local/state/wireplumber
+    /home/lukas/.local/state/pipewire
     /home/lukas/Mail/.notmuch
     /home/lukas/.npm
     /home/lukas/.gem
