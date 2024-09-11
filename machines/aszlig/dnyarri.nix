@@ -22,6 +22,12 @@ in {
 
   nix.settings.max-jobs = 24;
 
+  # XXX: This machine has a pretty complicated audio setup, so until this works
+  #      properly with PipeWire, let's stay with PulseAudio for now.
+  services.pipewire.enable = lib.mkOverride 90 false;
+  hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.package = pkgs.pulseaudioFull;
+
   hardware.printers.ensureDefaultPrinter = "Bunti";
   hardware.printers.ensurePrinters = lib.singleton {
     name = "Bunti";

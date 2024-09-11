@@ -48,7 +48,6 @@ pkgs: with pkgs; [
   openssl
   p7zip
   pavucontrol
-  pulseaudio
   vuizvui.aszlig.pvolctrl
   pv
   python3
