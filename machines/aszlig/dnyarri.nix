@@ -76,9 +76,7 @@ in {
     "/" = {
       label = "dnyarri-root";
       fsType = "btrfs";
-      options = [
-        "autodefrag" "space_cache" "compress=zstd" "noatime" "discard=async"
-      ];
+      options = [ "space_cache" "compress=zstd" "noatime" "discard=async" ];
     };
   };
 

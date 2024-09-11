@@ -71,9 +71,7 @@
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/87a842a8-e2c5-45b6-8e67-58fec33b5eee";
     fsType = "btrfs";
-    options = [
-      "autodefrag" "space_cache=v2" "compress=zstd" "noatime" "discard=async"
-    ];
+    options = [ "space_cache=v2" "compress=zstd" "noatime" "discard=async" ];
   };
 
   swapDevices = lib.singleton {
