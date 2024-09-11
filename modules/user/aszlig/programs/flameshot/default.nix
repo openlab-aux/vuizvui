@@ -10,7 +10,6 @@ let
     drawThickness = 2;
     savePath = "$HOME/screenshots";
     savePathFixed = true;
-    checkForUpdates = false;
   };
 
 in {
