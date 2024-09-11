@@ -28,7 +28,7 @@
   vuizvui.hardware.tuxedo.pulse15.gen2.enable = true;
 
   services.xserver.dpi = 188;
-  services.xserver.xkbOptions = "caps:none";
+  services.xserver.xkb.options = "caps:none";
 
   networking.hostName = "slylandro";
   networking.wireless.enable = lib.mkForce true;
@@ -70,9 +70,9 @@
   services.tlp.enable = true;
 
   services.xserver.videoDrivers = [ "amdgpu" ];
-  services.xserver.libinput.enable = true;
 
-  services.xserver.libinput.touchpad = {
+  services.libinput.enable = true;
+  services.libinput.touchpad = {
     clickMethod = "clickfinger";
     sendEventsMode = "disabled-on-external-mouse";
     middleEmulation = false;
