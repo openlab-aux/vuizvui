@@ -52,9 +52,8 @@ in {
     hardware = {
       pulseaudio.enable = true;
       pulseaudio.package = pkgs.pulseaudioFull;
-      opengl = {
-        driSupport32Bit = true;
-      };
+
+      graphics.enable32Bit = true;
     };
 
     fonts = {
