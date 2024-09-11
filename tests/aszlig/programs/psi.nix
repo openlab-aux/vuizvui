@@ -1,7 +1,7 @@
 { nixpkgsPath, ... }:
 
 {
-  name = "psi-test";
+  name = "psi";
 
   machine = { pkgs, ... }: {
     imports = [
