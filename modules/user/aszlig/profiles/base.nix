@@ -61,6 +61,7 @@ in {
 
     environment.systemPackages = with pkgs; [
       binutils
+      bpftrace
       cacert
       ddrescue
       file
