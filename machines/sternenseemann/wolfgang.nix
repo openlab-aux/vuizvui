@@ -52,6 +52,7 @@ in {
   };
 
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.memtest86.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "wolfgang";
@@ -85,8 +86,7 @@ in {
     gpxsee
     msr-tools
     quasselClient
-    # hunspell
-    # (with hunspellDicts; [ de-de en-gb-large en-us ])
+    anki
   ];
 
   environment.variables = {
