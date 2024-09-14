@@ -47,7 +47,7 @@
         lynx
         zip unzip
         stow
-        silver-searcher
+        ripgrep
         nmap
         ffmpeg graphicsmagick
         pavucontrol
@@ -58,6 +58,13 @@
       variables = {
         EDITOR = "${emacs}/bin/emacsclient";
         VISUAL = "${emacs}/bin/emacsclient";
+        RIPGREP_CONFIG_PATH = pkgs.writeText "ripgreprc" ''
+          --max-columns=150
+          --max-columns-preview
+          --smart-case
+          --hidden
+          --glob=!.git/*
+        '';
       };
     };
 
