@@ -18,7 +18,7 @@ in {
 
     nix = {
       # new --show-trace is so noisy, I wouldn't be able to debug something to save my life
-      package = pkgs.nix_2_3;
+      package = pkgs.nix_2_3.override { withAWS = false; };
       settings = {
         sandbox = true;
         gc-keep-derivations = false;
