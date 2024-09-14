@@ -356,6 +356,7 @@ in {
           format = "%status: %percentage"
           status_chr = "⚡"
           status_bat = "🔋"
+          status_idle = "💤"
           status_unk = "❓"
           status_full = "💯"
           low_threshold = 10
