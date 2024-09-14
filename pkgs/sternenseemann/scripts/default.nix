@@ -49,11 +49,9 @@ in
 
 {
   default = [
-    self.borg-wrapper
     self.lowview
     self.pdfcombine
     self.pdfrange
-    self.certprint
   ];
 
   borg-wrapper = writeBashBin "borg-wrapper" ''
