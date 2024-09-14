@@ -12,10 +12,9 @@ let
 
   cfg = config.vuizvui.programs.foot;
 
-  # We don't allow null, since we use null as
-  # a “fall back to foot's defaults” value for defined
-  # options in the freeform module so no null may be
-  # present in the resulting ini file.
+  # We don't allow null, since we use null as a “fall back to foot's defaults”
+  # value for defined options in the freeform module so no null may be present
+  # in the resulting ini file.
   iniAtom = with lib.types; (oneOf [
     bool
     int
@@ -67,7 +66,9 @@ let
         else assert (wellFormedFontSet font);
           "${font.font}${formatOptions (font.options or {})}";
     in
-      lib.concatMapStringsSep "," fontconfigFont fonts;
+      if builtins.isNull fonts
+      then null # indicates default
+      else lib.concatMapStringsSep "," fontconfigFont fonts;
 
   mkFontOption = name: lib.mkOption {
     type = with lib.types; nullOr (nonEmptyListOf (either str attrs));
@@ -90,6 +91,7 @@ let
       "monospace"
     ]);
     default = null;
+    apply = buildIniFontList;
   };
 
   commandBindOptions = [
@@ -108,7 +110,9 @@ let
       "command bind set must contain a cmd and a bind attr: ${prettyPrint exampleCommandBindSet}";
 
   buildIniCommandBind = bind:
-    if builtins.isString bind
+    if builtins.isNull bind
+    then null # indicates default
+    else if builtins.isString bind
     then bind
     else assert wellformedCommandBindSet bind;
       "[${bind.cmd}] ${bind.bind}";
@@ -122,24 +126,10 @@ let
       '';
       example = lib.literalExample (prettyPrint exampleCommandBindSet);
       default = null;
+      apply = buildIniCommandBind;
     };
 
-  # convert some fancy options we support to a format formats.ini can deal
-  # with and remove all optional options (in this case options which default
-  # to null), so we don't have to track upstreams defaults, but foot can
-  # decide for itself while we still can treat some options specially.
-  iniReady = settings:
-    let
-      withoutNulls =
-        lib.filterAttrsRecursive (_: x: x != null) settings;
-      attrTransforms = {
-        main =
-          lib.genAttrs fontOptions (n: (_: buildIniFontList));
-        key-bindings =
-          lib.genAttrs commandBindOptions (n: (_: buildIniCommandBind));
-        };
-    in
-      mapAttrsByAttrs withoutNulls attrTransforms;
+  withoutNulls = lib.filterAttrsRecursive (_: x: x != null);
 
 in {
   options.vuizvui.programs.foot = {
@@ -183,7 +173,9 @@ in {
     environment.systemPackages = [ pkgs.foot pkgs.foot.terminfo ];
 
     environment.etc."xdg/foot/foot.ini".source =
-      format.generate "foot.ini" (iniReady cfg.settings);
+      # null indicates default value for defined options. We need to remove
+      # those from the final config so foot will use its default.
+      format.generate "foot.ini" (withoutNulls cfg.settings);
 
     # TODO(sterni): bash, zsh
     programs.fish = lib.mkIf config.programs.fish.enable {
