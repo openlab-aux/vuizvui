@@ -184,5 +184,12 @@ in {
 
     environment.etc."xdg/foot/foot.ini".source =
       format.generate "foot.ini" (iniReady cfg.settings);
+
+    # TODO(sterni): bash, zsh
+    programs.fish = lib.mkIf config.programs.fish.enable {
+      interactiveShellInit = ''
+        source "${pkgs.path + "/nixos/modules/programs/foot/config.fish"}"
+      '';
+    };
   };
 }
