@@ -46,7 +46,6 @@
         lowdown
         lynx
         zip unzip
-        stow
         ripgrep
         nmap
         ffmpeg graphicsmagick
