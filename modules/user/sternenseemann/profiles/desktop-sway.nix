@@ -96,19 +96,21 @@ in
       vuizvui.programs.foot = {
         enable = true;
         settings = {
-          include = "${pkgs.foot.themes}/share/foot/themes/selenized-white";
+          main = {
+            include = "${pkgs.foot.themes}/share/foot/themes/selenized-white";
 
-          dpi-aware = true;
-          font = [
-            {
-              font = defaultFont;
-              options = { size = 8; };
-            }
-            {
-              font = defaultEmojiFont;
-              options = { size = 8; };
-            }
-          ];
+            dpi-aware = true;
+            font = [
+              {
+                font = defaultFont;
+                options = { size = 8; };
+              }
+              {
+                font = defaultEmojiFont;
+                options = { size = 8; };
+              }
+            ];
+          };
 
           tweak = {
             grapheme-shaping = "yes";

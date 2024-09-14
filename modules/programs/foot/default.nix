@@ -25,27 +25,8 @@ let
     description = "INI atom (bool, int, float or string)";
   };
 
-  # pkgs.formats.ini doesn't allow top-level bindings
-  # without a section, so we have to wrap it a bit
   # TODO(sterni): multiple binds
-  format = {
-    type = with lib.types;
-      (attrsOf (either iniAtom (attrsOf iniAtom))) // {
-        description = ''
-          attribute set of either top-level INI atoms (bool, int, float or string) or attribute sets (sections) of INI atoms
-        '';
-      };
-    generate = name: value:
-      let
-        isSection = builtins.isAttrs;
-        topLevel = lib.filterAttrs (_: v: !(isSection v)) value;
-        sections = lib.filterAttrs (_: v: isSection v) value;
-      in
-        pkgs.writeText name ''
-          ${toKeyValue {} topLevel}
-          ${toINI {} sections}
-        '';
-  };
+  format = pkgs.formats.ini {};
 
   prettyPrint = lib.generators.toPretty {};
 
@@ -151,10 +132,11 @@ let
     let
       withoutNulls =
         lib.filterAttrsRecursive (_: x: x != null) settings;
-      attrTransforms =
-        (lib.genAttrs fontOptions (n: (_: buildIniFontList))) // {
-          key-bindings =
-            lib.genAttrs commandBindOptions (n: (_: buildIniCommandBind));
+      attrTransforms = {
+        main =
+          lib.genAttrs fontOptions (n: (_: buildIniFontList));
+        key-bindings =
+          lib.genAttrs commandBindOptions (n: (_: buildIniCommandBind));
         };
     in
       mapAttrsByAttrs withoutNulls attrTransforms;
@@ -166,7 +148,9 @@ in {
     settings = lib.mkOption {
       type = lib.types.submodule {
         freeformType = format.type;
-        options = (lib.genAttrs fontOptions mkFontOption) // {
+        options = {
+          main =
+            lib.genAttrs fontOptions mkFontOption;
           key-bindings =
             lib.genAttrs commandBindOptions mkCommandBindOption;
         };
