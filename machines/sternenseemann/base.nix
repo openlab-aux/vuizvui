@@ -131,5 +131,24 @@ in {
       GIT_PAGER = bins.less;
       LESS = "-R";
     };
+
+    environment.etc."gitconfig".text = ''
+      [user]
+          email = sternenseemann@systemli.org
+          name = sternenseemann
+      [push]
+          default = matching
+      [pull]
+          rebase = true
+      [init]
+          defaultBranch = canon
+      [sendemail]
+          smtpEncryption = tls
+          smtpServer = mail.systemli.org
+          smtpUser = sternenseemann@systemli.org
+          smtpServerPort = 587
+      [merge]
+          conflictstyle = diff3
+    '';
   };
 }
