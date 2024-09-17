@@ -85,6 +85,7 @@ in {
       csvlens
       cuetools
       curlie
+      cyme
       dcfldd
       ddrescue
       delta
