@@ -73,10 +73,6 @@ in {
         enableCDMA = false;
         enable3G = false;
       };
-      globalprotect = {
-        enable = true;
-        csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
-      };
     };
 
     services.pipewire = {
