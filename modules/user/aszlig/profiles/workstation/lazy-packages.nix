@@ -12,7 +12,6 @@ pkgs: with pkgs; [
   haxe
   libchipcard
   lftp
-  mp3info
   mpg123
   mumble
   neko
