@@ -277,6 +277,7 @@ in {
       unzip
       urlscan
       usbutils
+      vale
       vanilla-dmz
       virt-manager
       virt-viewer
