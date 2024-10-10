@@ -80,6 +80,7 @@ in {
       chromaprint
       cifs-utils
       cmatrix
+      codeberg-cli
       colmena
       cryptsetup
       csvlens
