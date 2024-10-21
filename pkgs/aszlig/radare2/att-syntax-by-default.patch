@@ -1,7 +1,0 @@
-diff --git a/libr/core/cconfig.c b/libr/core/cconfig.c
-index 53252df6a..da45bad50 100644
---- a/libr/core/cconfig.c
-+++ b/libr/core/cconfig.c
-@@ -3620,1 +3620,1 @@ R_API int r_core_config_init(RCore *core) {
--	n = NODECB ("asm.syntax", "intel", &cb_asmsyntax);
-+	n = NODECB ("asm.syntax", "att", &cb_asmsyntax);

@@ -13,7 +13,6 @@
   nlast = callPackage ./nlast { };
   psi = callPackage ./psi { };
   pvolctrl = callPackage ./pvolctrl { };
-  radare2 = callPackage ./radare2 { inherit radare2; };
   vim = callPackage ./vim { vim = vim-full; };
   xterm = callPackage ./xterm { inherit xterm; };
 }

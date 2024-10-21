@@ -54,7 +54,7 @@ pkgs: with pkgs; [
   python3Packages.hetzner
   python3Packages.pep8
   python3Packages.polib
-  vuizvui.aszlig.radare2
+  radare2
   rlwrap
   rsync
   samplicator
