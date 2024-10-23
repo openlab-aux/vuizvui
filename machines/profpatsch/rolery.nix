@@ -298,6 +298,7 @@ in {
         # TODO move into atool deps
         unzip                # extract zip archives
         networkmanagerapplet # for nm-connection-editor
+        pkgs.vuizvui.profpatsch.blight  # increase/decrease screen brightness
       ];
       xPkgs = [
         lock-screen       # lock screen

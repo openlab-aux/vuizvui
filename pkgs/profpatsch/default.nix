@@ -345,6 +345,8 @@ in rec {
 
   gpg-private-offline-key = import ./gpg-private-offline-key { inherit pkgs writeExecline getBins; };
 
+  blight = callPackage ./blight.nix { };
+
   # business = import ./business.nix { inherit pkgs; };
 
   # mes = import ./mes { inherit pkgs; };
