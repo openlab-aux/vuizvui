@@ -110,7 +110,18 @@ in {
 
     # needed by steam to run
     programs.steam.enable = true;
-    hardware.opengl.driSupport32Bit = true;
+    # hardware.opengl = {
+    #   enable = true;
+    #   driSupport = true;
+    #   driSupport32Bit = true;
+    #   extraPackages = [
+    #     pkgs.intel-media-driver
+    #     (pkgs.intel-vaapi-driver.override { enableHybridCodec = true; })
+    #     pkgs.libvdpau-va-gl
+    #   ];
+    # # force intel-media-driver
+    # environment.sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; };
+
     nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
       "steam"
       "steam-original"
@@ -141,14 +152,23 @@ in {
       "vuizvui=${myLib.philip.home}/vuizvui"
       "nixpkgs=${myLib.philip.home}/nixpkgs"
       # TODO: nicer?
-      "nixos-config=${pkgs.writeText "shiki-configuration.nix" ''
-        (import <vuizvui/machines>).profpatsch.shiki.config
+      "nixos-config=${pkgs.writeText "rolery-configuration.nix" ''
+        (import <vuizvui/machines>).profpatsch.rolery.config
       ''}"
     ];
 
     nix.distributedBuilds = true;
     nix.settings.trusted-users = [ "@wheel" ];
     nix.buildMachines = [
+      # possehl analytics remote builder
+      # {
+      #   hostName = "headcounter";
+      #   protocol = "ssh"; # TODO: ssh-ng?
+      #   maxJobs = 24;
+      #   speedFactor = 1000;
+      #   system = "x86_64-linux";
+      #   supportedFeatures = [ "kvm" "big-parallel" "nixos-test" "benchmark" ];
+      # }
       # access to the nix-community aarch64 build box
       # {
       #   hostName = "aarch64.nixos.community";
@@ -171,6 +191,9 @@ in {
 
     nix.settings.builders-use-substitutes = true;
     nix.settings.auto-optimise-store = true;
+    nix.settings.trusted-public-keys = [
+      "headcounter.org:/7YANMvnQnyvcVB6rgFTdb8p5LG1OTXaO+21CaOSBzg="
+    ];
     # nix.settings.substituters = [
     #   "https://digitallyinduced.cachix.org"
     # ];
@@ -188,9 +211,35 @@ in {
     ##########
     # Network
 
-    networking.hostName = "shiki";
+    networking.hostName = "rolery";
 
     networking.networkmanager.enable = true;
+
+    networking.hosts = {
+      "127.0.0.1" = [
+        "me"
+        "hoogle.me"
+        "torrent.me"
+        # keycloak workaround
+        "showroom.myants.online"
+     ];
+    };
+
+    # services.nginx = {
+    #   enable = true;
+    #   defaultListenAddresses = [ "127.0.0.1" ];
+    #   virtualHosts = {
+    #     "hoogle.me" = {
+    #       enableACME = false;
+    #       locations."/".proxyPass = "http://localhost:9090";
+    #     };
+    #     "torrent.me" = {
+    #       enableACME = false;
+    #       locations."/".proxyPass = "http://localhost:9091";
+    #     };
+    #   };
+
+    # };
 
     services.tailscale = {
       enable = true;
@@ -218,6 +267,19 @@ in {
     #     };
     #   };
     # };
+
+    ###########
+    # Backups
+
+    services.btrbk = {
+      instances.btrbk = {
+        onCalendar = "daily";
+        settings = {
+
+        };
+      };
+
+    };
 
     ###########
     # Packages
@@ -267,7 +329,7 @@ in {
         pkgs.vuizvui.profpatsch.nix-http-serve # serve nix builds and rebuild on reloads
         pkgs.vuizvui.profpatsch.nman # open man pages in temporary nix shell
         pkgs.vuizvui.profpatsch.warpspeed    # trivial http file server
-        pkgs.vuizvui.profpatsch.watch-server # restart server on code change
+        # pkgs.vuizvui.profpatsch.watch-server # restart server on code change
         pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
         execline
         pkgs.dhall
@@ -285,10 +347,10 @@ in {
         # myPkgs.beets         # audio file metadata tagger
         firefox              # browser
         chromium             # second browser for good measure
-        cups                 # print tools, mainly for lp(1)
+        # cups                 # print tools, mainly for lp(1)
         pkgs.vuizvui.profpatsch.droopy # simple HTML upload server
         # electrum             # bitcoin client
-        emacs                # pretty neat operating system i guess
+        emacs29                # pretty neat operating system i guess
         imv                  # young brother of feh and less meh
         filezilla            # FTP GUI business-ready interface framework
         # gimp                 # graphics
@@ -302,6 +364,7 @@ in {
         poppler_utils        # pdfto*
         ranger               # CLI file browser
         remind               # calender & reminder program
+        sqlite-interactive
         taskwarrior tasksh   # task manager
         zathura              # pdf viewer
         ghc                  # powerful pocket calculator
@@ -330,8 +393,7 @@ in {
       ];
       mailPkgs = [
         elinks               # command line browser
-        msmtp                # SMTP client
-        mu                   # mail indexing w/ emacs mode
+        claws-mail           # mail client
       ];
       nixPkgs = [
         # nix-diff                  # structurally diff two derivations
@@ -369,6 +431,14 @@ in {
           exe = pkgs.vuizvui.profpatsch.xrandr.two-monitor-setup;
           # this is still referenced in my .xbindkeysrc, which is not in my nixpkgs config
           name = "monitor-home";
+        })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.lyric.lyric;
+          name = "lyric";
+        })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.alacritty;
+          name = "terminal-emulator";
         })
         # myPkgs.zoomboxed
         # for xte with xbindkeys
@@ -435,16 +505,16 @@ in {
       };
     };
 
-    services.printing = {
-      enable = true;
-      drivers = [
-        pkgs.gutenprint
-        pkgs.gutenprintBin
-        # pkgs.hplip
-        unfreeAndNonDistributablePkgs.canon-cups-ufr2
-        unfreeAndNonDistributablePkgs.dcp9020cdwlpr
-      ];
-    };
+    # services.printing = {
+    #   enable = true;
+    #   drivers = [
+    #     pkgs.gutenprint
+    #     pkgs.gutenprintBin
+    #     # pkgs.hplip
+    #     unfreeAndNonDistributablePkgs.canon-cups-ufr2
+    #     unfreeAndNonDistributablePkgs.dcp9020cdwlpr
+    #   ];
+    # };
 
     # for discovering ddns printers.
     services.avahi.enable = true;
@@ -459,6 +529,8 @@ in {
 
     ###########
     # Programs
+
+    programs.adb.enable = true;
 
     vuizvui.programs.gnupg = {
       enable = true;
@@ -482,7 +554,22 @@ in {
     # some Gnome-infested programs break without dconf
     programs.dconf.enable = true;
 
-    virtualisation.docker.enable = true;
+    virtualisation.docker = {
+      enable = true;
+      # # disable docker circumventing our firewall rules.
+      # daemon.settings = {
+      #   iptables = false;
+      # };
+    };
+    networking.firewall.extraCommands = ''
+      # Add a rule to allow docker br-* interfaces to access the `docker0` interface. Let’s hope these IP addresses are stable … TODO: set the docker interface IP space explicitely from this config. Make sure it doesn’t clash with WIFIONICE.
+      iptables \
+        --insert INPUT \
+        --protocol all \
+        --source 172.0.0.0/8 \
+        --destination 172.17.0.1 \
+        --jump ACCEPT
+    '';
     # virtualisation.virtualbox.host.enable = true;
     # virtualisation.libvirtd.enable = true;
 
@@ -549,31 +636,31 @@ in {
        })
 
       {
-        services.mbsync = {
-          description = "mbsync job";
-          wants = [ "notmuch.service" ];
-          before = [ "notmuch.service"];
-          path = [ pkgs.pass ];
-          serviceConfig = {
-            Restart = "no";
-            ExecStart = "${pkgs.isync}/bin/mbsync -a";
-            };
-        };
-        timers.mbsync = {
-          description = "run mbsync job every 15 minutes";
-          wantedBy = [ "timers.target" ];
-          timerConfig = {
-            OnStartupSec="30s";
-            OnUnitActiveSec ="15m";
-          };
-        };
-        services.mu = {
-          description = "mu job";
-          serviceConfig = {
-            Restart = "no";
-            ExecStart = "${pkgs.notmuch}/bin/notmuch new";
-          };
-        };
+        # services.mbsync = {
+        #   description = "mbsync job";
+        #   wants = [ "notmuch.service" ];
+        #   before = [ "notmuch.service"];
+        #   path = [ pkgs.pass ];
+        #   serviceConfig = {
+        #     Restart = "no";
+        #     ExecStart = "${pkgs.isync}/bin/mbsync -a";
+        #     };
+        # };
+        # timers.mbsync = {
+        #   description = "run mbsync job every 15 minutes";
+        #   wantedBy = [ "timers.target" ];
+        #   timerConfig = {
+        #     OnStartupSec="30s";
+        #     OnUnitActiveSec ="15m";
+        #   };
+        # };
+        # services.mu = {
+        #   description = "mu job";
+        #   serviceConfig = {
+        #     Restart = "no";
+        #     ExecStart = "${pkgs.notmuch}/bin/notmuch new";
+        #   };
+        # };
 
         services.calendar-sync = {
           description = "syncronize private calendars";
@@ -608,62 +695,62 @@ in {
           };
         };
 
-        services.barrel-roll = {
-          description = "do a barrel roll";
-          serviceConfig = {
-            Restart = "no";
-            ExecStart = "${pkgs.writers.writePython3 "barrel-roll" {
-              flakeIgnore = [ "E121" "E128" "E999" "E203" "E201" "E202" "E501" ];
-            } ''
-              import random
-              import subprocess as sub
-              excercises = [
-                 { "name": "burpies"
-                 , "sets": 2
-                 , "reps": 5
-                 , "sigma": 2 },
-                 { "name": "stretch & bend"
-                 , "sets": 1
-                 , "reps": 10
-                 , "sigma": 2 },
-              ]
-              ex = random.choice(excercises)
-              reps = round(random.gauss(ex['reps'], ex['sigma']))
-              msg = "Do a barrel roll! {} {}, {} sets".format(reps, ex['name'], ex['sets'])
-              sub.check_call([
-                "${pkgs.libnotify}/bin/notify-send",
-                "--urgency=critical",
-                msg
-              ])
-            ''}";
-            };
-        };
-        timers.barrel-roll = {
-          description = "do a barrel roll every hour";
-          wantedBy = [ "timers.target" ];
-          timerConfig = {
-            OnStartupSec="10m";
-            OnUnitActiveSec ="3h";
-            AccuracySec="15m";
-          };
-        };
+        # services.barrel-roll = {
+        #   description = "do a barrel roll";
+        #   serviceConfig = {
+        #     Restart = "no";
+        #     ExecStart = "${pkgs.writers.writePython3 "barrel-roll" {
+        #       flakeIgnore = [ "E121" "E128" "E999" "E203" "E201" "E202" "E501" ];
+        #     } ''
+        #       import random
+        #       import subprocess as sub
+        #       excercises = [
+        #          { "name": "burpies"
+        #          , "sets": 2
+        #          , "reps": 5
+        #          , "sigma": 2 },
+        #          { "name": "stretch & bend"
+        #          , "sets": 1
+        #          , "reps": 10
+        #          , "sigma": 2 },
+        #       ]
+        #       ex = random.choice(excercises)
+        #       reps = round(random.gauss(ex['reps'], ex['sigma']))
+        #       msg = "Do a barrel roll! {} {}, {} sets".format(reps, ex['name'], ex['sets'])
+        #       sub.check_call([
+        #         "${pkgs.libnotify}/bin/notify-send",
+        #         "--urgency=critical",
+        #         msg
+        #       ])
+        #     ''}";
+        #     };
+        # };
+        # timers.barrel-roll = {
+        #   description = "do a barrel roll every hour";
+        #   wantedBy = [ "timers.target" ];
+        #   timerConfig = {
+        #     OnStartupSec="10m";
+        #     OnUnitActiveSec ="3h";
+        #     AccuracySec="15m";
+        #   };
+        # };
 
-        services.tagtime = {
-          description = "tagtime daemon";
-          wantedBy = [ "default.target" ];
-          serviceConfig = {
-            Restart = "on-failure";
-            ExecStart = "${pkgs.tagtime}/bin/tagtimed";
-            Environment = [
-              "DISPLAY=:0"
-              ''
-                EDITOR=${pkgs.writers.writeDash "emacs-frame" ''
-                  ${pkgs.emacs}/bin/emacsclient -c "$@"
-                ''}
-              ''
-            ];
-          };
-        };
+        # services.tagtime = {
+        #   description = "tagtime daemon";
+        #   wantedBy = [ "default.target" ];
+        #   serviceConfig = {
+        #     Restart = "on-failure";
+        #     ExecStart = "${pkgs.tagtime}/bin/tagtimed";
+        #     Environment = [
+        #       "DISPLAY=:0"
+        #       ''
+        #         EDITOR=${pkgs.writers.writeDash "emacs-frame" ''
+        #           ${pkgs.emacs}/bin/emacsclient -c "$@"
+        #         ''}
+        #       ''
+        #     ];
+        #   };
+        # };
       }
 
       ({

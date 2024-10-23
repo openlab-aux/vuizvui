@@ -298,7 +298,7 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://shiki:9999";
+          proxyPass = "http://rolery:9999";
           extraConfig = ''
             # forward original host so we can validate mastodon http header signatures
             proxy_set_header Host $host;

@@ -12,7 +12,7 @@ with import ../lib;
     herja     = callMachine devhell/herja.nix {};
   };
   profpatsch = {
-    shiki = callMachine ./profpatsch/shiki.nix {};
+    rolery = callMachine ./profpatsch/rolery.nix {};
     haku = callMachine ./profpatsch/haku.nix {};
     legosi = callMachine ./profpatsch/legosi.nix {};
     leguin = callMachine ./profpatsch/leguin.nix {};
