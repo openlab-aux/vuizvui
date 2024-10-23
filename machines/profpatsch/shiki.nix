@@ -84,6 +84,8 @@ in {
 
     powerManagement.cpuFreqGovernor = "powersave";
 
+    vuizvui.hardware.thinkpad.powerManagement = "auto-cpufreq";
+
     # hardware.pulseaudio = {
     #   enable = true;
     #   zeroconf.discovery.enable = true;
