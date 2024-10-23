@@ -342,7 +342,7 @@ in {
       ];
       userPrograms = [
         # abcde                # high-level cd-ripper with tag support
-        anki mecab kakasi    # spaced repetition system & japanese analyzer
+        # anki mecab kakasi    # spaced repetition system & japanese analyzer
         # TODO integrate lame into audacity
         audacity lame.lib    # audio editor and mp3 codec
         # myPkgs.beets         # audio file metadata tagger
@@ -358,15 +358,12 @@ in {
         inkscape             # vector graphics
         # libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         mediainfo            # Swiss army knife of media metadata file information
-        myPkgs.mumble
+        # myPkgs.mumble
         myPkgs.mpv           # you are my sun and my stars, and you play my stuff.
         pass                 # standard unix password manager
-        picard               # jean-luc, music tagger
+        # picard               # jean-luc, music tagger
         poppler_utils        # pdfto*
-        ranger               # CLI file browser
-        remind               # calender & reminder program
         sqlite-interactive
-        taskwarrior tasksh   # task manager
         zathura              # pdf viewer
         ghc                  # powerful pocket calculator
       ];
