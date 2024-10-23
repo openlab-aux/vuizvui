@@ -14,6 +14,7 @@ in
     nix.settings.sandbox = true;
 
     nix.settings.max-jobs = "auto";
+    nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
     # /tmp should never be depended on
     boot.tmp.cleanOnBoot = true;
