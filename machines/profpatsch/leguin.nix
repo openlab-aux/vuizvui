@@ -15,7 +15,7 @@ in
 {
   imports = [
     ./base-server.nix
-    ./thinkpad.nix
+    (import ./profpatsch-thinkpad.nix { cpuType = "intel"; })
   ];
 
   config = {

@@ -27,8 +27,8 @@ in {
 
   imports = [
     ./base-workstation.nix
-    ./thinkpad.nix
-    ((import ../../nixos-hardware-path.nix) + "/lenovo/thinkpad/t480")
+    (import ./profpatsch-thinkpad.nix { cpuType = "amd"; })
+    ((import ../../nixos-hardware-path.nix) + "/lenovo/thinkpad/t14s/amd/gen1")
   ];
 
   config = {
@@ -405,11 +405,11 @@ in {
     # Graphical System
 
     services.xserver = {
-      videoDrivers = [ "intel" ];
+      videoDrivers = [ "amdgpu" ];
     };
 
     fonts = {
-      fonts = [
+      packages = [
         unfreeAndNonDistributablePkgs.corefonts
         pkgs.source-han-sans
         pkgs.source-code-pro
@@ -421,7 +421,7 @@ in {
         # pkgs.zbalermorna
       ];
 
-      enableDefaultFonts = true;
+      enableDefaultPackages = true;
       fontconfig = {
         enable = true;
         defaultFonts = {

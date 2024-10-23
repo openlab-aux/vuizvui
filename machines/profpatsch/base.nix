@@ -27,6 +27,9 @@ in
       keyMap = "neo";
     };
 
+    # make sure the best hardware packages are always installed, even if non-free
+    hardware.enableRedistributableFirmware = lib.mkDefault true;
+
     # the kernel OOM is not good enough without swap,
     # and I don’t like swap. This kills the most hoggy
     # processes when the system goes under a free space limit
