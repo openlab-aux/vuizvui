@@ -41,6 +41,7 @@
   ./user/profpatsch/services/dunst.nix
   ./user/profpatsch/services/xmonad.nix
   ./user/sternenseemann/services/sway.nix
+  ./user/sternenseemann/services/mako
   ./user/sternenseemann/profiles/desktop-sway.nix
   ./user/sternenseemann/programs/saneterm.nix
 ]

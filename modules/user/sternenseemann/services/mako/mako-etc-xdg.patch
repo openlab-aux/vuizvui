@@ -1,0 +1,13 @@
+diff --git a/config.c b/config.c
+index 70be717..450a6ab 100644
+--- a/config.c
++++ b/config.c
+@@ -738,6 +738,8 @@ static char *get_default_config_path() {
+ 	char *config_paths[] = {
+ 		mako_asprintf("%s/.mako/config", home),
+ 		mako_asprintf("%s/mako/config", config_home),
++		// TODO(sterni): support XDG_CONFIG_DIRS properly and try to upstream
++		strdup("/etc/xdg/mako/config"),
+ 	};
+ 
+ 	size_t config_paths_len = sizeof(config_paths) / sizeof(config_paths[0]);

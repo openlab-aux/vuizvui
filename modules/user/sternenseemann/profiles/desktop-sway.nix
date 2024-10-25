@@ -17,7 +17,7 @@ let
       // (getBins tep [ "tep" ])
       // (getBins pkgs.grim [ "grim" ])
       // (getBins pkgs.slurp [ "slurp" ])
-      // (getBins pkgs.mako [ "makoctl" ])
+      // (getBins config.vuizvui.user.sternenseemann.services.mako.package [ "makoctl" ])
       // (getBins screenshot [ "screenshot" ])
       // (getBins pkgs.foot [ "foot" ])
       // (getBins config.vuizvui.user.sternenseemann.programs.saneterm.package [ "saneterm" ])
@@ -58,6 +58,10 @@ in
   config = lib.mkIf cfg.enable (lib.mkMerge [
     # Core of the module, always active
     {
+      vuizvui.user.sternenseemann.services.mako = {
+        enable = true;
+      };
+
       vuizvui.user.sternenseemann.services.sway = {
         enable = true;
         additionalBinds = {
@@ -74,14 +78,11 @@ in
         };
       };
 
-      # notifications
-      services.dbus.packages = [ pkgs.mako ];
 
       environment.systemPackages = with pkgs; [
         bemenu                     # better dmenu
         xwayland qt5.qtwayland
         wl-clipboard               # instead of xsel
-        mako                       # notifications
         adwaita-icon-theme
         wdisplays                  # display layout GUI
       ];
