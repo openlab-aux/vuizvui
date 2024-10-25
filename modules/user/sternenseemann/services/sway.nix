@@ -12,7 +12,7 @@ let
       // (getBins pkgs.dbus [
         "dbus-update-activation-environment"
       ])
-      // (getBins pkgs.systemd [ "systemd-cat" ])
+      // (getBins pkgs.systemd [ "systemd-cat" "systemctl" ])
       // (getBins cfg.package [ "sway" ])
       // (getBins pkgs.i3status [ "i3status" ])
       // (getBins pkgs.brightnessctl [ "brightnessctl" ])
@@ -206,13 +206,40 @@ in {
 
     hardware.graphics.enable = true;
 
+    # Based on <https://github.com/alebastr/sway-systemd>
+    systemd.user.targets = {
+      sway-session = {
+        description = "Sway Session";
+        enable = true;
+        bindsTo = [ "graphical-session.target" ];
+        wants = [ "graphical-session-pre.target" ];
+        after = [ "graphical-session-pre.target" ];
+      };
+
+      /* sway-session-shutdown = let
+        conflicts = [
+          "graphical-session.target"
+          "graphical-session-pre.target"
+          "sway-session.target"
+        ];
+      in {
+        enable = true;
+        description = "Shutdown Sway Session";
+        inherit conflicts;
+        after = conflicts;
+        unitConfig = {
+          DefaultDependencies = false;
+          StopWhenUnneeded = false;
+        };
+      }; */
+    };
+
     environment.etc = {
       "sway/config".text = ''
         # correct DPI after hotplugging
         exec ${pkgs.xorg.xrdb}/bin/xrdb -load ${dpiXresources}
         exec ${bins.dbus-update-activation-environment} --all --systemd
 
-        # set the one true modifier
         set $mod ${cfg.modifier}
 
         # neo arrow keys
@@ -323,6 +350,8 @@ in {
         }
 
         ${cfg.extraConfig}
+
+        exec_always ${bins.systemctl} --user start sway-session.target
       '';
 
       "xdg/i3status/config".text = ''
