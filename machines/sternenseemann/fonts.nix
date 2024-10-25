@@ -12,7 +12,7 @@
         freefont_ttf
         noto-fonts           # noto fonts: great for fallbacks
         noto-fonts-extra
-        noto-fonts-cjk
+        noto-fonts-cjk-sans
         noto-fonts-emoji     # emoji primary
         open-sans
         vollkorn
