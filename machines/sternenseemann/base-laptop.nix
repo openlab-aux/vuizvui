@@ -71,9 +71,8 @@
       eval "$(direnv hook bash)"
     '';
 
-    # To accomodate old habits
     programs.fish.shellInit = ''
-      alias nvim "emacsclient -n"
+      alias e "emacsclient -n"
     '';
 
     networking = {
