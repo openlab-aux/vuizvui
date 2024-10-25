@@ -6,10 +6,10 @@ let
 in {
   options = {
     vuizvui.user.profpatsch.xserver.windowManager.xmonad = {
-      enable = lib.mkEnableOption (lib.mdDoc "xmonad");
+      enable = lib.mkEnableOption "xmonad";
 
       package = lib.mkOption {
-        default = pkgs.xmonad;
+        default = pkgs.haskellPackages.xmonad;
         type = lib.types.package;
         description = ''
           Xmonad binary/package to use.
@@ -19,7 +19,7 @@ in {
       xmonadCliArgs = lib.mkOption {
         default = [];
         type = with lib.types; listOf str;
-        description = lib.mdDoc ''
+        description = ''
           Command line arguments passed to the xmonad binary.
         '';
       };
