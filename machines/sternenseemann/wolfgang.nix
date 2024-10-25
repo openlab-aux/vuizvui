@@ -51,8 +51,15 @@ in {
     "swap".device = "/dev/nvme0n1p3";
   };
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.memtest86.enable = true;
+  vuizvui.hardware.thinkpad = {
+    enable = true;
+    powerManagement = "auto-cpufreq";
+  };
+
+  boot.loader.systemd-boot = {
+    enable = true;
+    memtest86.enable = true;
+  };
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "wolfgang";
