@@ -148,12 +148,8 @@ in {
       default = {};
       description = ''
         Configuration for foot. A list of all available
-        options can be found in
-        <citerefentry>
-          <refentrytitle>foot</refentrytitle>
-          <manvolnum>5</manvolnum>
-        </citerefentry>
-        or at <link xlink:href="https://codeberg.org/dnkl/foot/src/tag/${pkgs.foot.version}/foot.ini" />.
+        options can be found in {manpage}`foot.ini(5)` or at
+        <https://codeberg.org/dnkl/foot/src/tag/${pkgs.foot.version}/foot.ini>.
       '';
       example = lib.literalExample (prettyPrint {
         key-bindings = {
