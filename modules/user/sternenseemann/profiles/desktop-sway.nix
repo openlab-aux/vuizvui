@@ -60,6 +60,17 @@ in
     {
       vuizvui.user.sternenseemann.services.mako = {
         enable = true;
+        settings =
+          let
+            inherit (config.vuizvui.user.sternenseemann.services.sway) colors;
+          in
+          {
+            anchor = "bottom-right";
+            text-color = colors.activeText;
+            background-color = colors.active;
+            border-color = colors.inactive;
+            outer-margin = "0,0,10";
+          };
       };
 
       vuizvui.user.sternenseemann.services.sway = {
@@ -76,8 +87,23 @@ in
           name = defaultFont;
           size = 10;
         };
-      };
+        colors = {
+          background = "#ffffea";
+          statusBackground = "#ffffea";
+          statusText = "#000000";
 
+          active = "#9EEEEE";
+          activeText = "#000000";
+
+          inactive = "#eaffff";
+          inactiveText ="#000000";
+
+          urgent = "#900000";
+          urgentText = "#ffffff";
+
+          indicate = "#d0d0d0";
+        };
+      };
 
       environment.systemPackages = with pkgs; [
         bemenu                     # better dmenu

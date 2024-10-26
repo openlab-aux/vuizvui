@@ -91,16 +91,17 @@ in {
         '';
       };
 
+      # i3 default colors, but less granular and no borders
       colors = {
-        background = mkColorOption "background" "#ffffea";
-        statusBackground = mkColorOption "background of status bar" "#ffffea";
-        statusText = mkColorOption "status bar text color" "#000000";
+        background = mkColorOption "background" "#000000";
+        statusBackground = mkColorOption "background of status bar" "#000000";
+        statusText = mkColorOption "status bar text color" "#ffffff";
 
-        active = mkColorOption "active window" "#9EEEEE";
-        activeText = mkColorOption "active window text" "#000000";
+        active = mkColorOption "active window" "#285577";
+        activeText = mkColorOption "active window text" "#ffffff";
 
-        inactive = mkColorOption "inactive window" "#eaffff";
-        inactiveText = mkColorOption "inactive window text" "#000000";
+        inactive = mkColorOption "inactive window" "#5f676a";
+        inactiveText = mkColorOption "inactive window text" "#ffffff";
 
         urgent = mkColorOption "urgent window" "#900000";
         urgentText = mkColorOption "urgent window text" "#ffffff";
