@@ -1,8 +1,0 @@
-[x] get screen capture with wayland to work
-[x] port sway configuration into a somewhat generic module
-[ ] mako module
-[ ] use gpg-agent module?
-[x] documentation.man without man-db, but with mandoc
-[ ] fix jackline notification callback
-[ ] port edwin to vuizvui
-[ ] redo schnurrkadse
