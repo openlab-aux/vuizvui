@@ -135,6 +135,8 @@ in {
   options.vuizvui.programs.foot = {
     enable = lib.mkEnableOption "foot";
 
+    package = lib.mkPackageOption pkgs "foot" { };
+
     settings = lib.mkOption {
       type = lib.types.submodule {
         freeformType = format.type;
@@ -166,7 +168,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.foot pkgs.foot.terminfo ];
+    environment.systemPackages = [ cfg.package cfg.package.terminfo ];
 
     environment.etc."xdg/foot/foot.ini".source =
       # null indicates default value for defined options. We need to remove

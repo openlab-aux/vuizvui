@@ -124,7 +124,7 @@ in
         enable = true;
         settings = {
           main = {
-            include = "${pkgs.foot.themes}/share/foot/themes/selenized-white";
+            include = "${config.vuizvui.programs.foot.package.themes}/share/foot/themes/selenized-white";
 
             dpi-aware = true;
             font = [
