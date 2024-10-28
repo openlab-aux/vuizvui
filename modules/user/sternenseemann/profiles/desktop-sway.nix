@@ -73,10 +73,11 @@ in
         QT_QPA_PLATFORM = "wayland";
         QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       };
+      programs.xwayland.enable = true;
 
       environment.systemPackages = with pkgs; [
         bemenu                     # better dmenu
-        xwayland qt5.qtwayland
+        qt5.qtwayland
         wl-clipboard               # instead of xsel
         adwaita-icon-theme
         wdisplays                  # display layout GUI
