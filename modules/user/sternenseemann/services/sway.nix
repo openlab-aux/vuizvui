@@ -153,24 +153,11 @@ in {
       cfg.package
     ];
 
-    # TODO(@sternenseemann): maybe some of those should be set more ad-hoc
     environment.sessionVariables = {
-      # firefox screencapture
-      MOZ_ENABLE_WAYLAND = "1";
-      MOZ_USE_XINPUT2 = "1";
-      # SDL
-      SDL_VIDEODRIVER = "wayland";
-      # QT
-      QT_QPA_PLATFORM = "wayland";
-      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       # keyboard layout
       XKB_DEFAULT_LAYOUT = "de";
       XKB_DEFAULT_VARIANT = "neo";
     };
-
-    services.pipewire.enable = true;
-
-    qt.platformTheme = "gtk";
 
     xdg.portal = {
       enable = true;
@@ -187,8 +174,6 @@ in {
     };
 
     security.pam.services.swaylock = {};
-
-    hardware.graphics.enable = true;
 
     # Based on <https://github.com/alebastr/sway-systemd>
     systemd.user.targets = {

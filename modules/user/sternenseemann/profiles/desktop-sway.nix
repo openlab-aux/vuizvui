@@ -58,6 +58,30 @@ in
   config = lib.mkIf cfg.enable (lib.mkMerge [
     # Core of the module, always active
     {
+      # General prerequisites and general wayland hacks
+      hardware.graphics.enable = true;
+      # TODO(sterni): no longer valid setting, investigate qt.style
+      qt.platformTheme = "gtk";
+      # TODO(sterni): reduce this list if possible
+      environment.sessionVariables = {
+        # firefox screencapture
+        MOZ_ENABLE_WAYLAND = "1";
+        MOZ_USE_XINPUT2 = "1";
+        # SDL
+        SDL_VIDEODRIVER = "wayland";
+        # QT
+        QT_QPA_PLATFORM = "wayland";
+        QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+      };
+
+      environment.systemPackages = with pkgs; [
+        bemenu                     # better dmenu
+        xwayland qt5.qtwayland
+        wl-clipboard               # instead of xsel
+        adwaita-icon-theme
+        wdisplays                  # display layout GUI
+      ];
+
       vuizvui.user.sternenseemann.services.mako = {
         enable = true;
         settings =
@@ -125,14 +149,6 @@ in
           };
         };
       };
-
-      environment.systemPackages = with pkgs; [
-        bemenu                     # better dmenu
-        xwayland qt5.qtwayland
-        wl-clipboard               # instead of xsel
-        adwaita-icon-theme
-        wdisplays                  # display layout GUI
-      ];
 
       programs.fish.shellAliases = {
         "hdmi2-above" = ''
