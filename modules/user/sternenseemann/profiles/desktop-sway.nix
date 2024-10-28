@@ -42,6 +42,14 @@ let
     example = false;
   };
 
+  # Colors used in acme(1), derived from plan9port
+  acmeColors = {
+    yellow = "#ffffea";
+    # is that even cyan?
+    darkCyan = "#9EEEEE";
+    lightCyan = "#eaffff";
+  };
+
 in
 
 {
@@ -91,9 +99,9 @@ in
           in
           {
             anchor = "bottom-right";
-            text-color = colors.activeText;
-            background-color = colors.active;
-            border-color = colors.inactive;
+            text-color = "#000000";
+            background-color = acmeColors.darkCyan;
+            border-color = acmeColors.lightCyan;
             outer-margin = "0,0,10";
           };
       };
@@ -113,14 +121,14 @@ in
           size = 10;
         };
         colors = {
-          background = "#ffffea";
-          statusBackground = "#ffffea";
+          background = acmeColors.yellow;
+          statusBackground = acmeColors.yellow;
           statusText = "#000000";
 
-          active = "#9EEEEE";
+          active = acmeColors.darkCyan;
           activeText = "#000000";
 
-          inactive = "#eaffff";
+          inactive = acmeColors.lightCyan;
           inactiveText ="#000000";
 
           urgent = "#900000";
