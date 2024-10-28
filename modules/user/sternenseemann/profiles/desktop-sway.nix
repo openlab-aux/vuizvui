@@ -14,7 +14,7 @@ let
     ;
 
   bins = (getBins pkgs.bemenu [ "bemenu" "bemenu-run" ])
-      // (getBins tep [ "tep" ])
+      // (getBins tep.wayland [ "tep" ])
       // (getBins pkgs.grim [ "grim" ])
       // (getBins pkgs.slurp [ "slurp" ])
       // (getBins config.vuizvui.user.sternenseemann.services.mako.package [ "makoctl" ])

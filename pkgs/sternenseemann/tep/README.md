@@ -69,7 +69,8 @@ with the emoji it describes which is terminated by an ascii space
 ## building / configuration
 
 `tep` is currently built with `nix`. For default settings
-run `nix-build -A pkgs.sternenseemann.tep` from the root of this repository.
+run `nix-build -A pkgs.sternenseemann.tep.wayland`
+from the root of this repository.
 
 The derivation can be called with the following optional
 arguments to customize its behavior:
