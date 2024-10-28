@@ -105,6 +105,27 @@ in
         };
       };
 
+      # Start sway via gdm
+      services = {
+        displayManager = {
+          sessionPackages = [
+            config.vuizvui.user.sternenseemann.services.sway.package
+          ];
+        };
+        xserver = {
+          # otherwise display-manager.service is broken
+          enable = true;
+          xkb = {
+            layout = "de";
+            variant = "neo";
+          };
+          displayManager.gdm = {
+            wayland = true;
+            enable = true;
+          };
+        };
+      };
+
       environment.systemPackages = with pkgs; [
         bemenu                     # better dmenu
         xwayland qt5.qtwayland

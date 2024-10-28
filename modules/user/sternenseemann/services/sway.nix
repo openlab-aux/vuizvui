@@ -127,14 +127,6 @@ in {
         };
       };
 
-      autolaunchFish = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = ''
-          Whether to automatically start sway when logging in on tty1.
-        '';
-      };
-
       extraConfig = lib.mkOption {
         type = lib.types.lines;
         default = "";
@@ -157,13 +149,6 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    programs.fish.loginShellInit = lib.mkIf cfg.autolaunchFish ''
-      if test -z "$DISPLAY"; and test -z "$WAYLAND_DISPLAY"; and test (tty) = "/dev/tty1"
-        set -x SWAYSOCK "/run/user/"(id -u)"/sway.sock"
-        exec ${bins.systemd-cat} ${bins.sway}
-      end
-    '';
-
     environment.systemPackages = [
       cfg.package
     ];
@@ -171,8 +156,6 @@ in {
     # TODO(@sternenseemann): maybe some of those should be set more ad-hoc
     environment.sessionVariables = {
       # firefox screencapture
-      XDG_SESSION_TYPE = "wayland";
-      XDG_CURRENT_DESKTOP = "sway";
       MOZ_ENABLE_WAYLAND = "1";
       MOZ_USE_XINPUT2 = "1";
       # SDL
