@@ -1,3 +1,4 @@
+# Warning: This module is currently (2024-10-28) unused. It may or may not work.
 { config, pkgs, lib, ... }:
 
 let

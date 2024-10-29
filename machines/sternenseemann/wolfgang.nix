@@ -64,7 +64,7 @@ in {
 
   networking.hostName = "wolfgang";
 
-  vuizvui.user.sternenseemann.profiles.desktop-sway.enable = true;
+  vuizvui.user.sternenseemann.profiles.desktop.enable = true;
 
   environment.systemPackages = with pkgs; [
     vuizvui.sternenseemann.pass
