@@ -12,7 +12,6 @@ let
   youtube2audiopodcastSubdir = "/halp";
 
   sshPort = 7001;
-  warpspeedPort = 1338;
   httzipPort = 7070;
   openlabToolsPort = 9099;
   wireguardPortUdp = 6889;
@@ -98,21 +97,14 @@ in
 
     environment.systemPackages = with pkgs; [
       mktorrent                         # torrent file creator
-      # pkgs.vuizvui.profpatsch.warpspeed # trivial http file server
     ];
 
-    users.groups.data-seeding = {};
     users.groups.whatcd-resolver = {};
     users.groups.openlab-tools = {};
 
     users.users = {
       root.openssh.authorizedKeys.keys = [ myKey ];
 
-      seed = {
-        isNormalUser = true;
-        extraGroups = [ "data-seeding" ];
-        openssh.authorizedKeys.keys = [ myKey ];
-      };
       zipped-transmission = {
         isSystemUser = true;
         group = "transmission";
@@ -162,40 +154,6 @@ in
       scanIntervalMinutes = 10;
     };
     systemd.services.gonic.serviceConfig.wantedBy = [ "tailscaled.target" ];
-
-    # services.samba = {
-    #   enable = true;
-    #   enableNmbd = false;
-    #   enableWinbindd = false;
-    #   nsswins = false;
-    #   extraConfig = ''
-    #     # only listen to tailscale
-    #     interfaces = ${tailscaleInterface}
-    #     smb ports = ${toString sambaPortTailscale}
-    #   '';
-    #   shares = {
-    #     data-seeding = {
-    #       "path" = "/data/seeding";
-    #       "read only" = "yes";
-    #       "browsable" = "yes";
-    #       "guest ok" = "yes";
-    #     };
-    #   };
-    # };
-    # # somewhat hacky, but we want tailscale to be up
-    # systemd.services.samba-smbd.wants = [ "tailscaled.service" ];
-    # systemd.services.samba-smbd.after = [ "tailscaled.service" ];
-
-    systemd.services.warpspeed =
-      let user = config.users.users.seed;
-      in {
-        description = "internally served zipped stuff (see nginx)";
-        wantedBy = [ "default.target" ];
-        serviceConfig.WorkingDirectory = "${user.home}/public";
-        # *6: all hosts, v6 preferred
-        script = ''${pkgs.vuizvui.profpatsch.warpspeed}/bin/warpspeed "*6" ${toString warpspeedPort}'';
-        serviceConfig.User = user.name;
-      };
 
     # TODO: this is horrible lol
     systemd.services.httzip =
@@ -266,7 +224,12 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/public/" = {
-          proxyPass = "http://127.0.0.1:${toString warpspeedPort}/";
+          root = "/var/www";
+          index = "index.html";
+          extraConfig = ''
+            sendfile on;
+            sendfile_max_chunk 1m;
+          '';
         };
         locations."/zipped/" = {
           proxyPass = "http://127.0.0.1:${toString httzipPort}/";

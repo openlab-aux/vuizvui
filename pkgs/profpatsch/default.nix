@@ -150,9 +150,6 @@ in rec {
   read-qr-code-from-camera = callPackage ./read-qr-code-from-camera.nix {
     inherit writeExecline getBins;
   };
-  warpspeed = callPackage ./warpspeed {
-    inherit (pkgs.haskellPackages) ghcWithPackages;
-  };
   youtube2audiopodcast = callPackage ./youtube2audiopodcast {
     inherit writeExecline writeHaskellInterpret getBins runInEmptyEnv sandbox;
   };
