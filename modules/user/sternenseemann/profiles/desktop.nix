@@ -23,7 +23,6 @@ let
       // (getBins pkgs.brightnessctl [ "brightnessctl" ])
       // (getBins pkgs.swaylock [ "swaylock" ])
       // (getBins pkgs.wireplumber [ "wpctl" ])
-      // (getBins pkgs.xwayland-satellite [ "xwayland-satellite" ])
       ;
 
   defaultFont = builtins.head config.fonts.fontconfig.defaultFonts.monospace;
@@ -108,9 +107,18 @@ in
         config.common.default = "gnome";
       };
 
-      # pipewire MUST start before niri, otherwise screen sharing doesn't work
-      systemd.user.services.pipewire.wantedBy = [ "niri.service" ];
-      systemd.user.services.pipewire.before = [ "niri.service" ];
+      systemd.user = {
+        # pipewire MUST start before niri, otherwise screen sharing doesn't work
+        services.pipewire = {
+          wantedBy = [ "niri.service" ];
+          before = [ "niri.service" ];
+        };
+
+        targets.graphical-session.wants = [
+          # niri doesn't implement xwayland itself
+          "xwayland-satellite.service"
+        ];
+      };
 
       # TODO(sterni): dpi feels off
       environment.etc."niri/config.kdl".text = ''
@@ -126,11 +134,13 @@ in
           focus-follows-mouse max-scroll-amount="0%"
         }
 
+        environment {
+          // assume xwayland-satellite is running
+          DISPLAY ":0"
+        }
+
         // TODO(sterni): dedicated screenshot folder
         screenshot-path "~/Pictures/%Y%m%d_%Hh%Mm%Ss_niri.png"
-
-        // niri doesn't implement xwayland itself
-        spawn-at-startup "${bins.xwayland-satellite}"
 
       '' + lib.optionalString cfg.nextcloud.enable ''
         // TODO(sterni): can we use systemd?
