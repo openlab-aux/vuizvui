@@ -17,7 +17,7 @@ let
   bins = (getBins pkgs.bemenu [ "bemenu" "bemenu-run" ])
       // (getBins tep.wayland [ "tep" ])
       // (getBins config.vuizvui.user.sternenseemann.services.mako.package [ "makoctl" ])
-      // (getBins pkgs.foot [ "foot" ])
+      // (getBins pkgs.foot [ "footclient" ])
       // (getBins config.vuizvui.user.sternenseemann.programs.saneterm.package [ "saneterm" ])
       // (getBins pkgs.bash [ "sh" ])
       // (getBins pkgs.brightnessctl [ "brightnessctl" ])
@@ -117,6 +117,7 @@ in
         targets.graphical-session.wants = [
           # niri doesn't implement xwayland itself
           "xwayland-satellite.service"
+          "foot-server.socket"
         ];
       };
 
@@ -166,8 +167,7 @@ in
         }
 
         binds {
-            // Suggested binds for running programs: terminal, app launcher, screen locker.
-            Mod+Return { spawn "${bins.foot}"; }
+            Mod+Return { spawn "${bins.footclient}"; }
             // TODO(sterni): colors
             Mod+D { spawn "${bins.bemenu-run}" "-l" "25" "-i"; }
             Super+Alt+L { spawn "${bins.swaylock}" "-k" "-l" "-c" "${acmeColors.yellow}"; }

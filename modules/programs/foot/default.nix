@@ -170,6 +170,12 @@ in {
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [ cfg.package cfg.package.terminfo ];
 
+    systemd = {
+      # makes foot-server.{socket,service} available as user services, but
+      # doesn't start them automatically
+      packages = [ cfg.package ];
+    };
+
     environment.etc."xdg/foot/foot.ini".source =
       # null indicates default value for defined options. We need to remove
       # those from the final config so foot will use its default.
