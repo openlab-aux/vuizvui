@@ -267,20 +267,10 @@ in
             Mod+F { maximize-column; }
             Mod+Shift+F { fullscreen-window; }
 
-            // TODO(sterni): set these somehow
-            // Mod+Minus { set-column-width "-10%"; }
-            // Mod+Equal { set-column-width "+10%"; }
-
-            // Mod+Shift+Minus { set-window-height "-10%"; }
-            // Mod+Shift+Equal { set-window-height "+10%"; }
-
-            // Actions to switch layouts.
-            // Note: if you uncomment these, make sure you do NOT have
-            // a matching layout switch hotkey configured in xkb options above.
-            // Having both at once on the same hotkey will break the switching,
-            // since it will switch twice upon pressing the hotkey (once by xkb, once by niri).
-            // Mod+Space       { switch-layout "next"; }
-            // Mod+Shift+Space { switch-layout "prev"; }
+            Mod+Mod5+t { set-column-width "-5%"; } // Mod+t
+            Mod+Mod5+b { set-column-width "+5%"; } // Mod++
+            Mod+Mod5+Shift+t { set-window-height "-5%"; }
+            Mod+Mod5+Shift+b { set-window-height "+5%"; }
 
             Print { screenshot; }
             Ctrl+Print { screenshot-screen; }
