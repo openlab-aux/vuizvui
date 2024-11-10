@@ -121,7 +121,6 @@ in
         ];
       };
 
-      # TODO(sterni): dpi feels off
       environment.etc."niri/config.kdl".text = ''
         input {
           keyboard {
@@ -134,6 +133,12 @@ in
           focus-follows-mouse max-scroll-amount="0%"
         }
 
+        output "eDP-1" {
+          // TODO(sterni): is it possible to prevent DPI scaling globally?
+          scale 1
+        }
+
+        // TODO(sterni): this doesn't work
         environment {
           // assume xwayland-satellite is running
           DISPLAY ":0"
