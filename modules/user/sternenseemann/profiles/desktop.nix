@@ -134,8 +134,8 @@ in
         }
 
         output "eDP-1" {
-          // TODO(sterni): is it possible to prevent DPI scaling globally?
           scale 1
+          background-color "${acmeColors.yellow}"
         }
 
         // TODO(sterni): this doesn't work
