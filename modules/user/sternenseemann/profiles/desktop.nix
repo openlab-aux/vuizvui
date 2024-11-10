@@ -203,17 +203,13 @@ in
             Mod+e { focus-column-right; }
             Mod+a { focus-window-down; }
             Mod+l { focus-window-up; }
+            Mod+u { focus-column-first; }
+            Mod+o { focus-column-last; }
 
             Mod+Shift+i { move-column-left; }
             Mod+Shift+e { move-column-right; }
             Mod+Shift+a { move-window-down; }
             Mod+Shift+l { move-window-up; }
-
-            // TODO(sterni): find bindings that work
-            // Mod+Home { focus-column-first; }
-            // Mod+End  { focus-column-last; }
-            // Mod+Shift+Home { move-column-to-first; }
-            // Mod+Shift+End  { move-column-to-last; }
 
             // Mod+Shift+Left  { focus-monitor-left; }
             // Mod+Shift+Down  { focus-monitor-down; }
