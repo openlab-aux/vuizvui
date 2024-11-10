@@ -144,8 +144,7 @@ in
           DISPLAY ":0"
         }
 
-        // TODO(sterni): dedicated screenshot folder
-        screenshot-path "~/Pictures/%Y%m%d_%Hh%Mm%Ss_niri.png"
+        screenshot-path "~/Pictures/screenshots/%Y%m%d_%Hh%Mm%Ss_niri.png"
 
         prefer-no-csd
         hotkey-overlay {
