@@ -14,6 +14,8 @@ let
     tep
     ;
 
+  inherit (pkgs) niri;
+
   bins = (getBins pkgs.bemenu [ "bemenu" "bemenu-run" ])
       // (getBins tep.wayland [ "tep" ])
       // (getBins config.vuizvui.user.sternenseemann.services.mako.package [ "makoctl" ])
@@ -23,7 +25,23 @@ let
       // (getBins pkgs.brightnessctl [ "brightnessctl" ])
       // (getBins pkgs.swaylock [ "swaylock" ])
       // (getBins pkgs.wireplumber [ "wpctl" ])
-      ;
+      // (getBins pkgs.niri [ "niri" ])
+      // (getBins pkgs.jq [ "jq" ])
+      // {
+        niri-focus-any-window = pkgs.writeShellScript "niri-focus-any-window" ''
+          set -euo pipefail
+
+          # sort to have focused window as the last result
+          formatWindows='sort_by(.is_focused) | .[] | "\(.id | tostring):\t\(.title) (\(.app_id))"'
+
+          selection="$(${bins.niri} msg --json windows \
+            | ${bins.jq} -r "$formatWindows" \
+            | ${bins.bemenu} -p "jump to " -l 25 -i \
+            | cut -d: -f1)"
+
+          exec ${bins.niri} msg action focus-window --id "$selection"
+        '';
+      };
 
   defaultFont = builtins.head config.fonts.fontconfig.defaultFonts.monospace;
   defaultEmojiFont = builtins.head config.fonts.fontconfig.defaultFonts.emoji;
@@ -82,7 +100,7 @@ in
       security.pam.services.swaylock = { };
 
       systemd.packages = [
-        pkgs.niri
+        niri
         pkgs.xwayland-satellite
       ];
       environment.systemPackages = with pkgs; [
@@ -206,6 +224,8 @@ in
 
             Mod+Shift+Q { close-window; }
 
+            Mod+Tab { spawn "${bins.niri-focus-any-window}"; }
+
             Mod+i { focus-column-left; }
             Mod+e { focus-column-right; }
             Mod+a { focus-window-down; }
@@ -299,7 +319,7 @@ in
       services = {
         displayManager = {
           sessionPackages = [
-            pkgs.niri
+            niri
           ];
         };
         xserver = {
