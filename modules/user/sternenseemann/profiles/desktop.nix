@@ -258,14 +258,8 @@ in
             Mod+Shift+8 { move-column-to-workspace 8; }
             Mod+Shift+9 { move-column-to-workspace 9; }
 
-            // TODO(sterni): find bindings, maybe like paredit?
-            // Consume one window from the right into the focused column.
-            // Mod+Comma  { consume-window-into-column; }
-            // Expel one window from the focused column to the right.
-            // Mod+Period { expel-window-from-column; }
-            // There are also commands that consume or expel a single window to the side.
-            // Mod+BracketLeft  { consume-or-expel-window-left; }
-            // Mod+BracketRight { consume-or-expel-window-right; }
+            Mod+Mod5+r { consume-window-into-column; } // Mod+) (paredit slurp)
+            Mod+Mod5+e { expel-window-from-column; }   // Mod+} (paredit barf)
 
             Mod+R { switch-preset-column-width; }
             Mod+Shift+R { switch-preset-window-height; }
