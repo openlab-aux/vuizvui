@@ -126,8 +126,7 @@ in
         input {
           keyboard {
             xkb {
-              layout "de"
-              variant "neo"
+              layout "de(neo),de"
             }
           }
 
