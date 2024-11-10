@@ -148,6 +148,9 @@ in
         screenshot-path "~/Pictures/%Y%m%d_%Hh%Mm%Ss_niri.png"
 
         prefer-no-csd
+        hotkey-overlay {
+            skip-at-startup
+        }
 
       '' + lib.optionalString cfg.nextcloud.enable ''
         // TODO(sterni): can we use systemd?
