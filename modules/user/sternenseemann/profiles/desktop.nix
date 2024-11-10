@@ -147,6 +147,8 @@ in
         // TODO(sterni): dedicated screenshot folder
         screenshot-path "~/Pictures/%Y%m%d_%Hh%Mm%Ss_niri.png"
 
+        prefer-no-csd
+
       '' + lib.optionalString cfg.nextcloud.enable ''
         // TODO(sterni): can we use systemd?
         spawn-at-startup "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon" "--start" "--components=secrets";
