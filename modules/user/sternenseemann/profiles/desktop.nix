@@ -216,15 +216,15 @@ in
             Mod+Shift+a { move-window-down; }
             Mod+Shift+l { move-window-up; }
 
-            // Mod+Shift+Left  { focus-monitor-left; }
-            // Mod+Shift+Down  { focus-monitor-down; }
-            // Mod+Shift+Up    { focus-monitor-up; }
-            // Mod+Shift+Right { focus-monitor-right; }
+            Mod+Ctrl+i { focus-monitor-left; }
+            Mod+Ctrl+a { focus-monitor-down; }
+            Mod+Ctrl+l { focus-monitor-up; }
+            Mod+Ctrl+e { focus-monitor-right; }
 
-            // Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
-            // Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
-            // Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
-            // Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+            Mod+Shift+Ctrl+i { move-column-to-monitor-left; }
+            Mod+Shift+Ctrl+a { move-column-to-monitor-down; }
+            Mod+Shift+Ctrl+l { move-column-to-monitor-up; }
+            Mod+Shift+Ctrl+e { move-column-to-monitor-right; }
 
             Mod+w      { focus-workspace-down; }
             Mod+x      { focus-workspace-up; }
