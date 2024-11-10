@@ -162,6 +162,9 @@ in
         layout {
           gaps ${toString niriGaps}
           focus-ring {
+            off
+          }
+          border {
             width ${toString niriBorder}
             active-color "${acmeColors.darkCyan}"
             inactive-color "${acmeColors.lightCyan}"
