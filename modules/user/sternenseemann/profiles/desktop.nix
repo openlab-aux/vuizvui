@@ -234,41 +234,11 @@ in
             Mod+Ctrl+w { move-workspace-down; }
             Mod+Ctrl+x { move-workspace-up; }
 
-            // TODO(sterni): enable scrolling/trackpad
-            // Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
-            // Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
-            // Mod+Shift+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
-            // Mod+Shift+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
-
-            // Mod+WheelScrollRight      { focus-column-right; }
-            // Mod+WheelScrollLeft       { focus-column-left; }
-            // Mod+Shift+WheelScrollRight { move-column-right; }
-            // Mod+Shift+WheelScrollLeft  { move-column-left; }
-
-            // Usually scrolling up and down with Shift in applications results in
-            // horizontal scrolling; these binds replicate that.
+            Mod+WheelScrollDown            { focus-workspace-down; }
+            Mod+WheelScrollUp              { focus-workspace-up; }
             Mod+Shift+WheelScrollDown      { focus-column-right; }
             Mod+Shift+WheelScrollUp        { focus-column-left; }
-            Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
-            Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
 
-            // Similarly, you can bind touchpad scroll "ticks".
-            // Touchpad scrolling is continuous, so for these binds it is split into
-            // discrete intervals.
-            // These binds are also affected by touchpad's natural-scroll, so these
-            // example binds are "inverted", since we have natural-scroll enabled for
-            // touchpads by default.
-            // Mod+TouchpadScrollDown { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.02+"; }
-            // Mod+TouchpadScrollUp   { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.02-"; }
-
-            // You can refer to workspaces by index. However, keep in mind that
-            // niri is a dynamic workspace system, so these commands are kind of
-            // "best effort". Trying to refer to a workspace index bigger than
-            // the current workspace count will instead refer to the bottommost
-            // (empty) workspace.
-            //
-            // For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
-            // will all refer to the 3rd workspace.
             Mod+1 { focus-workspace 1; }
             Mod+2 { focus-workspace 2; }
             Mod+3 { focus-workspace 3; }
