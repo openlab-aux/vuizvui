@@ -55,6 +55,9 @@ in {
     enable = true;
     powerManagement = "auto-cpufreq";
   };
+  hardware.graphics.extraPackages = [
+    pkgs.intel-media-sdk # KBL GT2 gpu
+  ];
 
   boot.loader.systemd-boot = {
     enable = true;
