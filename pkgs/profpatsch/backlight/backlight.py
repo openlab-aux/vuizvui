@@ -15,7 +15,7 @@ def usage():
     sys.exit(1)
 
 # read current value
-current_backlight = float(sub.run(xbacklight, stdout=sub.PIPE).stdout.strip())
+current_backlight = float(sub.run(args=[xbacklight, "-get"], stdout=sub.PIPE).stdout.strip())
 # find the actual value, base 2
 current_val = round(math.sqrt(current_backlight))
 

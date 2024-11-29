@@ -1,4 +1,4 @@
-{ stdenv, python3, xbacklight}:
+{ stdenv, python3, acpilight}:
 
 stdenv.mkDerivation rec {
   name = "backlight";
@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
   installPhase = ''
     install -D ${src} $out/bin/backlight
     substituteInPlace $out/bin/backlight \
-      --replace '"xbacklight"' '"${xbacklight}/bin/xbacklight"'
+      --replace '"xbacklight"' '"${acpilight}/bin/xbacklight"'
   '';
 
 }

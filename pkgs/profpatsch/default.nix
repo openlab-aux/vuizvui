@@ -134,7 +134,7 @@ in rec {
     deploy
     ;
 
-  backlight = callPackage ./backlight { inherit (pkgs.xorg) xbacklight; };
+  backlight = callPackage ./backlight { inherit (pkgs) acpilight; };
   display-infos = callPackage ./display-infos { inherit sfttime; };
   git-commit-index = callPackage ./git-commit-index { inherit script; };
   nix-http-serve = callPackage ./nix-http-serve {};
