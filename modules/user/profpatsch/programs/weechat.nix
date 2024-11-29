@@ -125,6 +125,23 @@ in
   };
 
   config = {
+
+    # TODO: remove once weechat-matrix stops depending on libolm (lol)
+    nixpkgs.config.permittedInsecurePackages = [
+      "olm-3.2.16"
+      "olm-3.2.17"
+      "olm-3.2.18"
+      "olm-3.2.19"
+      "olm-3.2.20"
+      "olm-3.2.21"
+      "olm-3.3.0"
+      "olm-3.3.1"
+      "olm-3.3.2"
+      "olm-3.3.3"
+      "olm-3.3.4"
+      "olm-3.3.5"
+    ];
+
     users = {
       groups.weechat = {};
       users = allCfgsMerge (cfg: {
