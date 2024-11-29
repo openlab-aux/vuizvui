@@ -10,6 +10,7 @@ let
     import subprocess as sub
     import os.path as path
     import statistics as st
+    import jc
 
     def readint(fn):
         with open(fn, 'r') as f:
@@ -56,11 +57,13 @@ let
     dottime = sub.run(["date", "--utc", "+%H·%M"], stdout=sub.PIPE).stdout.strip().decode()
     sftdate = sub.run(["@sfttime@"], stdout=sub.PIPE).stdout.strip().decode()
     load = get_5_min_load()
-    notify = "BAT: {percent}% {ac}{charge}{{{load}}} | {date} | {sftdate} | {dottime}".format(
+    free_mem_gibi = jc.parse('free', sub.check_output(['free', '--gibi'], text=True))[0]['available']
+    notify = "BAT: {percent}% {ac}{charge}{{{load}, {free_mem_gibi}G}} | {date} | {sftdate} | {dottime}".format(
       percent = int(bat*100),
       ac = ac,
       charge = "{} ".format(sft_remaining) if seconds_remaining else "",
       load = load,
+      free_mem_gibi = free_mem_gibi,
       date = date,
       sftdate = sftdate,
       dottime = dottime
@@ -68,12 +71,14 @@ let
     print(notify)
   '';
 
+  python = python3.withPackages (pp: [ pp.jc ]);
+
 in
   with lib; runCommandLocal "display-infos" {
     meta.description = "Script to display time & battery";
   } ''
     substitute ${script} script \
-      --replace "@python3@" "${getBin python3}/bin/python3" \
+      --replace "@python3@" "${getBin python}/bin/python3" \
       --replace "@bc@" "${getBin bc}/bin/bc" \
       --replace "@sfttime@" "${getBin sfttime}/bin/sfttime"
     install -D script $out/bin/display-infos
