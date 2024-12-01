@@ -712,8 +712,8 @@ let
     { check = config.services.sanoid.enable;
       path  = ["nixos" "sanoid"];
     }
-    { check = config.services.xserver.displayManager.sddm.enable
-           && config.services.xserver.displayManager.autoLogin.enable;
+    { check = config.services.displayManager.sddm.enable
+           && config.services.displayManager.autoLogin.enable;
       paths = ["nixos" "sddm" "autoLogin"];
     }
     { check = config.services.shiori.enable;
