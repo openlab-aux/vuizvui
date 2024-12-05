@@ -180,22 +180,7 @@ in {
         useEmbeddedBitmaps = true;
       };
       enableGhostscriptFonts = true;
-      packages = let
-        mkNerdFont = src: pkgs.stdenv.mkDerivation {
-          name = lib.removeSuffix ".zip" src.name;
-          inherit src;
-          sourceRoot = ".";
-          nativeBuildInputs = [ pkgs.unzip ];
-          dontBuild = true;
-          patchPhase = "find -iname '*Windows Compatible*' -delete";
-          installPhase = ''
-            find -iname '*.otf' -exec install -vD -m0644 {} \
-              "$out/share/fonts/opentype/NerdFonts/{}" \;
-            find -iname '*.ttf' -exec install -vD -m0644 {} \
-              "$out/share/fonts/truetype/NerdFonts/{}" \;
-          '';
-        };
-      in with pkgs; [
+      packages = with pkgs; [
         clearlyU
         fixedsys-excelsior
         cm_unicode
@@ -212,8 +197,7 @@ in {
         unifont
         vistafonts
         wqy_microhei
-      ] ++ lib.filter lib.isDerivation (lib.attrValues lohit-fonts)
-        ++ map mkNerdFont pkgs.nerdfonts.srcs;
+      ] ++ lib.filter lib.isDerivation (lib.attrValues lohit-fonts ++ lib.attrValues nerd-fonts);
     };
   };
 }
