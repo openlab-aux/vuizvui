@@ -77,12 +77,8 @@ in {
       nh.enable = true;
       steam = {
         enable = true;
-        fontPackages = let
-          getNerdfontName = src: lib.removeSuffix ".zip" src.name;
-          nerdfontNames = map getNerdfontName pkgs.nerdfonts.srcs;
-          isNerdFont = package: lib.elem package.name nerdfontNames;
-          withoutNerdfonts = font: lib.types.package.check font && !isNerdFont font;
-        in lib.filter withoutNerdfonts config.fonts.packages;
+        fontPackages = with pkgs; lib.mkForce [ dejavu_fonts freefont_ttf gyre-fonts liberation_ttf
+           unifont noto-fonts-color-emoji ];
       };
       fzf = {
         keybindings = true;
