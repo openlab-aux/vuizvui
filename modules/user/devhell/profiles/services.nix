@@ -66,7 +66,6 @@ in {
       automatic-timezoned.enable = true;
       geoclue2 = {
         enable = true;
-        geoProviderUrl = "https://beacondb.net/v1/geolocate";
         enableWifi = true;
         enableNmea = true;
         enableModemGPS = false;
