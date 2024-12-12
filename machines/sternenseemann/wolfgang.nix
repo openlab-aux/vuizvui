@@ -72,6 +72,7 @@ in {
   environment.systemPackages = with pkgs; [
     vuizvui.sternenseemann.pass
     vuizvui.sternenseemann.plan9port
+    ad # TODO(sterni): manage (parts of) ~/.ad with Nix?
     vuizvui.sternenseemann.scripts.borg-wrapper
     exfat borgbackup
     gnupg pinentry-gnome3 signing-party gpgme
