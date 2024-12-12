@@ -1,4 +1,3 @@
-# TODO(sterni) icons, GTK
 # TODO(sterni) X11 cursor
 # TODO(sterni): shrink this module by extracting a niri module
 { config, pkgs, lib, ... }:
@@ -78,8 +77,11 @@ in
     {
       # General prerequisites and general wayland hacks
       hardware.graphics.enable = true;
-      # TODO(sterni): no longer valid setting, investigate qt.style, font fallback
-      qt.platformTheme = "gtk";
+      qt = {
+        enable = true;
+        platformTheme = "gnome";
+        style = "adwaita";
+      };
       # TODO(sterni): reduce this list if possible
       environment.sessionVariables = {
         # HACK: niri won't detect configuration changes due to the chained
@@ -109,7 +111,7 @@ in
         bemenu                     # better dmenu
         qt5.qtwayland
         wl-clipboard               # instead of xsel
-        adwaita-icon-theme         # TODO(sterni): do properly
+        adwaita-icon-theme
         wdisplays                  # display layout GUI
       ];
       vuizvui.user.sternenseemann.programs.saneterm.enable = cfg.saneterm.enable;
