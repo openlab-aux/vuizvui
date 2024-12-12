@@ -95,7 +95,7 @@ lib.fix (self: {
 
   plan9port = pkgs.plan9port.overrideAttrs (old: {
     patches = old.patches or [] ++ [
-      ./acme/neo-modifier-fix.patch
+      ./plan9port/neo-modifier-fix.patch
     ];
   });
 

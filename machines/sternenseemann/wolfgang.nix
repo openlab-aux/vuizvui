@@ -71,7 +71,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     vuizvui.sternenseemann.pass
-    vuizvui.sternenseemann.acme
+    vuizvui.sternenseemann.plan9port
     vuizvui.sternenseemann.scripts.borg-wrapper
     exfat borgbackup
     gnupg pinentry-gnome3 signing-party gpgme
