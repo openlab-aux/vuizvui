@@ -1,5 +1,5 @@
 { stdenv, lib, fetchurl, fetchFromGitHub, writeText, writeTextFile, writeScript
-, runCommand, writers, python3Packages, ledger, meson, vim, buildGoPackage
+, runCommand, writers, python3Packages, ledger, meson, vim, buildGoModule
 , rustfmt, ansifilter
 }:
 
@@ -364,10 +364,11 @@ let
       sha256 = "1insh39hzbynr6qxb215qxhpifl5m8i5i0d09a3b6v679i7s11i8";
     };
 
-    hexokinase = buildGoPackage {
+    hexokinase = buildGoModule {
       name = "hexokinase";
-      goPackagePath = "hexokinase";
       outputs = [ "out" "bin" ];
+      vendorHash = null;
+      modRoot = "hexokinase";
       src = fetchFromGitHub {
         owner = "RRethy";
         repo = "vim-hexokinase";
@@ -375,6 +376,7 @@ let
         sha256 = "1qdy028i9zrldjx24blk5im35lcijvq4fwg63ks2vrrvn0dfsj01";
         fetchSubmodules = true;
       };
+      doCheck = false;
       postPatch = ''
         # We don't want to highlight 0xaabbcc, only #aabbcc.
         sed -i -e 's/|0x)/)/g' hexokinase/hex.go
@@ -385,11 +387,10 @@ let
         }' -e p plugin/hexokinase.vim
       '';
       installPhase = ''
-        install -vD "$NIX_BUILD_TOP/go/bin/hexokinase" "$bin/bin/hexokinase"
-        cd "$NIX_BUILD_TOP/go/src/$goPackagePath"
+        install -vD "$GOPATH/bin/hexokinase" "$bin/bin/hexokinase"
         mkdir "$out"
         for i in autoload doc plugin; do
-          cp -Rd "$i" "$out"
+          cp -Rd "../$i" "$out"
         done
       '';
     };
