@@ -1,5 +1,5 @@
 { lib, writeTextFile, writers, wrapFirefox, fetchFirefoxAddon
-, firefoxPackages, buildMozillaMach, tridactyl-native
+, pkgs, tridactyl-native
 }:
 
 let
@@ -9,14 +9,12 @@ let
 
   extensions = lib.mapAttrs mkExtension (lib.importJSON ./addons.json);
 
-  firefoxNoSigning = ((firefoxPackages.override {
-    # XXX: The buildMozillaMach gets passed its options via a non-overridable
-    # attribute set, so we need to wrap it here.
-    buildMozillaMach = opts: buildMozillaMach (opts // {
+  firefoxNoSigning = ((pkgs.extend (self: super: {
+    buildMozillaMach = opts: super.buildMozillaMach (opts // {
       requireSigning = false;
       allowAddonSideload = true;
     });
-  }).firefox.override {
+  })).firefox-unwrapped.override {
     crashreporterSupport = false;
     drmSupport = false;
     googleAPISupport = false;
