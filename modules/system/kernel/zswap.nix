@@ -24,13 +24,13 @@ in {
       extraConfig = ''
         CRYPTO_${if hasZstd then "ZSTD" else "LZO"} y
         ZSWAP y
-        Z3FOLD y
+        ZSMALLOC y
       '';
     };
 
     boot.kernelParams = [
       "zswap.enabled=1"
-      "zswap.zpool=z3fold"
+      "zswap.zpool=zsmalloc"
       "zswap.compressor=${if hasZstd then "zstd" else "lzo"}"
     ];
   };
