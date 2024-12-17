@@ -607,6 +607,8 @@ let
     }}/bin/rustfmt'
     let g:rustfmt_autosave_if_config_present = 1
     let g:rust_recommended_style = 0
+
+    packadd! editorconfig
   '';
 
   autocmd = ''
