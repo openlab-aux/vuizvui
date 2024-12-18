@@ -162,7 +162,9 @@ function appendTalkies(append_to_element) {
         { talk: "The ideal world for an imperfect being is an imperfect world"
         , link: "https://www.sbnation.com/c/secret-base/21410129/20020/chapter-4" },
         { talk: "boyrap premium"
-          , link: "https://cohost.org/jkap/post/696031-empty" }
+          , link: "https://cohost.org/jkap/post/696031-empty" },
+        { talk: "The agent is a point that shifts position"
+          , link: "https://mastodon.xyz/@gutenberg_org@mastodon.social/113673662384391140" }
     ];
     var talkie = talkies[Math.floor(Math.random()*talkies.length)];
     var elem = null;
