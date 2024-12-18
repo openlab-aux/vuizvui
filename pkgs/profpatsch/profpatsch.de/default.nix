@@ -91,11 +91,6 @@ let
         relativeFile = "open-sans-latin.woff2";
         path = open-sans-latin;
       };
-      cv_pdf = {
-        relativeDir = [];
-        relativeFile = "cv.pdf";
-        path = ./cv.pdf;
-      };
       id_txt = {
         relativeDir = [];
         relativeFile = "id.txt";
@@ -115,7 +110,7 @@ let
           pageDeps = {
             inherit jsTalkies;
             inherit cssNormalize cssMain;
-            inherit cv_pdf id_txt;
+            inherit id_txt;
             # preloading
             inherit
               fontsQuattrocentoLatin

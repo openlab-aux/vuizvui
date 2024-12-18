@@ -1,6 +1,6 @@
 { jsTalkies
 , cssNormalize, cssMain
-, id_txt, cv_pdf
+, id_txt
 , fontsQuattrocentoLatin, fontsOpenSansLatin
 , notes-html-snippet, projects-html-snippet, posts-html-snippet
 }:
@@ -53,7 +53,6 @@
     <main>
       <p id="codeblock">
         <a href="${id_txt}">id.txt</a><br>
-        <a href="${cv_pdf}">CV</a>
       </p>
 
       <p>Hey there.</p>
