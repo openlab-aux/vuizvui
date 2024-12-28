@@ -40,7 +40,11 @@
 
     programs.mosh.enable = true;
 
-    environment = let inherit (pkgs.vuizvui.tvl.users.sterni) emacs; in {
+    environment = let
+      inherit (pkgs.vuizvui.tvl.users.sterni)
+        git-only-push
+        emacs;
+    in {
       systemPackages = with pkgs; [
         lr
         lowdown
@@ -52,6 +56,7 @@
         pavucontrol
         emacs
         direnv
+        git-only-push
       ] ++ pkgs.vuizvui.sternenseemann.scripts.default;
 
       variables = {
