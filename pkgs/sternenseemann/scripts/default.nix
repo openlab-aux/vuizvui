@@ -1,6 +1,7 @@
 { lib, writeBashBin, writeText, getBins
 , borgbackup, cryptsetup
 , ghostscript
+, poppler_utils
 , openssl
 , mandoc
 , gpp
@@ -43,6 +44,7 @@ let
       // (getBins mandoc [ "man" ])
       // (getBins openssl [ "openssl" ])
       // (getBins ghostscript [ "gs" ])
+      // (getBins poppler_utils [ "pdftotext" ])
       ;
 
 in
@@ -52,6 +54,7 @@ in
     self.lowview
     self.pdfcombine
     self.pdfrange
+    self.ls2count
   ];
 
   borg-wrapper = writeBashBin "borg-wrapper" ''
@@ -177,5 +180,12 @@ in
        -dLastPage="''${2}" \
        -sOutputFile="''${3%.pdf}_p''${1}-p''${2}.pdf" \
        "''${3}"
+  '';
+
+  ls2count = writeBashBin "ls2count" ''
+    set -euo pipefail
+    for f in "$@"; do
+      ${bins.pdftotext} "$f" - | tr -d '[:space:]' | wc -m
+    done
   '';
 }
