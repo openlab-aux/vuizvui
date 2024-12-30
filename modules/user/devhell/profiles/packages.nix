@@ -42,6 +42,7 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
+      #dcfldd
       #dogdns
       #gomuks
       #mnamer
@@ -87,7 +88,6 @@ in {
       cuetools
       curlie
       cyme
-      dcfldd
       ddrescue
       delta
       dhcping
