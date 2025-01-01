@@ -2,7 +2,7 @@
 , ocaml_lwt, jingoo, ptime, angstrom, astring, cow}:
 
 buildDunePackage rec {
-  version = "0.3";
+  version = "unstable-2025-01-01";
   pname = "logbook";
 
   duneVersion = "3";
@@ -10,8 +10,8 @@ buildDunePackage rec {
   src = fetchFromGitHub {
     owner  = "sternenseemann";
     repo   = pname;
-    rev    = "v${version}";
-    sha256 = "05iwma3vv4v2b3nkb1n1fkfj1gbixw04r8rxdnm468zhf7i7z9gj";
+    rev    = "61a72e8b93c131e4a639f5b0cec2fb2d9dd0717a";
+    sha256 = "1rvb1n22c4lrna5y9x4h2kb66cpnaqn9isk0fk3f5cljvfq0plwx";
   };
 
   buildInputs = [ cow ocaml_lwt jingoo ];
