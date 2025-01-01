@@ -43,9 +43,6 @@ let
 in
 
 lib.fix (self: {
-  # nix utilities
-  lib = import ./lib { inherit lib; };
-
   # packaged sterniware
   inherit (haskellPackages) emoji-generic;
 
