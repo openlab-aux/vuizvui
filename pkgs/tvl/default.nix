@@ -1,7 +1,7 @@
 { tvlSrc ? builtins.fetchGit {
     name = "tvl-depot";
     url = "https://code.tvl.fyi";
-    rev = "22023fdc8d3e5ade6306fdab4dba5503dd40dc27"; # 2024-12-26
+    rev = "54f72afcda5acb08f450f3082b12b63866ad0135"; # 2025-01-01
     ref = "canon";
   }
 , pkgs
