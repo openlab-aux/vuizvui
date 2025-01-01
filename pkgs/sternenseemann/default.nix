@@ -9,7 +9,6 @@ let
     python3Packages
     writers
     haskell
-    lib
     ;
 
   inherit (profpatsch)
@@ -42,7 +41,7 @@ let
 
 in
 
-lib.fix (self: {
+{
   # packaged sterniware
   inherit (haskellPackages) emoji-generic;
 
@@ -113,4 +112,4 @@ lib.fix (self: {
 
   # packaged 3rd party software
   saneterm = pkgs.python3Packages.callPackage ./saneterm { };
-})
+}
