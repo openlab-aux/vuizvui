@@ -10,7 +10,7 @@ let
       meta = {
         description = "Tiny temp dir/file crate for rust";
       };
-    } ./temp.rs;
+    } ./temp/temp.rs;
 
   nix-env-diff = writeRustSimpleBin "nix-env-diff" {
     meta = {
