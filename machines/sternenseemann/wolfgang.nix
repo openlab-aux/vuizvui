@@ -7,13 +7,19 @@ let
   };
 
 in {
-  imports = [
-    ((import ../../nixos-hardware-path.nix) + "/lenovo/thinkpad/x270")
+  imports = builtins.map (p: (import ../../nixos-hardware-path.nix) + p) [
+    "/common/pc/laptop/ssd"
+  ] ++ [
     ./base-laptop.nix
     ./wireguard.nix
     ./user-lukas.nix
   ] ++ lib.optionals (builtins.pathExists ./local.nix) [
     ./local.nix
+  ];
+
+  boot.kernelParams = [
+    # Try to work around random freezes
+    "i915.enable_psr=0"
   ];
 
   boot.initrd.availableKernelModules = [
