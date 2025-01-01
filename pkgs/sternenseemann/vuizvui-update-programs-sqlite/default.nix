@@ -42,7 +42,7 @@ writePython3 "vuizvui-update-programs-sqlite" {
     return r.headers['location']
 
   def nixos_version_for_url(url):
-    match = re.match(r"https://releases\.nixos\.org/nixos/unstable/nixos-([0-9a-fpre.]+)/nixexprs\.tar\.xz", url)
+    match = re.match(r"https://releases\.nixos\.org/nixos/unstable/nixos-([0-9a-fprebeta.]+)/nixexprs\.tar\.xz", url)
     return match.group(1)
 
   def download(url: str, filename: Path) -> Path:
