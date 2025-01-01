@@ -74,11 +74,6 @@ lib.fix (self: {
     inherit getBins;
   };
 
-  # customized third party software
-  acme = callPackage ./acme {
-    inherit (self) plan9port;
-  };
-
   pass = (pkgs.pass.override {
     waylandSupport = true;
     x11Support = false;
