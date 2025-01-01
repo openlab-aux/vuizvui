@@ -22,7 +22,7 @@ let
   haskellPackages = pkgs.haskellPackages.override {
     overrides = self: super: {
       emoji-generic = haskell.lib.overrideSrc
-        (self.callPackage ./emoji-generic { }) {
+        (self.callPackage ./emoji-generic.nix { }) {
           src = fetchFromGitHub {
             owner = "sternenseemann";
             repo = "emoji-generic";
@@ -40,7 +40,7 @@ in
   # packaged sterniware
   inherit (haskellPackages) emoji-generic;
 
-  logbook = ocamlPackages.callPackage ./logbook { };
+  logbook = ocamlPackages.callPackage ./logbook.nix { };
 
   temp = writeRustSimpleLib "temp" {
     release = false;
@@ -115,5 +115,5 @@ in
   };
 
   # packaged 3rd party software
-  saneterm = pkgs.python3Packages.callPackage ./saneterm { };
+  saneterm = pkgs.python3Packages.callPackage ./saneterm.nix { };
 }
