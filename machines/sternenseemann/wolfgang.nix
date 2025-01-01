@@ -73,6 +73,7 @@ in {
     vuizvui.sternenseemann.pass
     vuizvui.sternenseemann.plan9port
     vuizvui.sternenseemann.scripts.borg-wrapper
+    vuizvui.sternenseemann.scripts.disable-bd-prochot
     exfat borgbackup
     gnupg pinentry-gnome3 signing-party gpgme
     thunderbird

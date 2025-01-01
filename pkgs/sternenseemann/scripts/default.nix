@@ -1,15 +1,46 @@
-{ lib, writeBashBin, writeText, getBins
+{ lib, writeBashBin, writeText, runCommandNoCC, getBins
+, bash
+, makeWrapper
 , borgbackup, cryptsetup
 , ghostscript
 , poppler_utils
 , openssl
 , mandoc
-, gpp
+, msr-tools
 , sternenseemann
 }:
 
 let
   self = sternenseemann.scripts;
+
+  packageScriptFile =
+    { name
+    , file
+    , interpreter
+    , isShell ? false
+    , runtimeDependencies ? []
+    }:
+
+    let
+      binPath = lib.makeBinPath runtimeDependencies;
+    in
+
+    runCommandNoCC name {
+      buildInputs = [ interpreter ];
+      nativeBuildInputs = [ makeWrapper ];
+    } (''
+      install -Dm755 "${file}" "$out/bin/${name}"
+      patchShebangs "$out/bin/${name}"
+    '' + lib.optionalString (runtimeDependencies != []) (
+      if isShell then ''
+        sed -i \
+          -e '2i export PATH="'${lib.escapeShellArg binPath}':$PATH"' \
+          "$out/bin/${name}"
+      '' else ''
+        wrapProgram "$out/bin/${name}" \
+          --prefix PATH : ${lib.escapeShellArg binPath}
+      ''
+    ));
 
   backupExcludes = writeText "backup-excludes" ''
     /home/lukas/.cache
@@ -188,4 +219,14 @@ in
       ${bins.pdftotext} "$f" - | tr -d '[:space:]' | wc -m
     done
   '';
+
+  disable-bd-prochot = packageScriptFile {
+    name = "disable-bd-prochot";
+    file = ./disable-bd-prochot.sh;
+    isShell = true;
+    interpreter = bash;
+    runtimeDependencies = [
+      msr-tools
+    ];
+  };
 }
