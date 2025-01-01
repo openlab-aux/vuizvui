@@ -13,6 +13,8 @@ let
 
   inherit (profpatsch)
     getBins
+    writeRustSimpleBin
+    writeRustSimpleLib
     ;
 
   bins = getBins pkgs.bemenu [ "bemenu" ];
@@ -32,13 +34,6 @@ let
     };
   };
 
-  rust = callPackage ./rust {
-    inherit (profpatsch)
-      writeRustSimpleBin
-      writeRustSimpleLib
-      ;
-  };
-
 in
 
 {
@@ -47,10 +42,19 @@ in
 
   logbook = ocamlPackages.callPackage ./logbook { };
 
-  inherit (rust)
-    nix-env-diff
-    temp
-    ;
+  temp = writeRustSimpleLib "temp" {
+    release = false;
+    verbose = true;
+    meta = {
+      description = "Tiny temp dir/file crate for rust";
+    };
+  } ./temp/temp.rs;
+
+  nix-env-diff = writeRustSimpleBin "nix-env-diff" {
+    meta = {
+      description = "Print changed attrs / outpath for nix-env outputs";
+    };
+  } ./nix-env-diff.rs;
 
   scripts = dontRecurseIntoAttrs (callPackage ./scripts {
     inherit (writers) writeBashBin;
