@@ -67,8 +67,8 @@ lib.fix (self: {
       attoparsec bytestring;
     inherit (writers) writeBashBin writeHaskell;
     emojiTestTxt = fetchurl {
-      url = "https://www.unicode.org/Public/emoji/15.1/emoji-test.txt";
-      sha256 = "1nby2gl5wffhcpa8i91a0qxx3a2751qampx6rxvam3m2k8jfwxnq";
+      url = "https://www.unicode.org/Public/emoji/16.0/emoji-test.txt";
+      sha256 = "15wn2f2yvk66576xs7lij8ip0gkawkqfhlv997i45wbcx0scbw14";
     };
   };
 
