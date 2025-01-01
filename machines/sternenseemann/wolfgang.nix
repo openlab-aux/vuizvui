@@ -116,7 +116,7 @@ in {
   };
 
   services.xserver = {
-    videoDrivers = [ "intel" ];
+    videoDrivers = [ "modesetting" ];
   };
 
   vuizvui.profiles.tvl = {
