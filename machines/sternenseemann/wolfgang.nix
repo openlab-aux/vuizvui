@@ -105,8 +105,11 @@ in {
     gpxsee
     msr-tools
     quasselClient
+    ricochet-refresh
     anki
   ];
+
+  services.tor.enable = true;
 
   environment.variables = {
     BROWSER = browser.bin;
