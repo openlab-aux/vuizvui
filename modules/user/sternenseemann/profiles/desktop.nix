@@ -158,12 +158,6 @@ in
           background-color "${acmeColors.yellow}"
         }
 
-        // TODO(sterni): this doesn't work
-        environment {
-          // assume xwayland-satellite is running
-          DISPLAY ":0"
-        }
-
         screenshot-path "~/Pictures/screenshots/%Y%m%d_%Hh%Mm%Ss_niri.png"
 
         prefer-no-csd
