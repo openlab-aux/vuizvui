@@ -1,25 +1,39 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
+
+let
+  google-fonts-subset = fonts:
+    pkgs.runCommandNoCC "google-fonts-subset-${pkgs.google-fonts.version}" { } ''
+      # google-fonts in nixpkgs is all TTF at the moment
+      source="${pkgs.google-fonts}/share/fonts/truetype"
+      target="$out/share/fonts/truetype"
+      mkdir -p "$target"
+
+      for font in ${lib.escapeShellArgs fonts}; do
+        cp "$source/$font"*.ttf "$target/"
+      done
+    '';
+in
 
 {
   config = {
     fonts = {
       packages = with pkgs; [
-        corefonts            # microsoft fonts
-        atkinson-hyperlegible
-        ttf_bitstream_vera   # dejavu without b&w emojis
-        libertine
-        liberation_ttf       # free replacements for times …
-        freefont_ttf
-        noto-fonts           # noto fonts: great for fallbacks
+        atkinson-hyperlegible  # Sans serif for accessibility
+        corefonts              # microsoft fonts
+        eb-garamond            # free garamond port
+        ibm-plex               # Striking Fonts from IBM
+        jetbrains-mono         # monospace
+        lmodern                # TeX font
+        noto-fonts-color-emoji # emoji primary
+        open-sans              # nice sans
+        unifont                # bitmap font, good fallback
+        unifont_upper          # upper unicode ranges of unifont
+        vollkorn               # weighty serif
+        (google-fonts-subset [ "InclusiveSans" ])
+
+        noto-fonts             # noto fonts: great for fallbacks
         noto-fonts-extra
         noto-fonts-cjk-sans
-        noto-fonts-emoji     # emoji primary
-        open-sans
-        vollkorn
-        twemoji-color-font   # emoji fallback
-        unifont              # bitmap font, good fallback
-        unifont_upper        # upper unicode ranges of unifont
-        lmodern
       ];
 
       fontDir.enable = true;
@@ -31,10 +45,11 @@
         antialias = true;
         hinting.enable = true;
         defaultFonts = {
-          monospace = [ "Bitstream Vera Sans Mono" "Noto Mono" ];
-          serif = [ "Vollkorn" "Noto Serif" ];
-          sansSerif = [ "Open Sans" "Noto Sans" ];
-          emoji = [ "Noto Color Emoji" "Twitter Color Emoji" "Unifont" "Unifont Upper" ];
+          # TODO(sterni): explicitly specify the language Noto fonts as fallback?
+          monospace = [ "Jetbrains Mono NL" "Noto Sans Mono" ];
+          serif = [ "Noto Serif" "Vollkorn" ];
+          sansSerif = [ "Inclusive Sans" "Open Sans" "Noto Sans" ];
+          emoji = [ "Noto Color Emoji" "Unifont" "Unifont Upper" ];
         };
       };
     };
