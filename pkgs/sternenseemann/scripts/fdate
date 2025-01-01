@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby
+# fdate [DATE] - print French Revolutionary Calendar date and time
+# DATE is anything GNU date -d understands.
+# fdate uses local time, define a TZ with offset +0009.21 for Paris local time.
+#
+# To the extent possible under law, Leah Neukirchen has waived
+# all copyright and related or neighboring rights to this work.
+# http://creativecommons.org/publicdomain/zero/1.0/
+#
+# Retrieved from http://leahneukirchen.org/dotfiles/bin/fdate on 2025-01-01
+
+require 'date'
+
+def roman_numeral(n)
+  symbols = { 1000 => "M", 900 => "CM", 500 => "D", 400 => "CD",
+               100 => "C",  90 => "XC",  50 => "L",  40 => "XL",
+                10 => "X",   9 => "IX",   5 => "V",   4 => "IV",
+                 1 => "I" }
+  r = ""
+  symbols.each { |num, sym|
+    r << (sym * (n/num))
+    n %= num
+  }
+  r
+end
+
+if ARGV.empty?
+  time = Time.now
+else
+  s = IO.popen(["date", "+%s.%N", "-d", ARGV.join(' ')]) { |p| p.read }
+  if $?.success?
+    time = Time.at(s.to_f)
+  else
+    exit $?.exitstatus
+  end
+end
+
+total_days = time.to_date.jd - Date.new(1792,9,22).jd
+
+revday = 0
+revmthnum = 1
+revyr = 1
+
+1.upto(total_days) {
+  revday += 1
+  if revday == 31
+    revmthnum += 1
+    revday = 1
+  end
+  if revmthnum == 13
+    if revyr == 3 || revyr == 7 || revyr == 11 || revyr == 15 ||  # Romme
+       (revyr > 20 &&
+        ((revyr % 4 == 0) && ((revyr % 100 != 0) || (revyr % 400 == 0))))
+      # leap year
+      sclen = 6
+    else
+      sclen = 5
+    end
+    if revday > sclen
+      revday = 1
+      revmthnum = 1
+      revyr += 1
+    end
+  end
+}
+
+WEEKDAYS = %w{Primidi Duodi Tridi Quartidi Quintidi Sextidi Septidi Octidi Nonidi Décadi}
+
+MONTHS = %w{Vendémiaire Brumaire Frimaire Nivôse Pluviôse Ventôse Germinal Floréal Prairial Messidor Thermidor Fructidor}
+
+FETES = [
+  "fête de la vertu",
+  "fête du génie",
+  "fête du travail",
+  "fête de l'opinion",
+  "fête des récompenses",
+  "fête de la Révolution",
+]
+
+if revmthnum == 13
+  print "Primidi, "
+  print FETES[revday-1]
+else
+  print WEEKDAYS[(revday - 1) % 10], ", "
+  print revday, " "
+  print MONTHS[revmthnum-1]
+end
+print " #{roman_numeral revyr} (#{revyr}) "
+
+# Jean-Charles de Borda, 13 Vendémiaire II:
+# 10 hours a 100 min a 100 sec
+secs = time - Time.new(time.year, time.month, time.day)
+dtime = "%05d" % ((secs / 8640.0)*10000).round   # round to decimal seconds
+print dtime[0],":",dtime[1..2],":",dtime[3..4],"\n"

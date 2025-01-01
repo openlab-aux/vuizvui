@@ -1,5 +1,5 @@
 { lib, writeBashBin, writeText, runCommandNoCC, getBins
-, bash
+, bash, ruby
 , makeWrapper
 , borgbackup, cryptsetup
 , ghostscript
@@ -15,7 +15,7 @@ let
 
   packageScriptFile =
     { name
-    , file
+    , file ? ./. + "/${name}"
     , interpreter
     , isShell ? false
     , runtimeDependencies ? []
@@ -228,5 +228,10 @@ in
     runtimeDependencies = [
       msr-tools
     ];
+  };
+
+  fdate = packageScriptFile {
+    name = "fdate";
+    interpreter = ruby;
   };
 }
