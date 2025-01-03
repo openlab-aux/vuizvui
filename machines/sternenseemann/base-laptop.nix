@@ -46,7 +46,6 @@
         emacs;
     in {
       systemPackages = with pkgs; [
-        lr
         lowdown
         lynx
         zip unzip

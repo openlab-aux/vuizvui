@@ -17,6 +17,9 @@ in
 {
   config = {
     fonts = {
+      enableDefaultPackages = false;
+      enableGhostscriptFonts = false;
+
       packages = with pkgs; [
         atkinson-hyperlegible  # Sans serif for accessibility
         corefonts              # microsoft fonts
@@ -35,10 +38,6 @@ in
         noto-fonts-extra
         noto-fonts-cjk-sans
       ];
-
-      fontDir.enable = true;
-      enableGhostscriptFonts = true;
-      enableDefaultPackages = true;
 
       fontconfig = {
         enable = true;

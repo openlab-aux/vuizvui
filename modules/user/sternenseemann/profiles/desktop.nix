@@ -330,6 +330,8 @@ in
             enable = true;
           };
         };
+        # Don't need it, personally
+        speechd.enable = false;
       };
 
       vuizvui.programs.foot = {

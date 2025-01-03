@@ -82,31 +82,30 @@ in {
     vuizvui.sternenseemann.scripts.disable-bd-prochot
     vuizvui.sternenseemann.scripts.fdate
     exfat borgbackup
-    gnupg pinentry-gnome3 signing-party gpgme
+    gnupg pinentry-gnome3 # signing-party
     thunderbird
     vuizvui.sternenseemann.texlive
-    # jabref # depends on insecure JDK version
-    yt-dlp mpv vlc spotify
+    yt-dlp mpv
     ghc cabal-install cabal2nix
-    sbcl rlwrap
+    rlwrap
     cbqn ngn-k
     valgrind gdb
-    scribus gimp inkscape libreoffice
-    audacity
-    signal-desktop discord
+    libreoffice
     vuizvui.profpatsch.nman
     vuizvui.sternenseemann.nix-env-diff
     vuizvui.sternenseemann.tep.wayland
-    xdg-utils                  # xdg-open etc.
+    xdg-utils                  # TODO(sterni): fix xdg stuff
     networkmanagerapplet       # for nm-connection-ediotr
-    imv zathura
+    imv                        # TODO(sterni): is slow and clunky
+    zathura                    # TODO(sterni): annotations would be nice
     pcmanfm
     browser.pkg
-    gpxsee
-    msr-tools
     quasselClient
     ricochet-refresh
     anki
+    signal-desktop # no signal web client
+    # scribus gimp inkscape audacity # rarely need them
+    # gpxsee # rarely need it nowadays
   ];
 
   services.tor.enable = true;
