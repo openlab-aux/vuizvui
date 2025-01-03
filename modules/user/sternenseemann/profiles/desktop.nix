@@ -16,7 +16,7 @@ let
   inherit (pkgs) niri;
 
   bins = (getBins pkgs.bemenu [ "bemenu" "bemenu-run" ])
-      // (getBins tep.wayland [ "tep" ])
+      // (getBins tep [ "tep" ])
       // (getBins config.vuizvui.user.sternenseemann.services.mako.package [ "makoctl" ])
       // (getBins pkgs.foot [ "footclient" ])
       // (getBins config.vuizvui.user.sternenseemann.programs.saneterm.package [ "saneterm" ])

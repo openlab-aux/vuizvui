@@ -1,6 +1,6 @@
 { writeHaskell, writeBashBin, writeText, runCommandLocal
 , emoji-generic, utf8-light, attoparsec, text, bytestring
-, bemenu, dmenu
+, bemenu
 , fromTep ? "cut -d' ' -f1"
 , copy ? "wl-copy --trim-newline"
 , emojiTestTxt
@@ -19,23 +19,18 @@ let
     ${tepData} < ${emojiTestTxt} > tep-data.txt
     cat ${static} tep-data.txt > "$out"
   '';
-
-  makeTep = menu: writeBashBin "tep" ''
-    copy=false
-    if [[ "$1" = "copy" ]]; then
-      copy=true
-      shift
-    fi
-    ${menu} $@ < ${emojis} | ${fromTep} | \
-    if $copy; then
-      ${copy}
-    else
-      cat
-    fi
-  '';
 in
 
-{
-  wayland = makeTep "${bemenu}/bin/bemenu";
-  x11 = makeTep "${dmenu}/bin/dmenu";
-}
+writeBashBin "tep" ''
+  copy=false
+  if [[ "$1" = "copy" ]]; then
+    copy=true
+    shift
+  fi
+  ${bemenu}/bin/bemenu $@ < ${emojis} | ${fromTep} | \
+  if $copy; then
+    ${copy}
+  else
+    cat
+  fi
+''
