@@ -127,7 +127,6 @@ in {
       gitui
       glab
       glow
-      gnufdisk
       gnumake
       gnupg
       gopass
