@@ -4,6 +4,11 @@ let
   myLib  = import ./lib.nix  { inherit pkgs lib; };
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib unfreeAndNonDistributablePkgs; };
 
+  # magic constants that might need to be changed when migrating laptop models
+  laptop = {
+    cameraDevice = "/dev/video0";
+  };
+
   tailscaleInterface = "tailscale0";
 
   lock-screen = pkgs.writers.writeDashBin "lock-screen" ''
@@ -85,6 +90,8 @@ in {
     powerManagement.cpuFreqGovernor = "powersave";
 
     vuizvui.hardware.thinkpad.powerManagement = "auto-cpufreq";
+
+    vuizvui.hardware.tolino.enable = true;
 
     # hardware.pulseaudio = {
     #   enable = true;
@@ -382,7 +389,9 @@ in {
           name = "read-qr-code";
         })
         (pkgs.vuizvui.profpatsch.binify {
-          exe = pkgs.vuizvui.profpatsch.read-qr-code-from-camera;
+          exe = pkgs.vuizvui.profpatsch.read-qr-code-from-camera {
+            videoDevice = laptop.cameraDevice;
+          };
           name = "read-qr-code-from-camera";
         })
         backlight      # adjust laptop backlight

@@ -1,16 +1,17 @@
 { stdenv, writeExecline, getBins, zbar, libnotify, imagemagick }:
+{
+  # videoDevice is a string, e.g. "/dev/video0"
+  videoDevice
+}:
 
 let
   bins = getBins zbar [ "zbarcam" ];
-
-  # webcam device, by trial and error
-  webcam = "/dev/video1";
 
   script = writeExecline "read-qr-code-from-camera" {} [
     bins.zbarcam
       "--oneshot"
       "--raw"
-      webcam
+      videoDevice
   ];
 
 in script // {
