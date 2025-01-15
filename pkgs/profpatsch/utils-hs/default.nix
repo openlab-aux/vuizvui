@@ -70,13 +70,16 @@ let
     deps = with hps; [ optparse-applicative data-fix time];
   };
 
-  watch-server = haskellDrv {
-    name = "watch-server";
-    subfolder = "watch-server";
-    deps = with hps; [ directory protolude fsnotify regex-tdfa optparse-generic ];
-  };
+  # watch-server = haskellDrv {
+  #   name = "watch-server";
+  #   subfolder = "watch-server";
+  #   deps = with hps; [ directory protolude fsnotify regex-tdfa optparse-generic ];
+  # };
 
 in {
-  inherit until watch-server;
+  inherit
+    until
+    # watch-server
+    ;
   haskellPackages = hps;
 }
