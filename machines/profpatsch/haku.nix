@@ -404,7 +404,13 @@ in
           name = "dendrite";
           ensureDBOwnership = true;
         }
-
+        {
+          name = "root";
+          ensureClauses = {
+            login = true;
+            superuser = true;
+          };
+        }
       ];
     };
   };
