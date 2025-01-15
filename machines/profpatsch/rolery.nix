@@ -134,6 +134,7 @@ in {
       "steam-original"
       "steam-runtime"
       "steam-run"
+      "steam-unwrapped"
     ];
 
     hardware.bluetooth.enable = true;
