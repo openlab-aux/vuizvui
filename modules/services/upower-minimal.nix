@@ -11,13 +11,13 @@ let
   ini = pkgs.formats.ini {};
 
   pkg = pkgs.upower.overrideAttrs (old: {
-    patches = [
-      # Adds a "Suspend" action to what to do when the battery is critical
-      (pkgs.fetchpatch {
-        url = "https://gitlab.freedesktop.org/upower/upower/-/merge_requests/11.patch";
-        sha256 = "sha256-y8ysD+fJIi5SZkWp2n061VBA5cs1EMftOof/h2tvDGo=";
-      })
-    ];
+    # patches = [
+    #   # Adds a "Suspend" action to what to do when the battery is critical
+    #   (pkgs.fetchpatch {
+    #     url = "https://gitlab.freedesktop.org/upower/upower/-/merge_requests/11.patch";
+    #     sha256 = "sha256-y8ysD+fJIi5SZkWp2n061VBA5cs1EMftOof/h2tvDGo=";
+    #   })
+    # ];
   });
 
   configFile = ini.generate "UPower.conf" cfg.settings;
