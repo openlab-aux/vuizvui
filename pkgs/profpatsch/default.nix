@@ -3,7 +3,7 @@
 let
   inherit (pkgs) callPackage;
 
-  haskellPackagesPurescript = import ./haskell-overlay.nix { inherit pkgs; };
+  haskellPackagesProfpatsch = import ./haskell-overlay.nix { inherit pkgs; };
 
   # Takes a derivation and a list of binary names
   # and returns an attribute set of `name -> path`.
@@ -252,7 +252,7 @@ in rec {
 
   xmonad = pkgs.callPackage ./xmonad { };
 
-  inherit (import ./importPurescript.nix { inherit pkgs exactSource; haskellPackages = haskellPackagesPurescript; })
+  inherit (import ./importPurescript.nix { inherit pkgs exactSource; haskellPackages = haskellPackagesProfpatsch; })
     importPurescript
     ;
 
