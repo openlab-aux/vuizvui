@@ -36,6 +36,7 @@
   ./user/openlab/stackenblocken.nix
   ./user/profpatsch/programs/scanning.nix
   ./user/profpatsch/programs/weechat.nix
+  ./user/profpatsch/hardware/external-monitor-control.nix
   ./user/profpatsch/services/bitlbee.nix
   ./user/profpatsch/services/gonic.nix
   ./user/profpatsch/services/dunst.nix

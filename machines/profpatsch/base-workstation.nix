@@ -1,5 +1,5 @@
 # A base configuration for my workstations.
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 let
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
   myLib  = import ./lib.nix  { inherit pkgs lib; };
@@ -15,6 +15,8 @@ in {
   config = {
 
     time.timeZone = "Europe/Berlin";
+
+    vuizvui.services.profpatsch.hardware.externalMonitorControl.enable = true;
 
     networking = {
       # it will be ready when it’s ready,,
@@ -58,6 +60,20 @@ in {
     vuizvui.user.profpatsch.xserver.windowManager.xmonad = {
       enable = true;
       package = pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.my-xmonad;
+    };
+
+
+    xdg.portal = {
+      enable = true;
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+      ];
+      config.common = {
+        default = [
+          "gtk"
+        ];
+        # "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
+      };
     };
 
     # TODO: libinput?
@@ -105,6 +121,8 @@ in {
 
     };
 
+    services.gnome.gnome-settings-daemon.enable = true;
+
     fonts.fontconfig = {
       enable = true;
       defaultFonts = {
@@ -119,7 +137,13 @@ in {
     ###########
     # Packages
 
-    environment.sessionVariables = { EDITOR = "${myPkgs.vim}/bin/vim"; };
+    environment.sessionVariables = {
+      EDITOR = "${myPkgs.vim}/bin/vim";
+
+      # TODO: required? old msg: This is important so that the xdg-desktop-portal-gtk will use the gtk.portal config arghhh
+      XDG_CURRENT_DESKTOP = "gnome";
+
+    };
 
     environment.systemPackages = with pkgs;
     let
