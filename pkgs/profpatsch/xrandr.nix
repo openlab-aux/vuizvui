@@ -95,7 +95,7 @@ let
   '';
 
 
-  two-monitor-setup = writeExecline "test" {} [
+  two-monitor-setup = writeExecline "two-monitor-setup" {} [
     "backtick" "-Ei" "json" [ parse ]
     "if" [
       "pipeline" [ bins.echo "$json" ]
@@ -111,7 +111,9 @@ let
   ];
 
 
-  two-monitor-setup-script = pkgs.writers.writePython3 "xrandr-two-monitor-setup" {} ''
+  two-monitor-setup-script = pkgs.writers.writePython3 "xrandr-two-monitor-setup" {
+    flakeIgnore = [ "E501" "E121" "E226" "W503" ];
+  } ''
     import json
     import sys
     import os
@@ -124,29 +126,29 @@ let
       if 'connected' in v and v['connected']
     }
 
-    if 'eDP1' not in connected:
-        print("could not find eDP1 (laptop screen)", file=sys.stderr)
+    if 'eDP' not in connected:
+        print("could not find eDP (laptop screen)", file=sys.stderr)
         sys.exit(1)
 
     if len(connected) != 2:
         print("only know how to configure two monitors")
         sys.exit(1)
 
-    eDP1 = connected['eDP1']
+    eDP = connected['eDP']
 
     # laptop screen is active
-    assert 'current' in eDP1
+    assert 'current' in eDP
 
     # how far the laptop screen should be offset to end
     # at the bottom of the monitor
     h_offset = 0
     for k, v in connected.items():
-        if k == 'eDP1':
+        if k == 'eDP':
             assert 'current' in v
 
         else:
             h = int(v['native']['height'])
-            h_offset = h - int(eDP1['native']['height'])
+            h_offset = h - int(eDP['native']['height'])
             external_monitor = (k, v)
             # can’t handle bigger laptop screens atm
             assert h_offset >= 0
@@ -162,15 +164,15 @@ let
         ),
         "--pos", "{}x{}".format(
             # offset by the laptop size to the right
-            eDP1['native']['width'],
+            eDP['native']['width'],
             # monitor starts at 0
             0
         ),
 
-        "--output", "eDP1",
+        "--output", "eDP",
         "--mode", "{}x{}".format(
-            eDP1['native']['width'],
-            eDP1['native']['height'],
+            eDP['native']['width'],
+            eDP['native']['height'],
         ),
         "--pos", "{}x{}".format(
             # laptop is the leftmost screen
@@ -187,9 +189,68 @@ let
     )
   '';
 
+  laptop-monitor-only-setup = writeExecline "laptop-monitor-only-setup" {} [
+    "backtick" "-Ei" "json" [ parse ]
+    "if" [
+      "pipeline" [ bins.echo "$json" ]
+      "redirfd" "-w" "1" "/dev/null"
+      (dhall-typecheck {
+        name = "typecheck-xrandr";
+        dhallType = type;
+        recordsLoose = true;
+      })
+    ]
+    "pipeline" [ bins.echo "$json" ]
+    laptop-monitor-only-setup-script
+  ];
+
+
+  laptop-monitor-only-setup-script = pkgs.writers.writePython3 "xrandr-laptop-monitor-only" {
+    flakeIgnore = [ "E501" "E121" "E226" "W503" ];
+  } ''
+    import json
+    import sys
+    import os
+
+    # TODO: use netencode for input
+    monitors = json.load(sys.stdin)
+
+    connected = {
+      k: v for k, v in monitors.items()
+      if 'connected' in v and v['connected']
+    }
+
+    if 'eDP' not in connected:
+        print("could not find eDP (laptop screen)", file=sys.stderr)
+        sys.exit(1)
+
+    eDP = connected['eDP']
+
+    # laptop screen is active
+    assert 'current' in eDP
+
+    xrandr_command = [
+        "--verbose",
+
+        "--output", "eDP",
+        "--primary",
+        "--mode", "{}x{}".format(
+            eDP['native']['width'],
+            eDP['native']['height'],
+        ),
+    ]
+
+    os.execvp(
+        "${bins.xrandr}",
+        ["${bins.xrandr}"]
+        + xrandr_command
+    )
+  '';
+
 in {
   inherit
     parse
     two-monitor-setup
+    laptop-monitor-only-setup
     ;
 }
