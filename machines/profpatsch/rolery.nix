@@ -315,9 +315,9 @@ in {
         xorg.xkill        # X11 application kill
       ];
       guiPkgs = [
-        gnome.adwaita-icon-theme
+        adwaita-icon-theme
         # TODO: get themes to work. See notes.org.
-        gnome.gnome-themes-extra
+        gnome-themes-extra
         # can go away once I migrate to pw-ctl and such
         pavucontrol
         pulseaudio
@@ -614,7 +614,7 @@ in {
         };
       };
       iconTheme = {
-        package = pkgs.gnome.adwaita-icon-theme;
+        package = pkgs.adwaita-icon-theme;
         name = "Adwaita";
       };
     };
