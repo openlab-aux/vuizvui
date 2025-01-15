@@ -41,6 +41,7 @@
   ./user/profpatsch/services/gonic.nix
   ./user/profpatsch/services/dunst.nix
   ./user/profpatsch/services/xmonad.nix
+  ./user/profpatsch/services/gitit.nix
   ./user/sternenseemann/services/sway.nix
   ./user/sternenseemann/services/mako
   ./user/sternenseemann/profiles/desktop.nix

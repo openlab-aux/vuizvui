@@ -344,6 +344,15 @@ in rec {
 
   blight = callPackage ./blight.nix { };
 
+
+  gitit = import (pkgs.fetchFromGitHub {
+    owner = "openlab-aux";
+    repo = "gitit";
+    rev = "94672a9ed8a7aca1c085e2120d9edb953117805e";
+    sha256 = "sha256-PM7eQl0boFGQou/9FL0lv+dQxzM9b0I/hyJ1hxv4Om4=";
+  }) { inherit pkgs; };
+
+
   # business = import ./business.nix { inherit pkgs; };
 
   # mes = import ./mes { inherit pkgs; };

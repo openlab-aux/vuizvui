@@ -16,10 +16,12 @@ let
   myKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNMQvmOfon956Z0ZVdp186YhPHtSBrXsBwaCt0JAbkf/U/P+4fG0OROA++fHDiFM4RrRHH6plsGY3W6L26mSsCM2LtlHJINFZtVILkI26MDEIKWEsfBatDW+XNAvkfYEahy16P5CBtTVNKEGsTcPD+VDistHseFNKiVlSLDCvJ0vMwOykHhq+rdJmjJ8tkUWC2bNqTIH26bU0UbhMAtJstWqaTUGnB0WVutKmkZbnylLMICAvnFoZLoMPmbvx8efgLYY2vD1pRd8Uwnq9MFV1EPbkJoinTf1XSo8VUo7WCjL79aYSIvHmXG+5qKB9ed2GWbBLolAoXkZ00E4WsVp9H philip@nyx";
   qwerkyKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM3ORvMbdHaJfgPgMhWTqgVrP1L7kkvuETQpzl0IjP2G tc@windoof";
 
-  xandikosPort = 2345;
   tailscaleInterface = "tailscale0";
   tailscaleAddress = "100.89.52.54";
+
+  xandikosPort = 2345;
   siteServerPort = 2346;
+  gititPort = 2347;
 
 in {
   imports = [
@@ -63,6 +65,7 @@ in {
         interfaces.${tailscaleInterface} = {
           allowedTCPPorts = [
             xandikosPort
+            gititPort
           ];
         };
       };
@@ -141,6 +144,14 @@ in {
 
     vuizvui.user.profpatsch.services.bitlbee = {
        enable = true;
+    };
+
+    vuizvui.user.profpatsch.services.gitit = {
+      enable = true;
+      stateDirName = "gitit-test-blabla";
+      config = {
+        port = gititPort;
+      };
     };
 
     security.acme.acceptTerms = true;
@@ -227,6 +238,5 @@ in {
     #     devices = [ "mushu" ];
     #   };
     # };
-
   };
 }
