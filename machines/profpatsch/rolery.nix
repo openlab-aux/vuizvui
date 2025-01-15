@@ -440,6 +440,11 @@ in {
           name = "monitor-home";
         })
         (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.xrandr.laptop-monitor-only-setup;
+          # this is still referenced in my .xbindkeysrc, which is not in my nixpkgs config
+          name = "monitor-laptop-only";
+        })
+        (pkgs.vuizvui.profpatsch.binify {
           exe = pkgs.vuizvui.profpatsch.lyric.lyric;
           name = "lyric";
         })
