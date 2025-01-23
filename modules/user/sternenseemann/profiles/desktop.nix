@@ -71,7 +71,6 @@ in
     vuizvui.user.sternenseemann.profiles.desktop = {
       enable = lib.mkEnableOption "Desktop Profile";
       saneterm.enable = mkDefEnableOption "Keyboard shortcuts for saneterm";
-      tep.enable = mkDefEnableOption "Keyboard shortcuts for the tep emoji picker";
     };
   };
 
@@ -109,6 +108,7 @@ in
      niri                       # compositor
 
      bemenu                     # better dmenu
+     tep
      qt5.qtwayland
      wl-clipboard               # instead of xsel
      adwaita-icon-theme
@@ -250,9 +250,8 @@ in
          Mod+c { spawn "${bins.makoctl}" "dismiss" "-a"; }
    '' + lib.optionalString cfg.saneterm.enable ''
          Mod+Shift+Return { spawn "${bins.saneterm}" "--" "${bins.sh}" "-l"; }
-   '' + lib.optionalString cfg.tep.enable ''
-         Mod+G { spawn "${bins.tep}" "copy" "-l" "25" "-p" "tep>" "-i"; }
    '' + ''
+         Mod+G { spawn "${bins.tep}" "copy" "-l" "25" "-p" "tep>" "-i"; }
 
          XF86AudioRaiseVolume { spawn "${bins.wpctl}" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
          XF86AudioLowerVolume { spawn "${bins.wpctl}" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }

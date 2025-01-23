@@ -93,7 +93,6 @@ in {
     libreoffice
     vuizvui.profpatsch.nman
     vuizvui.sternenseemann.nix-env-diff
-    vuizvui.sternenseemann.tep
     xdg-utils                  # TODO(sterni): fix xdg stuff
     networkmanagerapplet       # for nm-connection-ediotr
     imv                        # TODO(sterni): is slow and clunky
