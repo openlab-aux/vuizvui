@@ -26,6 +26,8 @@ let
       // (getBins pkgs.wireplumber [ "wpctl" ])
       // (getBins pkgs.niri [ "niri" ])
       // (getBins pkgs.jq [ "jq" ])
+      // (getBins pkgs.systemd [ "systemctl" ])
+      // (getBins pkgs.xwayland-satellite [ "xwayland-satellite" ])
       // {
         niri-focus-any-window = pkgs.writeShellScript "niri-focus-any-window" ''
           set -euo pipefail
@@ -60,6 +62,8 @@ let
 
   niriGaps = 10;
   niriBorder = 2;
+
+  x11Display = ":5";
 in
 
 {
@@ -103,7 +107,6 @@ in
 
       systemd.packages = [
         niri
-        pkgs.xwayland-satellite
       ];
       environment.systemPackages = with pkgs; [
         niri                       # compositor
@@ -134,6 +137,37 @@ in
           before = [ "niri.service" ];
         };
 
+        services.xwayland-satellite =
+          let
+            target = [ "graphical-session.target" ];
+          in
+          {
+            # Based on upstream resources/xwayland-satellite.service
+            wantedBy = target;
+            bindsTo = target;
+            partOf = target;
+            after = target;
+            requisite = target;
+
+            # User services that should have DISPLAY set.
+            # Note that we can't (always) override after for them since that
+            # will always statically set e.g. PATH due to limitations in NixOS.
+            before = [
+              "foot-server.service"
+            ];
+            serviceConfig = {
+              ExecStart = "${bins.xwayland-satellite} ${x11Display}";
+              # While we set DISPLAY for children of niri directly (and assume xwayland-satellite will start),
+              # we update systemd environment in the service since it outlives niri.
+              # TODO(sterni): dbus-update-activation-environment
+              ExecStartPost = "${bins.systemctl} --user set-environment DISPLAY=${x11Display}";
+              ExecStopPost = "${bins.systemctl} --user unset-environment DISPLAY";
+              Type = "notify";
+              NotifyAccess = "all";
+              StandardOutput = "journal";
+            };
+          };
+
         targets.graphical-session.wants = [
           # niri doesn't implement xwayland itself
           "xwayland-satellite.service"
@@ -163,6 +197,13 @@ in
         prefer-no-csd
         hotkey-overlay {
             skip-at-startup
+        }
+
+        environment {
+          // Assume xwayland-satellite will start successfully.
+          // systemd environment is updated by xwayland-satellite.service,
+          // so user services that need DISPLAY need to be started after.
+          DISPLAY "${x11Display}"
         }
 
       '' + lib.optionalString cfg.nextcloud.enable ''
