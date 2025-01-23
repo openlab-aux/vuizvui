@@ -38,6 +38,8 @@
       percentageAction = 2;
     };
 
+    services.earlyoom.enable = true;
+
     programs.mosh.enable = true;
 
     environment = let
