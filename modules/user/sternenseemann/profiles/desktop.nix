@@ -72,372 +72,359 @@ in
       enable = lib.mkEnableOption "Desktop Profile";
       saneterm.enable = mkDefEnableOption "Keyboard shortcuts for saneterm";
       tep.enable = mkDefEnableOption "Keyboard shortcuts for the tep emoji picker";
-      nextcloud.enable = mkDefEnableOption "Automatically launching Nextcloud-Client";
     };
   };
 
-  config = lib.mkIf cfg.enable (lib.mkMerge [
-    # Core of the module, always active
-    {
-      # General prerequisites and general wayland hacks
-      hardware.graphics.enable = true;
-      qt = {
-        enable = true;
-        platformTheme = "gnome";
-        style = "adwaita";
-      };
-      # TODO(sterni): reduce this list if possible
-      environment.sessionVariables = {
-        # HACK: niri won't detect configuration changes due to the chained
-        # symlinks we use, so eliminate one. Note that niri itself unsets this
-        # environment variable for some reason.
-        # https://github.com/YaLTeR/niri/blob/6ecbf2db8a31484fe88b8faa399b9832da6c8a6a/src/utils/watcher.rs#L38-L45
-        NIRI_CONFIG = toString /etc/static/niri/config.kdl;
-        # firefox screencapture
-        MOZ_ENABLE_WAYLAND = "1";
-        MOZ_USE_XINPUT2 = "1";
-        # SDL
-        SDL_VIDEODRIVER = "wayland";
-        # QT
-        QT_QPA_PLATFORM = "wayland";
-        QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-      };
-      programs.xwayland.enable = true;
-      security.pam.services.swaylock = { };
+  config = lib.mkIf cfg.enable {
+   # General prerequisites and general wayland hacks
+   hardware.graphics.enable = true;
+   qt = {
+     enable = true;
+     platformTheme = "gnome";
+     style = "adwaita";
+   };
+   # TODO(sterni): reduce this list if possible
+   environment.sessionVariables = {
+     # HACK: niri won't detect configuration changes due to the chained
+     # symlinks we use, so eliminate one. Note that niri itself unsets this
+     # environment variable for some reason.
+     # https://github.com/YaLTeR/niri/blob/6ecbf2db8a31484fe88b8faa399b9832da6c8a6a/src/utils/watcher.rs#L38-L45
+     NIRI_CONFIG = toString /etc/static/niri/config.kdl;
+     # firefox screencapture
+     MOZ_ENABLE_WAYLAND = "1";
+     MOZ_USE_XINPUT2 = "1";
+     # SDL
+     SDL_VIDEODRIVER = "wayland";
+     # QT
+     QT_QPA_PLATFORM = "wayland";
+     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+   };
+   programs.xwayland.enable = true;
+   security.pam.services.swaylock = { };
 
-      systemd.packages = [
-        niri
-      ];
-      environment.systemPackages = with pkgs; [
-        niri                       # compositor
+   systemd.packages = [
+     niri
+   ];
+   environment.systemPackages = with pkgs; [
+     niri                       # compositor
 
-        bemenu                     # better dmenu
-        qt5.qtwayland
-        wl-clipboard               # instead of xsel
-        adwaita-icon-theme
-        wdisplays                  # display layout GUI
-      ];
-      vuizvui.user.sternenseemann.programs.saneterm.enable = cfg.saneterm.enable;
+     bemenu                     # better dmenu
+     qt5.qtwayland
+     wl-clipboard               # instead of xsel
+     adwaita-icon-theme
+     wdisplays                  # display layout GUI
+     nextcloud-client
+   ];
+   vuizvui.user.sternenseemann.programs.saneterm.enable = cfg.saneterm.enable;
 
-      xdg.portal = {
-        enable = true;
-        extraPortals = with pkgs; [
-          xdg-desktop-portal-gtk
-          xdg-desktop-portal-gnome
-          # keyring is added via its module
-        ];
-        # niri's screensharing depends on the GNOME portal
-        config.common.default = "gnome";
-      };
+   # so libsecret works
+   services.gnome.gnome-keyring.enable = true;
+   programs.dconf.enable = true;
 
-      systemd.user = {
-        # pipewire MUST start before niri, otherwise screen sharing doesn't work
-        services.pipewire = {
-          wantedBy = [ "niri.service" ];
-          before = [ "niri.service" ];
-        };
+   # for trash:// support in pcmanfm
+   services.gvfs.enable = true;
 
-        services.xwayland-satellite =
-          let
-            target = [ "graphical-session.target" ];
-          in
-          {
-            # Based on upstream resources/xwayland-satellite.service
-            wantedBy = target;
-            bindsTo = target;
-            partOf = target;
-            after = target;
-            requisite = target;
+   xdg.portal = {
+     enable = true;
+     extraPortals = with pkgs; [
+       xdg-desktop-portal-gtk
+       xdg-desktop-portal-gnome
+       # keyring is added via its module
+     ];
+     # niri's screensharing depends on the GNOME portal
+     config.common.default = "gnome";
+   };
 
-            # User services that should have DISPLAY set.
-            # Note that we can't (always) override after for them since that
-            # will always statically set e.g. PATH due to limitations in NixOS.
-            before = [
-              "foot-server.service"
-            ];
-            serviceConfig = {
-              ExecStart = "${bins.xwayland-satellite} ${x11Display}";
-              # While we set DISPLAY for children of niri directly (and assume xwayland-satellite will start),
-              # we update systemd environment in the service since it outlives niri.
-              # TODO(sterni): dbus-update-activation-environment
-              ExecStartPost = "${bins.systemctl} --user set-environment DISPLAY=${x11Display}";
-              ExecStopPost = "${bins.systemctl} --user unset-environment DISPLAY";
-              Type = "notify";
-              NotifyAccess = "all";
-              StandardOutput = "journal";
-            };
-          };
+   systemd.user = {
+     # pipewire MUST start before niri, otherwise screen sharing doesn't work
+     services.pipewire = {
+       wantedBy = [ "niri.service" ];
+       before = [ "niri.service" ];
+     };
 
-        targets.graphical-session.wants = [
-          # niri doesn't implement xwayland itself
-          "xwayland-satellite.service"
-          "foot-server.socket"
-        ];
-      };
+     services.xwayland-satellite =
+       let
+         target = [ "graphical-session.target" ];
+       in
+       {
+         # Based on upstream resources/xwayland-satellite.service
+         wantedBy = target;
+         bindsTo = target;
+         partOf = target;
+         after = target;
+         requisite = target;
 
-      environment.etc."niri/config.kdl".text = ''
-        input {
-          keyboard {
-            xkb {
-              layout "de(neo),de"
-            }
-          }
+         # User services that should have DISPLAY set.
+         # Note that we can't (always) override after for them since that
+         # will always statically set e.g. PATH due to limitations in NixOS.
+         before = [
+           "foot-server.service"
+         ];
+         serviceConfig = {
+           ExecStart = "${bins.xwayland-satellite} ${x11Display}";
+           # While we set DISPLAY for children of niri directly (and assume xwayland-satellite will start),
+           # we update systemd environment in the service since it outlives niri.
+           # TODO(sterni): dbus-update-activation-environment
+           ExecStartPost = "${bins.systemctl} --user set-environment DISPLAY=${x11Display}";
+           ExecStopPost = "${bins.systemctl} --user unset-environment DISPLAY";
+           Type = "notify";
+           NotifyAccess = "all";
+           StandardOutput = "journal";
+         };
+       };
 
-          warp-mouse-to-focus
-          focus-follows-mouse max-scroll-amount="0%"
-        }
+     targets.graphical-session.wants = [
+       # niri doesn't implement xwayland itself
+       "xwayland-satellite.service"
+       "foot-server.socket"
+     ];
+   };
 
-        output "eDP-1" {
-          scale 1
-          background-color "${acmeColors.yellow}"
-        }
+   environment.etc."niri/config.kdl".text = ''
+     input {
+       keyboard {
+         xkb {
+           layout "de(neo),de"
+         }
+       }
 
-        screenshot-path "~/Pictures/screenshots/%Y%m%d_%Hh%Mm%Ss_niri.png"
+       warp-mouse-to-focus
+       focus-follows-mouse max-scroll-amount="0%"
+     }
 
-        prefer-no-csd
-        hotkey-overlay {
-            skip-at-startup
-        }
+     output "eDP-1" {
+       scale 1
+       background-color "${acmeColors.yellow}"
+     }
 
-        environment {
-          // Assume xwayland-satellite will start successfully.
-          // systemd environment is updated by xwayland-satellite.service,
-          // so user services that need DISPLAY need to be started after.
-          DISPLAY "${x11Display}"
-        }
+     screenshot-path "~/Pictures/screenshots/%Y%m%d_%Hh%Mm%Ss_niri.png"
 
-      '' + lib.optionalString cfg.nextcloud.enable ''
-        // TODO(sterni): can we use systemd?
-        spawn-at-startup "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon" "--start" "--components=secrets";
-        // TODO(sterni): needs some kind of bar
-        spawn-at-startup "${pkgs.nextcloud-client}/bin/nextcloud"
-      '' + ''
+     prefer-no-csd
+     hotkey-overlay {
+         skip-at-startup
+     }
 
-        layout {
-          gaps ${toString niriGaps}
-          focus-ring {
-            off
-          }
-          border {
-            width ${toString niriBorder}
-            active-color "${acmeColors.darkCyan}"
-            inactive-color "${acmeColors.lightCyan}"
-          }
+     environment {
+       // Assume xwayland-satellite will start successfully.
+       // systemd environment is updated by xwayland-satellite.service,
+       // so user services that need DISPLAY need to be started after.
+       DISPLAY "${x11Display}"
+     }
 
-          preset-column-widths {
-              proportion 0.4
-              proportion 0.5
-              proportion 0.6
-              proportion 1.0
-          }
+     // TODO(sterni): can we use systemd?
+     spawn-at-startup "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon" "--start" "--components=secrets";
+     // TODO(sterni): needs some kind of bar
+     spawn-at-startup "${pkgs.nextcloud-client}/bin/nextcloud"
 
-          preset-window-heights {
-              proportion 0.33333
-              proportion 0.5
-              proportion 0.66667
-              proportion 1.0
-          }
-        }
+     layout {
+       gaps ${toString niriGaps}
+       focus-ring {
+         off
+       }
+       border {
+         width ${toString niriBorder}
+         active-color "${acmeColors.darkCyan}"
+         inactive-color "${acmeColors.lightCyan}"
+       }
 
-        binds {
-            Mod+Return { spawn "${bins.footclient}"; }
-            // TODO(sterni): colors
-            Mod+D { spawn "${bins.bemenu-run}" "-l" "25" "-i"; }
-            Super+Alt+L { spawn "${bins.swaylock}" "-k" "-l" "-c" "${acmeColors.yellow}"; }
-            Mod+c { spawn "${bins.makoctl}" "dismiss" "-a"; }
-      '' + lib.optionalString cfg.saneterm.enable ''
-            Mod+Shift+Return { spawn "${bins.saneterm}" "--" "${bins.sh}" "-l"; }
-      '' + lib.optionalString cfg.tep.enable ''
-            Mod+G { spawn "${bins.tep}" "copy" "-l" "25" "-p" "tep>" "-i"; }
-      '' + ''
+       preset-column-widths {
+           proportion 0.4
+           proportion 0.5
+           proportion 0.6
+           proportion 1.0
+       }
 
-            XF86AudioRaiseVolume { spawn "${bins.wpctl}" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-            XF86AudioLowerVolume { spawn "${bins.wpctl}" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-            XF86AudioMute        { spawn "${bins.wpctl}" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-            XF86AudioMicMute     { spawn "${bins.wpctl}" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+       preset-window-heights {
+           proportion 0.33333
+           proportion 0.5
+           proportion 0.66667
+           proportion 1.0
+       }
+     }
 
-            XF86MonBrightnessDown { spawn "${bins.brightnessctl}" "set" "5%-"; }
-            XF86MonBrightnessUp   { spawn "${bins.brightnessctl}" "set" "5%+"; }
+     binds {
+         Mod+Return { spawn "${bins.footclient}"; }
+         // TODO(sterni): colors
+         Mod+D { spawn "${bins.bemenu-run}" "-l" "25" "-i"; }
+         Super+Alt+L { spawn "${bins.swaylock}" "-k" "-l" "-c" "${acmeColors.yellow}"; }
+         Mod+c { spawn "${bins.makoctl}" "dismiss" "-a"; }
+   '' + lib.optionalString cfg.saneterm.enable ''
+         Mod+Shift+Return { spawn "${bins.saneterm}" "--" "${bins.sh}" "-l"; }
+   '' + lib.optionalString cfg.tep.enable ''
+         Mod+G { spawn "${bins.tep}" "copy" "-l" "25" "-p" "tep>" "-i"; }
+   '' + ''
 
-            Mod+Shift+Q { close-window; }
+         XF86AudioRaiseVolume { spawn "${bins.wpctl}" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+         XF86AudioLowerVolume { spawn "${bins.wpctl}" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+         XF86AudioMute        { spawn "${bins.wpctl}" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+         XF86AudioMicMute     { spawn "${bins.wpctl}" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
 
-            Mod+Tab { spawn "${bins.niri-focus-any-window}"; }
+         XF86MonBrightnessDown { spawn "${bins.brightnessctl}" "set" "5%-"; }
+         XF86MonBrightnessUp   { spawn "${bins.brightnessctl}" "set" "5%+"; }
 
-            Mod+i { focus-column-left; }
-            Mod+e { focus-column-right; }
-            Mod+a { focus-window-down; }
-            Mod+l { focus-window-up; }
-            Mod+u { focus-column-first; }
-            Mod+o { focus-column-last; }
+         Mod+Shift+Q { close-window; }
 
-            Mod+Shift+i { move-column-left; }
-            Mod+Shift+e { move-column-right; }
-            Mod+Shift+a { move-window-down; }
-            Mod+Shift+l { move-window-up; }
+         Mod+Tab { spawn "${bins.niri-focus-any-window}"; }
 
-            Mod+Ctrl+i { focus-monitor-left; }
-            Mod+Ctrl+a { focus-monitor-down; }
-            Mod+Ctrl+l { focus-monitor-up; }
-            Mod+Ctrl+e { focus-monitor-right; }
+         Mod+i { focus-column-left; }
+         Mod+e { focus-column-right; }
+         Mod+a { focus-window-down; }
+         Mod+l { focus-window-up; }
+         Mod+u { focus-column-first; }
+         Mod+o { focus-column-last; }
 
-            Mod+Shift+Ctrl+i { move-column-to-monitor-left; }
-            Mod+Shift+Ctrl+a { move-column-to-monitor-down; }
-            Mod+Shift+Ctrl+l { move-column-to-monitor-up; }
-            Mod+Shift+Ctrl+e { move-column-to-monitor-right; }
+         Mod+Shift+i { move-column-left; }
+         Mod+Shift+e { move-column-right; }
+         Mod+Shift+a { move-window-down; }
+         Mod+Shift+l { move-window-up; }
 
-            Mod+w      { focus-workspace-down; }
-            Mod+x      { focus-workspace-up; }
-            Mod+Shift+w { move-column-to-workspace-down; }
-            Mod+Shift+x { move-column-to-workspace-up; }
+         Mod+Ctrl+i { focus-monitor-left; }
+         Mod+Ctrl+a { focus-monitor-down; }
+         Mod+Ctrl+l { focus-monitor-up; }
+         Mod+Ctrl+e { focus-monitor-right; }
 
-            Mod+Ctrl+w { move-workspace-down; }
-            Mod+Ctrl+x { move-workspace-up; }
+         Mod+Shift+Ctrl+i { move-column-to-monitor-left; }
+         Mod+Shift+Ctrl+a { move-column-to-monitor-down; }
+         Mod+Shift+Ctrl+l { move-column-to-monitor-up; }
+         Mod+Shift+Ctrl+e { move-column-to-monitor-right; }
 
-            Mod+WheelScrollDown            { focus-workspace-down; }
-            Mod+WheelScrollUp              { focus-workspace-up; }
-            Mod+Shift+WheelScrollDown      { focus-column-right; }
-            Mod+Shift+WheelScrollUp        { focus-column-left; }
+         Mod+w      { focus-workspace-down; }
+         Mod+x      { focus-workspace-up; }
+         Mod+Shift+w { move-column-to-workspace-down; }
+         Mod+Shift+x { move-column-to-workspace-up; }
 
-            Mod+1 { focus-workspace 1; }
-            Mod+2 { focus-workspace 2; }
-            Mod+3 { focus-workspace 3; }
-            Mod+4 { focus-workspace 4; }
-            Mod+5 { focus-workspace 5; }
-            Mod+6 { focus-workspace 6; }
-            Mod+7 { focus-workspace 7; }
-            Mod+8 { focus-workspace 8; }
-            Mod+9 { focus-workspace 9; }
-            Mod+Shift+1 { move-column-to-workspace 1; }
-            Mod+Shift+2 { move-column-to-workspace 2; }
-            Mod+Shift+3 { move-column-to-workspace 3; }
-            Mod+Shift+4 { move-column-to-workspace 4; }
-            Mod+Shift+5 { move-column-to-workspace 5; }
-            Mod+Shift+6 { move-column-to-workspace 6; }
-            Mod+Shift+7 { move-column-to-workspace 7; }
-            Mod+Shift+8 { move-column-to-workspace 8; }
-            Mod+Shift+9 { move-column-to-workspace 9; }
+         Mod+Ctrl+w { move-workspace-down; }
+         Mod+Ctrl+x { move-workspace-up; }
 
-            Mod+Mod5+r { consume-window-into-column; } // Mod+) (paredit slurp)
-            Mod+Mod5+e { expel-window-from-column; }   // Mod+} (paredit barf)
+         Mod+WheelScrollDown            { focus-workspace-down; }
+         Mod+WheelScrollUp              { focus-workspace-up; }
+         Mod+Shift+WheelScrollDown      { focus-column-right; }
+         Mod+Shift+WheelScrollUp        { focus-column-left; }
 
-            Mod+R { switch-preset-column-width; }
-            Mod+Shift+R { switch-preset-window-height; }
-            Mod+Ctrl+R { reset-window-height; }
-            Mod+F { maximize-column; }
-            Mod+Shift+F { fullscreen-window; }
+         Mod+1 { focus-workspace 1; }
+         Mod+2 { focus-workspace 2; }
+         Mod+3 { focus-workspace 3; }
+         Mod+4 { focus-workspace 4; }
+         Mod+5 { focus-workspace 5; }
+         Mod+6 { focus-workspace 6; }
+         Mod+7 { focus-workspace 7; }
+         Mod+8 { focus-workspace 8; }
+         Mod+9 { focus-workspace 9; }
+         Mod+Shift+1 { move-column-to-workspace 1; }
+         Mod+Shift+2 { move-column-to-workspace 2; }
+         Mod+Shift+3 { move-column-to-workspace 3; }
+         Mod+Shift+4 { move-column-to-workspace 4; }
+         Mod+Shift+5 { move-column-to-workspace 5; }
+         Mod+Shift+6 { move-column-to-workspace 6; }
+         Mod+Shift+7 { move-column-to-workspace 7; }
+         Mod+Shift+8 { move-column-to-workspace 8; }
+         Mod+Shift+9 { move-column-to-workspace 9; }
 
-            Mod+Mod5+t { set-column-width "-5%"; } // Mod+t
-            Mod+Mod5+b { set-column-width "+5%"; } // Mod++
-            Mod+Mod5+Shift+t { set-window-height "-5%"; }
-            Mod+Mod5+Shift+b { set-window-height "+5%"; }
+         Mod+Mod5+r { consume-window-into-column; } // Mod+) (paredit slurp)
+         Mod+Mod5+e { expel-window-from-column; }   // Mod+} (paredit barf)
 
-            Print { screenshot; }
-            Ctrl+Print { screenshot-screen; }
-            Alt+Print { screenshot-window; }
-        }
-      '';
+         Mod+R { switch-preset-column-width; }
+         Mod+Shift+R { switch-preset-window-height; }
+         Mod+Ctrl+R { reset-window-height; }
+         Mod+F { maximize-column; }
+         Mod+Shift+F { fullscreen-window; }
 
-      vuizvui.user.sternenseemann.services.mako = {
-        enable = true;
-        settings =
-          let
-            inherit (config.vuizvui.user.sternenseemann.services.sway) colors;
-          in
-          {
-            anchor = "bottom-right";
-            text-color = "#000000";
-            background-color = acmeColors.darkCyan;
-            border-color = acmeColors.lightCyan;
-            # top,right,bottom,left; default (inner) margin of 10 is applied on the right
-            outer-margin = "0,${toString (niriGaps + niriBorder - 10 + 2)},${toString (niriGaps + niriBorder + 2)},0";
-          };
-      };
+         Mod+Mod5+t { set-column-width "-5%"; } // Mod+t
+         Mod+Mod5+b { set-column-width "+5%"; } // Mod++
+         Mod+Mod5+Shift+t { set-window-height "-5%"; }
+         Mod+Mod5+Shift+b { set-window-height "+5%"; }
 
-      services = {
-        displayManager = {
-          sessionPackages = [
-            niri
-          ];
-        };
-        xserver = {
-          # otherwise display-manager.service is broken
-          enable = true;
-          xkb = {
-            layout = "de";
-            variant = "neo";
-          };
-          displayManager.gdm = {
-            wayland = true;
-            enable = true;
-          };
-        };
-        # Don't need it, personally
-        speechd.enable = false;
-      };
+         Print { screenshot; }
+         Ctrl+Print { screenshot-screen; }
+         Alt+Print { screenshot-window; }
+     }
+   '';
 
-      vuizvui.programs.foot = {
-        enable = true;
-        settings = {
-          main = {
-            include = "${config.vuizvui.programs.foot.package.themes}/share/foot/themes/selenized-white";
+   vuizvui.user.sternenseemann.services.mako = {
+     enable = true;
+     settings =
+       let
+         inherit (config.vuizvui.user.sternenseemann.services.sway) colors;
+       in
+       {
+         anchor = "bottom-right";
+         text-color = "#000000";
+         background-color = acmeColors.darkCyan;
+         border-color = acmeColors.lightCyan;
+         # top,right,bottom,left; default (inner) margin of 10 is applied on the right
+         outer-margin = "0,${toString (niriGaps + niriBorder - 10 + 2)},${toString (niriGaps + niriBorder + 2)},0";
+       };
+   };
 
-            dpi-aware = true;
-            font = [
-              {
-                font = defaultFont;
-                options = { size = 8; };
-              }
-              {
-                font = defaultEmojiFont;
-                options = { size = 8; };
-              }
-            ];
-          };
+   services = {
+     displayManager = {
+       sessionPackages = [
+         niri
+       ];
+     };
+     xserver = {
+       # otherwise display-manager.service is broken
+       enable = true;
+       xkb = {
+         layout = "de";
+         variant = "neo";
+       };
+       displayManager.gdm = {
+         wayland = true;
+         enable = true;
+       };
+     };
+     # Don't need it, personally
+     speechd.enable = false;
+   };
 
-          tweak = {
-            grapheme-shaping = "yes";
-          };
+   vuizvui.programs.foot = {
+     enable = true;
+     settings = {
+       main = {
+         include = "${config.vuizvui.programs.foot.package.themes}/share/foot/themes/selenized-white";
 
-          key-bindings = {
-            scrollback-up-page = "Control+Shift+Page_Up";
-            scrollback-down-page = "Control+Shift+Page_Down";
-            search-start = "Control+Shift+F";
-            font-increase = "Control+Shift+b";
-            font-decrease = "Control+Shift+t";
-            font-reset = "Control+Shift+0";
-            unicode-input = "none";
-            show-urls-launch = "Control+Shift+u";
-          };
+         dpi-aware = true;
+         font = [
+           {
+             font = defaultFont;
+             options = { size = 8; };
+           }
+           {
+             font = defaultEmojiFont;
+             options = { size = 8; };
+           }
+         ];
+       };
 
-          mouse-bindings = {
-            primary-paste = "none";
-          };
+       tweak = {
+         grapheme-shaping = "yes";
+       };
 
-          mouse = {
-            alternate-scroll-mode = "yes";
-          };
+       key-bindings = {
+         scrollback-up-page = "Control+Shift+Page_Up";
+         scrollback-down-page = "Control+Shift+Page_Down";
+         search-start = "Control+Shift+F";
+         font-increase = "Control+Shift+b";
+         font-decrease = "Control+Shift+t";
+         font-reset = "Control+Shift+0";
+         unicode-input = "none";
+         show-urls-launch = "Control+Shift+u";
+       };
 
-          scrollback = {
-            lines = 10000;
-            indicator-position = "none";
-          };
-        };
-      };
-    }
+       mouse-bindings = {
+         primary-paste = "none";
+       };
 
-    (lib.mkIf cfg.nextcloud.enable {
-      environment.systemPackages = [
-        pkgs.nextcloud-client
-      ];
+       mouse = {
+         alternate-scroll-mode = "yes";
+       };
 
-      # TODO(sterni): move out of conditional or kill conditional
-
-      # so libsecret works
-      services.gnome.gnome-keyring.enable = true;
-      programs.dconf.enable = true;
-
-      # for trash:// support in pcmanfm
-      services.gvfs.enable = true;
-    })
-  ]);
+       scrollback = {
+         lines = 10000;
+         indicator-position = "none";
+       };
+     };
+   };
+  };
 }
