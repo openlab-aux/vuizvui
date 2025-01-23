@@ -34,6 +34,7 @@ pkgs: with pkgs; [
   jq
   keychain
   ltrace
+  magic-wormhole
   man-pages
   man-pages-posix
   mmv
@@ -41,7 +42,6 @@ pkgs: with pkgs; [
   mtr
   vuizvui.aszlig.mutt
   ncdu
-  netrw
   nix-prefetch-scripts
   nmap
   openssh
