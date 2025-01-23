@@ -88,24 +88,6 @@ in
     '';
   });
 
-  plan9port = pkgs.plan9port.overrideAttrs (old: {
-    patches = old.patches or [] ++ [
-      ./plan9port/neo-modifier-fix.patch
-    ];
-
-    nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [
-      pkgs.buildPackages.makeWrapper
-    ];
-
-    # Make some tools (that don't clash) available in PATH directly
-    postInstall = old.postInstall or "" + ''
-      for cmd in 9p 9pfuse; do
-        makeWrapper "$out/plan9/bin/$cmd" "$out/bin/$cmd" \
-          --set PLAN9 "$out/plan9"
-      done
-    '';
-  });
-
   texlive = pkgs.texlive.combine {
     inherit (pkgs.texlive)
       scheme-medium minted titlesec units collection-bibtexextra wrapfig

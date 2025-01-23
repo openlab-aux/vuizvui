@@ -77,7 +77,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     vuizvui.sternenseemann.pass
-    vuizvui.sternenseemann.plan9port
+    vuizvui.tvl.users.sterni.acme.plan9port.wrapper
     vuizvui.sternenseemann.scripts.borg-wrapper
     vuizvui.sternenseemann.scripts.disable-bd-prochot
     vuizvui.sternenseemann.scripts.fdate
