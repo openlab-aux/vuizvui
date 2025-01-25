@@ -246,6 +246,12 @@ in
 
     readonly TARGET="$1"
     shift
-    nix-instantiate "$@" | xargs nix-copy-closure -s --gzip --to "$TARGET"
+    # TODO(sterni): temporary gcroot?
+    drvs="$(
+      exec 4>&1
+      nix-instantiate "$@" | tee /dev/fd/4 | xargs nix-copy-closure -s --gzip --to "$TARGET"
+    )"
+    # Display drv paths after nix-copy-closure output
+    printf '%s\n' "$drvs"
   '';
 }
