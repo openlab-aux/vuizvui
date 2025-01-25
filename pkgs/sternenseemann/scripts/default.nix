@@ -86,6 +86,7 @@ in
     self.pdfcombine
     self.pdfrange
     self.ls2count
+    self.nix-instantiate-to
   ];
 
   borg-wrapper = writeBashBin "borg-wrapper" ''
@@ -234,4 +235,17 @@ in
     name = "fdate";
     interpreter = ruby;
   };
+
+  # TODO(sterni): companion script that actually also starts the build on the remote host
+  nix-instantiate-to = writeBashBin "nix-instantiate-to" ''
+    set -eu
+    if [ $# = 0 ]; then
+      printf 'Usage: %s [USER@]HOST ARGS ...\n' "$0" >&2
+      exit 101
+    fi
+
+    readonly TARGET="$1"
+    shift
+    nix-instantiate "$@" | xargs nix-copy-closure -s --gzip --to "$TARGET"
+  '';
 }
