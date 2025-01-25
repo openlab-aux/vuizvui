@@ -295,10 +295,10 @@ in
          Mod+Ctrl+w { move-workspace-down; }
          Mod+Ctrl+x { move-workspace-up; }
 
-         Mod+WheelScrollDown            { focus-workspace-down; }
-         Mod+WheelScrollUp              { focus-workspace-up; }
-         Mod+Shift+WheelScrollDown      { focus-column-right; }
-         Mod+Shift+WheelScrollUp        { focus-column-left; }
+         Mod+WheelScrollDown       { focus-column-right; }
+         Mod+WheelScrollUp         { focus-column-left; }
+         Mod+Shift+WheelScrollDown { move-column-right; }
+         Mod+Shift+WheelScrollUp   { move-column-left; }
 
          Mod+Mod5+r { consume-window-into-column; } // Mod+) (paredit slurp)
          Mod+Mod5+e { expel-window-from-column; }   // Mod+} (paredit barf)
