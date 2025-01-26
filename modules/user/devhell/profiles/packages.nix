@@ -45,7 +45,9 @@ in {
       #dcfldd
       #dogdns
       #gomuks
+      #mkvtoolnix
       #mnamer
+      #netsniff-ng
       #nixopsUnstable
       #onefetch
       #spek
@@ -173,7 +175,6 @@ in {
       mediainfo
       menyoki
       miniserve
-      mkvtoolnix
       mmv
       mosh
       mp3gain
@@ -187,7 +188,6 @@ in {
       nethack
       nethogs
       netrw
-      netsniff-ng
       nix-output-monitor
       nix-update
       nixfmt-rfc-style
