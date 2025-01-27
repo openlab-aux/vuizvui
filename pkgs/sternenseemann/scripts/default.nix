@@ -87,6 +87,7 @@ in
     self.pdfrange
     self.ls2count
     self.nix-instantiate-to
+    self.nix-build-on
   ];
 
   borg-wrapper = writeBashBin "borg-wrapper" ''
@@ -236,7 +237,7 @@ in
     interpreter = ruby;
   };
 
-  # TODO(sterni): companion script that actually also starts the build on the remote host
+  # TODO(sterni): allow specifying multiple attrpaths without -A after --
   nix-instantiate-to = writeBashBin "nix-instantiate-to" ''
     set -eu
     if [ $# = 0 ]; then
@@ -253,5 +254,27 @@ in
     )"
     # Display drv paths after nix-copy-closure output
     printf '%s\n' "$drvs"
+  '';
+
+  # Wrapper around nix-instantiate-to which immediately starts the build on the remote machine
+  # TODO(sterni): add option to download the result
+  nix-build-on = writeBashBin "nix-build-on" ''
+    set -euo pipefail
+    if [ $# = 0 ]; then
+      printf 'Usage: %s [USER@]HOST ARGS ...\n' "$0" >&2
+      exit 101
+    fi
+
+    for flag in "$@"; do
+      case "$flag" in
+        # Also accepted by nix-instantiate(1) so no need for filtering
+        -k|--keep-going)
+          keepGoing="$flag"
+          ;;
+      esac
+    done
+
+    "${self.nix-instantiate-to}/bin/nix-instantiate-to" "$@" \
+      | ssh "$1" "xargs nix-store ''${keepGoing:-} -r"
   '';
 }
