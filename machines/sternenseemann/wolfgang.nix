@@ -65,6 +65,9 @@ in {
     pkgs.intel-media-sdk # KBL GT2 gpu
   ];
 
+  # Manage Receiver of Logitech M570 with ltunify
+  hardware.logitech.wireless.enable = true;
+
   boot.loader.systemd-boot = {
     enable = true;
     memtest86.enable = true;
