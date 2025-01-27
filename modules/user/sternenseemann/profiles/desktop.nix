@@ -142,36 +142,33 @@ in
        before = [ "niri.service" ];
      };
 
-     services.xwayland-satellite =
-       let
-         target = [ "graphical-session.target" ];
-       in
-       {
-         # Based on upstream resources/xwayland-satellite.service
-         wantedBy = target;
-         bindsTo = target;
-         partOf = target;
-         after = target;
-         requisite = target;
+     services.xwayland-satellite = rec {
+       # Based on upstream resources/xwayland-satellite.service
+       description = "XWayland outside your Wayland";
+       wantedBy = [ "graphical-session.target" ];
+       bindsTo = wantedBy;
+       partOf = wantedBy;
+       after = wantedBy;
+       requisite = wantedBy;
 
-         # User services that should have DISPLAY set.
-         # Note that we can't (always) override after for them since that
-         # will always statically set e.g. PATH due to limitations in NixOS.
-         before = [
-           "foot-server.service"
-         ];
-         serviceConfig = {
-           ExecStart = "${bins.xwayland-satellite} ${x11Display}";
-           # While we set DISPLAY for children of niri directly (and assume xwayland-satellite will start),
-           # we update systemd environment in the service since it outlives niri.
-           # TODO(sterni): dbus-update-activation-environment
-           ExecStartPost = "${bins.systemctl} --user set-environment DISPLAY=${x11Display}";
-           ExecStopPost = "${bins.systemctl} --user unset-environment DISPLAY";
-           Type = "notify";
-           NotifyAccess = "all";
-           StandardOutput = "journal";
-         };
+       # User services that should have DISPLAY set.
+       # Note that we can't (always) override after for them since that
+       # will always statically set e.g. PATH due to limitations in NixOS.
+       before = [
+         "foot-server.service"
+       ];
+       serviceConfig = {
+         ExecStart = "${bins.xwayland-satellite} ${x11Display}";
+         # While we set DISPLAY for children of niri directly (and assume xwayland-satellite will start),
+         # we update systemd environment in the service since it outlives niri.
+         # TODO(sterni): dbus-update-activation-environment
+         ExecStartPost = "${bins.systemctl} --user set-environment DISPLAY=${x11Display}";
+         ExecStopPost = "${bins.systemctl} --user unset-environment DISPLAY";
+         Type = "notify";
+         NotifyAccess = "all";
+         StandardOutput = "journal";
        };
+     };
 
      targets.graphical-session.wants = [
        # niri doesn't implement xwayland itself
