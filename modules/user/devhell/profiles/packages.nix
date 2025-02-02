@@ -299,11 +299,11 @@ in {
       wireguard-tools
       writedisk
       wtf
+      xan
       xcp
       xdg-utils
       xfsprogs
       xh
-      xsv
       yt-dlp
       zathura
       zbar
