@@ -111,6 +111,14 @@ in {
     # gpxsee # rarely need it nowadays
   ];
 
+  # Needs https://github.com/NixOS/nixpkgs/pull/378620
+  environment.etc.zathurarc.text = ''
+    set database sqlite
+    set selection-clipboard clipboard
+    # double g is unnecessary
+    map g goto top
+  '';
+
   services.tor.enable = true;
 
   environment.variables = {
