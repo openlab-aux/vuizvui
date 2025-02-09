@@ -91,6 +91,7 @@ in {
     yt-dlp mpv
     ghc cabal-install cabal2nix
     rlwrap
+    watchexec
     cbqn ngn-k
     valgrind gdb
     libreoffice
