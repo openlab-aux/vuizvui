@@ -135,6 +135,7 @@ in
    ];
    environment.systemPackages = with pkgs; [
      niri                       # compositor
+     vuizvui.tvl.users.tazjin.niri-reap
 
      bemenu                     # better dmenu
      tep
