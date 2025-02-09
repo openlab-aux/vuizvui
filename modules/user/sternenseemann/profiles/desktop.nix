@@ -15,6 +15,24 @@ let
 
   inherit (pkgs) niri;
 
+  xwayland-satellite = pkgs.xwayland-satellite.overrideAttrs (oldAttrs: rec {
+    version = "0.5-unstable-2025-01-25";
+    src = lib.warnIf
+      (lib.versionOlder "0.5" oldAttrs.version)
+      "modules/user/sternenseemann/profiles/desktop: consider dropping xwayland-satellite override"
+      pkgs.fetchFromGitHub {
+        owner = "Supreeeme";
+        repo = "xwayland-satellite";
+        sha256 = "0pzwmzwirlsxkcgyy3lk8b91kjz77sbp4483cwwapf89zz02i0y0";
+        rev = "3944c9a0e40e5629f16ad023bbc90dac80d35a0f";
+      };
+    cargoDeps = oldAttrs.cargoDeps.overrideAttrs (_: {
+      name = "xwayland-satellite-${version}-vendor.tar.gz";
+      outputHash = "sha256:0nnkb0299w3kzfnjimb4blisgzs74vivj11yrjkpzi6j7prvyfrp";
+      inherit src;
+    });
+  });
+
   gammastep = pkgs.gammastep.override {
     withRandr = false;
     withGeolocation = false;
@@ -37,7 +55,7 @@ let
       // (getBins pkgs.niri [ "niri" ])
       // (getBins pkgs.jq [ "jq" ])
       // (getBins pkgs.systemd [ "systemctl" ])
-      // (getBins pkgs.xwayland-satellite [ "xwayland-satellite" ])
+      // (getBins xwayland-satellite [ "xwayland-satellite" ])
       // (getBins gammastep [ "gammastep" ])
       // {
         niri-focus-any-window = pkgs.writeShellScript "niri-focus-any-window" ''
