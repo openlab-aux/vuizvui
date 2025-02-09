@@ -15,6 +15,16 @@ let
 
   inherit (pkgs) niri;
 
+  gammastep = pkgs.gammastep.override {
+    withRandr = false;
+    withGeolocation = false;
+    withGeoclue = false;
+    # TODO(sterni): configure waybar and re-enable
+    withAppIndicator = false;
+    withVidmode = false;
+    withDrm = false;
+  };
+
   bins = (getBins pkgs.bemenu [ "bemenu" "bemenu-run" ])
       // (getBins tep [ "tep" ])
       // (getBins config.vuizvui.user.sternenseemann.services.mako.package [ "makoctl" ])
@@ -28,6 +38,7 @@ let
       // (getBins pkgs.jq [ "jq" ])
       // (getBins pkgs.systemd [ "systemctl" ])
       // (getBins pkgs.xwayland-satellite [ "xwayland-satellite" ])
+      // (getBins gammastep [ "gammastep" ])
       // {
         niri-focus-any-window = pkgs.writeShellScript "niri-focus-any-window" ''
           set -euo pipefail
@@ -170,10 +181,25 @@ in
        };
      };
 
+     services.gammastep = rec {
+       description = "Set color temperature of display according to time of day";
+       after = [ "graphical-session.target" ];
+       partOf = after;
+
+       serviceConfig = {
+         ExecStart = lib.concatStringsSep " " [
+           "${bins.gammastep}"
+           "-l" "48.3626:10.9026" # OpenLab Augsburg
+         ];
+         Restart = "on-failure";
+       };
+     };
+
      targets.graphical-session.wants = [
        # niri doesn't implement xwayland itself
        "xwayland-satellite.service"
        "foot-server.socket"
+       "gammastep.service"
      ];
    };
 
