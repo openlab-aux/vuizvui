@@ -265,16 +265,23 @@ in
       exit 101
     fi
 
+    instantiateFlags=()
+    realiseFlags=()
+
     for flag in "$@"; do
       case "$flag" in
-        # Also accepted by nix-instantiate(1) so no need for filtering
-        -k|--keep-going)
-          keepGoing="$flag"
+        -k|--keep-going|--check)
+          # Gets reinterpreted on the remote host
+          realiseFlags+=("$(printf '%q\n' "$flag")")
+          ;;
+        *)
+          instantiateFlags+=("$flag")
           ;;
       esac
     done
 
-    "${self.nix-instantiate-to}/bin/nix-instantiate-to" "$@" \
-      | ssh "$1" "xargs nix-store ''${keepGoing:-} -r"
+    "${self.nix-instantiate-to}/bin/nix-instantiate-to" \
+      "''${instantiateFlags[@]}" \
+      | ssh "$1" "xargs nix-store ''${realiseFlags[*]} -r"
   '';
 }
