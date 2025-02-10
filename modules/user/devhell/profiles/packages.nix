@@ -51,6 +51,7 @@ in {
       #nixopsUnstable
       #onefetch
       #spek
+      #termusic
       #visidata
       #wordgrinder
       #wuzz
@@ -261,7 +262,6 @@ in {
       tealdeer
       termdown
       termshark
-      termusic
       testdisk
       tig
       toilet
