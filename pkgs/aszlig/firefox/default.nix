@@ -83,6 +83,7 @@ in wrapFirefox firefoxNoSigning {
     lockPref('browser.safebrowsing.phishing.enabled', false);
     lockPref('browser.shell.checkDefaultBrowser', false);
     lockPref('devtools.theme', 'dark');
+    lockPref('devtools.editor.autoclosebrackets', false);
     lockPref('extensions.getAddons.cache.enabled', false);
     lockPref('extensions.blocklist.enabled', false);
     lockPref('extensions.update.enabled', false);
