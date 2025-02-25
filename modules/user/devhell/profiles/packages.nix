@@ -45,6 +45,7 @@ in {
       #dcfldd
       #dogdns
       #gomuks
+      #maim
       #mkvtoolnix
       #mnamer
       #netsniff-ng
@@ -165,7 +166,6 @@ in {
       lsof
       lxd-lts
       macchina
-      maim
       mako
       man-pages
       man-pages-posix
