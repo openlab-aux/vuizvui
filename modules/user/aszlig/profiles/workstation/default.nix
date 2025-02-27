@@ -90,6 +90,7 @@ in {
       commit.gpgsign = true;
       pull.rebase = false;
       branch.sort = "-committerdate";
+      diff.algorithm = "histogram";
 
       merge.tool = "vimdiff3";
       merge.conflictstyle = "diff3";
