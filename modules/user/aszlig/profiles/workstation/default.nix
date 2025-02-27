@@ -91,6 +91,7 @@ in {
       pull.rebase = false;
       branch.sort = "-committerdate";
       diff.algorithm = "histogram";
+      init.defaultBranch = "main";
 
       merge.tool = "vimdiff3";
       merge.conflictstyle = "diff3";
