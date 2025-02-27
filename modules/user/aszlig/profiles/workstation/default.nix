@@ -88,6 +88,7 @@ in {
       rerere.enabled = true;
       rerere.autoupdate = true;
       commit.gpgsign = true;
+      commit.verbose = true;
       pull.rebase = false;
       branch.sort = "-committerdate";
       diff.algorithm = "histogram";
