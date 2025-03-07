@@ -54,6 +54,7 @@ in {
       #spek
       #visidata
       #wordgrinder
+      #wtfutil
       #wuzz
       abook
       accountsservice
@@ -298,7 +299,6 @@ in {
       wipe
       wireguard-tools
       writedisk
-      wtf
       xan
       xcp
       xdg-utils
