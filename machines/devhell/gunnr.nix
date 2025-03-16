@@ -6,6 +6,7 @@
   system.stateVersion = "24.05";
 
   boot = {
+    kernelPackages = lib.mkForce pkgs.linuxPackages;
     swraid.enable = true;
     loader = {
       grub  = {
