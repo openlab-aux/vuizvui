@@ -51,6 +51,7 @@ in {
       #netsniff-ng
       #nixopsUnstable
       #onefetch
+      #rustdesk
       #spek
       #visidata
       #wordgrinder
@@ -237,7 +238,6 @@ in {
       rq
       rsync
       rustcat
-      rustdesk
       rustic-rs
       rwpspread
       safecopy
