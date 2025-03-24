@@ -1,27 +1,27 @@
 diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index cacc56f4bbf4..20201b86965c 100644
+index 7be92d07430e..f039b7bd90b0 100644
 --- a/drivers/nvme/host/nvme.h
 +++ b/drivers/nvme/host/nvme.h
-@@ -167,6 +167,12 @@ enum nvme_quirks {
- 	 * MSI (but not MSI-X) interrupts are broken and never fire.
+@@ -178,6 +178,12 @@ enum nvme_quirks {
+ 	 * Align dma pool segment size to 512 bytes
  	 */
- 	NVME_QUIRK_BROKEN_MSI			= (1 << 21),
+ 	NVME_QUIRK_DMAPOOL_ALIGN_512		= (1 << 22),
 +
 +	/*
 +	 * Disables entering D3cold state for devices that might not wake up
 +	 * again afterwards.
 +	 */
-+	NVME_QUIRK_NO_D3_COLD			= (1 << 21),
++	NVME_QUIRK_NO_D3_COLD			= (1 << 23),
  };
  
  /*
 diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 710043086dff..3a83c9e27acb 100644
+index 3ad7f197c808..e1e64e80d5f7 100644
 --- a/drivers/nvme/host/pci.c
 +++ b/drivers/nvme/host/pci.c
-@@ -2929,6 +2929,15 @@ static unsigned long check_vendor_combination_bug(struct pci_dev *pdev)
- 		    dmi_match(DMI_BOARD_NAME, "NS5x_7xPU") ||
- 		    dmi_match(DMI_BOARD_NAME, "PH4PRX1_PH6PRX1"))
+@@ -3163,6 +3163,15 @@ static unsigned long check_vendor_combination_bug(struct pci_dev *pdev)
+ 		    dmi_match(DMI_BOARD_NAME, "PH4PRX1_PH6PRX1") ||
+ 		    dmi_match(DMI_BOARD_NAME, "PH6PG01_PH6PG71"))
  			return NVME_QUIRK_FORCE_NO_SIMPLE_SUSPEND;
 +	} else if (pdev->vendor == 0x144d && (pdev->device == 0xa80a ||
 +	           pdev->device == 0xa808)) {
@@ -34,14 +34,14 @@ index 710043086dff..3a83c9e27acb 100644
 +			return NVME_QUIRK_NO_D3_COLD;
  	}
  
- 	return 0;
-@@ -2990,6 +2999,9 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
- 		NVME_MAX_KB_SZ << 1, dma_opt_mapping_size(&pdev->dev) >> 9);
- 	dev->ctrl.max_segments = NVME_MAX_SEGS;
+ 	/*
+@@ -3223,6 +3232,9 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
+ 	dma_set_min_align_mask(&pdev->dev, NVME_CTRL_PAGE_SIZE - 1);
+ 	dma_set_max_seg_size(&pdev->dev, 0xffffffff);
  
 +	if (quirks & NVME_QUIRK_NO_D3_COLD)
 +		pci_d3cold_disable(pdev);
 +
  	/*
- 	 * There is no support for SGLs for metadata (yet), so we are limited to
- 	 * a single integrity segment for the separate metadata pointer.
+ 	 * Limit the max command size to prevent iod->sg allocations going
+ 	 * over a single page.
