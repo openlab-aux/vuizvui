@@ -117,6 +117,7 @@ in {
       ffsend
       figlet
       file
+      filen-cli
       firefox
       flac
       flavours
