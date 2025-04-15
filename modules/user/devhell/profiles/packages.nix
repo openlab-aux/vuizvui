@@ -246,7 +246,7 @@ in {
       sd
       shellcheck
       shellharden
-      signal-desktop
+      signal-desktop-bin
       silicon
       silver-searcher
       smartmontools
