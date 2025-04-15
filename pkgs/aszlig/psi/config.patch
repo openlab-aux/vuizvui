@@ -1,5 +1,5 @@
 diff --git a/options/default.xml b/options/default.xml
-index 970d3d63..723cc817 100644
+index 970d3d63..06a143b3 100644
 --- a/options/default.xml
 +++ b/options/default.xml
 @@ -19,7 +19,7 @@
@@ -38,6 +38,15 @@ index 970d3d63..723cc817 100644
                  <contact-sort-style type="QString">status</contact-sort-style>
                  <disable-service-discovery type="bool">false</disable-service-discovery>
                  <enable-groups type="bool">true</enable-groups>
+@@ -229,7 +229,7 @@ QLineEdit#le_status_text {
+                 <group-sort-style type="QString">alpha</group-sort-style>
+                 <lockdown-roster type="bool">false</lockdown-roster>
+                 <raise-on-new-event type="bool">false</raise-on-new-event>
+-                <quit-on-close type="bool">false</quit-on-close>
++                <quit-on-close type="bool">true</quit-on-close>
+                 <raise-inactive type="bool">true</raise-inactive>
+                 <show-avatar-frame type="bool">true</show-avatar-frame>
+                 <show>
 @@ -261,7 +261,7 @@ QLineEdit#le_status_text {
                  <use-left-click type="bool">false</use-left-click>
                  <use-single-click type="bool">false</use-single-click>
