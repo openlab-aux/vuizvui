@@ -9,6 +9,7 @@ let
 
   script = writeExecline "read-qr-code-from-camera" {} [
     bins.zbarcam
+      "-Sbinary"
       "--oneshot"
       "--raw"
       videoDevice

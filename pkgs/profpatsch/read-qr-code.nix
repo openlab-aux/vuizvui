@@ -9,6 +9,7 @@ let
       bins.import "png:-"
     ]
     bins.zbarimg
+      "-Sbinary"
       "-Sdisable"
       "-Sqrcode.enable"
       "--raw"
