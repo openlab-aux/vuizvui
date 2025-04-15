@@ -1,6 +1,6 @@
 { stdenv, lib, fetchFromGitHub, cmake, makeWrapper
-, hunspell, libgcrypt, libgpg-error, libidn, libomemo-c, libotr, libsForQt5
-, libsignal-protocol-c, html-tidy, qt5
+, hunspell, libgcrypt, libgpg-error, libidn, libomemo-c, libotr
+, libsignal-protocol-c, html-tidy, qt6, qt6Packages
 
 , substituteAll
 
@@ -18,13 +18,13 @@ let
 
   usrsctp = stdenv.mkDerivation {
     pname = "usrsctp";
-    version = "git20240510";
+    version = "git20250331";
 
     src = fetchFromGitHub {
       owner = "sctplab";
       repo = "usrsctp";
-      rev = "e711f82ad09eddef42859073c66242887c24a016";
-      hash = "sha256-lU0TVKdObF+sNa9BfSQN2D4bHqw80WsEOjNkrEcmOhM";
+      rev = "881513ab3fc75b4c53ffce7b22b08e7b07fcc67a";
+      hash = "sha256-rPSfBFUHurPqoUoRpaS6Q7aAz+M3tx3zB29FTS2KMXw";
     };
 
     nativeBuildInputs = [ cmake ];
@@ -32,21 +32,21 @@ let
 
 in stdenv.mkDerivation rec {
   name = "psi-${version}";
-  version = "2.0git20240717aszlig";
+  version = "2.0git20250412aszlig";
 
   src = fetchFromGitHub {
     owner = "psi-im";
     repo = "psi";
-    rev = "b98f3936c4b6fa758668567f8460b922d2527b21";
-    hash = "sha256-43lcBbjtk6Q7jV5OmZ21bOeZHZROtjG/Pc4DyiB63mA";
+    rev = "4c4109b77c3973106c6ab18ee87a3bdffeb5d905";
+    hash = "sha256-RX3LuR+jCqrlLXQI7mF3vhK7YamzDh6I4m4dXVUoICw";
     fetchSubmodules = true;
   };
 
   plugins = fetchFromGitHub {
     owner = "psi-im";
     repo = "plugins";
-    rev = "347230bf240992c74a7de2a7ac9c28545fa34401";
-    hash = "sha256-CL+m9yw0Dv28SPS/cOwYitXnWOKXAjpyzRMRZSHkMwM";
+    rev = "778a4a79ed57cd08c6b45143fca50ba138e52ff0";
+    hash = "sha256-MMYE/MIfNfLGEwvoLwZ9embAxxPmWDvQyUYVMvfoPEw";
   };
 
   patches = [
@@ -65,11 +65,11 @@ in stdenv.mkDerivation rec {
 
   cmakeFlags = [
     "-DENABLE_PLUGINS=ON" "-DUSE_KEYCHAIN=OFF" "-DPSI_VERSION=${version}"
-    "-DQDARKSTYLE_PATH=${qdarkstyle}"
+    "-DUSE_QT6=ON" "-DQDARKSTYLE_PATH=${qdarkstyle}"
   ];
 
   enableParallelBuilding = true;
-  nativeBuildInputs = [ cmake makeWrapper qt5.wrapQtAppsHook ];
+  nativeBuildInputs = [ cmake makeWrapper qt6.wrapQtAppsHook ];
   buildInputs = [
     html-tidy
     hunspell
@@ -78,12 +78,11 @@ in stdenv.mkDerivation rec {
     libidn
     libomemo-c
     libotr
-    libsForQt5.qca-qt5
+    qt6Packages.qca
     libsignal-protocol-c
     usrsctp
-    qt5.qtbase
-    qt5.qtmultimedia
-    qt5.qtwebengine
-    qt5.qtx11extras
+    qt6.qtbase
+    qt6.qtmultimedia
+    qt6.qtwebengine
   ];
 }
