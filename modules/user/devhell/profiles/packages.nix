@@ -174,6 +174,7 @@ in {
       man-pages-posix
       mapcidr
       mdbook
+      mdbook-admonish
       mdbook-mermaid
       mediainfo
       menyoki
