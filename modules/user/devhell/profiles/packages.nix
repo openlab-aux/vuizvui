@@ -204,7 +204,7 @@ in {
       ntfsprogs
       nvtopPackages.amd
       oculante
-      ollama
+      ollama-rocm
       oneshot
       openssl
       oterm
