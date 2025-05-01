@@ -92,11 +92,13 @@ in {
     ghc cabal-install cabal2nix
     rlwrap
     watchexec
+    jq
     cbqn ngn-k
-    valgrind gdb
+    gdb
     libreoffice
     vuizvui.profpatsch.nman
     vuizvui.sternenseemann.nix-env-diff
+    treefmt nixfmt-rfc-style
     xdg-utils                  # TODO(sterni): fix xdg stuff
     networkmanagerapplet       # for nm-connection-ediotr
     imv                        # TODO(sterni): is slow and clunky
