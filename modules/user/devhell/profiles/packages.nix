@@ -75,7 +75,6 @@ in {
       bcal
       beets
       binutils
-      blender
       bmon
       bottom
       brave
@@ -124,6 +123,7 @@ in {
       fortune
       freerdpUnstable
       fzf
+      gammastep
       gcc
       gdb
       gh
@@ -141,6 +141,7 @@ in {
       gptfdisk
       graphviz
       grex
+      grim
       gurk-rs
       handlr
       hdparm
@@ -237,6 +238,7 @@ in {
       reptyr
       restic
       ripgrep
+      rofi-wayland
       rq
       rsync
       rustcat
@@ -250,6 +252,7 @@ in {
       signal-desktop-bin
       silicon
       silver-searcher
+      slurp
       smartmontools
       so
       sox
@@ -259,6 +262,9 @@ in {
       steam-tui
       stow
       strace
+      swaybg
+      swayidle
+      swaylock-effects
       taskwarrior-tui
       taskwarrior3
       tealdeer
@@ -294,12 +300,15 @@ in {
       vuizvui.devhell.vim
       w3m
       wavpack
+      waybar
+      wf-recorder
       wget
       which
       whois
       wiki-tui
       wipe
       wireguard-tools
+      wl-clipboard
       writedisk
       xan
       xcp

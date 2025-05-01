@@ -25,29 +25,13 @@ in {
 
     location.provider = "geoclue2";
 
-    programs.sway = {
-      enable = true;
-      wrapperFeatures.gtk = true;
-      extraPackages = with pkgs; [
-        gammastep
-        slurp
-        grim
-        rofi-wayland
-        alacritty
-        waybar
-        swayidle
-        swaylock-effects
-        wl-clipboard
-        swaybg
-        wf-recorder
-      ];
-    };
+    programs.niri.enable = true;
 
     services.greetd = {
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd sway";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd niri-session";
           user = "greeter";
           vt = 2;
         };

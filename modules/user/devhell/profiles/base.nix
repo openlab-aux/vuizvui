@@ -141,7 +141,6 @@ in {
     environment = {
       sessionVariables = {
         XDG_SESSION_TYPE = "wayland";
-        XDG_CURRENT_DESKTOP = "sway";
         MOZ_ENABLE_WAYLAND = "1";
         MOZ_USE_XINPUT2 = "1";
         SDL_VIDEODRIVER = "wayland";
@@ -167,7 +166,6 @@ in {
 
     xdg.portal = {
       enable = true;
-      extraPortals = with pkgs; [ xdg-desktop-portal-wlr xdg-desktop-portal-gtk ];
     };
 
     fonts = {
