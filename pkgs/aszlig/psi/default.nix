@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchFromGitHub, fetchpatch, cmake, makeWrapper
+{ stdenv, lib, fetchFromGitHub, cmake, makeWrapper
 , hunspell, libgcrypt, libgpg-error, libidn, libomemo-c, libotr
 , libsignal-protocol-c, html-tidy, qt6, qt6Packages
 
@@ -37,8 +37,8 @@ in stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "psi-im";
     repo = "psi";
-    rev = "4c4109b77c3973106c6ab18ee87a3bdffeb5d905";
-    hash = "sha256-RX3LuR+jCqrlLXQI7mF3vhK7YamzDh6I4m4dXVUoICw";
+    rev = "e2d4ec018bd09792c795248c1fa608c73d1023f7";
+    hash = "sha256-dT/ltOsdw6oaPboa5z/Nb6eoxf6rEVAz8smf3eX4w74";
     fetchSubmodules = true;
   };
 
@@ -56,14 +56,6 @@ in stdenv.mkDerivation rec {
     (substituteAll {
       src = ./config.patch;
       inherit jid resource;
-    })
-
-    # Fixes alerts for already open chats:
-    # https://github.com/psi-im/psi/pull/866
-    (fetchpatch {
-      url = "https://github.com/psi-im/psi/commit/"
-          + "1e1ecea049229ee4de997d85738ae1feba5debb5.patch";
-      hash = "sha256-7MZNMgs75++N8uiVDDgEP7lPVF21wKpzBYUPnBXLjSI";
     })
   ];
 
