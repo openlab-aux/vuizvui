@@ -315,6 +315,7 @@ in {
       xdg-utils
       xfsprogs
       xh
+      xwayland-satellite
       yt-dlp
       zathura
       zbar
