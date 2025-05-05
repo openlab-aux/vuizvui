@@ -17,7 +17,6 @@ let
   })).firefox-unwrapped.override {
     crashreporterSupport = false;
     drmSupport = false;
-    googleAPISupport = false;
   }).overrideAttrs (drv: {
     patches = (drv.patches or []) ++ [
       ./mute-by-default.patch
