@@ -1,18 +1,18 @@
 {
   "ff2mpv": {
-    "url": "https://addons.mozilla.org/firefox/downloads/file/4237837/ff2mpv-5.1.1.xpi",
-    "hash": "sha256:0e3fa6850f600adba8ed477f91dd1ec4988e338c8746624e9113b861303fdf41"
+    "url": "https://addons.mozilla.org/firefox/downloads/file/4394631/ff2mpv-6.0.0.xpi",
+    "hash": "sha256:f5edb75698ebd73d7a6d4034a37636022019adde712379b7a43e741b2a179b9d"
   },
   "styl-us": {
-    "url": "https://addons.mozilla.org/firefox/downloads/file/4232144/styl_us-1.5.46.xpi",
-    "hash": "sha256:9a75bf1bdde7263a5502d78009b5f19117ea09e6237afc852e7ba4e52b565364"
+    "url": "https://addons.mozilla.org/firefox/downloads/file/4451438/styl_us-2.3.14.xpi",
+    "hash": "sha256:02861b4256d7001a091ce1fbeaaf5ddcf670c3df9db55be3af2bd703a11315d8"
   },
   "tridactyl-vim": {
-    "url": "https://addons.mozilla.org/firefox/downloads/file/4261352/tridactyl_vim-1.24.1.xpi",
-    "hash": "sha256:ab63fe1554471c280f234409393172fc58e1bb2ca527f4329d983b028073e19c"
+    "url": "https://addons.mozilla.org/firefox/downloads/file/4405615/tridactyl_vim-1.24.2.xpi",
+    "hash": "sha256:807925f26aab56ab19a28e663ade73743a033e3b77aa09edd3f77bf92e5fb36e"
   },
   "multi-account-containers": {
-    "url": "https://addons.mozilla.org/firefox/downloads/file/4186050/multi_account_containers-8.1.3.xpi",
-    "hash": "sha256:33edd98d0fc7d47fa310f214f897ce4dfe268b0f868c9d7f32b4ca50573df85c"
+    "url": "https://addons.mozilla.org/firefox/downloads/file/4355970/multi_account_containers-8.2.0.xpi",
+    "hash": "sha256:1ce35650853973572bc1ce770076d93e00b6b723b799f7b90c3045268c64b422"
   }
 }
