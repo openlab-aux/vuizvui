@@ -29,7 +29,6 @@ pkgs: with pkgs; [
   hledger-ui
   hledger-web
   i3
-  i3lock
   imagemagick
   jq
   keychain

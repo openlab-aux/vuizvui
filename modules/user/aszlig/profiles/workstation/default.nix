@@ -71,6 +71,8 @@ in {
     vuizvui.user.aszlig.services.vlock.enable = true;
     vuizvui.user.aszlig.services.vlock.user = "aszlig";
 
+    programs.i3lock.enable = true;
+
     vuizvui.user.aszlig.programs.flameshot.enable = true;
     vuizvui.user.aszlig.programs.mpv.enable = true;
 
