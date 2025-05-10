@@ -609,6 +609,9 @@ let
     let g:rust_recommended_style = 0
 
     packadd! editorconfig
+
+    " disable highlighting line lengths, because we already handle it ourselves
+    let g:EditorConfig_max_line_indicator = "fillexceeding"
   '';
 
   autocmd = ''
@@ -641,9 +644,9 @@ let
     " prevent colorscheme from overriding these highlights
     au ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
 
-    " highlight everything exceeding 79 characters (with exceptions)
+    " highlight everything exceeding textwidth characters (with exceptions)
     au BufWinEnter * if index(['csv', 'strace', 'xt'], &ft) < 0
-      \ | let w:m2=matchadd('ErrorMsg', '\%>79v.\+', -1)
+      \ | let w:m2=matchadd('ErrorMsg', '\%>' . &textwidth . 'v.\+', -1)
       \ | endif
 
     " flake everything that has been *detected* as python (not just by suffix)
