@@ -4,8 +4,8 @@ let
   pin = builtins.fetchGit {
     name = "nixos-hardware";
     url = "https://github.com/NixOS/nixos-hardware";
-    # 2024-07-27
-    rev = "0b4d40f95a68ef0a6785f6b938ac8c1383321dbf";
+    # 2025-05-09
+    rev = "3c5e12673265dfb0de3d9121420c0c2153bf21e0";
     ref = "master";
   };
 

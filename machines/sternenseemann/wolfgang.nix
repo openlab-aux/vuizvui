@@ -8,7 +8,7 @@ let
 
 in {
   imports = builtins.map (p: (import ../../nixos-hardware-path.nix) + p) [
-    "/common/pc/laptop/ssd"
+    "/common/pc/ssd"
   ] ++ [
     ./base-laptop.nix
     ./wireguard.nix
