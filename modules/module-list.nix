@@ -46,5 +46,6 @@
   ./user/sternenseemann/services/sway.nix
   ./user/sternenseemann/services/mako
   ./user/sternenseemann/profiles/desktop.nix
+  ./user/sternenseemann/programs/ma.nix
   ./user/sternenseemann/programs/saneterm.nix
 ]
