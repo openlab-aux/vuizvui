@@ -626,6 +626,7 @@ let
     au BufNewFile,BufRead *.html setlocal ts=2 sw=2 sts=2 et
     au FileType python setlocal textwidth=79
     au FileType gitcommit setlocal textwidth=72
+    au FileType gitcommit let b:EditorConfig_disable = 1
     au FileType docbk setlocal tabstop=2 shiftwidth=2 expandtab
 
     " Enable folding for Ledger files
