@@ -119,7 +119,6 @@ in {
       filen-cli
       firefox
       flac
-      flavours
       fortune
       freerdpUnstable
       fzf
@@ -273,6 +272,7 @@ in {
       termusic
       testdisk
       tig
+      tinty
       toilet
       tokei
       tree
