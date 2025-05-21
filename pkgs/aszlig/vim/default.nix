@@ -627,6 +627,7 @@ let
     au FileType python setlocal textwidth=79
     au FileType gitcommit setlocal textwidth=72
     au FileType gitcommit let b:EditorConfig_disable = 1
+    au FileType diff let b:EditorConfig_disable = 1
     au FileType docbk setlocal tabstop=2 shiftwidth=2 expandtab
 
     " Enable folding for Ledger files
@@ -646,7 +647,7 @@ let
     au ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
 
     " highlight everything exceeding textwidth characters (with exceptions)
-    au BufWinEnter * if index(['csv', 'strace', 'xt'], &ft) < 0
+    au BufWinEnter * if index(['diff', 'csv', 'strace', 'xt'], &ft) < 0
       \ | let w:m2=matchadd('ErrorMsg', '\%>' . &textwidth . 'v.\+', -1)
       \ | endif
 
