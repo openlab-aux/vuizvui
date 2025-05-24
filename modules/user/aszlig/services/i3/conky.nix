@@ -50,9 +50,6 @@ let
   mkConky = args: let
     time = cexpr "time" [ "%a %b %d %T %Z %Y" ];
     text = concatStringsSep " | " (args ++ singleton time);
-    conky = pkgs.conky.override {
-      weatherMetarSupport = true;
-    };
   in pkgs.writeScript "conky-run.sh" ''
     #!${pkgs.stdenv.shell}
     PATH="${pkgs.coreutils}/bin"
@@ -96,7 +93,7 @@ let
       ${pkgs.gnused}/bin/sed -nre 's/^.*dev *([^ ]+).*$/\1/p')"
 
     # FIXME: Log stderr to the journal!
-    ${conky}/bin/conky -c "${baseConfig}" -t "${text}" 2> /dev/null
+    ${pkgs.conky}/bin/conky -c "${baseConfig}" -t "${text}" 2> /dev/null
   '';
 
 in {
@@ -110,13 +107,13 @@ in {
     "NET: ${mkNetInfo "$primary_netdev"}"
     "DF: ${mkDiskFree "/"}"
     "LAVG: \\$loadavg"
-    "TEMP - CPU: $(cputemp) - GPU: ${gpuTemp} - OUTSIDE: ${weather}"
+    "TEMP - CPU: $(cputemp) - GPU: ${gpuTemp}"
   ];
 
   single = mkConky [
     "CPU: $(cpuload) - ${cexpr "cpu" [ "cpu0" ]}%"
     "MEM: \\$mem/\\$memmax - \\$memperc%"
     "NET: ${mkNetInfo "$primary_netdev"}"
-    "TEMP - CPU: $(cputemp) - OUTSIDE: ${weather}"
+    "TEMP - CPU: $(cputemp)"
   ];
 }
