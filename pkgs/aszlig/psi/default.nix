@@ -2,7 +2,7 @@
 , hunspell, libgcrypt, libgpg-error, libidn, libomemo-c, libotr
 , libsignal-protocol-c, html-tidy, qt6, qt6Packages
 
-, substituteAll
+, replaceVars
 
 , jid ? "something@example.org"
 , resource ? "psi-aszlig"
@@ -53,8 +53,7 @@ in stdenv.mkDerivation rec {
     ./disable-xep-0232.patch
     ./darkstyle.patch
     ./keep-urgency-hint.patch
-    (substituteAll {
-      src = ./config.patch;
+    (replaceVars ./config.patch {
       inherit jid resource;
     })
   ];

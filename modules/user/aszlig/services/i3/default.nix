@@ -108,26 +108,27 @@ in
 
     services.xserver.windowManager = {
       i3.enable = true;
-      i3.configFile = pkgs.substituteAll {
-        name = "i3.conf";
-        src = ./i3.conf;
+      i3.configFile = pkgs.replaceVarsWith {
+        src =./i3.conf;
 
-        inherit (pkgs) dmenu xterm;
-        inherit (pkgs.vuizvui.aszlig) pvolctrl;
-        inherit (pkgs.xorg) xsetroot;
-        inherit wsConfig barConfig;
+        replacements = {
+          inherit (pkgs) dmenu xterm;
+          inherit (pkgs.vuizvui.aszlig) pvolctrl;
+          inherit (pkgs.xorg) xsetroot;
+          inherit wsConfig barConfig;
 
-        # XXX: Decouple this by making the i3 bindsym directives available to
-        #      the NixOS module system.
-        flameshot = config.vuizvui.user.aszlig.programs.flameshot.package;
+          # XXX: Decouple this by making the i3 bindsym directives available to
+          #      the NixOS module system.
+          flameshot = config.vuizvui.user.aszlig.programs.flameshot.package;
 
-        lockall = pkgs.writeScript "lockvt.sh" ''
-          #!${pkgs.stdenv.shell}
-          "${pkgs.socat}/bin/socat" - UNIX-CONNECT:/run/console-lock.sock \
-            < /dev/null
-        '';
+          lockall = pkgs.writeScript "lockvt.sh" ''
+            #!${pkgs.stdenv.shell}
+            "${pkgs.socat}/bin/socat" - UNIX-CONNECT:/run/console-lock.sock \
+              < /dev/null
+          '';
+        };
 
-        postInstall = ''
+        postCheck = ''
           ${pkgs.i3}/bin/i3 -c "$target" -C
         '';
       };
