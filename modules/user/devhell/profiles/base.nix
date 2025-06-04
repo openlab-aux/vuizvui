@@ -97,12 +97,6 @@ in {
       bash = {
         completion.enable = true;
       };
-      singularity = {
-        enable = true;
-        package = pkgs.apptainer;
-        enableSuid = true;
-        enableFakeroot = true;
-      };
       starship = {
         enable = true;
         settings = {
