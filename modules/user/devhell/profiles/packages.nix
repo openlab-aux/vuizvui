@@ -51,6 +51,7 @@ in {
       #netsniff-ng
       #nixopsUnstable
       #onefetch
+      #oterm
       #rustdesk
       #spek
       #visidata
@@ -70,7 +71,6 @@ in {
       aspellDicts.en
       axel
       bandwhich
-      bat
       bc
       bcal
       beets
@@ -120,7 +120,7 @@ in {
       firefox
       flac
       fortune
-      freerdpUnstable
+      #freerdpUnstable
       fzf
       gammastep
       gcc
@@ -207,7 +207,6 @@ in {
       ollama-rocm
       oneshot
       openssl
-      oterm
       p7zip
       pamixer
       pandoc
@@ -291,7 +290,6 @@ in {
       virt-manager
       virt-viewer
       viu
-      vivid
       vlock
       vorbis-tools
       vorbisgain

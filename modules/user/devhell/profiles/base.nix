@@ -61,6 +61,8 @@ in {
     ];
 
     programs = {
+      vivid.enable = true;
+      bat.enable = true;
       dconf.enable = true;
       iftop.enable = true;
       iotop.enable = true;
