@@ -205,6 +205,7 @@ in {
       nvtopPackages.amd
       oculante
       ollama-rocm
+      onefetch
       oneshot
       openssl
       p7zip
