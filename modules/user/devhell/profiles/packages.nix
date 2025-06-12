@@ -44,6 +44,7 @@ in {
     environment.systemPackages = with pkgs; [
       #dcfldd
       #dogdns
+      #freerdpUnstable
       #gomuks
       #maim
       #mkvtoolnix
@@ -120,7 +121,6 @@ in {
       firefox
       flac
       fortune
-      #freerdpUnstable
       fzf
       gammastep
       gcc
@@ -306,6 +306,7 @@ in {
       wiki-tui
       wipe
       wireguard-tools
+      wiremix
       wl-clipboard
       writedisk
       xan
