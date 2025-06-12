@@ -885,7 +885,7 @@ let
       path  = ["nixos" "zfs" "unstable"];
     }
     { check = config.programs.zsh.enable;
-      path  = ["nixos" "zsh-history"];
+      path  = ["nixos" ];
     }
     { check = config.services.zookeeper.enable;
       path  = ["nixos" "zookeeper"];
