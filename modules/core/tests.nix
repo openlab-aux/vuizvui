@@ -870,9 +870,6 @@ let
     { check = config.programs.xss-lock.enable;
       path  = ["nixos" "xss-lock"];
     }
-    { check = config.programs.yabar.enable;
-      path  = ["nixos" "yabar"];
-    }
     { check = config.services.yggdrasil.enable;
       path  = ["nixos" "yggdrasil"];
     }
