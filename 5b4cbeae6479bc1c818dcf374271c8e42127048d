@@ -1,0 +1,4 @@
+> evaluation of the full top-level attribute of nixpkgs and we get an eval
+
+Of course I meant the top-level attribute set of all the NixOS tests,
+not nixpkgs.
