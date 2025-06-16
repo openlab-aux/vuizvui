@@ -881,9 +881,6 @@ let
            && config.boot.zfs.package.version == pkgs.zfs_unstable.version;
       path  = ["nixos" "zfs" "unstable"];
     }
-    { check = config.programs.zsh.enable;
-      path  = ["nixos" ];
-    }
     { check = config.services.zookeeper.enable;
       path  = ["nixos" "zookeeper"];
     }
