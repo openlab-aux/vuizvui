@@ -260,11 +260,11 @@ in
     # but reduces the size of the export by 90% in my testing.
     # The output of nix-store --export is not concatenatable, so we
     # can't use xargs(1) and need to hope everything fits into ARG_MAX.
-    nix-store --export $(nix-store --query --requisites $drvs) \
+    count="$(nix-store --export $(nix-store --query --requisites $drvs) \
       | zstd -zc -T0 \
-      | ssh "$TARGET" "unzstd | nix-store --import 1>&2"
-    # Insert extra newline to also visually separate stderr and stdout
-    printf '\n' >&2
+      | ssh "$TARGET" "unzstd | nix-store --import | wc -l")"
+    printf 'copied %s paths\n' "$count" 1>&2
+
     # Display drv paths after nix-store --import output
     printf '%s\n' "$drvs"
   '';
