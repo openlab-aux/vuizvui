@@ -1,5 +1,5 @@
 { lib, writeBashBin, writeText, runCommandNoCC, getBins
-, bash, ruby
+, bash, ruby, cbqn
 , makeWrapper
 , borgbackup, cryptsetup
 , ghostscript
@@ -230,6 +230,12 @@ in
     runtimeDependencies = [
       msr-tools
     ];
+  };
+
+  idate = packageScriptFile {
+    name = "idate";
+    file = ./internet-time.bqn;
+    interpreter = cbqn;
   };
 
   fdate = packageScriptFile {

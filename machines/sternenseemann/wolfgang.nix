@@ -83,6 +83,7 @@ in {
     vuizvui.tvl.users.sterni.acme.plan9port.wrapper
     vuizvui.sternenseemann.scripts.borg-wrapper
     vuizvui.sternenseemann.scripts.disable-bd-prochot
+    vuizvui.sternenseemann.scripts.idate
     vuizvui.sternenseemann.scripts.fdate
     exfat borgbackup
     gnupg pinentry-gnome3 # signing-party
