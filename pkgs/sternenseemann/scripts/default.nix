@@ -254,16 +254,15 @@ in
     readonly TARGET="$1"
     shift
     # TODO(sterni): temporary gcroot?
+    drvs="$(nix-instantiate "$@")"
+
     # zstd -z only costs 2% of the time of running the store commands,
     # but reduces the size of the export by 90% in my testing.
-    drvs="$(
-      exec 4>&1
-      nix-instantiate "$@" | tee /dev/fd/4 \
-        | xargs nix-store --query --requisites \
-        | xargs nix-store --export \
-        | zstd -zc -T0 \
-        | ssh "$TARGET" "unzstd | nix-store --import >&2"
-    )"
+    # The output of nix-store --export is not concatenatable, so we
+    # can't use xargs(1) and need to hope everything fits into ARG_MAX.
+    nix-store --export $(nix-store --query --requisites $drvs) \
+      | zstd -zc -T0 \
+      | ssh "$TARGET" "unzstd | nix-store --import 1>&2"
     # Insert extra newline to also visually separate stderr and stdout
     printf '\n' >&2
     # Display drv paths after nix-store --import output
