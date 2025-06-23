@@ -9,8 +9,6 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    boot.readOnlyNixStore = true;
-
     nix.settings = {
       sandbox = true;
       auto-optimise-store = true;
