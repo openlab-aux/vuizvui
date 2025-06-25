@@ -11,7 +11,7 @@ readonly ENABLE_BD_PROCHOT=$((1 << 0))
 # Verify we have the permissions to read
 rdmsr -a "$MSR_POWER_CTL" >/dev/null || exit $?
 
-if [ "$(rdmsr --unsigned -a "$MSR_POWER_CTL" | uniq | wc -l)" = "1" ]; then
+if [ "$(rdmsr --unsigned -a "$MSR_POWER_CTL" | sed 's/^.\+: //' | uniq | wc -l)" = "1" ]; then
   readonly current_value="$(rdmsr --unsigned "$MSR_POWER_CTL")"
 else
   printf \
