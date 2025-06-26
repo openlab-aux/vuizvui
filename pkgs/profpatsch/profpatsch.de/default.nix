@@ -1,8 +1,12 @@
 { pkgs, tvl, lib, toNetstring, toNetstringList, writeExecline, runExecline, getBins, writeRustSimple, netencode-rs, el-semicolon, el-substitute, el-exec, netencode, record-get }:
 
 let
-  bins = getBins pkgs.coreutils [ "ln" "mkdir" "echo" "printenv" "cat" "env" ]
-    // getBins pkgs.fdtools [ "multitee" ];
+  bins = getBins pkgs.coreutils [ "ln" "mkdir" "echo" "printenv" "cat" "env" "printf" "test" ]
+    // getBins pkgs.fdtools [ "multitee" ]
+    // getBins pkgs.s6-networking [ "s6-tcpserver" ]
+    // getBins pkgs.time [ "time" ]
+    // getBins pkgs.curl [ "curl" ]
+    ;
 
   quattrocento-latin = pkgs.fetchurl {
     url = "https://fonts.gstatic.com/s/quattrocento/v11/OZpEg_xvsDZQL_LKIF7q4jP3w2j6.woff2";
@@ -101,29 +105,6 @@ let
         relativeFile = "key.asc";
         path = ./key.asc;
       };
-      index_html = {
-        relativeDir = [];
-        relativeFile = "index.html";
-        path = applyTemplate {
-          name = "index.html";
-          templateNix = ./index.html.nix;
-          pageDeps = {
-            inherit jsTalkies;
-            inherit cssNormalize cssMain;
-            inherit id_txt;
-            # preloading
-            inherit
-              fontsQuattrocentoLatin
-              fontsOpenSansLatin
-              ;
-          };
-          interpolateHtml = {
-            notes-html-snippet = tvl.users.Profpatsch.blog.notes-index-html;
-            projects-html-snippet = tvl.users.Profpatsch.blog.projects-index-html;
-            posts-html-snippet = tvl.users.Profpatsch.blog.posts-index-html;
-          };
-        };
-      };
       toc = {
         relativeDir = [];
         relativeFile = "toc";
@@ -201,11 +182,159 @@ let
     bins.ln "-s" "$path" "\${out}/\${relFile}"
   ];
 
+  curlHtmlEnv = {url, envName}: tvl.nix.writeExecline "curl-html-env-${envName}" {
+  } [
+    "backtick" envName [
+      bins.curl "-s" url
+    ]
+    tvl.users.Profpatsch.lib.eprint-stdin
+    tvl.users.Profpatsch.netencode.env-splice-record
+  ];
+
+  # A simple http server that serves the site. Yes, it’s horrible.
+  index-server = { port }: tvl.nix.writeExecline "index-server" { } [
+    (tvl.users.Profpatsch.lib.runInEmptyEnv [ "PATH" ])
+    bins.s6-tcpserver
+    "127.0.0.1"
+    port
+    bins.time
+    "--format=time: %es"
+    "--"
+    (runOr "index-server")
+    return400
+    "pipeline"
+    [
+      (arglibNetencode {
+        what = "request";
+      })
+      tvl.users.Profpatsch.read-http
+    ]
+    tvl.users.Profpatsch.netencode.record-splice-env
+    (runOr "handle-request")
+    return500
+    "importas"
+    "-i"
+    "path"
+    "path"
+    "if"
+    [ tvl.tools.eprintf "GET \${path}\n" ]
+    "backtick"
+    "TEMPLATE_DATA"
+    [
+      "backtick" "-E" "page"
+      [
+        "backtick" "TEMPLATE_DATA" [
+          (curlHtmlEnv {
+            url = "https://profpatsch.de/notes?plain";
+            envName = "notes-html-snippet";
+          })
+        ]
+        "redirfd" "-r" "0" (applyTemplate {
+          name = "index.html";
+          templateNix = ./index.html.mustache.nix;
+          pageDeps = {
+            inherit (staticFiles) jsTalkies
+              cssNormalize cssMain
+              id_txt
+            # preloading
+              fontsQuattrocentoLatin
+              fontsOpenSansLatin
+              ;
+          };
+          interpolateHtml = {
+            projects-html-snippet = tvl.users.Profpatsch.blog.projects-index-html;
+            posts-html-snippet = tvl.users.Profpatsch.blog.posts-index-html;
+          };
+        })
+        "if" [ tvl.users.Profpatsch.netencode.netencode-mustache ]
+        bins.cat
+      ]
+      "export"
+      "content-type"
+      "text/html"
+      "export"
+      "serve-file"
+      "$page"
+      tvl.users.Profpatsch.netencode.env-splice-record
+    ]
+    (runOr "print-page")
+    return500
+    "if"
+    [
+      "pipeline"
+      [
+        bins.printf
+        ''
+          HTTP/1.1 200 OK
+          Content-Type: {{{content-type}}}; charset=UTF-8
+          Connection: close
+
+        ''
+      ]
+      tvl.users.Profpatsch.netencode.netencode-mustache
+    ]
+    "pipeline"
+    [ bins.printenv "TEMPLATE_DATA" ]
+    tvl.users.Profpatsch.netencode.record-splice-env
+    "importas"
+    "-ui"
+    "serve-file"
+    "serve-file"
+    bins.printf "%s"
+    "$serve-file"
+  ];
+
+  # run argv or $1 if argv returns a failure status code.
+  runOr = name: tvl.nix.writeExecline "run-or" { readNArgs = 1; } [
+    "foreground"
+    [ "$@" ]
+    "importas"
+    "?"
+    "?"
+    "ifelse"
+    [ bins.test "$?" "-eq" "0" ]
+    [ ]
+    "if"
+    [ tvl.tools.eprintf "runOr ${name}: exited \${?}, running \${1}\n" ]
+    "$1"
+  ];
+
+  return400 = tvl.nix.writeExecline "return400" { } [
+    bins.printf
+    "%s"
+    ''
+      HTTP/1.1 400 Bad Request
+      Content-Type: text/plain; charset=UTF-8
+      Connection: close
+
+    ''
+  ];
+
+  return500 = tvl.nix.writeExecline "return500" { } [
+    bins.printf
+    "%s"
+    ''
+      HTTP/1.1 500 Internal Server Error
+      Content-Type: text/plain; charset=UTF-8
+      Connection: close
+
+      Encountered an internal server error. Please try again.
+    ''
+  ];
+
+  arglibNetencode = val: tvl.nix.writeExecline "arglib-netencode" { } [
+    "export"
+    "ARGLIB_NETENCODE"
+    (tvl.users.Profpatsch.netencode.gen.dwim val)
+    "$@"
+  ];
+
   websiteStatic = linkStaticFiles staticFiles;
 
 in {
   inherit
     websiteStatic
+    index-server
     record-get
     importas-if
     concatenatedCss

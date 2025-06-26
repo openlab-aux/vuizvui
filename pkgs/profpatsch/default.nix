@@ -231,6 +231,7 @@ in rec {
       toNetstring toNetstringList writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode record-get;
   })
     websiteStatic
+    index-server
     importas-if
     concatenatedCss
     ;

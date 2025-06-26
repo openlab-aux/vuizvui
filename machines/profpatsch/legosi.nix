@@ -22,7 +22,7 @@ let
   xandikosPort = 2345;
   siteServerPort = 2346;
   gititPort = 2347;
-
+  indexServerPort = 2348;
 in {
   imports = [
     ./base-server.nix
@@ -143,9 +143,10 @@ in {
 
     vuizvui.user.profpatsch.services.gitit = {
       enable = true;
-      stateDirName = "gitit-test-blabla";
+      stateDirName = "gitit-blog";
       config = {
         port = gititPort;
+        # disable-registration = "no";
       };
     };
 
@@ -159,9 +160,17 @@ in {
       virtualHosts.${"profpatsch.de"} = {
         forceSSL = true;
         enableACME = true;
-        # pass exactly / to the static index
+        locations."/index.html" = {
+          proxyPass = "http://localhost:${toString indexServerPort}";
+        };
+        # this is a horrible workaround for having a proxy-pass for the index.html
+        # while still using the static files from the site server
+        extraConfig = ''
+          location = / {
+            try_files $uri $uri/ /index.html;
+          }
+        '';
         locations."/" = {
-          index = "index.html";
           root = pkgs.vuizvui.profpatsch.websiteStatic;
         };
         # gpg-wks-client --print-wkd-hash mail@profpatsch.de
@@ -172,7 +181,7 @@ in {
         ];
         # pass the rest to the site server (TODO: make static!)
         locations."/notes" = {
-          proxyPass = "http://localhost:${toString siteServerPort}";
+          proxyPass = "http://localhost:${toString gititPort}";
         };
         locations."/projects" = {
           proxyPass = "http://localhost:${toString siteServerPort}";
@@ -183,6 +192,20 @@ in {
         locations."/mlp/" = {
           alias = "/sync/www/mlp/";
         };
+      };
+    };
+
+    systemd.services.index-server = {
+      description = "index server for my website";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+      serviceConfig = {
+        ExecStart = pkgs.vuizvui.profpatsch.index-server {
+          port = toString indexServerPort;
+        };
+        Restart = "always";
+        RestartSec = "1s";
+        DynamicUser = true;
       };
     };
 

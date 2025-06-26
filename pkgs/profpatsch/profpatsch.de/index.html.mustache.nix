@@ -2,7 +2,7 @@
 , cssNormalize, cssMain
 , id_txt
 , fontsQuattrocentoLatin, fontsOpenSansLatin
-, notes-html-snippet, projects-html-snippet, posts-html-snippet
+, projects-html-snippet, posts-html-snippet
 }:
 
 ''
@@ -58,7 +58,7 @@
       <p>Hey there.</p>
 
       <h1>Notes</h1>
-      ${notes-html-snippet}
+      {{{notes-html-snippet}}}
 
       <h1>Projects</h1>
       ${projects-html-snippet}
