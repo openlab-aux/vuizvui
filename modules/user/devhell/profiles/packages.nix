@@ -242,6 +242,7 @@ in {
       rsync
       rustcat
       rustic-rs
+      rustmission
       rwpspread
       safecopy
       screen
@@ -310,6 +311,7 @@ in {
       wiremix
       wl-clipboard
       writedisk
+      wthrr
       xan
       xcp
       xdg-utils
