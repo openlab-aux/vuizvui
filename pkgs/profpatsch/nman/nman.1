@@ -36,6 +36,11 @@ of
 and searches all its outputs for a man page named
 .Ar ATTR
 which may be in any section.
+For dotted attribute paths like
+.Ql pkgs.profpatsch.nman ,
+only the last component
+.Po Ql nman Pc
+is used as the man page name to search for.
 If multiple matches are found, the one that is alphanumerically
 lower is preferred:
 For example,
@@ -47,6 +52,7 @@ Like above, but
 .Nm
 will only look for the man page in the given section
 .Ar SECTION .
+For dotted attributes, the last component is used as the page name to search for.
 Note that
 .Ar SECTION
 must be a number or
@@ -107,6 +113,9 @@ nman mandoc 7 man
 
 # open lowdown(1) from local default.nix
 nman --local lowdown
+
+# open nman(1) from dotted attribute path (searches for "nman", not "pkgs.profpatsch.nman")
+nman --local pkgs.profpatsch.nman
 
 # open man page from a custom package set
 nman -l myCustomPackage
