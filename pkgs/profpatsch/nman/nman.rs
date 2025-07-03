@@ -43,10 +43,12 @@ fn main() {
     };
 
     let mut is_debug: bool = false;
+    let mut use_local: bool = false;
     for opt in opts {
         match &opt[..] {
             "--help" | "--usage" | "-h" => cli_res = ShowUsage { err_msg: None },
             "--verbose" | "-v" => is_debug = true,
+            "--local" | "-l" => use_local = true,
             _ => {
                 cli_res = ShowUsage {
                     err_msg: Some("Unknown option"),
@@ -55,13 +57,17 @@ fn main() {
         }
     }
 
-    let main = Main { is_debug };
+    let main = Main { is_debug, use_local };
     match cli_res {
         ShowUsage { err_msg } => {
             if let Some(msg) = err_msg {
                 eprintln!("nman: usage error: {}", msg);
             }
-            println!("Usage: {} ATTR [PAGE | SECTION [PAGE]]", &args[0]);
+            println!("Usage: {} [OPTIONS] ATTR [PAGE | SECTION [PAGE]]", &args[0]);
+            println!("Options:");
+            println!("  -h, --help, --usage  Show this help message");
+            println!("  -v, --verbose        Enable verbose output");
+            println!("  -l, --local          Use ./default.nix instead of <nixpkgs>");
             std::process::exit(NmanError::Usage.code());
         }
         Action(action) => match action {
@@ -259,6 +265,8 @@ impl<'a> DrvWithOutput<'a> {
 struct Main {
     /// Whether the program is running in debug mode
     is_debug: bool,
+    /// Whether to use local default.nix instead of <nixpkgs>
+    use_local: bool,
 }
 
 #[derive(Debug)]
@@ -306,12 +314,17 @@ impl Main {
         page: &'a str,
     ) -> Result<(), NmanError<'a>> {
         let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
-        // TODO(sterni): allow selecting other base package sets,
-        //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
-        let expr = format!(
-            "with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
-            attr, attr
-        );
+        let expr = if self.use_local {
+            format!(
+                "with (import ./default.nix {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
+                attr, attr
+            )
+        } else {
+            format!(
+                "with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
+                attr, attr
+            )
+        };
         let inst = self
             .debug_log_command(
                 Command::new("nix-instantiate")

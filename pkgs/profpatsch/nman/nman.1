@@ -6,7 +6,7 @@
 .Nd nix-shell for man pages
 .Sh SYNOPSIS
 .Nm
-.Op Fl hv
+.Op Fl hvl
 .Ar ATTR
 .Op Ar PAGE | SECTION Op PAGE
 .Sh DESCRIPTION
@@ -80,6 +80,13 @@ Print usage information.
 Put
 .Nm
 into verbose mode, where it prints all commands it executes.
+.It Fl -local | l
+Use
+.Pa ./default.nix
+in the current directory instead of
+.Ql <nixpkgs>
+from the Nix search path. This allows using local package definitions
+or custom package sets.
 .El
 
 .Sh EXAMPLES
@@ -97,6 +104,12 @@ nman mandoc man
 
 # open man(7) from the same package
 nman mandoc 7 man
+
+# open lowdown(1) from local default.nix
+nman --local lowdown
+
+# open man page from a custom package set
+nman -l myCustomPackage
 .Ed
 .Sh DISCLAIMER
 .Nm
