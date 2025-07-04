@@ -26,9 +26,9 @@ fn main() {
         std::env::args().partition(|s| s.starts_with("-"));
 
     let mut cli_res: CliResult = match args.len() {
-        2 => Action(CliAction::Man(&args[1], None, &args[1])),
+        2 => Action(CliAction::Man(&args[1], None, extract_page_name_from_attr(&args[1]))),
         3 => match parse_man_section(&args[2]) {
-            Ok(s) => Action(CliAction::Man(&args[1], Some(s), &args[1])),
+            Ok(s) => Action(CliAction::Man(&args[1], Some(s), extract_page_name_from_attr(&args[1]))),
             Err(_) => Action(CliAction::Man(&args[1], None, &args[2])),
         },
         4 => match parse_man_section(&args[2]) {
@@ -43,10 +43,12 @@ fn main() {
     };
 
     let mut is_debug: bool = false;
+    let mut use_local: bool = false;
     for opt in opts {
         match &opt[..] {
             "--help" | "--usage" | "-h" => cli_res = ShowUsage { err_msg: None },
             "--verbose" | "-v" => is_debug = true,
+            "--local" | "-l" => use_local = true,
             _ => {
                 cli_res = ShowUsage {
                     err_msg: Some("Unknown option"),
@@ -55,13 +57,17 @@ fn main() {
         }
     }
 
-    let main = Main { is_debug };
+    let main = Main { is_debug, use_local };
     match cli_res {
         ShowUsage { err_msg } => {
             if let Some(msg) = err_msg {
                 eprintln!("nman: usage error: {}", msg);
             }
-            println!("Usage: {} ATTR [PAGE | SECTION [PAGE]]", &args[0]);
+            println!("Usage: {} [OPTIONS] ATTR [PAGE | SECTION [PAGE]]", &args[0]);
+            println!("Options:");
+            println!("  -h, --help, --usage  Show this help message");
+            println!("  -v, --verbose        Enable verbose output");
+            println!("  -l, --local          Use ./default.nix instead of <nixpkgs>");
             std::process::exit(NmanError::Usage.code());
         }
         Action(action) => match action {
@@ -259,6 +265,8 @@ impl<'a> DrvWithOutput<'a> {
 struct Main {
     /// Whether the program is running in debug mode
     is_debug: bool,
+    /// Whether to use local default.nix instead of <nixpkgs>
+    use_local: bool,
 }
 
 #[derive(Debug)]
@@ -306,12 +314,17 @@ impl Main {
         page: &'a str,
     ) -> Result<(), NmanError<'a>> {
         let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
-        // TODO(sterni): allow selecting other base package sets,
-        //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
-        let expr = format!(
-            "with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
-            attr, attr
-        );
+        let expr = if self.use_local {
+            format!(
+                "with (import ./default.nix {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
+                attr, attr
+            )
+        } else {
+            format!(
+                "with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
+                attr, attr
+            )
+        };
         let inst = self
             .debug_log_command(
                 Command::new("nix-instantiate")
@@ -603,6 +616,13 @@ fn match_man_page_file(name: &str, section: &str, page: &str) -> bool {
     }
 }
 
+/// Extract the page name from a dotted attribute path.
+/// For example, "pkgs.profpatsch.nman" becomes "nman".
+/// If there are no dots, returns the original string.
+fn extract_page_name_from_attr(attr: &str) -> &str {
+    attr.split('.').last().unwrap_or(attr)
+}
+
 /// Check if a string describes a man section,
 /// i. e. is a number or "3p" (Perl Developer's
 /// manual). Used to distinguish between man pages
@@ -691,6 +711,24 @@ mod tests {
         assert!(parse_man_section("ocamlPackages.sexp").is_err());
         assert!(parse_man_section("lowdown").is_err());
         assert!(parse_man_section("").is_err());
+    }
+
+    #[test]
+    fn test_extract_page_name_from_attr() {
+        // Simple case without dots
+        assert_eq!(extract_page_name_from_attr("nman"), "nman");
+        assert_eq!(extract_page_name_from_attr("hello"), "hello");
+        
+        // Dotted attribute paths
+        assert_eq!(extract_page_name_from_attr("pkgs.profpatsch.nman"), "nman");
+        assert_eq!(extract_page_name_from_attr("a.b.c.d"), "d");
+        assert_eq!(extract_page_name_from_attr("nixpkgs.hello"), "hello");
+        
+        // Edge cases
+        assert_eq!(extract_page_name_from_attr(""), "");
+        assert_eq!(extract_page_name_from_attr("."), "");
+        assert_eq!(extract_page_name_from_attr("package."), "");
+        assert_eq!(extract_page_name_from_attr(".package"), "package");
     }
 
     #[test]
