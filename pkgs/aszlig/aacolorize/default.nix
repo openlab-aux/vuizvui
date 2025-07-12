@@ -2,6 +2,8 @@
 
 python3Packages.buildPythonPackage {
   name = "aacolorize";
+  pyproject = true;
+  build-system = [ python3Packages.setuptools ];
   src = runCommand "aacolorize-src" {} ''
     mkdir -p "$out"
     cp "${./aacolorize.py}" "$out/aacolorize"
