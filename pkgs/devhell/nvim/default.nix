@@ -70,4 +70,8 @@ pkgs.neovim-unwrapped.overrideAttrs (drv: {
   postInstall = (drv.postInstall or "") + ''
     ln -sf "$vimrc" "$out/share/nvim/sysinit.vim"
   '';
+
+  meta = (drv.meta or {}) // {
+    hydraPlatforms = [ "x86_64-linux" ];
+  };
 })

@@ -102,4 +102,8 @@ pkgs.vim-full.overrideAttrs (drv: {
   postInstall = (drv.postInstall or "") + ''
     ln -sf "$vimrc" "$out/share/vim/vimrc"
   '';
+
+  meta = (drv.meta or {}) // {
+    hydraPlatforms = [ "x86_64-linux" ];
+  };
 })
