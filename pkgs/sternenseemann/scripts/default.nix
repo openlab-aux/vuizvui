@@ -253,16 +253,33 @@ in
 
     readonly TARGET="$1"
     shift
+
+    compress="zstd -zc -T0"
+    decompress="unzstd"
+    instantiateFlags=()
+
+    for flag in "$@"; do
+      case "$flag" in
+        --gzip)
+          compress="gzip -c4"
+          decompress="gunzip"
+          ;;
+        *)
+          instantiateFlags+=("$flag")
+          ;;
+      esac
+    done
+
     # TODO(sterni): temporary gcroot?
-    drvs="$(nix-instantiate "$@")"
+    drvs="$(nix-instantiate "''${instantiateFlags[@]}")"
 
     # zstd -z only costs 2% of the time of running the store commands,
     # but reduces the size of the export by 90% in my testing.
     # The output of nix-store --export is not concatenatable, so we
     # can't use xargs(1) and need to hope everything fits into ARG_MAX.
     count="$(nix-store --export $(nix-store --query --requisites $drvs) \
-      | zstd -zc -T0 \
-      | ssh "$TARGET" "unzstd | nix-store --import | wc -l")"
+      | $compress \
+      | ssh "$TARGET" "$decompress | nix-store --import | wc -l")"
     printf 'copied %s paths\n' "$count" 1>&2
 
     # Display drv paths after nix-store --import output
