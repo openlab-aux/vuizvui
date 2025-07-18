@@ -5,11 +5,15 @@
 , pygobject3
 , gtk3
 , gobject-introspection
+, setuptools
 }:
 
 buildPythonApplication {
   pname = "saneterm";
   version = "git";
+
+  pyproject = true;
+  build-system = [ setuptools ];
 
   src = fetchgit {
     url = "git://git.8pit.net/saneterm.git";
