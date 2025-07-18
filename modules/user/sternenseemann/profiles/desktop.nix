@@ -373,10 +373,10 @@ in
          layout = "de";
          variant = "neo";
        };
-       displayManager.gdm = {
-         wayland = true;
-         enable = true;
-       };
+     };
+     displayManager.gdm = {
+       wayland = true;
+       enable = true;
      };
      # Don't need it, personally
      speechd.enable = false;
