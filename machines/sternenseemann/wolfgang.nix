@@ -62,7 +62,8 @@ in {
     powerManagement = "auto-cpufreq";
   };
   hardware.graphics.extraPackages = [
-    pkgs.intel-media-sdk # KBL GT2 gpu
+    # TODO(sterni): is there an alternative for my GPU?
+    # EOL / multiple CVEs: pkgs.intel-media-sdk # KBL GT2 gpu
   ];
 
   # Manage Receiver of Logitech M570 with ltunify
