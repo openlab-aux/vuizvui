@@ -38,7 +38,8 @@
 
   hardware = {
     cpu.amd.updateMicrocode = true;
-    opengl = {
+    entableRedistributableFirmware = true;
+    graphics = {
       enable = true;
       extraPackages = with pkgs; [
         libvdpau-va-gl
