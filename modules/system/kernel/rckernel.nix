@@ -6,7 +6,7 @@
     default = false;
     description = ''
       Whether to always use the latest kernel, even if it's still a release
-      canidate version.
+      candidate version.
     '';
   };
 

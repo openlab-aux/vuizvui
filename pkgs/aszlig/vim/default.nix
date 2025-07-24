@@ -517,7 +517,7 @@ let
     with open(sys.argv[1]) as fp:
       vim_languages = set(json.load(fp)) - blacklisted_languages
 
-    # This generate language canidates/aliases according to
+    # This generate language candidates/aliases according to
     # https://git.io/Jcioq with the keys being the corresponding Vim syntax
     # file name and the values being a set of all the aliases we can use for
     # GitHub Flavored Markdown.
@@ -532,24 +532,24 @@ let
         # The Vim variant doesn't support a dot prefix to the language name.
         extensions = [ext.lstrip('.') for ext in lang.get('extensions', [])]
 
-        raw_canidates = [name] + aliases + interpreters + extensions
+        raw_candidates = [name] + aliases + interpreters + extensions
         # Note that this is not a set (yet), because order is important here,
         # going from the most specific ones to the least specific ones.
-        canidates = [c.replace(' ', '-').lower() for c in raw_canidates]
+        candidates = [c.replace(' ', '-').lower() for c in raw_candidates]
 
-        for canidate in canidates:
-          if canidate in vim_languages:
+        for candidate in candidates:
+          if candidate in vim_languages:
             # At this point we *do* want to make sure it's a set because we
             # only want to provide the aliases once.
-            languages[canidate] = set(canidates)
+            languages[candidate] = set(candidates)
             break
 
-    # This is for getting the canidates/aliases into the format expected by
+    # This is for getting the candidates/aliases into the format expected by
     # g:markdown_fenced_languages, which either is the syntax file directly or
     # some aliased mapping like "bash=sh".
     fenced_langs = []
-    for name, canidates in languages.items():
-      fenced_langs += [c if c == name else f'{c}={name}' for c in canidates]
+    for name, candidates in languages.items():
+      fenced_langs += [c if c == name else f'{c}={name}' for c in candidates]
 
     with open(sys.argv[3], 'w') as fp:
       escaped = ["'" + val.replace("'", "'''") + "'" for val in fenced_langs]
