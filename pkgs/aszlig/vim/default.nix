@@ -594,6 +594,10 @@ let
     " markdown
     source ${vimMarkdownLanguages}
 
+    " Luckily I rarely have to do with Java stuff, so to prevent recursion with
+    " Markdown syntax, let's just disable Markdown for Java.
+    let g:java_ignore_markdown = 1
+
     " hexokinase
     let g:Hexokinase_highlighters = ['background']
     let g:Hexokinase_refreshEvents =
