@@ -38,7 +38,7 @@
 
   hardware = {
     cpu.amd.updateMicrocode = true;
-    entableRedistributableFirmware = true;
+    enableRedistributableFirmware = true;
     graphics = {
       enable = true;
       extraPackages = with pkgs; [
