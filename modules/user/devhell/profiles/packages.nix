@@ -204,7 +204,6 @@ in {
       ntfsprogs
       nvtopPackages.amd
       oculante
-      ollama-rocm
       onefetch
       oneshot
       openssl
