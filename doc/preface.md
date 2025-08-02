@@ -17,6 +17,5 @@ repository is for everything either too complex or not polished/generic
 enough to be pushed into [<nixpkgs>][nixpkgs].
 
 [nixos]: https://nixos.org/
-<!-- FIXME(sterni): no longer a good URL to link to -->
-[nixpkgs]: https://nixos.org/nixpkgs
+[nixpkgs]: https://github.com/nixos/nixpkgs
 [openlab]: https://openlab-augsburg.de
