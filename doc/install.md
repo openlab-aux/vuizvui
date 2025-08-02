@@ -6,15 +6,14 @@ there is a channel available.
 You can have a look at [list of channels][hydra-channel-list]
 to check whether a channel exists for the machine you want to install.
 
-<!-- FIXME(sterni): machine no longer exists -->
-So let's say you want to install the machine `schnurrkadse` which
-has the channel attribute `channels.machines.sternenseemann.schnurrkadse`.
+So let's say you want to install the machine `wolfgang` which
+has the channel attribute `channels.machines.sternenseemann.wolfgang`.
 
 First you need to add the channel for the `root` user of your current system
 using the following commands:
 
 ```ShellSession
-# nix-channel --add https://hydra.build/channel/custom/openlab/vuizvui/channels.machines.sternenseemann.schnurrkadse vuizvui
+# nix-channel --add https://hydra.build/channel/custom/openlab/vuizvui/channels.machines.sternenseemann.wolfgang vuizvui
 # nix-channel --remove nixos  # otherwise it will interfere with the rebuild
 # nix-channel --update
 ```
@@ -31,10 +30,10 @@ Next put the following in your
 {file}`/etc/nixos/configuration.nix`:
 
 ```nix
-(import <vuizvui/machines>).sternenseemann.schnurrkadse.config
+(import <vuizvui/machines>).sternenseemann.wolfgang.config
 ```
 
-Of course you need to replace `sternenseemann.schnurrkadse` with the
+Of course you need to replace `sternenseemann.wolfgang` with the
 attribute of your machine.
 
 Now in order to do the first build and activation of the configuration, you
