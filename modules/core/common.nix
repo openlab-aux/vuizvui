@@ -77,8 +77,12 @@ in {
       ] ++ lib.optional config.vuizvui.enableGlobalNixpkgsConfig nixpkgsConfig;
     in lib.mkIf config.vuizvui.modifyNixPath (lib.mkOverride 90 nixPath);
 
-    # correct path used by command-not-found which is enabled by default
-    programs.command-not-found.dbPath =
-      lib.mkDefault "${channelPath}/nixpkgs/programs.sqlite";
+    programs.command-not-found = {
+      # NixOS 25.11 disables command-not-found by default because it doesn't work
+      # with flake based systems. This doesn't affect vuizvui.
+      enable = lib.mkDefault true;
+      # correct path used by command-not-found
+      dbPath = lib.mkDefault "${channelPath}/nixpkgs/programs.sqlite";
+    };
   };
 }
