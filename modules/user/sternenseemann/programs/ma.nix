@@ -12,7 +12,7 @@ in
          type = lib.types.package;
          description = "ma derivation to use";
          default = pkgs.ma;
-         defaultText = lib.literalExample "pkgs.ma";
+         defaultText = lib.literalExpression "pkgs.ma";
        };
      };
    };

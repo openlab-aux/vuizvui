@@ -8,9 +8,9 @@ in {
     type = lib.types.bool;
     default = false;
     description = ''
-      Whether to enable support for zswap with <literal>z3fold</literal> for
-      pooling and <literal>zstd</literal> for compression, if available
-      (otherwise it falls back to <literal>lzo</literal>).
+      Whether to enable support for zswap with `z3fold` for
+      pooling and `zstd` for compression, if available
+      (otherwise it falls back to `lzo`).
 
       Zswap is a compressed cache for swap pages, which is especially useful
       for machines with limited RAM.

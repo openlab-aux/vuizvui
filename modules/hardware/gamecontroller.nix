@@ -33,9 +33,9 @@ let
     b = "B button (right)";
     x = "X button (left)";
     y = "Y button (up)";
-    back = "XBox <literal>back</literal> button";
-    guide = "XBox <literal>guide</literal> button";
-    start = "<literal>start</literal> button";
+    back = "XBox `back` button";
+    guide = "XBox `guide` button";
+    start = "`start` button";
     leftstick = "pressing the left stick";
     rightstick = "pressing the right stick";
     leftshoulder = "left shoulder/bumper button";
@@ -63,7 +63,7 @@ let
         description = ''
           The SDL2 GUID to uniquely identify this controller.
 
-          Use <literal>vuizvui.list-gamecontrollers</literal> to list them.
+          Use {option}`vuizvui.list-gamecontrollers` to list them.
         '';
       };
 
@@ -87,19 +87,12 @@ in {
   options.vuizvui.hardware.gameController = mkOption {
     type = types.attrsOf (types.submodule gcSubModule);
     default = {};
-    description = let
-      url =
-      "https://upload.wikimedia.org/wikipedia/commons/2/2c/360_controller.svg";
-    in ''
+    description = ''
       A mapping of the game controllers to use with SDL2 games.
 
       The mapping is always based on the XBox reference controller, so even if
-      you don't use an XBox controller, you still have to map your keys
-      according to this layout:
-
-      <link xlink:href="${
-        "https://upload.wikimedia.org/wikipedia/commons/2/2c/360_controller.svg"
-      }"/>
+      you don't use an XBox controller, you still have to map your keys according to
+      [this layout](https://upload.wikimedia.org/wikipedia/commons/2/2c/360_controller.svg).
     '';
   };
 

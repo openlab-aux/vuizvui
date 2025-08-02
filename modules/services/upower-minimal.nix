@@ -47,7 +47,7 @@ in
         description = ''
           The upower configuration.
 
-          So far it looks like there is always only one Section called <literal>UPower</literal>
+          So far it looks like there is always only one Section called `UPower`
         '';
         example = {
           UPower = {

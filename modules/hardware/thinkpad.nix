@@ -19,7 +19,7 @@ in
       description = ''
         The power management tool to use for the ThinkPad.
         - tlp: TLP Linux Advanced Power Management
-        - auto-cpufreq: https://github.com/AdnanHodzic/auto-cpufreq
+        - [auto-cpufreq](https://github.com/AdnanHodzic/auto-cpufreq)
 
         Only enables the respective services, you might have to adjust settings manually.
       '';

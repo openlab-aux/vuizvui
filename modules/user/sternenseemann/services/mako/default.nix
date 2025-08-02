@@ -20,6 +20,8 @@ in
       # Module doesn't work without this patch
       readOnly = true;
       default = mako';
+      defaultText = lib.literalExpression "pkgs.mako.overrideAttrs (_: { /* … */ })";
+      description = "mako package to use";
     };
 
     settings = lib.mkOption {

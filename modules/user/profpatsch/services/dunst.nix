@@ -26,7 +26,7 @@ let
     options = {
       package = lib.mkOption {
         type = lib.types.package;
-        example = lib.literalExample "pkgs.adwaita-icon-theme";
+        example = lib.literalExpression "pkgs.adwaita-icon-theme";
         description = "Package providing the theme.";
       };
 
@@ -50,8 +50,8 @@ in {
       default = { };
       description = ''
         Settings for the dunst daemon which are directly translated
-        to the used <literal>dunstrc</literal> config file. See
-        <link xlink:href="https://github.com/dunst-project/dunst/blob/v${pkgs.dunst.version}/dunstrc" />
+        to the used {file}`dunstrc` config file. See
+        <https://github.com/dunst-project/dunst/blob/v${pkgs.dunst.version}/dunstrc>
         for a list of available options.
       '';
     };
