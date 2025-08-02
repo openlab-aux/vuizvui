@@ -80,7 +80,7 @@ let
       in fontconfig syntax or using a special
       record syntax (see example).
     '';
-    example = lib.literalExample (prettyPrint [
+    example = lib.literalExpression (prettyPrint [
       {
         font = "Courier New";
         options = {
@@ -124,7 +124,7 @@ let
         Bind a key which pipes the ${lib.removePrefix "pipe-" name}
         region into the given command.
       '';
-      example = lib.literalExample (prettyPrint exampleCommandBindSet);
+      example = lib.literalExpression (prettyPrint exampleCommandBindSet);
       default = null;
       apply = buildIniCommandBind;
     };
@@ -153,7 +153,7 @@ in {
         options can be found in {manpage}`foot.ini(5)` or at
         <https://codeberg.org/dnkl/foot/src/tag/${pkgs.foot.version}/foot.ini>.
       '';
-      example = lib.literalExample (prettyPrint {
+      example = lib.literalExpression (prettyPrint {
         key-bindings = {
           scrollback-up-page = "Control+Shift+Page_Up";
           scrollback-down-page = "Control+Shift+Page_Down";

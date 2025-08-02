@@ -65,8 +65,8 @@ in {
     package = mkOption {
       type = types.package;
       default = pkgs.gnupg;
-      defaultText = "pkgs.gnupg";
-      example = lib.literalExample "pkgs.gnupg21";
+      defaultText = lib.literalExpression "pkgs.gnupg";
+      example = lib.literalExpression "pkgs.gnupg21";
       description = ''
         The GnuPG package to use for running the agent and make available in
         <option>environment.systemPackages</option>.
@@ -79,7 +79,7 @@ in {
       extraConfig = lib.mkOption {
         type = types.str;
         default = "";
-        example = lib.literalExample ''
+        example = lib.literalExpression ''
           default-cache-ttl 34560000
           default-cache-ttl-ssh 34560000
           max-cache-ttl 34560000
@@ -91,8 +91,8 @@ in {
       pinentry.program = mkOption {
         type = types.path;
         default = "${pkgs.pinentry-gtk2}/bin/pinentry";
-        defaultText = "\${pkgs.pinentry-gtk2}/bin/pinentry";
-        example = lib.literalExample "\${pkgs.pinentry-qt}/bin/pinentry";
+        defaultText = lib.literalExpression "\"\${pkgs.pinentry-gtk2}/bin/pinentry\"";
+        example = lib.literalExpression "\"\${pkgs.pinentry-qt}/bin/pinentry\"";
         description = "The pinentry program to use to ask for passphrases.";
       };
 
@@ -106,8 +106,8 @@ in {
           default = "${cfg.package}/libexec/scdaemon";
           defaultText = let
             configPath = "config.vuizvui.programs.gnupg";
-          in "\${${configPath}.package}/libexec/scdaemon";
-          example = lib.literalExample "\${pkgs.my_scdaemon}/bin/scdaemon";
+          in lib.literalExpression "\"\${${configPath}.package}/libexec/scdaemon\"";
+          example = lib.literalExpression "\"\${pkgs.my_scdaemon}/bin/scdaemon\"";
           description = "The program to use for the Smartcard daemon";
         };
       };

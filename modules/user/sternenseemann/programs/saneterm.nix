@@ -14,7 +14,7 @@ in
           saneterm derivation to use.
         '';
         default = pkgs.vuizvui.sternenseemann.saneterm;
-        defaultText = lib.literalExample "pkgs.vuizvui.sternenseemann.saneterm";
+        defaultText = lib.literalExpression "pkgs.vuizvui.sternenseemann.saneterm";
       };
     };
   };
