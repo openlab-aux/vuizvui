@@ -10,7 +10,7 @@ let
       default = null;
       type = types.nullOr (types.listOf types.str);
       description = ''
-        A list of restrictions to apply or <option>null</option> to use the
+        A list of restrictions to apply or `null` to use the
         built-in default value from Postfix.
         ${specificDescription}
       '';

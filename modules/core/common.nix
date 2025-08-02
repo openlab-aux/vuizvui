@@ -11,10 +11,9 @@ in {
       type = types.bool;
       default = true;
       description = ''
-        Whether to modify NIX_PATH for vuizvui, so that &lt;nixpkgs&gt; points
+        Whether to modify {env}`NIX_PATH` for vuizvui, so that `<nixpkgs>` points
         to the path within the Nix channel instead of the
-        <literal>nixpkgs</literal> or <literal>nixos</literal> channel from the
-        root user.
+        `nixpkgs` or `nixos` channel from the root user.
       '';
     };
 
@@ -22,9 +21,9 @@ in {
       type = types.bool;
       default = false;
       description = ''
-        Enabling this links <literal>nixos-config</literal> to be used by
-        <literal>nixpkgs-config</literal>, which essentially means that
-        attributes defined in <option>nixpkgs.config</option> are also in
+        Enabling this links `nixos-config` to be used by
+        `nixpkgs-config`, which essentially means that
+        attributes defined in {option}`nixpkgs.config` are also in
         effect for user environments.
       '';
     };
@@ -33,7 +32,7 @@ in {
       type = types.str;
       default = "vuizvui";
       description = ''
-        The channel name which is used to refer to <literal>vuizvui</literal>.
+        The channel name which is used to refer to `vuizvui`.
       '';
     };
   };

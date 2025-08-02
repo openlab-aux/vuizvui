@@ -69,7 +69,7 @@ in {
       example = lib.literalExpression "pkgs.gnupg21";
       description = ''
         The GnuPG package to use for running the agent and make available in
-        <option>environment.systemPackages</option>.
+        {option}`environment.systemPackages`.
       '';
     };
 
