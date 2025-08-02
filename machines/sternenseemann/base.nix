@@ -17,12 +17,16 @@ in {
     boot.tmp.cleanOnBoot = true;
 
     nix = {
-      # new --show-trace is so noisy, I wouldn't be able to debug something to save my life
-      package = pkgs.nix_2_3.override { withAWS = false; };
+      # waiting on https://github.com/tvlfyi/nix/pull/5
+      package = pkgs.lix;
+      # package = pkgs.nix_2_3.override { withAWS = false; };
+
       settings = {
         sandbox = true;
         gc-keep-derivations = false;
         builders-use-substitutes = true;
+        # allow only trusted users
+        allowed-users = [ ];
       };
     };
 
