@@ -167,9 +167,16 @@ in with pkgsUpstream.lib; with builtins; {
 
   manual = let
     modules = import "${nixpkgs}/nixos/lib/eval-config.nix" {
-      modules = import "${vuizvui}/modules/module-list.nix";
-      check = false;
-      inherit system;
+      modules =
+        import "${vuizvui}/modules/module-list.nix"
+        ++ [
+          {
+            config = {
+              _module.check = false;
+              nixpkgs = { inherit system; };
+            };
+          }
+        ];
     };
 
     optionsDoc = pkgsUpstream.nixosOptionsDoc {
