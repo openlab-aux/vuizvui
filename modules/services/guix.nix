@@ -65,7 +65,7 @@ in
 {
   options = {
     vuizvui.services.guix.enable =
-      lib.mkEnableOption "the guix daemon and init /gnu/store";
+      lib.mkEnableOption "the guix daemon and init `/gnu/store`";
   };
 
   config = lib.mkIf config.vuizvui.services.guix.enable {

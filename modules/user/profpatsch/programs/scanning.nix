@@ -12,7 +12,7 @@ in {
       type = lib.types.lines;
       default = "";
       description = ''
-        See <literal>hardware.sane.extraBackends</literal>.
+        See {option}`hardware.sane.extraBackends`.
         Proxy, because I may want to change this option.
       '';
     };

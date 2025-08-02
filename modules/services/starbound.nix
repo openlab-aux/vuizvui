@@ -106,8 +106,8 @@ in {
         description = ''
           Whether to allow anonymous connections to the server.
 
-          Set this to <literal>false</literal> and use
-          <option>serverUsers</option> to only allow specific accounts to
+          Set this to `false` and use
+          {option}`serverUsers` to only allow specific accounts to
           connect.
         '';
       };
@@ -202,9 +202,9 @@ in {
           Whether to run an RCON server which allows to run administrative
           commands on this game server instance.
 
-          See the <link xlink:href="${
-            "https://developer.valvesoftware.com/wiki/Source_RCON_Protocol"
-          }">RCON protocol documentation</link> for more information about this.
+          See the
+          [RCON protocol documentation](https://developer.valvesoftware.com/wiki/Source_RCON_Protocol)
+          for more information about this.
         '';
       };
 
@@ -259,7 +259,7 @@ in {
         default = 10000;
         description = ''
           The amount of milliseconds to wait between consecutive checks of the
-          <option>instructionLimit</option> on LUA scripts.
+          {option}`instructionLimit` on LUA scripts.
         '';
       };
 
@@ -289,9 +289,9 @@ in {
       example = "high";
       description = ''
         The fidelity profile to use for this server as defined in
-        <filename>worldserver.config</filename> inside the packed assets.
+        {file}`worldserver.config` inside the packed assets.
 
-        If this is set to <literal>automatic</literal> the server will
+        If this is set to `automatic` the server will
         automatically switch between these profiles.
       '';
     };

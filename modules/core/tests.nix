@@ -897,7 +897,7 @@ in {
         to trigger a channel update for the current configuration/machine.
 
         Every attribute path itself is a list of attribute names, which are
-        queried using <function>lib.getAttrFromPath</function>.
+        queried using `lib.getAttrFromPath`.
       '';
     };
   };
