@@ -16,10 +16,10 @@ in
       default = "";
       example = "666: ";
       description = ''
-        The value that will be put in front of the <option>label</option>.
-        So if you have a label called <replaceable>bar</replaceable> and a
-        <option>labelPrefix</option> called <replaceable>foo</replaceable> the
-        label for the workspace will be <replaceable>foobar</replaceable>.
+        The value that will be put in front of the {option}`label`.
+        So if you have a label called `bar` and a
+        {option}`labelPrefix` called `foo` the
+        label for the workspace will be `foobar`.
       '';
     };
 
@@ -28,8 +28,8 @@ in
       default = name;
       description = ''
         The label of this workspace, which is its name by default. If the value
-        is <replaceable>null</replaceable>, the resulting label of the workspace
-        is just its name and no <option>labelPrefix</option> is applied.
+        is `null`, the resulting label of the workspace
+        is just its name and no {option}`labelPrefix` is applied.
       '';
     };
 
@@ -44,7 +44,7 @@ in
         anchor = "_automatically_putting_clients_on_specific_workspaces";
       in ''
         Assign windows to this specific workspace using the attribute names
-        described by <link xlink:href="${mkDoc anchor}"/>.
+        described by <${mkDoc anchor}>.
       '';
     };
 
@@ -58,9 +58,9 @@ in
 
     keys = let
       commonDesc = ''
-        The <replaceable>$mod</replaceable> placeholder represents the default
+        The {var}`$mod` placeholder represents the default
         modifier key. Details about the syntax of key combinations can be found
-        at <link xlink:href="${mkDoc "keybindings"}"/>.
+        at <${mkDoc "keybindings"}>.
       '';
     in {
       switchTo = mkOption {

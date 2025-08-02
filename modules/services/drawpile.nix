@@ -18,7 +18,7 @@ in {
         type = lib.types.str;
         description = ''
           The ini configuration file of the server.
-          See https://drawpile.net/help/server/
+          See <https://drawpile.net/help/server/>.
         '';
       };
 

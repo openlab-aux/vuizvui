@@ -19,7 +19,7 @@ in {
     description = ''
       Packages which are built for this system but instead of being a full
       runtime dependency, only wrappers of all executables that reside in the
-      <literal>bin</literal> directory are actually runtime dependencies.
+      `bin` directory are actually runtime dependencies.
 
       As soon as one of these wrappers is executed, the real package is fetched
       and the corresponding binary is executed.
