@@ -35,6 +35,8 @@ writePython3 "vuizvui-update-programs-sqlite" {
   import sys
   from tempfile import TemporaryDirectory
 
+  VERSION_REGEX = r"[0-9a-fprebeta.]+"
+
   def latest_nixexprs_url():
     r = requests.head('https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz')
 
@@ -42,7 +44,7 @@ writePython3 "vuizvui-update-programs-sqlite" {
     return r.headers['location']
 
   def nixos_version_for_url(url):
-    match = re.match(r"https://releases\.nixos\.org/nixos/unstable/nixos-([0-9a-fprebeta.]+)/nixexprs\.tar\.xz", url)
+    match = re.match(r"https://releases\.nixos\.org/nixos/unstable/nixos-(" + VERSION_REGEX + r")/nixexprs\.tar\.xz", url)
     return match.group(1)
 
   def download(url: str, filename: Path) -> Path:
@@ -99,7 +101,7 @@ writePython3 "vuizvui-update-programs-sqlite" {
           new_text = re.sub(r'programsSqliteSha256\s*=\s*"[0-9a-fg-np-sv-z]+"',
                             f'programsSqliteSha256 = "{hash}"',
                             text)
-          new_text = re.sub(r'programsSqliteVersion\s*=\s*"[0-9a-fpre.]+"',
+          new_text = re.sub(r'programsSqliteVersion\s*=\s*"' + VERSION_REGEX + '"',
                             f'programsSqliteVersion = "{version}"',
                             new_text)
 
