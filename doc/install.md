@@ -50,7 +50,6 @@ need to issue the following command as root:
     switch
 ```
 
-We redefine `<nixpkgs>` here, because vuizvui brings its own nixpkgs that gets build on the hydra, using it we get to download from the binary cache. Additionally, we need to manually specify the public key for the `headcounter.org` hydra.
-<!-- FIXME(sterni): no longer called headcounter.org! -->
+We redefine `<nixpkgs>` here, because vuizvui brings its own nixpkgs that gets build on the hydra, using it we get to download from the binary cache. Additionally, we need to manually specify the public key for the `hydra.build` hydra (`headcounter.org/hydra` was the old URL, hence the key name).
 
 [hydra-channel-list]: https://hydra.build/jobset/openlab/vuizvui#tabs-channels
