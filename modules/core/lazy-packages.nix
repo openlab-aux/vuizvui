@@ -15,7 +15,7 @@ in {
   options.vuizvui.lazyPackages = lib.mkOption {
     type = lib.types.listOf lib.types.package;
     default = [];
-    example = lib.literalExample "[ pkgs.gimp pkgs.libreoffice ]";
+    example = lib.literalExpression "[ pkgs.gimp pkgs.libreoffice ]";
     description = ''
       Packages which are built for this system but instead of being a full
       runtime dependency, only wrappers of all executables that reside in the
