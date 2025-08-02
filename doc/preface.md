@@ -10,9 +10,9 @@ This means that module options in Vuizvui are subject to change without
 retaining backwards-compatibility for configurations outside of the
 defined machines.
 
-The name `Vuizvui` is of Bavarian origins and means
-something like `too much` while on the other side
-`nix` means nothing. Which fits quite well because this
+The name _Vuizvui_ is of Bavarian origins and translates to
+“much too much” while on the other hand
+_nix_ means “nothing”. Which fits quite well because this
 repository is for everything either too complex or not polished/generic
 enough to be pushed into [<nixpkgs>][nixpkgs].
 
