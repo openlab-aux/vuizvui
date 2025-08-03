@@ -100,7 +100,7 @@ in {
     libreoffice
     vuizvui.profpatsch.nman
     vuizvui.sternenseemann.nix-env-diff
-    treefmt nixfmt-rfc-style
+    treefmt nixfmt
     xdg-utils                  # TODO(sterni): fix xdg stuff
     networkmanagerapplet       # for nm-connection-ediotr
     imv                        # TODO(sterni): is slow and clunky
