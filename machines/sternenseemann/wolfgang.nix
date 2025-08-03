@@ -100,6 +100,7 @@ in {
     libreoffice
     vuizvui.profpatsch.nman
     vuizvui.sternenseemann.nix-env-diff
+    nix-derivation
     treefmt nixfmt
     xdg-utils                  # TODO(sterni): fix xdg stuff
     networkmanagerapplet       # for nm-connection-ediotr
