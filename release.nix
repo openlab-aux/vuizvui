@@ -183,7 +183,6 @@ in with pkgsUpstream.lib; with builtins; {
       documentType = "none";
       warningsAreErrors = false;
       options = {
-        # TODO(sterni): do we need to filter out invisible and/or internal options?
         inherit (modules.options) vuizvui;
       };
     };
