@@ -1,9 +1,16 @@
 #include <iostream>
 
+#if NIX_VERSION >= 229
 #include <nix/store/local-fs-store.hh>
 #include <nix/store/config.hh>
 #include <nix/store/local-store.hh>
 #include <nix/store/store-api.hh>
+#else
+#include <nix/config.h>
+#include <nix/local-fs-store.hh>
+#include <nix/local-store.hh>
+#include <nix/store-api.hh>
+#endif
 
 using namespace nix;
 
@@ -34,7 +41,11 @@ static Path get_ancestor(query_state *qs, Path path)
         if ((pos = path.find('/', pos + 1)) != std::string::npos) {
             Path current = path.substr(0, pos);
 
+#if NIX_VERSION >= 229
             if (!std::filesystem::is_symlink(current))
+#else
+            if (!isLink(current))
+#endif
                 continue;
 
             try {
@@ -54,7 +65,11 @@ extern "C" {
     struct query_state *new_query(void)
     {
         query_state *initial = new query_state();
+#if NIX_VERSION >= 229
         initLibStore(false);
+#else
+        initLibStore();
+#endif
         initial->store = openStore();
         return initial;
     }
