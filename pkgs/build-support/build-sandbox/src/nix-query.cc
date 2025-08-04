@@ -1,25 +1,14 @@
 #include <iostream>
 
-#if NIX_VERSION >= 112
-#include <nix/config.h>
-#endif
-#include <nix/util.hh>
-#include <nix/local-store.hh>
-#include <nix/store-api.hh>
-
-#if NIX_VERSION < 112
-#include <nix/misc.hh>
-#include <nix/globals.hh>
-#endif
+#include <nix/store/local-fs-store.hh>
+#include <nix/store/config.hh>
+#include <nix/store/local-store.hh>
+#include <nix/store/store-api.hh>
 
 using namespace nix;
 
 struct query_state {
-#if NIX_VERSION >= 112
     std::shared_ptr<Store> store;
-#else
-    std::shared_ptr<StoreAPI> store;
-#endif
     PathSet paths;
     PathSet::iterator iter;
 };
@@ -27,13 +16,15 @@ struct query_state {
 static Path get_store_path(query_state *qs, Path path)
 {
     Path canonicalized = canonPath(path, true);
-#if NIX_VERSION >= 112
-    return qs->store->toStorePath(canonicalized);
-#else
-    return toStorePath(canonicalized);
-#endif
+    return qs->store->printStorePath(
+        qs->store->toStorePath(canonicalized).first
+    );
 }
 
+// Traverse the ancestors of the given path until we have a Nix store path.
+//
+// For example if the path is "/nix/store/...-foo/bar/1234"
+// the result would be "/nix/store/...-foo".
 static Path get_ancestor(query_state *qs, Path path)
 {
     size_t pos = 0;
@@ -43,7 +34,7 @@ static Path get_ancestor(query_state *qs, Path path)
         if ((pos = path.find('/', pos + 1)) != std::string::npos) {
             Path current = path.substr(0, pos);
 
-            if (!isLink(current))
+            if (!std::filesystem::is_symlink(current))
                 continue;
 
             try {
@@ -63,13 +54,8 @@ extern "C" {
     struct query_state *new_query(void)
     {
         query_state *initial = new query_state();
-#if NIX_VERSION >= 112
+        initLibStore(false);
         initial->store = openStore();
-#else
-        settings.processEnvironment();
-        settings.loadConfFile();
-        initial->store = openStore(false);
-#endif
         return initial;
     }
 
@@ -84,18 +70,17 @@ extern "C" {
 
         try {
             query = get_ancestor(qs, query);
+            StorePathSet store_paths;
 
-#if NIX_VERSION >= 112
             qs->store->computeFSClosure(
                 qs->store->followLinksToStorePath(query),
-                qs->paths, false, true
+                store_paths,
+                // flip direction
+                false,
+                // include outputs
+                true
             );
-#else
-            computeFSClosure(
-                *qs->store, followLinksToStorePath(query),
-                qs->paths, false, true
-            );
-#endif
+            qs->paths = qs->store->printStorePathSet(store_paths);
         } catch (Error &e) {
             std::cerr << "Error while querying requisites for "
                       << query << ": " << e.what()
