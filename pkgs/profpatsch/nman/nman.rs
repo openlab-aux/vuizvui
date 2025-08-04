@@ -340,23 +340,20 @@ impl Main {
         page: &'a str,
     ) -> Result<(), NmanError<'a>> {
         let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
-        let expr = match &self.file_path {
+        let nix_import = match &self.file_path {
             Some(path) => {
-                let nix_path = if path == "." {
+                if path == "." {
                     "./default.nix".to_string()
                 } else {
                     path.clone()
-                };
-                format!(
-                    "with (import {} {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
-                    nix_path, attr, attr
-                )
+                }
             },
-            None => format!(
-                "with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
-                attr, attr
-            ),
+            None => "<nixpkgs>".to_string(),
         };
+        let expr = format!(
+            "with (import {} {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
+            nix_import, attr, attr
+        );
         let inst = self
             .debug_log_command(
                 Command::new("nix-instantiate")
