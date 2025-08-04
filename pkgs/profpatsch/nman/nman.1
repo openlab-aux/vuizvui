@@ -6,7 +6,8 @@
 .Nd nix-shell for man pages
 .Sh SYNOPSIS
 .Nm
-.Op Fl hvl
+.Op Fl hv
+.Op Fl f Ar path
 .Ar ATTR
 .Op Ar PAGE | SECTION Op PAGE
 .Sh DESCRIPTION
@@ -86,13 +87,17 @@ Print usage information.
 Put
 .Nm
 into verbose mode, where it prints all commands it executes.
-.It Fl -local | l
-Use
-.Pa ./default.nix
-in the current directory instead of
+.It Fl -file Ar path | f Ar path
+Use the specified .nix file
+.Ar path
+instead of
 .Ql <nixpkgs>
 from the Nix search path. This allows using local package definitions
-or custom package sets.
+or custom package sets. Use
+.Dq .\&
+to refer to
+.Pa ./default.nix
+in the current directory.
 .El
 
 .Sh EXAMPLES
@@ -112,13 +117,13 @@ nman mandoc man
 nman mandoc 7 man
 
 # open lowdown(1) from local default.nix
-nman --local lowdown
+nman -f . lowdown
 
 # open nman(1) from dotted attribute path (searches for "nman", not "pkgs.profpatsch.nman")
-nman --local pkgs.profpatsch.nman
+nman -f . pkgs.profpatsch.nman
 
 # open man page from a custom package set
-nman -l myCustomPackage
+nman -f ./my-packages.nix myCustomPackage
 .Ed
 .Sh DISCLAIMER
 .Nm

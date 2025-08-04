@@ -22,52 +22,78 @@ enum CliResult<'a> {
 
 fn main() {
     use CliResult::*;
-    let (opts, args): (Vec<String>, Vec<String>) =
-        std::env::args().partition(|s| s.starts_with("-"));
-
-    let mut cli_res: CliResult = match args.len() {
-        2 => Action(CliAction::Man(&args[1], None, extract_page_name_from_attr(&args[1]))),
-        3 => match parse_man_section(&args[2]) {
-            Ok(s) => Action(CliAction::Man(&args[1], Some(s), extract_page_name_from_attr(&args[1]))),
-            Err(_) => Action(CliAction::Man(&args[1], None, &args[2])),
-        },
-        4 => match parse_man_section(&args[2]) {
-            Err(err_msg) => ShowUsage {
-                err_msg: Some(err_msg),
-            },
-            Ok(s) => Action(CliAction::Man(&args[1], Some(s), &args[3])),
-        },
-        _ => ShowUsage {
-            err_msg: Some("Unexpected number of arguments"),
-        },
-    };
-
+    let all_args: Vec<String> = std::env::args().collect();
+    
     let mut is_debug: bool = false;
-    let mut use_local: bool = false;
-    for opt in opts {
-        match &opt[..] {
-            "--help" | "--usage" | "-h" => cli_res = ShowUsage { err_msg: None },
-            "--verbose" | "-v" => is_debug = true,
-            "--local" | "-l" => use_local = true,
-            _ => {
-                cli_res = ShowUsage {
-                    err_msg: Some("Unknown option"),
+    let mut file_path: Option<String> = None;
+    let mut cli_res: CliResult = ShowUsage { err_msg: Some("Unexpected number of arguments") };
+    let mut positional_args = Vec::new();
+    
+    let mut i = 1; // Skip program name
+    while i < all_args.len() {
+        let arg = &all_args[i];
+        
+        if arg.starts_with("-") {
+            match &arg[..] {
+                "--help" | "--usage" | "-h" => {
+                    cli_res = ShowUsage { err_msg: None };
+                    break;
+                },
+                "--verbose" | "-v" => is_debug = true,
+                "-f" | "--file" => {
+                    if i + 1 >= all_args.len() {
+                        cli_res = ShowUsage {
+                            err_msg: Some("Option -f/--file requires an argument"),
+                        };
+                        break;
+                    }
+                    file_path = Some(all_args[i + 1].clone());
+                    i += 1; // Skip the next argument since it's the file path
+                },
+                _ => {
+                    cli_res = ShowUsage {
+                        err_msg: Some("Unknown option"),
+                    };
+                    break;
                 }
             }
+        } else {
+            positional_args.push(arg);
         }
+        i += 1;
+    }
+    
+    // Only process positional arguments if we haven't already set an error
+    if let ShowUsage { err_msg: Some("Unexpected number of arguments") } = cli_res {
+        cli_res = match positional_args.len() {
+            1 => Action(CliAction::Man(&positional_args[0], None, extract_page_name_from_attr(&positional_args[0]))),
+            2 => match parse_man_section(&positional_args[1]) {
+                Ok(s) => Action(CliAction::Man(&positional_args[0], Some(s), extract_page_name_from_attr(&positional_args[0]))),
+                Err(_) => Action(CliAction::Man(&positional_args[0], None, &positional_args[1])),
+            },
+            3 => match parse_man_section(&positional_args[1]) {
+                Err(err_msg) => ShowUsage {
+                    err_msg: Some(err_msg),
+                },
+                Ok(s) => Action(CliAction::Man(&positional_args[0], Some(s), &positional_args[2])),
+            },
+            _ => ShowUsage {
+                err_msg: Some("Unexpected number of arguments"),
+            },
+        };
     }
 
-    let main = Main { is_debug, use_local };
+    let main = Main { is_debug, file_path };
     match cli_res {
         ShowUsage { err_msg } => {
             if let Some(msg) = err_msg {
                 eprintln!("nman: usage error: {}", msg);
             }
-            println!("Usage: {} [OPTIONS] ATTR [PAGE | SECTION [PAGE]]", &args[0]);
+            println!("Usage: {} [OPTIONS] ATTR [PAGE | SECTION [PAGE]]", &all_args[0]);
             println!("Options:");
             println!("  -h, --help, --usage  Show this help message");
             println!("  -v, --verbose        Enable verbose output");
-            println!("  -l, --local          Use ./default.nix instead of <nixpkgs>");
+            println!("  -f, --file <path>    Use specified .nix file instead of <nixpkgs>");
             std::process::exit(NmanError::Usage.code());
         }
         Action(action) => match action {
@@ -265,8 +291,8 @@ impl<'a> DrvWithOutput<'a> {
 struct Main {
     /// Whether the program is running in debug mode
     is_debug: bool,
-    /// Whether to use local default.nix instead of <nixpkgs>
-    use_local: bool,
+    /// Optional file path to use instead of <nixpkgs>
+    file_path: Option<String>,
 }
 
 #[derive(Debug)]
@@ -314,16 +340,22 @@ impl Main {
         page: &'a str,
     ) -> Result<(), NmanError<'a>> {
         let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
-        let expr = if self.use_local {
-            format!(
-                "with (import ./default.nix {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
-                attr, attr
-            )
-        } else {
-            format!(
+        let expr = match &self.file_path {
+            Some(path) => {
+                let nix_path = if path == "." {
+                    "./default.nix".to_string()
+                } else {
+                    path.clone()
+                };
+                format!(
+                    "with (import {} {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
+                    nix_path, attr, attr
+                )
+            },
+            None => format!(
                 "with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
                 attr, attr
-            )
+            ),
         };
         let inst = self
             .debug_log_command(
