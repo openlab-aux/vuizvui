@@ -1,6 +1,6 @@
 #include <iostream>
 
-#if NIX_VERSION >= 229
+#if NIX_VERSION >= 228
 #include <nix/store/local-fs-store.hh>
 #include <nix/store/config.hh>
 #include <nix/store/local-store.hh>
@@ -41,7 +41,7 @@ static Path get_ancestor(query_state *qs, Path path)
         if ((pos = path.find('/', pos + 1)) != std::string::npos) {
             Path current = path.substr(0, pos);
 
-#if NIX_VERSION >= 229
+#if NIX_VERSION >= 228
             if (!std::filesystem::is_symlink(current))
 #else
             if (!isLink(current))
