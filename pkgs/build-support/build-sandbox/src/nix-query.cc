@@ -65,6 +65,7 @@ extern "C" {
     struct query_state *new_query(void)
     {
         query_state *initial = new query_state();
+        settings.buildUsersGroup = "";
 #if NIX_VERSION >= 229
         initLibStore(false);
 #else
