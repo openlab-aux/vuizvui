@@ -311,6 +311,7 @@ in {
       wl-clipboard
       writedisk
       wthrr
+      wttrbar
       xan
       xcp
       xdg-utils
