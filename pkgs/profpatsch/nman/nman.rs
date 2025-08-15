@@ -68,7 +68,7 @@ fn main() {
     }
     
     // Only process positional arguments if we haven't already set an error
-    if let ShowUsage { err_msg: Some("Unexpected number of arguments") } = cli_res {
+    if let ShowUsage { err_msg: _ } = cli_res {
         cli_res = match positional_args.len() {
             1 => Action(CliAction::Man {
                 attr: &positional_args[0],
