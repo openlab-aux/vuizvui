@@ -342,10 +342,12 @@ impl Main {
         let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
         let nix_import = match &self.file_path {
             Some(path) => {
-                if path == "." {
-                    "./default.nix".to_string()
+                if path.starts_with('/') {
+                    // Absolute path - strip trailing slashes
+                    path.trim_end_matches('/').to_string()
                 } else {
-                    path.clone()
+                    // Relative path - prepend ./
+                    format!("./{}", path)
                 }
             },
             None => "<nixpkgs>".to_string(),

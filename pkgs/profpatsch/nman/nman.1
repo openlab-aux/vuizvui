@@ -93,11 +93,7 @@ Use the specified .nix file
 instead of
 .Ql <nixpkgs>
 from the Nix search path. This allows using local package definitions
-or custom package sets. Use
-.Dq .\&
-to refer to
-.Pa ./default.nix
-in the current directory.
+or custom package sets.
 .El
 
 .Sh EXAMPLES
@@ -116,7 +112,7 @@ nman mandoc man
 # open man(7) from the same package
 nman mandoc 7 man
 
-# open lowdown(1) from local default.nix
+# open lowdown(1) from the default.nix in the current directory
 nman -f . lowdown
 
 # open nman(1) from dotted attribute path (searches for "nman", not "pkgs.profpatsch.nman")
