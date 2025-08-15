@@ -110,6 +110,9 @@ in
       ifmtarg
       libertine
       minted
+      noto
+      noto-emoji
+      notomath
       quoting
       titlesec
       units
