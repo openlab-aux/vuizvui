@@ -11,8 +11,12 @@ use std::process::{Command, ExitStatus, Stdio};
 use temp::TempDir;
 
 enum CliAction<'a> {
-    /// attribute, section, page
-    Man(&'a str, Option<&'a str>, &'a str),
+    Man {
+        attr: &'a str,
+        section: Option<&'a str>,
+        page: &'a str,
+        file_path: Option<&'a str>,
+    },
 }
 
 enum CliResult<'a> {
@@ -25,10 +29,10 @@ fn main() {
     let all_args: Vec<String> = std::env::args().collect();
     
     let mut is_debug: bool = false;
-    let mut file_path: Option<String> = None;
+    let mut file_path: Option<&str> = None;
     let mut cli_res: CliResult = ShowUsage { err_msg: Some("Unexpected number of arguments") };
     let mut positional_args = Vec::new();
-    
+
     let mut i = 1; // Skip program name
     while i < all_args.len() {
         let arg = &all_args[i];
@@ -47,7 +51,7 @@ fn main() {
                         };
                         break;
                     }
-                    file_path = Some(all_args[i + 1].clone());
+                    file_path = Some(&all_args[i + 1]);
                     i += 1; // Skip the next argument since it's the file path
                 },
                 _ => {
@@ -66,16 +70,36 @@ fn main() {
     // Only process positional arguments if we haven't already set an error
     if let ShowUsage { err_msg: Some("Unexpected number of arguments") } = cli_res {
         cli_res = match positional_args.len() {
-            1 => Action(CliAction::Man(&positional_args[0], None, extract_page_name_from_attr(&positional_args[0]))),
+            1 => Action(CliAction::Man {
+                attr: &positional_args[0],
+                section: None,
+                page: extract_page_name_from_attr(&positional_args[0]),
+                file_path,
+            }),
             2 => match parse_man_section(&positional_args[1]) {
-                Ok(s) => Action(CliAction::Man(&positional_args[0], Some(s), extract_page_name_from_attr(&positional_args[0]))),
-                Err(_) => Action(CliAction::Man(&positional_args[0], None, &positional_args[1])),
+                Ok(s) => Action(CliAction::Man {
+                    attr: &positional_args[0],
+                    section: Some(s),
+                    page: extract_page_name_from_attr(&positional_args[0]),
+                    file_path,
+                }),
+                Err(_) => Action(CliAction::Man {
+                    attr: &positional_args[0],
+                    section: None,
+                    page: &positional_args[1],
+                    file_path,
+                }),
             },
             3 => match parse_man_section(&positional_args[1]) {
                 Err(err_msg) => ShowUsage {
                     err_msg: Some(err_msg),
                 },
-                Ok(s) => Action(CliAction::Man(&positional_args[0], Some(s), &positional_args[2])),
+                Ok(s) => Action(CliAction::Man {
+                    attr: &positional_args[0],
+                    section: Some(s),
+                    page: &positional_args[2],
+                    file_path,
+                }),
             },
             _ => ShowUsage {
                 err_msg: Some("Unexpected number of arguments"),
@@ -83,7 +107,7 @@ fn main() {
         };
     }
 
-    let main = Main { is_debug, file_path };
+    let main = Main { is_debug };
     match cli_res {
         ShowUsage { err_msg } => {
             if let Some(msg) = err_msg {
@@ -97,7 +121,7 @@ fn main() {
             std::process::exit(NmanError::Usage.code());
         }
         Action(action) => match action {
-            CliAction::Man(attr, section, page) => match main.open_man_page(attr, section, page) {
+            CliAction::Man { attr, section, page, file_path } => match main.open_man_page(attr, section, page, file_path) {
                 Ok(_) => (),
                 Err(t) => {
                     let msg = t.msg();
@@ -291,8 +315,6 @@ impl<'a> DrvWithOutput<'a> {
 struct Main {
     /// Whether the program is running in debug mode
     is_debug: bool,
-    /// Optional file path to use instead of <nixpkgs>
-    file_path: Option<String>,
 }
 
 #[derive(Debug)]
@@ -338,9 +360,10 @@ impl Main {
         attr: &'a str,
         section: Option<&'a str>,
         page: &'a str,
+        file_path: Option<&'a str>,
     ) -> Result<(), NmanError<'a>> {
         let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
-        let nix_import = match &self.file_path {
+        let nix_import = match file_path {
             Some(path) => {
                 if path.starts_with('/') {
                     // Absolute path - strip trailing slashes
