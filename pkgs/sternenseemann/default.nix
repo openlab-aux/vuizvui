@@ -34,6 +34,67 @@ let
     };
   };
 
+  texliveCommon = {
+    inherit (pkgs.texlive)
+      adjustbox
+      biber
+      biblatex
+      biblatex-anonymous
+      biblatex-archaeology
+      biblatex-arthistory-bonn
+      biblatex-bookinarticle
+      biblatex-bookinother
+      biblatex-chicago
+      biblatex-dw
+      biblatex-ext
+      biblatex-fiwi
+      biblatex-german-legal
+      biblatex-historian
+      biblatex-ieee
+      biblatex-iso690
+      biblatex-morenames
+      biblatex-multiple-dm
+      biblatex-oxref
+      biblatex-philosophy
+      biblatex-publist
+      biblatex-readbbl
+      biblatex-realauthor
+      biblatex-shortfields
+      biblatex-socialscienceshuberlin
+      biblatex-software
+      biblatex-source-division
+      biblatex-trad
+      biblatex-true-citepages-omit
+      biblatex-unified
+      biblatex-vancouver
+      breakurl
+      capt-of
+      chemfig
+      chemformula
+      collectbox
+      csquotes
+      dashrule
+      enumitem
+      footmisc
+      geschichtsfrkl
+      hyphen-greek
+      ifmtarg
+      latexmk
+      libertine
+      minted
+      noto
+      noto-emoji
+      notomath
+      quoting
+      texcount
+      titlesec
+      units
+      wrapfig
+      xgreek
+      xstring
+    ;
+  };
+
 in
 
 {
@@ -88,39 +149,20 @@ in
     '';
   });
 
-  texlive = pkgs.texlive.combine {
+  texlive = pkgs.texlive.combine ({
     inherit (pkgs.texlive)
       # collections
       scheme-medium
       collection-bibtexextra
+      collection-latex
       # collection-langgreek
-      # individual packages
-      adjustbox
-      biblatex-philosophy
-      breakurl
-      capt-of
-      chemfig
-      chemformula
-      collectbox
-      csquotes
-      dashrule
-      enumitem
-      footmisc
-      hyphen-greek
-      ifmtarg
-      libertine
-      minted
-      noto
-      noto-emoji
-      notomath
-      quoting
-      titlesec
-      units
-      wrapfig
-      xgreek
-      xstring
       ;
-  };
+  } // texliveCommon);
+
+  # avoid dependency on Java since this is unsupported on i686
+  texlive-small = pkgs.texlive.combine ({
+    inherit (pkgs.texlive) scheme-small;
+  } // texliveCommon);
 
   # packaged 3rd party software
   saneterm = pkgs.python3Packages.callPackage ./saneterm.nix { };
