@@ -90,10 +90,33 @@ in
 
   texlive = pkgs.texlive.combine {
     inherit (pkgs.texlive)
-      scheme-medium minted titlesec units collection-bibtexextra wrapfig
-      libertine enumitem dashrule ifmtarg xstring xgreek adjustbox
-      collectbox csquotes biblatex-philosophy quoting breakurl
-      capt-of hyphen-greek chemfig chemformula;
+      # collections
+      scheme-medium
+      collection-bibtexextra
+      # collection-langgreek
+      # individual packages
+      adjustbox
+      biblatex-philosophy
+      breakurl
+      capt-of
+      chemfig
+      chemformula
+      collectbox
+      csquotes
+      dashrule
+      enumitem
+      footmisc
+      hyphen-greek
+      ifmtarg
+      libertine
+      minted
+      quoting
+      titlesec
+      units
+      wrapfig
+      xgreek
+      xstring
+      ;
   };
 
   # packaged 3rd party software
