@@ -18,12 +18,6 @@
 
       overlays = [
         (self: super: {
-          tlp = super.tlp.overrideAttrs (_: {
-            # Avoid crash in pandoc which is a check dependency of tlp
-            # https://gitlab.haskell.org/ghc/ghc/-/issues/22002
-            doCheck = false;
-          });
-
           upower = super.upower.overrideAttrs (_: {
             # https://gitlab.freedesktop.org/upower/upower/-/issues/214
             doCheck = false;
@@ -32,12 +26,11 @@
       ];
     };
 
-    system.stateVersion = "22.05";
+    system.stateVersion = "25.05";
 
     boot = {
       loader.grub = {
         enable = true;
-        version = 2;
         device = "/dev/sda";
       };
 
@@ -77,15 +70,6 @@
     ];
 
     hardware.enableRedistributableFirmware = true;
-
-    vuizvui.user.sternenseemann.profiles.desktop-sway = {
-      enable = true;
-      nextcloud.enable = true;
-      screenshot.enable = true;
-      saneterm.enable = false;
-      tep.enable = false;
-    };
-    vuizvui.user.sternenseemann.services.sway.modifier = "Mod1";
 
     networking = {
       hostName = "ludwig";

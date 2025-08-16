@@ -18,7 +18,7 @@ with import ../lib;
     leguin = callMachine ./profpatsch/leguin.nix {};
   };
   sternenseemann = {
-    # TODO(sterni): ludwig = callMachine ./sternenseemann/ludwig.nix {};
+    ludwig = callMachine ./sternenseemann/ludwig.nix {};
     wolfgang = callMachine ./sternenseemann/wolfgang.nix {};
   };
 }
