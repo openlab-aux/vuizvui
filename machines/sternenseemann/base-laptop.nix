@@ -82,12 +82,7 @@
     '';
 
     networking = {
-      firewall = {
-        enable = true;
-        allowedTCPPortRanges = [
-          { from = 9990; to = 9999; }
-        ];
-      };
+      firewall.enable = true;
       networkmanager.enable = true;
     };
 
