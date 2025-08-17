@@ -83,8 +83,10 @@ in {
     editors = {
       enable = true;
       editor = "emacs";
+      alternate = "ma";
       acme.enable = true;
       emacs.enable = true;
+      ma.enable = true;
     };
   };
 
