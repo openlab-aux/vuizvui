@@ -77,11 +77,19 @@ in {
 
   networking.hostName = "wolfgang";
 
-  vuizvui.user.sternenseemann.profiles.desktop.enable = true;
+  vuizvui.user.sternenseemann.profiles = {
+    desktop.enable = true;
+
+    editors = {
+      enable = true;
+      editor = "emacs";
+      acme.enable = true;
+      emacs.enable = true;
+    };
+  };
 
   environment.systemPackages = with pkgs; [
     vuizvui.sternenseemann.pass
-    vuizvui.tvl.users.sterni.acme.plan9port.wrapper
     vuizvui.sternenseemann.scripts.borg-wrapper
     vuizvui.sternenseemann.scripts.disable-bd-prochot
     vuizvui.sternenseemann.scripts.idate

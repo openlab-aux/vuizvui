@@ -9,10 +9,6 @@ let
   bins = getBins pkgs.less [ "less" ];
 
 in {
-  imports = [
-    ./vim-basic.nix
-  ];
-
   config = {
     boot.tmp.cleanOnBoot = true;
 
@@ -128,6 +124,12 @@ in {
       gitFull
       file htop psmisc tmux
     ];
+
+    vuizvui.user.sternenseemann.profiles.editors = {
+      enable = true;
+      editor = lib.mkDefault "vim";
+      vim.enable = lib.mkDefault true;
+    };
 
     environment.variables = {
       PAGER = "${bins.less} -R";

@@ -1,5 +1,3 @@
-# TODO(sterni): split out common stuff for personal
-#               computers when I have a non-laptop one
 { config, lib, pkgs, ... }:
 
 {
@@ -43,9 +41,7 @@
     programs.mosh.enable = true;
 
     environment = let
-      inherit (pkgs.vuizvui.tvl.users.sterni)
-        git-only-push
-        emacs;
+      tvl = pkgs.vuizvui.tvl.users.sterni;
     in {
       systemPackages = with pkgs; [
         lowdown
@@ -55,14 +51,12 @@
         nmap
         ffmpeg graphicsmagick
         pavucontrol
-        emacs
         direnv
-        git-only-push
+        tvl.git-only-push
+        tvl.acme.plan9port.g
       ] ++ pkgs.vuizvui.sternenseemann.scripts.default;
 
       variables = {
-        EDITOR = "${emacs}/bin/emacsclient";
-        VISUAL = "${emacs}/bin/emacsclient";
         RIPGREP_CONFIG_PATH = pkgs.writeText "ripgreprc" ''
           --max-columns=150
           --max-columns-preview
@@ -75,10 +69,6 @@
 
     programs.bash.interactiveShellInit = ''
       eval "$(direnv hook bash)"
-    '';
-
-    programs.fish.shellInit = ''
-      alias e "emacsclient -n"
     '';
 
     networking = {
