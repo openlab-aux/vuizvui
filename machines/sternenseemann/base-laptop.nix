@@ -45,7 +45,6 @@
     in {
       systemPackages = with pkgs; [
         lowdown
-        lynx
         zip unzip
         ripgrep
         nmap
