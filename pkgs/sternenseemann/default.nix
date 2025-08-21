@@ -128,8 +128,8 @@ in
       attoparsec bytestring;
     inherit (writers) writeBashBin writeHaskell;
     emojiTestTxt = fetchurl {
-      url = "https://www.unicode.org/Public/emoji/16.0/emoji-test.txt";
-      sha256 = "15wn2f2yvk66576xs7lij8ip0gkawkqfhlv997i45wbcx0scbw14";
+      url = "https://www.unicode.org/Public/emoji/17.0/emoji-test.txt";
+      sha256 = "1nmc06i066r322br8hs5wb55p6b77kppy5n5yxz2z5fpi17r92hx";
     };
   };
 
