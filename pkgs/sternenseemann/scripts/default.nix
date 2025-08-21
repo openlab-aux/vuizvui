@@ -28,6 +28,7 @@ let
     runCommandNoCC name {
       buildInputs = [ interpreter ];
       nativeBuildInputs = [ makeWrapper ];
+      meta.mainProgram = name;
     } (''
       install -Dm755 "${file}" "$out/bin/${name}"
       patchShebangs "$out/bin/${name}"
