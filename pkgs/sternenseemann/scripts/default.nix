@@ -238,6 +238,11 @@ in
     interpreter = cbqn;
   };
 
+  dictcc = packageScriptFile {
+    name = "dictcc";
+    interpreter = ruby;
+  };
+
   fdate = packageScriptFile {
     name = "fdate";
     interpreter = ruby;

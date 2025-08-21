@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# dictcc WORD - simple dict.cc interface
+#
+# retrieved from https://leahneukirchen.org/dotfiles/bin/dictcc 2025-08-21
+require 'open-uri'
+require 'cgi'
+
+html = URI.open("http://www.dict.cc/?s=#{CGI.escape ARGV.join(" ")}").read
+c1, c2 = html.scan(/var c[12]Arr = new Array(.*?);/).map { |c|
+  c[0].scan(/"(.*?)"/).flatten.map { |s| s.delete("\\") }
+}
+exit 1  unless c1 && c2
+c1.zip(c2).each { |en, de| puts "#{en} :: #{de}"  unless en == "" || de == "" }

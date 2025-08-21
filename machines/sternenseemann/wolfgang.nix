@@ -96,6 +96,7 @@ in {
     vuizvui.sternenseemann.scripts.disable-bd-prochot
     vuizvui.sternenseemann.scripts.idate
     vuizvui.sternenseemann.scripts.fdate
+    vuizvui.sternenseemann.scripts.dictcc
     exfat borgbackup
     gnupg pinentry-gnome3 # signing-party
     thunderbird
