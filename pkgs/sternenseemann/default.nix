@@ -2,6 +2,7 @@
 
 let
   inherit (pkgs)
+    lib
     dontRecurseIntoAttrs
     fetchurl
     fetchFromGitHub
@@ -9,6 +10,8 @@ let
     python3Packages
     writers
     haskell
+    runCommandNoCC
+    makeWrapper
     ;
 
   inherit (profpatsch)
@@ -95,6 +98,36 @@ let
     ;
   };
 
+  packageScriptFile =
+    { name
+    , file ? ./scripts + "/${name}"
+    , interpreter
+    , isShell ? false
+    , runtimeDependencies ? []
+    }:
+
+    let
+      binPath = lib.makeBinPath runtimeDependencies;
+    in
+
+    runCommandNoCC name {
+      buildInputs = [ interpreter ];
+      nativeBuildInputs = [ makeWrapper ];
+      meta.mainProgram = name;
+    } (''
+      install -Dm755 "${file}" "$out/bin/${name}"
+      patchShebangs "$out/bin/${name}"
+    '' + lib.optionalString (runtimeDependencies != []) (
+      if isShell then ''
+        sed -i \
+          -e '2i export PATH="'${lib.escapeShellArg binPath}':$PATH"' \
+          "$out/bin/${name}"
+      '' else ''
+        wrapProgram "$out/bin/${name}" \
+          --prefix PATH : ${lib.escapeShellArg binPath}
+      ''
+    ));
+
 in
 
 {
@@ -119,7 +152,7 @@ in
 
   scripts = dontRecurseIntoAttrs (callPackage ./scripts {
     inherit (writers) writeBashBin;
-    inherit getBins;
+    inherit getBins packageScriptFile;
   });
 
   tep = callPackage ./tep {
