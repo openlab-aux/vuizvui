@@ -1,0 +1,37 @@
+#!/usr/bin/env -S perl -CAO
+# uni PATTERN - list unicode symbols matching PATTERN
+#
+# - retrieved from https://leahneukirchen.org/dotfiles/bin/uni 2025-08-21
+# - changed shebang to use env -S
+
+my $rx = shift || die "Usage: uni PATTERN\n";
+m/$rx/;  # fail early on faulty regexps
+
+# my $names = do 'unicore/Name.pl';   # internal data file
+#
+# for (split /^/, $names) {
+#     my ($hex, $desc) = split(/\t/, $_, 2);
+#     $hex =~ s/^0//;
+#     $char = pack("U", hex($hex));
+#     if ($desc =~ /$rx/i || $char eq $rx || lc($hex) eq lc($rx)) {
+#         print "$char\t$hex\t$desc";
+#     }
+# }
+
+# Portably:
+use Unicode::UCD 'prop_invmap';
+
+my (%name, %cp, %cps, $n);
+my ($codepoints, $names, $format, $default) = prop_invmap('Name');
+# $format => "n", $default => ""
+foreach my $i (0 .. @$codepoints - 2) {
+    my ($cp, $n) = ($codepoints->[$i], $names->[$i]);
+    # If $n is a ref, the same codepoint has multiple names
+    my $hex = sprintf("%04X", $cp);
+    my $char = pack("U", $cp);
+    foreach my $name (ref $n ? @$n : $n) {
+        if ($name =~ /$rx/i || $char eq $rx || lc($hex) eq lc($rx)) {
+            print "$char\t$hex\t$name\n";
+        }
+    }
+}

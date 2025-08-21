@@ -1,5 +1,5 @@
 { lib, writeBashBin, writeText, runCommandNoCC, getBins
-, bash, ruby, cbqn
+, bash, ruby, cbqn, perl
 , makeWrapper
 , borgbackup, cryptsetup
 , ghostscript
@@ -88,6 +88,7 @@ in
     self.ls2count
     self.nix-instantiate-to
     self.nix-build-on
+    self.uni
   ];
 
   borg-wrapper = writeBashBin "borg-wrapper" ''
@@ -246,6 +247,11 @@ in
   fdate = packageScriptFile {
     name = "fdate";
     interpreter = ruby;
+  };
+
+  uni = packageScriptFile {
+    name = "uni";
+    interpreter = perl;
   };
 
   # TODO(sterni): allow specifying multiple attrpaths without -A after --
