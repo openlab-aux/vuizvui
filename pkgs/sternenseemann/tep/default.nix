@@ -1,5 +1,6 @@
-{ writeHaskell, writeBashBin, writeText, runCommandLocal
-, emoji-generic, utf8-light, attoparsec, text, bytestring
+{ writeBashBin, writeText, packageScriptFile, runCommandNoCC
+, lib
+, gawk
 , bemenu
 , fromTep ? "cut -d' ' -f1"
 , copy ? "wl-copy --trim-newline"
@@ -7,16 +8,18 @@
 }:
 
 let
-  tepData = writeHaskell "tep-data" {
-    libraries = [ emoji-generic utf8-light attoparsec text bytestring ];
-  } ./tepData.hs;
+  tep-data = packageScriptFile {
+    name = "tep-data";
+    interpreter = gawk;
+    file = ./tep-data.awk;
+  };
 
   static = writeText "static-tep.txt" ''
     · dot time character
   '';
 
-  emojis = runCommandLocal "emojis.txt" {} ''
-    ${tepData} < ${emojiTestTxt} > tep-data.txt
+  emojis = runCommandNoCC "emojis.txt" {} ''
+    ${lib.getExe tep-data} < ${emojiTestTxt} > tep-data.txt
     cat ${static} tep-data.txt > "$out"
   '';
 in

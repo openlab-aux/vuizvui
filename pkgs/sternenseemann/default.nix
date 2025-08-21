@@ -9,7 +9,6 @@ let
     ocamlPackages
     python3Packages
     writers
-    haskell
     runCommandNoCC
     makeWrapper
     ;
@@ -21,21 +20,6 @@ let
     ;
 
   bins = getBins pkgs.bemenu [ "bemenu" ];
-
-  haskellPackages = pkgs.haskellPackages.override {
-    overrides = self: super: {
-      emoji-generic = haskell.lib.overrideSrc
-        (self.callPackage ./emoji-generic.nix { }) {
-          src = fetchFromGitHub {
-            owner = "sternenseemann";
-            repo = "emoji-generic";
-            rev = "e0133be42f7f5d446bf493f790a4b465c4c7c4d4";
-            sha256 = "04kx8ib9mx71iy1w4fvajki72dgn2d8c7642rrb3wbgv16cncadq";
-          };
-          version = "unstable-2025-05-09";
-        };
-    };
-  };
 
   texliveCommon = {
     inherit (pkgs.texlive)
@@ -132,8 +116,6 @@ in
 
 {
   # packaged sterniware
-  inherit (haskellPackages) emoji-generic;
-
   logbook = ocamlPackages.callPackage ./logbook.nix { };
 
   temp = writeRustSimpleLib "temp" {
@@ -156,10 +138,8 @@ in
   });
 
   tep = callPackage ./tep {
-    inherit (haskellPackages)
-      emoji-generic text utf8-light
-      attoparsec bytestring;
-    inherit (writers) writeBashBin writeHaskell;
+    inherit packageScriptFile;
+    inherit (writers) writeBashBin;
     emojiTestTxt = fetchurl {
       url = "https://www.unicode.org/Public/emoji/17.0/emoji-test.txt";
       sha256 = "1nmc06i066r322br8hs5wb55p6b77kppy5n5yxz2z5fpi17r92hx";
