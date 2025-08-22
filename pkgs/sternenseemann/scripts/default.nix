@@ -282,7 +282,7 @@ in
 
     for flag in "$@"; do
       case "$flag" in
-        -k|--keep-going|--check|-K|--keep-failed)
+        -k|--keep-going|--check|-K|--keep-failed|--dry-run)
           # Gets reinterpreted on the remote host
           realiseFlags+=("$(printf '%q\n' "$flag")")
           ;;
