@@ -119,7 +119,7 @@ in {
       man-pages-posix
       vuizvui.tvl.users.sterni.dot-time-man-pages
       gitFull
-      file htop psmisc tmux
+      file htop psmisc
     ];
 
     vuizvui.user.sternenseemann.profiles.editors = {

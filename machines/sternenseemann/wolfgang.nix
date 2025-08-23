@@ -110,7 +110,7 @@ in
     vuizvui.profpatsch.nman
     vuizvui.sternenseemann.nix-env-diff
     nix-derivation
-    treefmt nixfmt
+    nixfmt
     xdg-utils                  # TODO(sterni): fix xdg stuff
     networkmanagerapplet       # for nm-connection-ediotr
     imv                        # TODO(sterni): is slow and clunky
@@ -120,7 +120,7 @@ in
     quasselClient
     ricochet-refresh
     anki
-    signal-desktop # no signal web client
+    # signal-desktop # regularly looses tokens
     # scribus gimp inkscape audacity # rarely need them
     # gpxsee # rarely need it nowadays
   ];
