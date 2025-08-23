@@ -20,12 +20,13 @@ in
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [ cfg.package ];
 
-    # TODO(sterni): set environment in the service
     # TODO(sterni): start automatically
     systemd.user.services.ma-registry = rec {
       description = "ma editor's file registry";
       after = [ "graphical-session.target" ];
       partOf = after;
+      # use PATH from the systemd user environment block
+      path = lib.mkForce [ ];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${lib.getExe' cfg.package "ma"} -registry";
