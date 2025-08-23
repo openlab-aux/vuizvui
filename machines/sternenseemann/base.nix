@@ -113,14 +113,22 @@ in {
       done
     '';
 
-    environment.systemPackages = with pkgs; [
-      curl wget
-      man-pages
-      man-pages-posix
-      vuizvui.tvl.users.sterni.dot-time-man-pages
-      gitFull
-      file htop psmisc
-    ];
+    environment.systemPackages =
+      let
+         tvl = pkgs.vuizvui.tvl.users.sterni;
+      in
+      with pkgs;
+      [
+        curl wget
+        man-pages
+        man-pages-posix
+        tvl.dot-time-man-pages
+        gitFull
+        file htop psmisc
+        ripgrep
+        tvl.acme.plan9port.g
+        tvl.git-only-push
+      ];
 
     vuizvui.user.sternenseemann.profiles.editors = {
       enable = true;
@@ -133,6 +141,13 @@ in {
       # git-diff without the extra options passed to less
       GIT_PAGER = bins.less;
       LESS = "-R";
+      RIPGREP_CONFIG_PATH = pkgs.writeText "ripgreprc" ''
+        --max-columns=150
+        --max-columns-preview
+        --smart-case
+        --hidden
+        --glob=!.git/*
+      '';
     };
 
     environment.etc."gitconfig".text = ''

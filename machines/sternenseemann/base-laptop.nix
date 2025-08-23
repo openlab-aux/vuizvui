@@ -40,30 +40,15 @@
 
     programs.mosh.enable = true;
 
-    environment = let
-      tvl = pkgs.vuizvui.tvl.users.sterni;
-    in {
+    environment = {
       systemPackages = with pkgs; [
         lowdown
         zip unzip
-        ripgrep
         nmap
         ffmpeg graphicsmagick
         pavucontrol
         direnv
-        tvl.git-only-push
-        tvl.acme.plan9port.g
       ] ++ pkgs.vuizvui.sternenseemann.scripts.default;
-
-      variables = {
-        RIPGREP_CONFIG_PATH = pkgs.writeText "ripgreprc" ''
-          --max-columns=150
-          --max-columns-preview
-          --smart-case
-          --hidden
-          --glob=!.git/*
-        '';
-      };
     };
 
     programs.bash.interactiveShellInit = ''
