@@ -1,12 +1,10 @@
 { config, pkgs, lib, ... }:
 
 let
-  browser = rec {
-    pkg = pkgs.firefox-wayland;
-    bin = "${pkg}/bin/firefox";
-  };
+  browser = pkgs.firefox-wayland;
+in
 
-in {
+{
   imports = builtins.map (p: (import ../../nixos-hardware-path.nix) + p) [
     "/common/pc/ssd"
   ] ++ [
@@ -118,7 +116,7 @@ in {
     imv                        # TODO(sterni): is slow and clunky
     zathura                    # TODO(sterni): annotations would be nice
     pcmanfm
-    browser.pkg
+    browser
     quasselClient
     ricochet-refresh
     anki
@@ -138,7 +136,7 @@ in {
   services.tor.enable = true;
 
   environment.variables = {
-    BROWSER = browser.bin;
+    BROWSER = lib.getExe browser;
   };
 
   services.xserver = {
