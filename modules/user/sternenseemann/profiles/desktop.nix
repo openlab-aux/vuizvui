@@ -66,6 +66,7 @@ let
   # Colors used in acme(1), derived from plan9port
   acmeColors = {
     yellow = "#ffffea";
+    darkYellow = "#99994c";
     # is that even cyan?
     darkCyan = "#9EEEEE";
     lightCyan = "#eaffff";
@@ -112,6 +113,32 @@ in
      BEMENU_OPTS = toString [
        "-l" 25
        "-i"
+
+       # input line
+       "--tb" acmeColors.lightCyan
+       "--tf" "#000000"
+       "--fb" acmeColors.lightCyan
+       "--ff" "#000000"
+
+       # menu
+       "--nb" acmeColors.yellow
+       "--nf" "#000000"
+       "--ab" acmeColors.yellow
+       "--af" "#000000"
+
+       # selected item
+       "--hb" acmeColors.darkCyan
+       "--hf" "#000000"
+
+       # TODO(sterni): what do --s{f,b}, --fb{b,f} do?
+
+       # scroll bar
+       "--scf" acmeColors.yellow
+       "--scb" acmeColors.darkYellow
+
+       # cursor, bg and fg get swapped⸘
+       "--cb" "#ffffff"
+       "--cf" "#000000"
      ];
    };
    programs.xwayland.enable = true;
