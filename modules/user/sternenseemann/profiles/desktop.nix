@@ -39,6 +39,7 @@ let
       // (getBins pkgs.systemd [ "systemctl" ])
       // (getBins pkgs.xwayland-satellite [ "xwayland-satellite" ])
       // (getBins gammastep [ "gammastep" ])
+      // (getBins pkgs.vuizvui.sternenseemann.pass [ "passmenu" ])
       // {
         niri-focus-any-window = pkgs.writeShellScript "niri-focus-any-window" ''
           set -euo pipefail
@@ -308,6 +309,7 @@ in
          Mod+Shift+Return { spawn "${bins.saneterm}" "--" "${bins.sh}" "-l"; }
    '' + ''
          Mod+G { spawn "${bins.tep}" "copy" "-p" "tep>"; }
+         Mod+Shift+G { spawn "${bins.passmenu}" "-p" "pass>"; }
 
          XF86AudioRaiseVolume { spawn "${bins.wpctl}" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
          XF86AudioLowerVolume { spawn "${bins.wpctl}" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
