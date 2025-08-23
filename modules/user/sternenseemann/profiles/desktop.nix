@@ -48,7 +48,7 @@ let
 
           selection="$(${bins.niri} msg --json windows \
             | ${bins.jq} -r "$formatWindows" \
-            | ${bins.bemenu} -p "jump to " -l 25 -i \
+            | ${bins.bemenu} -p "jump to " \
             | cut -d: -f1)"
 
           exec ${bins.niri} msg action focus-window --id "$selection"
@@ -108,6 +108,11 @@ in
      # QT
      QT_QPA_PLATFORM = "wayland";
      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+
+     BEMENU_OPTS = toString [
+       "-l" 25
+       "-i"
+     ];
    };
    programs.xwayland.enable = true;
    security.pam.services.swaylock = { };
@@ -269,13 +274,13 @@ in
      binds {
          Mod+Return { spawn "${bins.footclient}"; }
          // TODO(sterni): colors
-         Mod+D { spawn "${bins.bemenu-run}" "-l" "25" "-i"; }
+         Mod+D { spawn "${bins.bemenu-run}" "-p" "run>"; }
          Super+Alt+L { spawn "${bins.swaylock}" "-k" "-l" "-c" "${acmeColors.yellow}"; }
          Mod+c { spawn "${bins.makoctl}" "dismiss" "-a"; }
    '' + lib.optionalString cfg.saneterm.enable ''
          Mod+Shift+Return { spawn "${bins.saneterm}" "--" "${bins.sh}" "-l"; }
    '' + ''
-         Mod+G { spawn "${bins.tep}" "copy" "-l" "25" "-p" "tep>" "-i"; }
+         Mod+G { spawn "${bins.tep}" "copy" "-p" "tep>"; }
 
          XF86AudioRaiseVolume { spawn "${bins.wpctl}" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
          XF86AudioLowerVolume { spawn "${bins.wpctl}" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
