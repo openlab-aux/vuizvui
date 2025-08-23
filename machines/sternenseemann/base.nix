@@ -58,9 +58,6 @@ in {
     programs.fish = {
       enable = true;
       vendor.completions.enable = true;
-      shellAliases = {
-        "sd" = "systemctl";
-      };
       shellInit = ''
         set -x fish_greeting ""
 
