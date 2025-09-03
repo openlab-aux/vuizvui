@@ -251,7 +251,6 @@ in
 
      output "eDP-1" {
        scale 1
-       background-color "${acmeColors.yellow}"
      }
 
      screenshot-path "~/Pictures/screenshots/%Y%m%d_%Hh%Mm%Ss_niri.png"
