@@ -53,7 +53,10 @@ in {
   };
 
   environment.systemPackages = [
-    pkgs.vuizvui.aszlig.gpodder
+    (pkgs.vuizvui.buildSandbox pkgs.gpodder {
+      paths.required = [ "$HOME/gPodder" ];
+      fullNixStore = true;
+    })
     pkgs.paperwork
   ];
 
