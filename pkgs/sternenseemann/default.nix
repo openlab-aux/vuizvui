@@ -158,7 +158,7 @@ in
   }).overrideAttrs (old: {
     postPatch = old.postPatch + ''
       substituteInPlace "contrib/dmenu/passmenu" \
-        --replace "dmenu-wl" "${bins.bemenu}"
+        --replace-fail "dmenu-wl" "${bins.bemenu}"
     '';
   });
 
