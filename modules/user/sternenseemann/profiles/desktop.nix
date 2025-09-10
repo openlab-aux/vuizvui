@@ -73,8 +73,6 @@ let
 
   niriGaps = 10;
   niriBorder = 2;
-
-  x11Display = ":5";
 in
 
 {
@@ -183,34 +181,6 @@ in
        before = [ "niri.service" ];
      };
 
-     services.xwayland-satellite = rec {
-       # Based on upstream resources/xwayland-satellite.service
-       description = "XWayland outside your Wayland";
-       wantedBy = [ "graphical-session.target" ];
-       bindsTo = wantedBy;
-       partOf = wantedBy;
-       after = wantedBy;
-       requisite = wantedBy;
-
-       # User services that should have DISPLAY set.
-       # Note that we can't (always) override after for them since that
-       # will always statically set e.g. PATH due to limitations in NixOS.
-       before = [
-         "foot-server.service"
-       ];
-       serviceConfig = {
-         ExecStart = "${bins.xwayland-satellite} ${x11Display}";
-         # While we set DISPLAY for children of niri directly (and assume xwayland-satellite will start),
-         # we update systemd environment in the service since it outlives niri.
-         # TODO(sterni): dbus-update-activation-environment
-         ExecStartPost = "${bins.systemctl} --user set-environment DISPLAY=${x11Display}";
-         ExecStopPost = "${bins.systemctl} --user unset-environment DISPLAY";
-         Type = "notify";
-         NotifyAccess = "all";
-         StandardOutput = "journal";
-       };
-     };
-
      services.gammastep = rec {
        description = "Set color temperature of display according to time of day";
        after = [ "graphical-session.target" ];
@@ -227,7 +197,6 @@ in
 
      targets.graphical-session.wants = [
        # niri doesn't implement xwayland itself
-       "xwayland-satellite.service"
        "foot-server.socket"
        "gammastep.service"
      ];
@@ -256,11 +225,8 @@ in
          skip-at-startup
      }
 
-     environment {
-       // Assume xwayland-satellite will start successfully.
-       // systemd environment is updated by xwayland-satellite.service,
-       // so user services that need DISPLAY need to be started after.
-       DISPLAY "${x11Display}"
+     xwayland-satellite {
+       path "${bins.xwayland-satellite}"
      }
 
      // TODO(sterni): can we use systemd?
