@@ -133,7 +133,7 @@ in
     map g goto top
   '';
 
-  services.tor.enable = true;
+  services.tor.enable = false;
 
   environment.variables = {
     BROWSER = lib.getExe browser;
