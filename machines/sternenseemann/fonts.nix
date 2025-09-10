@@ -22,6 +22,7 @@ in
 
       packages = with pkgs; [
         atkinson-hyperlegible  # Sans serif for accessibility
+        b612                   # highly legible font family for aircraft cockpits
         corefonts              # microsoft fonts
         eb-garamond            # free garamond port
         ibm-plex               # Striking Fonts from IBM
