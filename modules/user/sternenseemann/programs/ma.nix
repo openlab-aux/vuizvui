@@ -20,7 +20,9 @@ in
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [ cfg.package ];
 
-    # TODO(sterni): start automatically
+    systemd.user.targets.graphical-session.wants = [
+      "ma-registry.service"
+    ];
     systemd.user.services.ma-registry = rec {
       description = "ma editor's file registry";
       after = [ "graphical-session.target" ];
