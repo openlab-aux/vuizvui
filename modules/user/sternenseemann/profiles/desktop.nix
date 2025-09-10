@@ -29,8 +29,6 @@ let
       // (getBins tep [ "tep" ])
       // (getBins config.vuizvui.user.sternenseemann.services.mako.package [ "makoctl" ])
       // (getBins pkgs.foot [ "footclient" ])
-      // (getBins config.vuizvui.user.sternenseemann.programs.saneterm.package [ "saneterm" ])
-      // (getBins pkgs.bash [ "sh" ])
       // (getBins pkgs.brightnessctl [ "brightnessctl" ])
       // (getBins pkgs.swaylock [ "swaylock" ])
       // (getBins pkgs.wireplumber [ "wpctl" ])
@@ -83,7 +81,6 @@ in
   options = {
     vuizvui.user.sternenseemann.profiles.desktop = {
       enable = lib.mkEnableOption "Desktop Profile";
-      saneterm.enable = mkDefEnableOption "Keyboard shortcuts for saneterm";
     };
   };
 
@@ -160,7 +157,6 @@ in
      wdisplays                  # display layout GUI
      nextcloud-client
    ];
-   vuizvui.user.sternenseemann.programs.saneterm.enable = cfg.saneterm.enable;
 
    # so libsecret works
    services.gnome.gnome-keyring.enable = true;
@@ -304,9 +300,6 @@ in
          Mod+D { spawn "${bins.bemenu-run}" "-p" "run>"; }
          Super+Alt+L { spawn "${bins.swaylock}" "-k" "-l" "-c" "${acmeColors.yellow}"; }
          Mod+c { spawn "${bins.makoctl}" "dismiss" "-a"; }
-   '' + lib.optionalString cfg.saneterm.enable ''
-         Mod+Shift+Return { spawn "${bins.saneterm}" "--" "${bins.sh}" "-l"; }
-   '' + ''
          Mod+G { spawn "${bins.tep}" "copy" "-p" "tep>"; }
          Mod+Shift+G { spawn "${bins.passmenu}" "-p" "pass>"; }
 
