@@ -260,6 +260,10 @@ in
        }
      }
 
+    animations {
+      off
+    }
+
      binds {
          Mod+Return { spawn "${bins.footclient}"; }
          // TODO(sterni): colors
