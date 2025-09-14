@@ -114,7 +114,13 @@ in
           ::'{hostname}-{now}'            \
           /etc/nixos                      \
           /home                           || die "Backup failed"
+      else
+        echo "No backup drive mounted"
+      fi
+    }
 
+    prune() {
+      if mountpoint -q "$MOUNTPOINT"; then
         $BORG prune                       \
           --list                          \
           --prefix '{hostname}-'          \
@@ -140,6 +146,9 @@ in
         "backup")
           backup
           ;;
+        "prune")
+          prune
+          ;;
         *)
           die "No such command: $COMMAND"
           ;;
@@ -147,6 +156,7 @@ in
     else
       mountpoint -q "$MOUNTPOINT" || mount_luks
       backup
+      prune
       umount_luks
     fi
   '';
