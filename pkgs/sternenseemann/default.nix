@@ -162,6 +162,13 @@ in
     '';
   });
 
+  sacc = pkgs.sacc.overrideAttrs (oldAttrs: {
+    postPatch = ''
+      ${oldAttrs.postPatch or ""}
+      substituteInPlace config.def.h --replace-fail xclip wl-copy
+    '';
+  });
+
   texlive = pkgs.texlive.combine ({
     inherit (pkgs.texlive)
       # collections
