@@ -318,4 +318,11 @@ in
       "''${instantiateFlags[@]}" \
       | ssh "$1" "xargs nix-store ''${realiseFlags[*]} -r"
   '';
+
+  focus = packageScriptFile {
+    name = "focus";
+    file = ./focus.sh;
+    isShell = true;
+    interpreter = bash;
+  };
 }
