@@ -1,4 +1,4 @@
-{ lib, writeBashBin, writeText, runCommandNoCC, getBins, packageScriptFile
+{ lib, writeBashBin, writeText, runCommandNoCC, getBins, packageScriptFile, fetchurl
 , bash, ruby, cbqn, perl
 , makeWrapper
 , borgbackup, cryptsetup
@@ -235,6 +235,16 @@ in
   uni = packageScriptFile {
     name = "uni";
     interpreter = perl;
+  };
+
+  twoman = packageScriptFile {
+    name = "twoman";
+    interpreter = bash;
+    file = fetchurl {
+      name = "twoman";
+      url = "https://raw.githubusercontent.com/Duncaen/dotfiles/442cd3401971b271c97d090d41e80d62e0473861/bin/twoman";
+      sha256 = "sha256-A7cZU9rf2RE8adiVUJ0cBNv8Wm9ypkS9YXw5recvS8M=";
+    };
   };
 
   # TODO(sterni): allow specifying multiple attrpaths without -A after --
