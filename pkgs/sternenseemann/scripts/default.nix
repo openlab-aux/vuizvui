@@ -123,7 +123,7 @@ in
       if mountpoint -q "$MOUNTPOINT"; then
         $BORG prune                       \
           --list                          \
-          --prefix '{hostname}-'          \
+          --glob-archives '{hostname}-*'  \
           --show-rc                       \
           --keep-daily 7                  \
           --keep-weekly 4                 \
