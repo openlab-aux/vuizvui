@@ -128,6 +128,8 @@ in
           --keep-daily 7                  \
           --keep-weekly 4                 \
           --keep-monthly 6                || die "Pruning failed"
+
+        $BORG compact
       else
         echo "No backup drive mounted"
       fi
