@@ -236,7 +236,7 @@ in {
       reptyr
       restic
       ripgrep
-      rofi-wayland
+      rofi
       rq
       rsync
       rustcat
