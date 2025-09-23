@@ -167,7 +167,6 @@ in {
       lm_sensors
       lsd
       lsof
-      lxd-lts
       macchina
       mako
       man-pages
