@@ -42,7 +42,6 @@ in
     leguin = callMachine ./profpatsch/leguin.nix profpatschModules;
   };
   sternenseemann = {
-    ludwig = callMachine ./sternenseemann/ludwig.nix {};
     wolfgang = callMachine ./sternenseemann/wolfgang.nix {};
   };
 }
