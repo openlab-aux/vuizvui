@@ -60,12 +60,15 @@ in {
     vuizvui.user.profpatsch.xserver.windowManager.xmonad = {
       enable = true;
       package = pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.my-xmonad;
+      updateSessionEnvironment = true;
     };
-
 
     xdg.portal = {
       enable = true;
       extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+      ];
+      configPackages = [
         pkgs.xdg-desktop-portal-gtk
       ];
       config.common = {
