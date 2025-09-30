@@ -97,20 +97,20 @@ in {
       '';
 
       displayManager = {
-        sessionCommands = with pkgs; ''
+        sessionCommands = ''
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
             export PATH+=":$HOME/bin" #add user-specific binaries (filled by nix-home)
             export EDITOR="emacsclient --create-frame"
             export TERMINAL=terminal-emulator
 
-            ${xorg.xset}/bin/xset r rate 250 35
+            ${pkgs.xorg.xset}/bin/xset r rate 250 35
 
             set-background &
             # TODO xbindkeys user service file
-            ${lib.getBin xbindkeys}/bin/xbindkeys
+            ${lib.getBin pkgs.xbindkeys}/bin/xbindkeys
             # synchronize clipboards
-            ${lib.getBin autocutsel}/bin/autocutsel -s PRIMARY &
+            ${lib.getBin pkgs.autocutsel}/bin/autocutsel -s PRIMARY &
           '';
       };
       synaptics = {
