@@ -66,6 +66,9 @@ in {
     # make sure /boot does not run out of space
     boot.loader.systemd-boot.configurationLimit = 20;
 
+    # enable us to emulate aarch64-linux builds with nix-build
+    boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
     ###########
     # Hardware
 
@@ -89,9 +92,14 @@ in {
 
     powerManagement.cpuFreqGovernor = "powersave";
 
-    vuizvui.hardware.thinkpad.powerManagement = "auto-cpufreq";
+    # vuizvui.hardware.thinkpad.powerManagement = "auto-cpufreq";
 
     vuizvui.hardware.tolino.enable = true;
+
+    services.udev.extraRules = ''
+      # ATMEL ATm32U4DFU
+      SUBSYSTEM=="usb", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="2ff4", MODE="664", TAG+="uaccess"
+    '';
 
     # hardware.pulseaudio = {
     #   enable = true;
@@ -313,27 +321,30 @@ in {
         libnotify         # notification library
         xclip             # clipboard thingy
         xorg.xkill        # X11 application kill
+        xorg.xev
+        xbindkeys
       ];
       guiPkgs = [
         adwaita-icon-theme
         # TODO: get themes to work. See notes.org.
         gnome-themes-extra
+        gsettings-desktop-schemas
+        glib # for gsettings
         # can go away once I migrate to pw-ctl and such
         pavucontrol
         pulseaudio
+        pika-backup
+        linphone
+        calibre
       ];
       programmingTools = [
-        cabal2nix                    # convert cabal files to nixexprs
-        # myPkgs.fast-init             # fast-init of haskell projects
-        # gitAndTools.git-annex        # version controlled binary file storage
-        # gitAndTools.git-dit          # decentral issue tracking for git
         github-cli                   # official github cli
 
         # TODO: move to user config
         direnv
         xh                       # reimplementation of httpie in rust (faster startup)
-        jq                           # json filter
-        inetutils                       # tcp debugging
+        jq                       # json filter
+        inetutils                # tcp debugging
         # TODO: make static binaries
         pkgs.vuizvui.profpatsch.nix-http-serve # serve nix builds and rebuild on reloads
         pkgs.vuizvui.profpatsch.nman # open man pages in temporary nix shell
@@ -341,38 +352,29 @@ in {
         pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
         execline
         pkgs.dhall
-        # TODO(Profpatsch): make dhall-flycheck build again
-        # pkgs.vuizvui.profpatsch.dhall-flycheck
+        llm
       ];
       documentation = [
         # mustache-spec NOT IN 16.09
       ];
       userPrograms = [
-        # abcde                # high-level cd-ripper with tag support
-        # anki mecab kakasi    # spaced repetition system & japanese analyzer
-        # TODO integrate lame into audacity
         audacity lame.lib    # audio editor and mp3 codec
-        # myPkgs.beets         # audio file metadata tagger
         firefox              # browser
         chromium             # second browser for good measure
-        # cups                 # print tools, mainly for lp(1)
+        cups                 # print tools, mainly for lp(1)
         pkgs.vuizvui.profpatsch.droopy # simple HTML upload server
-        # electrum             # bitcoin client
-        emacs29                # pretty neat operating system i guess
         imv                  # young brother of feh and less meh
-        filezilla            # FTP GUI business-ready interface framework
-        # gimp                 # graphics
         inkscape             # vector graphics
-        # libreoffice          # a giant ball of C++, that sometimes helps with proprietary shitformats
         mediainfo            # Swiss army knife of media metadata file information
-        # myPkgs.mumble
         myPkgs.mpv           # you are my sun and my stars, and you play my stuff.
         pass                 # standard unix password manager
-        # picard               # jean-luc, music tagger
         poppler_utils        # pdfto*
-        sqlite-interactive
+        sqlite-interactive sqlite-utils datasette
         zathura              # pdf viewer
         ghc                  # powerful pocket calculator
+        libreoffice
+        dfu-util
+        television           # fuzzy finding as TUI
       ];
       userScripts = with pkgs.vuizvui.profpatsch;
         let
@@ -480,6 +482,7 @@ in {
 
     };
 
+    services.gnome.gnome-keyring.enable = true;
     # TMP
 
     # vuizvui.services.guix.enable = true;
@@ -541,6 +544,9 @@ in {
 
     ###########
     # Programs
+
+    # required in addition to lock-screen for PAM module
+    programs.i3lock.enable = true;
 
     programs.adb.enable = true;
 
@@ -764,50 +770,6 @@ in {
         #   };
         # };
       }
-
-      ({
-      #   services.pyrnotify-ssh-connection = {
-      #     description = "ssh connection to make pyrnotify work";
-      #     serviceConfig = {
-      #       # TODO: get out of the gpg-agent service directly
-      #       Environment = ''"SSH_AUTH_SOCK=%t/gnupg/S.gpg-agent.ssh"'';
-      #       ExecStart = pkgs.writeScript "pyrnotify-start-ssh" ''
-      #         #!${pkgs.stdenv.shell}
-      #         set -e
-      #         # first delete the socket file if it exists
-      #         # otherwise the forward doesn’t work
-      #         ${lib.getBin pkgs.openssh}/bin/ssh \
-      #           bigmac \
-      #           "rm /home/bigmac/.weechat/pyrnotify.socket"
-      #         # forwards the remote socket over ssh
-      #         # thE options make it disconnect after 45 sec
-      #         # by sending a keepalive packet every 15 seconds
-      #         # and retrying 3 times
-      #         ${lib.getBin pkgs.openssh}/bin/ssh \
-      #           -o ServerAliveInterval=15 \
-      #           -o ServerAliveCountMax=3 \
-      #           -o ExitOnForwardFailure=yes \
-      #           -R /home/bigmac/.weechat/pyrnotify.socket:localhost:8099 \
-      #           -N \
-      #           bigmac
-      #       '';
-      #     };
-      #     requires = [ "gpg-agent.service" ];
-      #     after = [ "gpg-agent.service" ];
-      #   };
-      #   services.pyrnotify-listen = rec {
-      #     description = "get notified about weechat messages";
-      #     serviceConfig = {
-      #       ExecStart = "${lib.getBin pkgs.python
-      #         }/bin/python ${myPkgs.pyrnotify} 8099";
-      #       Restart = "on-failure";
-      #       RestartSec = "5s";
-      #     };
-      #     bindsTo = [ "pyrnotify-ssh-connection.service" ];
-      #     after = [ "pyrnotify-ssh-connection.service" ];
-      #     wantedBy = [ "default.target" ];
-      #   };
-      })
 
     ];
 
