@@ -4,3 +4,5 @@ result
 
 # local-only configuration
 /machines/sternenseemann/local.nix
+.claude/
+CLAUDE.local.md
