@@ -24,6 +24,7 @@ let
       # TODO: make sure these are the ones from the environment
       // getBins pkgs.ranger [ "ranger" ]
       // getBins show-qr-code [ "show-qr-code" ]
+      // getBins pkgs.claws-mail [ "claws" ]
       ;
 
   notify = msg: {
@@ -43,11 +44,10 @@ let
 
   composeMailTo = {
     exe = writeExecline "emacs-mail" { readNArgs = 1; } [
-      "emacsclient"
-        "--create-frame"
+      bins.claws
+        "--compose"
         "--eval"
-        # TODO: this obviously fails if the mail address contains "
-        ''(url-mailto (url-generic-parse-url "''${1}"))''
+        "$1"
     ];
     args = file: [ file ];
   };
