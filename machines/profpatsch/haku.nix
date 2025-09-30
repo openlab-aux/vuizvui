@@ -348,7 +348,6 @@ in
       openRPCPort = false;
     };
 
-
     services.dendrite =
       let database = {
         connection_string = "postgresql:///dendrite?host=/run/postgresql";
@@ -374,7 +373,21 @@ in
         settings.sync_api.database = database;
         settings.user_api.account_database.database = database;
         settings.user_api.device_database.database = database;
-        settings.sync_api.search.enable = true;
+        settings.sync_api.search.enabled = true;
+        # allow fetching federation server keys via matrix.org (otherwise joining rooms is basically impossible …)
+        settings.federation_api.prefer_direct_fetch = false;
+        settings.federation_api.key_perspectives = [{
+          server_name = "matrix.org";
+          keys = [
+            { key_id = "ed25519:auto";
+              public_key = "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw";
+            }
+            { key_id = "ed25519:a_RXGa";
+              public_key = "l8Hft5qXKn1vfHrg3p4+W8gELQVo8N13JkluMfmn2sQ";
+            }
+          ];
+        }];
+
 
         settings.logging = [ { type = "std"; level = "debug"; } ];
 
