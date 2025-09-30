@@ -135,11 +135,6 @@ in {
           "addr=1.2.3.4,port=6667,path=${config.vuizvui.user.profpatsch.services.bitlbee.socketFile}"
         ];
       }
-      {
-        userName = "weechat-qwerky";
-        weechatDataDir = "/var/lib/weechat-qwerky";
-        authorizedKeys = [ qwerkyKey ];
-      }
     ];
 
     vuizvui.user.profpatsch.services.bitlbee = {
