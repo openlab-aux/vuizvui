@@ -444,9 +444,6 @@ let
     { check = config.services.moodle.enable;
       path  = ["nixos" "moodle"];
     }
-    { check = config.services.morty.enable;
-      path  = ["nixos" "morty"];
-    }
     { check = config.services.mosquitto.enable;
       path  = ["nixos" "mosquitto"];
     }
@@ -570,9 +567,14 @@ let
     { check = config.services.peerflix.enable;
       path  = ["nixos" "peerflix"];
     }
-    { check = with config.services.postgresql; enable
-           && lib.any (lib.hasPrefix "pgjwt") extraPlugins;
-      path  = ["nixos" "pgjwt"];
+    { check = with config.services.postgresql; let
+        inherit (package.withPackages extensions) installedExtensions;
+      in enable && lib.any (lib.hasPrefix "pgjwt") installedExtensions;
+      path  = let
+        filterPg = name: drv: lib.hasPrefix "postgresql" name
+                           && drv == config.services.postgresql.package;
+        pgPackage = lib.head (lib.attrNames (lib.filterAttrs filterPg pkgs));
+      in ["nixos" "postgresql" "pgjwt" pgPackage];
     }
     { check = config.services.pgmanage.enable;
       path  = ["nixos" "pgmanage"];
@@ -580,9 +582,14 @@ let
     { check = config.programs.plotinus.enable;
       path  = ["nixos" "plotinus"];
     }
-    { check = with config.services.postgresql; enable
-           && lib.any (lib.hasPrefix "postgis") extraPlugins;
-      path  = ["nixos" "postgis"];
+    { check = with config.services.postgresql; let
+        inherit (package.withPackages extensions) installedExtensions;
+      in enable && lib.any (lib.hasPrefix "postgis") installedExtensions;
+      path  = let
+        filterPg = name: drv: lib.hasPrefix "postgresql" name
+                           && drv == config.services.postgresql.package;
+        pgPackage = lib.head (lib.attrNames (lib.filterAttrs filterPg pkgs));
+      in ["nixos" "postgresql" "postgis" pgPackage];
     }
     { check = config.services.postgresql.enable;
       path  = let
