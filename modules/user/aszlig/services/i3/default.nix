@@ -113,7 +113,6 @@ in
 
         replacements = {
           inherit (pkgs) dmenu xterm;
-          inherit (pkgs.vuizvui.aszlig) pvolctrl;
           inherit (pkgs.xorg) xsetroot;
           inherit wsConfig barConfig;
 

@@ -9,7 +9,6 @@
   mutt = callPackage ./mutt { inherit mutt; };
   nlast = callPackage ./nlast { };
   psi = callPackage ./psi { };
-  pvolctrl = callPackage ./pvolctrl { };
   vim = callPackage ./vim { vim = vim-full; };
   xterm = callPackage ./xterm { inherit xterm; };
 }

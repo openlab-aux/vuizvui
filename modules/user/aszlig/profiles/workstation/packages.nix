@@ -47,7 +47,6 @@ pkgs: with pkgs; [
   openssl
   p7zip
   pavucontrol
-  vuizvui.aszlig.pvolctrl
   pv
   python3
   python3Packages.hetzner
