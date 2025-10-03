@@ -1,15 +1,15 @@
 diff --git a/src/tools/toolfactory.cpp b/src/tools/toolfactory.cpp
-index edeb2bc0..e1c98ae1 100644
+index 35212403..8fd8be96 100644
 --- a/src/tools/toolfactory.cpp
 +++ b/src/tools/toolfactory.cpp
-@@ -51,13 +51,8 @@ CaptureTool* ToolFactory::CreateTool(CaptureTool::Type t, QObject* parent)
-         if_TYPE_return_TOOL(TYPE_COPY, CopyTool);
-         if_TYPE_return_TOOL(TYPE_SAVE, SaveTool);
+@@ -53,13 +53,9 @@ CaptureTool* ToolFactory::CreateTool(CaptureTool::Type t, QObject* parent)
          if_TYPE_return_TOOL(TYPE_EXIT, ExitTool);
--        if_TYPE_return_TOOL(TYPE_IMAGEUPLOADER, ImgUploaderTool);
+ #ifdef ENABLE_IMGUR
+         if_TYPE_return_TOOL(TYPE_IMAGEUPLOADER, ImgUploaderTool);
+-#endif
 -#if !defined(Q_OS_MACOS)
 -        if_TYPE_return_TOOL(TYPE_OPEN_APP, AppLauncher);
--#endif
+ #endif
          if_TYPE_return_TOOL(TYPE_PIXELATE, PixelateTool);
          if_TYPE_return_TOOL(TYPE_REDO, RedoTool);
 -        if_TYPE_return_TOOL(TYPE_PIN, PinTool);
@@ -17,38 +17,37 @@ index edeb2bc0..e1c98ae1 100644
          if_TYPE_return_TOOL(TYPE_CIRCLECOUNT, CircleCountTool);
          if_TYPE_return_TOOL(TYPE_SIZEINCREASE, SizeIncreaseTool);
 diff --git a/src/utils/confighandler.cpp b/src/utils/confighandler.cpp
-index 42f53102..3b0517cc 100644
+index e202e5dc..7aa380d3 100644
 --- a/src/utils/confighandler.cpp
 +++ b/src/utils/confighandler.cpp
-@@ -96,7 +96,7 @@ static QMap<class QString, QSharedPointer<ValueHandler>>
+@@ -100,7 +100,7 @@ static QMap<class QString, QSharedPointer<ValueHandler>>
      OPTION("useJpgForClipboard"          ,Bool               ( false         )),
      OPTION("uploadWithoutConfirmation"   ,Bool               ( false         )),
      OPTION("saveAfterCopy"               ,Bool               ( false         )),
--    OPTION("savePath"                    ,ExistingDir        (                   )),
-+    OPTION("savePath"                    ,String             ( ""                )),
+-    OPTION("savePath"                    ,ExistingDir        (               )),
++    OPTION("savePath"                    ,String             ( ""            )),
      OPTION("savePathFixed"               ,Bool               ( false         )),
-     OPTION("saveAsFileExtension"         ,SaveFileExtension  (                   )),
-     OPTION("uploadHistoryMax"            ,LowerBoundedInt    (0, 25          )),
-@@ -137,10 +137,6 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
-     SHORTCUT("TYPE_SAVE"                ,   "Ctrl+S"                ),
-     SHORTCUT("TYPE_ACCEPT"              ,   "Return"                ),
-     SHORTCUT("TYPE_EXIT"                ,   "Ctrl+Q"                ),
--    SHORTCUT("TYPE_IMAGEUPLOADER"       ,                           ),
+     OPTION("saveAsFileExtension"         ,SaveFileExtension  (               )),
+     OPTION("saveLastRegion"              ,Bool               ( false         )),
+@@ -158,9 +158,6 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
+     SHORTCUT("TYPE_CANCEL"              ,   "Ctrl+Backspace"        ),
+ #ifdef ENABLE_IMGUR
+     SHORTCUT("TYPE_IMAGEUPLOADER"       ,                           ),
+-#endif
 -#if !defined(Q_OS_MACOS)
 -    SHORTCUT("TYPE_OPEN_APP"            ,   "Ctrl+O"                ),
--#endif
+ #endif
      SHORTCUT("TYPE_PIXELATE"            ,   "B"                     ),
      SHORTCUT("TYPE_INVERT"              ,   "I"                     ),
-     SHORTCUT("TYPE_REDO"                ,   "Ctrl+Shift+Z"          ),
-@@ -163,7 +159,6 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
+@@ -189,7 +186,6 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
  #else
      SHORTCUT("TYPE_DELETE_CURRENT_TOOL" ,   "Delete"                ),
  #endif
 -    SHORTCUT("TYPE_PIN"                 ,                           ),
-     SHORTCUT("TYPE_SELECTIONINDICATOR"  ,                           ),
      SHORTCUT("TYPE_SIZEINCREASE"        ,                           ),
      SHORTCUT("TYPE_SIZEDECREASE"        ,                           ),
-@@ -174,10 +169,8 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
+     SHORTCUT("TYPE_CIRCLECOUNT"         ,                           ),
+@@ -199,10 +195,8 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
  // CLASS CONFIGHANDLER
  
  ConfigHandler::ConfigHandler()
@@ -62,7 +61,7 @@ index 42f53102..3b0517cc 100644
      static bool firstInitialization = true;
      if (firstInitialization) {
 diff --git a/src/utils/confighandler.h b/src/utils/confighandler.h
-index 5a3f4237..3a99a622 100644
+index ecc95665..7269f63d 100644
 --- a/src/utils/confighandler.h
 +++ b/src/utils/confighandler.h
 @@ -8,6 +8,7 @@
@@ -73,7 +72,7 @@ index 5a3f4237..3a99a622 100644
  
  #define CONFIG_GROUP_GENERAL "General"
  #define CONFIG_GROUP_SHORTCUTS "Shortcuts"
-@@ -62,12 +63,20 @@ public:
+@@ -67,12 +68,20 @@ public:
  
      static ConfigHandler* getInstance();
  
@@ -93,18 +92,15 @@ index 5a3f4237..3a99a622 100644
      CONFIG_GETTER_SETTER(userColors, setUserColors, QVector<QColor>);
 -    CONFIG_GETTER_SETTER(savePath, setSavePath, QString)
      CONFIG_GETTER_SETTER(savePathFixed, setSavePathFixed, bool)
+     CONFIG_GETTER_SETTER(uiLanguage, setUiLanguage, QString)
      CONFIG_GETTER_SETTER(uiColor, setUiColor, QColor)
-     CONFIG_GETTER_SETTER(contrastUiColor, setContrastUiColor, QColor)
 diff --git a/src/widgets/capture/capturetoolbutton.cpp b/src/widgets/capture/capturetoolbutton.cpp
-index 12946181..c79323b3 100644
+index f683f46b..658b0b39 100644
 --- a/src/widgets/capture/capturetoolbutton.cpp
 +++ b/src/widgets/capture/capturetoolbutton.cpp
-@@ -145,15 +145,9 @@ static std::map<CaptureTool::Type, int> buttonTypeOrder
-       { CaptureTool::TYPE_SELECTIONINDICATOR, 11 },
-       { CaptureTool::TYPE_MOVESELECTION, 12 }, { CaptureTool::TYPE_UNDO, 13 },
-       { CaptureTool::TYPE_REDO, 14 }, { CaptureTool::TYPE_COPY, 15 },
--      { CaptureTool::TYPE_SAVE, 16 }, { CaptureTool::TYPE_IMAGEUPLOADER, 17 },
-+      { CaptureTool::TYPE_SAVE, 16 },
+@@ -145,13 +145,7 @@ static std::map<CaptureTool::Type, int> buttonTypeOrder
+       { CaptureTool::TYPE_IMAGEUPLOADER, 17 },
+ #endif
        { CaptureTool::TYPE_ACCEPT, 18 },
 -#if !defined(Q_OS_MACOS)
 -      { CaptureTool::TYPE_OPEN_APP, 19 }, { CaptureTool::TYPE_EXIT, 20 },
@@ -117,11 +113,10 @@ index 12946181..c79323b3 100644
        { CaptureTool::TYPE_SIZEINCREASE, 22 },
        { CaptureTool::TYPE_SIZEDECREASE, 23 },
  };
-@@ -175,10 +169,6 @@ QList<CaptureTool::Type> CaptureToolButton::iterableButtonTypes = {
-     CaptureTool::TYPE_MOVESELECTION, CaptureTool::TYPE_UNDO,
-     CaptureTool::TYPE_REDO,          CaptureTool::TYPE_COPY,
-     CaptureTool::TYPE_SAVE,          CaptureTool::TYPE_EXIT,
--    CaptureTool::TYPE_IMAGEUPLOADER,
+@@ -176,9 +170,6 @@ QList<CaptureTool::Type> CaptureToolButton::iterableButtonTypes = {
+ #ifdef ENABLE_IMGUR
+     CaptureTool::TYPE_IMAGEUPLOADER,
+ #endif
 -#if !defined(Q_OS_MACOS)
 -    CaptureTool::TYPE_OPEN_APP,
 -#endif
@@ -131,14 +126,13 @@ index 12946181..c79323b3 100644
 +    CaptureTool::TYPE_ACCEPT,
  };
 diff --git a/src/widgets/capture/capturewidget.cpp b/src/widgets/capture/capturewidget.cpp
-index c34a5f11..0913af24 100644
+index fd866786..489e1085 100644
 --- a/src/widgets/capture/capturewidget.cpp
 +++ b/src/widgets/capture/capturewidget.cpp
-@@ -272,9 +272,6 @@ void CaptureWidget::initButtons()
-         for (auto* buttonList : { &allButtonTypes, &visibleButtonTypes }) {
-             buttonList->removeOne(CaptureTool::TYPE_SAVE);
-             buttonList->removeOne(CaptureTool::TYPE_COPY);
--            buttonList->removeOne(CaptureTool::TYPE_IMAGEUPLOADER);
+@@ -329,8 +329,6 @@ void CaptureWidget::initButtons()
+ #ifdef ENABLE_IMGUR
+             buttonList->removeOne(CaptureTool::TYPE_IMAGEUPLOADER);
+ #endif
 -            buttonList->removeOne(CaptureTool::TYPE_OPEN_APP);
 -            buttonList->removeOne(CaptureTool::TYPE_PIN);
          }
