@@ -158,6 +158,7 @@ in {
       ipv6calc
       jq
       jql
+      kanshi
       kmon
       lemmeknow
       lfs
@@ -308,6 +309,7 @@ in {
       wireguard-tools
       wiremix
       wl-clipboard
+      wl-mirror
       writedisk
       wthrr
       wttrbar
