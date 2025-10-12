@@ -611,6 +611,8 @@ let
     }}/bin/rustfmt'
     let g:rustfmt_autosave_if_config_present = 1
     let g:rust_recommended_style = 0
+    let g:rustfmt_detect_version = 1
+    let g:rustfmt_find_toml = 1
 
     packadd! editorconfig
 
