@@ -150,6 +150,7 @@ in {
       hplipWithPlugin
       htop
       hydra-check
+      hyperfine
       imagemagick
       inetutils
       ipcalc
@@ -294,7 +295,6 @@ in {
       vlock
       vorbis-tools
       vorbisgain
-      vscodium
       vuizvui.devhell.nvim
       vuizvui.devhell.vim
       w3m

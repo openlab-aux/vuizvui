@@ -61,6 +61,7 @@ in {
     ];
 
     programs = {
+      trippy.enable = true;
       vivid.enable = true;
       bat.enable = true;
       dconf.enable = true;
@@ -77,6 +78,10 @@ in {
       liboping.enable = true;
       htop.enable = true;
       nh.enable = true;
+      vscode = {
+        enable = true;
+        package = pkgs.vscodium;
+      };
       steam = {
         enable = true;
         fontPackages = with pkgs; lib.mkForce [ dejavu_fonts freefont_ttf gyre-fonts liberation_ttf
