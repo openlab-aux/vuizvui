@@ -33,9 +33,12 @@ let
   # for every scanned code.
   zbar = zbar.override { enableDbus = false; };
 
+  micro = pkgs.vuizvui.profpatsch.micro;
+
 in
 { inherit
     mpv
     zoomboxed
+    micro
     ;
 }

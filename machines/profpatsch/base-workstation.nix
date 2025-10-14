@@ -3,6 +3,7 @@
 let
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
   myLib  = import ./lib.nix  { inherit pkgs lib; };
+  micro = myPkgs.micro;
 
   philip = myLib.philip;
 
@@ -101,7 +102,7 @@ in {
             #TODO add as nixpkg
             export PATH+=":$HOME/scripts" #add utility scripts
             export PATH+=":$HOME/bin" #add user-specific binaries (filled by nix-home)
-            export EDITOR="emacsclient --create-frame"
+            export EDITOR=micro
             export TERMINAL=terminal-emulator
 
             ${pkgs.xorg.xset}/bin/xset r rate 250 35
@@ -141,7 +142,7 @@ in {
     # Packages
 
     environment.sessionVariables = {
-      EDITOR = "${myPkgs.vim}/bin/vim";
+      EDITOR = "micro";
 
       # TODO: required? old msg: This is important so that the xdg-desktop-portal-gtk will use the gtk.portal config arghhh
       XDG_CURRENT_DESKTOP = "gnome";

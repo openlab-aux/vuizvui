@@ -353,6 +353,9 @@ in rec {
     sha256 = "sha256-PM7eQl0boFGQou/9FL0lv+dQxzM9b0I/hyJ1hxv4Om4=";
   }) { inherit pkgs; };
 
+  micro = callPackage ./micro { };
+  television = callPackage ./television { };
+
 
   # business = import ./business.nix { inherit pkgs; };
 

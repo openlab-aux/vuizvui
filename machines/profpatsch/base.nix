@@ -49,6 +49,7 @@ in
         alias nrs='nixos-rebuild switch'
         alias tad='tmux attach -d'
         alias gs='git status'
+        alias m='micro
 
         # search recursively in cwd for file glob (insensitive)
         findia () { find -iname "*''${*}*"; }
@@ -76,7 +77,8 @@ in
       tmux              # detachable terminal multiplexer
       traceroute        # trace ip routes
       wget              # the other URL file fetcher
-      myPkgs.vim        # slight improvement over vi
+      vim               # slight improvement over vi
+      myPkgs.micro             # modern terminal-based text editor
       xe                # xargs with a modern interface
     ];
 
