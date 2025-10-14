@@ -8,8 +8,8 @@ let
 
   mpv = pkgs.mpv.override {
     scripts = [
-      (unfreeAndNonDistributablePkgs.mpvScripts.convert)
-      (pkgs.mpvScripts.mpris)
+      pkgs.mpvScripts.videoclip
+      pkgs.mpvScripts.mpris
     ];
   };
 
