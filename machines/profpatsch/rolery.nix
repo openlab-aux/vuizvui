@@ -446,14 +446,14 @@ in {
           # this is still referenced in my .xbindkeysrc, which is not in my nixpkgs config
           name = "monitor-laptop-only";
         })
-        (pkgs.vuizvui.profpatsch.binify {
-          exe = pkgs.vuizvui.profpatsch.lyric.lyric;
-          name = "lyric";
-        })
-        (pkgs.vuizvui.profpatsch.binify {
-          exe = pkgs.vuizvui.profpatsch.alacritty;
-          name = "terminal-emulator";
-        })
+        # (pkgs.vuizvui.profpatsch.binify {
+        #   exe = pkgs.vuizvui.profpatsch.lyric.lyric;
+        #   name = "lyric";
+        # })
+        # (pkgs.vuizvui.profpatsch.binify {
+        #   exe = pkgs.vuizvui.profpatsch.alacritty.alacritty;
+        #   name = "terminal-emulator";
+        # })
         # myPkgs.zoomboxed
         # for xte with xbindkeys
         xautomation

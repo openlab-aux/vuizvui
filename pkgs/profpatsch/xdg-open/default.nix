@@ -86,7 +86,7 @@ let
   };
 
   execInTerminalEmulator = {exe, args}: {
-    exe = tvl.users.Profpatsch.alacritty;
+    exe = tvl.users.Profpatsch.alacritty.alacritty;
     args = file: [
       ({variable, string}: string "--execute")
       ({variable, string}: string exe)

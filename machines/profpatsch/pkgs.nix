@@ -10,8 +10,8 @@ let
     scripts = [
       pkgs.mpvScripts.videoclip
       pkgs.mpvScripts.mpris
-      pkgs.vuizvui.profpatsch.lyric.mpv-script
-      pkgs.vuizvui.profpatsch.lyric.timing-mpv-script
+      #pkgs.vuizvui.profpatsch.lyric.mpv-script
+      #pkgs.vuizvui.profpatsch.lyric.timing-mpv-script
     ];
   };
 
