@@ -303,7 +303,7 @@ in {
       wantedBy      = [ "multi-user.target" ];
       after         = [ "network.target" ];
       serviceConfig = {
-        ExecStart = pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.blog.site-server {
+        ExecStart = pkgs.vuizvui.profpatsch.homeRepo.users.Profpatsch.blog.site-server {
           port = toString siteServerPort;
           # TODO: css has to be adjusted for articles
           # cssFile = pkgs.vuizvui.profpatsch.concatenatedCss;

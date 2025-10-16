@@ -1,4 +1,4 @@
-{ stdenv, lib, pkgs, sternenseemann, tvl, lazy-packages }:
+{ stdenv, lib, pkgs, sternenseemann, lazy-packages }:
 
 let
   inherit (pkgs) callPackage;
@@ -110,9 +110,8 @@ let
   writeExeclineFns = callPackage ./execline/write-execline.nix {};
 
 in rec {
-  # tvl = import /home/philip/depot {};
 
-  inherit tvl;
+  homeRepo = import ./home-repo.nix { inherit pkgs; };
 
   inherit (nixperiments)
     # canonical pattern matching primitive
@@ -224,7 +223,7 @@ in rec {
   };
 
   inherit (import ./profpatsch.de {
-    inherit pkgs lib tvl
+    inherit pkgs lib homeRepo
       toNetstring toNetstringList writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode record-get;
   })
     websiteStatic
@@ -254,7 +253,7 @@ in rec {
 
   rust-deps = (import ./rust-deps.nix { inherit (pkgs) buildRustCrate; });
 
-  inherit (import ./xdg-open { inherit pkgs tvl getBins importPurescript writeExecline runExeclineLocal netencode-rs writeRustSimple record-get el-exec lazy-packages show-qr-code; })
+  inherit (import ./xdg-open { inherit pkgs homeRepo getBins importPurescript writeExecline runExeclineLocal netencode-rs writeRustSimple record-get el-exec lazy-packages show-qr-code; })
     xdg-open
     xdg-open-module
     read-headers-and-follow-redirect

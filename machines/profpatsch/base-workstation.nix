@@ -60,7 +60,7 @@ in {
 
     vuizvui.user.profpatsch.xserver.windowManager.xmonad = {
       enable = true;
-      package = pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.my-xmonad;
+      package = pkgs.vuizvui.profpatsch.homeRepo.users.Profpatsch.my-xmonad;
       updateSessionEnvironment = true;
     };
 

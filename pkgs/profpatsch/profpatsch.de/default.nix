@@ -1,4 +1,4 @@
-{ pkgs, tvl, lib, toNetstring, toNetstringList, writeExecline, runExecline, getBins, writeRustSimple, netencode-rs, el-semicolon, el-substitute, el-exec, netencode, record-get }:
+{ pkgs, homeRepo, lib, toNetstring, toNetstringList, writeExecline, runExecline, getBins, writeRustSimple, netencode-rs, el-semicolon, el-substitute, el-exec, netencode, record-get }:
 
 let
   bins = getBins pkgs.coreutils [ "ln" "mkdir" "echo" "printenv" "cat" "env" "printf" "test" ]
@@ -6,7 +6,14 @@ let
     // getBins pkgs.s6-networking [ "s6-tcpserver" ]
     // getBins pkgs.time [ "time" ]
     // getBins pkgs.curl [ "curl" ]
+    // getBins pkgs.execline [ "fdmove" ]
     ;
+
+  # eprintf: printf to stderr
+  eprintf = msg: writeExecline "eprintf" { } [
+    "fdmove" "-c" "1" "2"
+    bins.printf "%s" msg
+  ];
 
   quattrocento-latin = pkgs.fetchurl {
     url = "https://fonts.gstatic.com/s/quattrocento/v11/OZpEg_xvsDZQL_LKIF7q4jP3w2j6.woff2";
@@ -182,18 +189,18 @@ let
     bins.ln "-s" "$path" "\${out}/\${relFile}"
   ];
 
-  curlHtmlEnv = {url, envName}: tvl.nix.writeExecline "curl-html-env-${envName}" {
+  curlHtmlEnv = {url, envName}: homeRepo.nix.writeExecline "curl-html-env-${envName}" {
   } [
     "backtick" envName [
       bins.curl "-s" url
     ]
-    tvl.users.Profpatsch.lib.eprint-stdin
-    tvl.users.Profpatsch.netencode.env-splice-record
+    homeRepo.users.Profpatsch.lib.eprint-stdin
+    homeRepo.users.Profpatsch.netencode.env-splice-record
   ];
 
   # A simple http server that serves the site. Yes, it’s horrible.
-  index-server = { port }: tvl.nix.writeExecline "index-server" { } [
-    (tvl.users.Profpatsch.lib.runInEmptyEnv [ "PATH" ])
+  index-server = { port }: homeRepo.nix.writeExecline "index-server" { } [
+    (homeRepo.users.Profpatsch.lib.runInEmptyEnv [ "PATH" ])
     bins.s6-tcpserver
     "127.0.0.1"
     port
@@ -207,9 +214,9 @@ let
       (arglibNetencode {
         what = "request";
       })
-      tvl.users.Profpatsch.read-http
+      homeRepo.users.Profpatsch.read-http
     ]
-    tvl.users.Profpatsch.netencode.record-splice-env
+    homeRepo.users.Profpatsch.netencode.record-splice-env
     (runOr "handle-request")
     return500
     "importas"
@@ -217,7 +224,7 @@ let
     "path"
     "path"
     "if"
-    [ tvl.tools.eprintf "GET \${path}\n" ]
+    [ (eprintf "GET \${path}\n") ]
     "backtick"
     "TEMPLATE_DATA"
     [
@@ -242,11 +249,11 @@ let
               ;
           };
           interpolateHtml = {
-            projects-html-snippet = tvl.users.Profpatsch.blog.projects-index-html;
-            posts-html-snippet = tvl.users.Profpatsch.blog.posts-index-html;
+            projects-html-snippet = homeRepo.users.Profpatsch.blog.projects-index-html;
+            posts-html-snippet = homeRepo.users.Profpatsch.blog.posts-index-html;
           };
         })
-        "if" [ tvl.users.Profpatsch.netencode.netencode-mustache ]
+        "if" [ homeRepo.users.Profpatsch.netencode.netencode-mustache ]
         bins.cat
       ]
       "export"
@@ -255,7 +262,7 @@ let
       "export"
       "serve-file"
       "$page"
-      tvl.users.Profpatsch.netencode.env-splice-record
+      homeRepo.users.Profpatsch.netencode.env-splice-record
     ]
     (runOr "print-page")
     return500
@@ -271,11 +278,11 @@ let
 
         ''
       ]
-      tvl.users.Profpatsch.netencode.netencode-mustache
+      homeRepo.users.Profpatsch.netencode.netencode-mustache
     ]
     "pipeline"
     [ bins.printenv "TEMPLATE_DATA" ]
-    tvl.users.Profpatsch.netencode.record-splice-env
+    homeRepo.users.Profpatsch.netencode.record-splice-env
     "importas"
     "-ui"
     "serve-file"
@@ -285,7 +292,7 @@ let
   ];
 
   # run argv or $1 if argv returns a failure status code.
-  runOr = name: tvl.nix.writeExecline "run-or" { readNArgs = 1; } [
+  runOr = name: homeRepo.nix.writeExecline "run-or" { readNArgs = 1; } [
     "foreground"
     [ "$@" ]
     "importas"
@@ -295,11 +302,11 @@ let
     [ bins.test "$?" "-eq" "0" ]
     [ ]
     "if"
-    [ tvl.tools.eprintf "runOr ${name}: exited \${?}, running \${1}\n" ]
+    [ (eprintf "runOr ${name}: exited \${?}, running \${1}\n") ]
     "$1"
   ];
 
-  return400 = tvl.nix.writeExecline "return400" { } [
+  return400 = homeRepo.nix.writeExecline "return400" { } [
     bins.printf
     "%s"
     ''
@@ -310,7 +317,7 @@ let
     ''
   ];
 
-  return500 = tvl.nix.writeExecline "return500" { } [
+  return500 = homeRepo.nix.writeExecline "return500" { } [
     bins.printf
     "%s"
     ''
@@ -322,10 +329,10 @@ let
     ''
   ];
 
-  arglibNetencode = val: tvl.nix.writeExecline "arglib-netencode" { } [
+  arglibNetencode = val: homeRepo.nix.writeExecline "arglib-netencode" { } [
     "export"
     "ARGLIB_NETENCODE"
-    (tvl.users.Profpatsch.netencode.gen.dwim val)
+    (homeRepo.users.Profpatsch.netencode.gen.dwim val)
     "$@"
   ];
 

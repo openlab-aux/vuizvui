@@ -1,4 +1,4 @@
-{ pkgs, getBins, tvl,
+{ pkgs, getBins, homeRepo,
 importPurescript,
 writeExecline,
 runExeclineLocal,
@@ -56,7 +56,7 @@ let
   # add-to-calendar = {
   #   exe = writeExecline "ics-to-qr-code" { readNArgs = 1; } [
   #     "pipeline" [
-  #       tvl.users.Profpatsch.ical-smolify "$1"
+  #       homeRepo.users.Profpatsch.ical-smolify "$1"
   #     ]
   #     # show contents of ics as qr code
   #     bins.show-qr-code
@@ -80,7 +80,7 @@ let
   };
 
   execInTerminalEmulator = {exe, args}: {
-    exe = tvl.users.Profpatsch.alacritty.alacritty;
+    exe = homeRepo.users.Profpatsch.alacritty.alacritty;
     args = file: [
       ({variable, string}: string "-e")
       ({variable, string}: string exe)

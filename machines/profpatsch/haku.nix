@@ -3,6 +3,7 @@
 let
   myLib  = import ./lib.nix  { inherit pkgs lib; };
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
+  homeRepo = pkgs.vuizvui.profpatsch.homeRepo;
 
   hakuHostName = "haku.profpatsch.de";
   testHostName = "test.profpatsch.de";
@@ -169,7 +170,7 @@ in
         description = "internally served public files (see nginx)";
         wantedBy = [ "default.target" ];
         serviceConfig.WorkingDirectory = transmissionDownloadDirectory;
-        script = ''${pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.httzip}'';
+        script = ''${homeRepo.users.Profpatsch.httzip}'';
         serviceConfig.User = user.name;
       };
 
@@ -183,7 +184,7 @@ in
         serviceConfig.WorkingDirectory = "/var/lib/whatcd-resolver";
         script = "${pkgs.vuizvui.profpatsch.writeExecline "run-whatcd-resolver-jaeger" {} [
           "envfile" "/var/lib/whatcd-resolver/whatcd-resolver-env"
-          pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.whatcd-resolver.whatcd-resolver
+          homeRepo.users.Profpatsch.whatcd-resolver.whatcd-resolver
         ]}";
         serviceConfig.User = user.name;
         # transmission extra group
@@ -207,7 +208,7 @@ in
         description = "tooling for openlabs";
         wantedBy = [ "default.target" ];
         serviceConfig.WorkingDirectory = "/var/lib/openlab-tools";
-        script = ''${pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.openlab-tools}'';
+        script = ''${homeRepo.users.Profpatsch.openlab-tools}'';
         serviceConfig.User = user.name;
       };
 
@@ -388,7 +389,7 @@ in
 
           handle_path /static/* {
 
-            root * ${pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.whatcd-resolver.static-directory}
+            root * ${homeRepo.users.Profpatsch.whatcd-resolver.static-directory}
             file_server {
               browse off
             }
