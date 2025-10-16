@@ -10,6 +10,7 @@ let
       "./core/tests.nix"
 
       "./hardware/thinkpad.nix"
+      "./hardware/t14s.nix"
       "./hardware/tolino.nix"
 
       "./programs/gnupg"

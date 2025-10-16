@@ -33,7 +33,6 @@ in {
   imports = [
     ./base-workstation.nix
     (import ./profpatsch-thinkpad.nix { cpuType = "amd"; })
-    ((import ../../nixos-hardware-path.nix) + "/lenovo/thinkpad/t14s/amd/gen1")
   ];
 
   config = {
