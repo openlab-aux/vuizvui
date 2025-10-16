@@ -292,6 +292,10 @@ in rec {
 
   gpg-private-offline-key = import ./gpg-private-offline-key { inherit pkgs writeExecline getBins; };
 
+  inherit (homeRepo.users.Profpatsch)
+    lyric
+    alacritty;
+
   blight = callPackage ./blight.nix { };
 
   gitit = import (pkgs.fetchFromGitHub {

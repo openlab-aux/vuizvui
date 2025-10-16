@@ -3,6 +3,7 @@ let
 
   myLib  = import ./lib.nix  { inherit pkgs lib; };
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib unfreeAndNonDistributablePkgs; };
+  homeRepo = pkgs.vuizvui.profpatsch.homeRepo.users.Profpatsch;
 
   # magic constants that might need to be changed when migrating laptop models
   laptop = {
@@ -12,7 +13,6 @@ let
   tailscaleInterface = "tailscale0";
 
   lock-screen = pkgs.writers.writeDashBin "lock-screen" ''
-
     set -e
     revert() {
       # never turn off the screen (disable dpms)
@@ -338,6 +338,7 @@ in {
       ];
       programmingTools = [
         github-cli                   # official github cli
+        homeRepo.gitu # magit-like standalone
 
         # TODO: move to user config
         direnv
@@ -445,14 +446,27 @@ in {
           # this is still referenced in my .xbindkeysrc, which is not in my nixpkgs config
           name = "monitor-laptop-only";
         })
-        # (pkgs.vuizvui.profpatsch.binify {
-        #   exe = pkgs.vuizvui.profpatsch.lyric.lyric;
-        #   name = "lyric";
-        # })
-        # (pkgs.vuizvui.profpatsch.binify {
-        #   exe = pkgs.vuizvui.profpatsch.alacritty.alacritty;
-        #   name = "terminal-emulator";
-        # })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.lyric.lyric;
+          name = "lyric";
+        })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = pkgs.vuizvui.profpatsch.alacritty.alacritty;
+          name = "terminal-emulator";
+        })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = homeRepo.aliases.bell;
+          name = "bell";
+        })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = homeRepo.aliases.prefer-light;
+          name = "prefer-light";
+        })
+        (pkgs.vuizvui.profpatsch.binify {
+          exe = homeRepo.aliases.prefer-dark;
+          name = "prefer-dark";
+        })
+        homeRepo.my-tools
         # myPkgs.zoomboxed
         # for xte with xbindkeys
         xautomation

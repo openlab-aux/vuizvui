@@ -164,7 +164,8 @@ function appendTalkies(append_to_element) {
         { talk: "boyrap premium"
           , link: "https://cohost.org/jkap/post/696031-empty" },
         { talk: "The agent is a point that shifts position"
-          , link: "https://mastodon.xyz/@gutenberg_org@mastodon.social/113673662384391140" }
+          , link: "https://mastodon.xyz/@gutenberg_org@mastodon.social/113673662384391140" },
+        { talk: "unlearned helplessness" }
     ];
     var talkie = talkies[Math.floor(Math.random()*talkies.length)];
     var elem = null;
