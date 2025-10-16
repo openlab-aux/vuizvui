@@ -296,10 +296,10 @@ in rec {
   blight = callPackage ./blight.nix { };
 
   gitit = import (pkgs.fetchFromGitHub {
-    owner = "openlab-aux";
+    owner = "Profpatsch";
     repo = "gitit";
-    rev = "94672a9ed8a7aca1c085e2120d9edb953117805e";
-    sha256 = "sha256-PM7eQl0boFGQou/9FL0lv+dQxzM9b0I/hyJ1hxv4Om4=";
+    rev = "bcfba01472f09abec211c3509ec33726629068ea";
+    sha256 = "sha256-v8s6GN4FTCfcsAxLdaP3HBYIDrJlZeKv+TOiRRt4bf4=";
   }) { inherit pkgs; };
 
   micro = callPackage ./micro { };
