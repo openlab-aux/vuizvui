@@ -3,8 +3,7 @@ module Config where
 import XdgOpen
 
 type Special cmd =
-  { openInEditor :: cmd
-  , openInBrowser :: cmd
+  { openInBrowser :: cmd
   , fetchHttpUrlMime :: cmd
   , composeMailTo :: cmd
   , execInTerminalEmulator :: cmd -> cmd
@@ -56,7 +55,8 @@ mime pkgs special = do
               , cmd: oneArg (pkgSameOnDemand "libreoffice")
               }
           , any:
-              { mime: [ "text", "any" ], cmd: special.openInEditor }
+              { mime: [ "text", "*" ],
+                cmd: oneArg (pkgSameOnDemand "micro") }
 
           }
       , mailAddress:

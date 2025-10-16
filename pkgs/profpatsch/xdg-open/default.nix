@@ -68,12 +68,6 @@ let
     exe = "firefox";
     args = file: [ file ];
   };
-
-  openInEditor = {
-    exe = "emacsclient";
-    args = file: [ file ];
-  };
-
   dmenuListBinariesAndExec = {
     exe = writeExecline "dmenu-query" { readNArgs = 1; } [
       "backtick" "-in" "cmd" [
@@ -88,7 +82,7 @@ let
   execInTerminalEmulator = {exe, args}: {
     exe = tvl.users.Profpatsch.alacritty.alacritty;
     args = file: [
-      ({variable, string}: string "--execute")
+      ({variable, string}: string "-e")
       ({variable, string}: string exe)
     ] ++ args file;
   };
@@ -135,7 +129,6 @@ let
           openInBrowser
           fetchHttpUrlMime
           fetchCommandOnDemand
-          openInEditor
           dmenuListBinariesAndExec
           execInTerminalEmulator
           notify

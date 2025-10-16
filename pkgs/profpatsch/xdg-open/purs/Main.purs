@@ -52,8 +52,7 @@ convArg =
 
 special2ToSpecial :: Special Command2 -> Special Command
 special2ToSpecial special =
-  { openInEditor: command2ToCommand special.openInEditor
-  , openInBrowser: command2ToCommand special.openInBrowser
+  { openInBrowser: command2ToCommand special.openInBrowser
   , fetchHttpUrlMime: command2ToCommand special.fetchHttpUrlMime
   , composeMailTo: command2ToCommand special.composeMailTo
   , execInTerminalEmulator: \cmd -> command2ToCommand (special.execInTerminalEmulator (commandToCommand2 cmd))
