@@ -122,7 +122,8 @@ in rec {
     # derivation testing
     drvSeq drvSeqL withTests
     # using the nix evaluator as a json transformation runtime
-    json2json json2string;
+    #json2json json2string
+    ;
 
   inherit (nixperiments.filterSourceGitignore)
     # filterSource by parsing a .gitignore file
@@ -247,8 +248,6 @@ in rec {
   #   inherit (haskellPackages) dhall-nix;
   # };
 
-  # xmonad = pkgs.callPackage ./xmonad { };
-
   inherit (import ./importPurescript.nix { inherit pkgs exactSource; haskellPackages = haskellPackagesProfpatsch; })
     importPurescript
     ;
@@ -304,6 +303,6 @@ in rec {
   }) { inherit pkgs; };
 
   micro = callPackage ./micro { };
-  television = callPackage ./television { };
+  #television = callPackage ./television { };
 
 }
