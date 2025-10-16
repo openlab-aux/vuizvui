@@ -247,13 +247,6 @@ in
         locations."/openlab-tools/" = {
           proxyPass = "http://127.0.0.1:${toString openlabToolsPort}/";
         };
-        locations."/openlab-api/" = {
-          root = pkgs.linkFarm "openlab-api" [
-            { name = "openlab-api/hackerspaceinfo-openlab-static.json";
-              path = ./openlab-api-static.json;
-            }
-          ];
-        };
 
         locations."/opengraph-experiment/".root = pkgs.linkFarm "opengraph-player-root" [
             { name = "opengraph-experiment/index.html";
@@ -319,7 +312,7 @@ in
             '';
           }
           { name = "opengraph-experiment/progress-player.js";
-            path = /home/philip/depot/users/Profpatsch/whatcd-resolver/static/progress-player.js;
+            path = "${homeRepo.users.Profpatsch.whatcd-resolver.static-directory}/progress-player.js";
           }
           { name = "opengraph-experiment/lecker-bierchen.png";
             path = ./lecker-bierchen.png;
