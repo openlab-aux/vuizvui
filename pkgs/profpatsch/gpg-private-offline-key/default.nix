@@ -1,4 +1,4 @@
-{ pkgs, writeExecline, getBins }:
+{ pkgs, writeExecline, getBins, ... }:
 
 let
 # split

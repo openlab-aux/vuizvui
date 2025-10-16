@@ -1,4 +1,4 @@
-{ writeExecline, getBins, pkgs, writeRustSimple }:
+{ writeExecline, getBins, pkgs, writeRustSimple, ... }:
 let
 
   bins = getBins pkgs.rlwrap [ "rlwrap" ]

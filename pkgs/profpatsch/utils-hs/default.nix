@@ -1,7 +1,7 @@
-{ lib, fetchFromGitHub, haskellPackages, haskell }:
+{ lib, pkgs, ... }:
 
 let
-  utilsSrc = fetchFromGitHub {
+  utilsSrc = pkgs.fetchFromGitHub {
     owner = "Profpatsch";
     repo = "utils.hs";
     rev = "f53264978042d8041831a3ac3766aa1dfdc60b57";
@@ -12,8 +12,8 @@ let
   # TODO: make it possible to override the hps fixpoint again
   # without removing the overrides in here
   hps =
-    let hlib = haskell.lib; in
-    haskellPackages.override {
+    let hlib = pkgs.haskell.lib; in
+    pkgs.haskellPackages.override {
       overrides = (hself: hsuper: {
 
         # shell stub

@@ -1,4 +1,4 @@
-{ stdenv, writeExecline, getBins, zbar, libnotify, imagemagick }:
+{ stdenv, writeExecline, getBins, zbar, libnotify, imagemagick, ... }:
 {
   # videoDevice is a string, e.g. "/dev/video0"
   videoDevice

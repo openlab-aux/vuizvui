@@ -1,4 +1,4 @@
-{ pkgs, homeRepo, lib, toNetstring, toNetstringList, writeExecline, runExecline, getBins, writeRustSimple, netencode-rs, el-semicolon, el-substitute, el-exec, netencode, record-get }:
+{ pkgs, homeRepo, lib, toNetstring, toNetstringList, writeExecline, runExecline, getBins, writeRustSimple, profpatsch, ... }:
 
 let
   bins = getBins pkgs.coreutils [ "ln" "mkdir" "echo" "printenv" "cat" "env" "printf" "test" ]
@@ -125,8 +125,8 @@ let
 
 
   importas-if = writeRustSimple "importas-if" {
-    dependencies = [ netencode-rs el-substitute el-exec ];
-    # TODO: for some reason the skarnet linker flag
+    dependencies = [ profpatsch.netencode.netencode-rs profpatsch.execline.el-substitute profpatsch.execline.el-exec ];
+    # TODO: for some reason the skarnat linker flag
     # is propagated by the link target is not?
     buildInputs = [ pkgs.skalibs pkgs.execline ];
   } (pkgs.writeText "importas-if.rs" ''
@@ -165,11 +165,11 @@ let
     stdin = lib.concatStrings (
       lib.mapAttrsToList (_: static:
          toNetstring
-           (netencode.record
-             ((lib.optional (static.relativeDir != []) { key = "relDir"; val = netencode.binary (joinPath static.relativeDir); })
+           (profpatsch.netencode.netencode.record
+             ((lib.optional (static.relativeDir != []) { key = "relDir"; val = profpatsch.netencode.netencode.binary (joinPath static.relativeDir); })
              ++ [
-             { key = "relFile"; val = netencode.binary static.relativeFile; }
-             { key = "path"; val = netencode.binary static.path; }
+             { key = "relFile"; val = profpatsch.netencode.netencode.binary static.relativeFile; }
+             { key = "path"; val = profpatsch.netencode.netencode.binary static.path; }
            ])))
         files
     );
@@ -178,7 +178,7 @@ let
     "if" [ bins.mkdir "$out" ]
     "forstdin" "-d" "" "dict"
     "pipeline" [ bins.printenv "dict" ]
-    record-get [ "relDir" "relFile" "path" ]
+    profpatsch.netencode.record-get [ "relDir" "relFile" "path" ]
     "importas" "-ui" "relFile" "relFile"
     "importas" "-ui" "path" "path"
     "if" "-n" [
@@ -337,6 +337,8 @@ let
   ];
 
   websiteStatic = linkStaticFiles staticFiles;
+
+  record-get = profpatsch.netencode.record-get;
 
 in {
   inherit

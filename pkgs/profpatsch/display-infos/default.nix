@@ -1,8 +1,8 @@
-{ lib, runCommandLocal, writeText, python3, libnotify, bc, sfttime }:
+{ lib, pkgs, profpatsch, ... }:
 
 let
   name = "display-infos-0.1.0";
-  script = writeText (name + "-script") ''
+  script = pkgs.writeText (name + "-script") ''
     #!@python3@
 
     import sys
@@ -71,15 +71,15 @@ let
     print(notify)
   '';
 
-  python = python3.withPackages (pp: [ pp.jc ]);
+  python = pkgs.python3.withPackages (pp: [ pp.jc ]);
 
 in
-  with lib; runCommandLocal "display-infos" {
+  with lib; pkgs.runCommandLocal "display-infos" {
     meta.description = "Script to display time & battery";
   } ''
     substitute ${script} script \
       --replace "@python3@" "${getBin python}/bin/python3" \
-      --replace "@bc@" "${getBin bc}/bin/bc" \
-      --replace "@sfttime@" "${getBin sfttime}/bin/sfttime"
+      --replace "@bc@" "${getBin pkgs.bc}/bin/bc" \
+      --replace "@sfttime@" "${getBin profpatsch.sfttime}/bin/sfttime"
     install -D script $out/bin/display-infos
   ''

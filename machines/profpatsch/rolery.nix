@@ -349,7 +349,7 @@ in {
         pkgs.vuizvui.profpatsch.nix-http-serve # serve nix builds and rebuild on reloads
         pkgs.vuizvui.profpatsch.nman # open man pages in temporary nix shell
         # pkgs.vuizvui.profpatsch.watch-server # restart server on code change
-        pkgs.vuizvui.profpatsch.until        # restart until cmd succeeds
+        pkgs.vuizvui.profpatsch.utils-hs.until        # restart until cmd succeeds
         execline
         pkgs.dhall
         llm

@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, ... }:
 let
 
   # This is a rewrite of execline’s runblock.

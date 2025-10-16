@@ -1,4 +1,4 @@
-{ python3Packages, libgudev, fetchFromGitHub, wrapGAppsHook3, gobject-introspection, scdoc }:
+{ python3Packages, libgudev, fetchFromGitHub, wrapGAppsHook3, gobject-introspection, scdoc, ... }:
 
 python3Packages.buildPythonApplication rec {
     pname = "blight";

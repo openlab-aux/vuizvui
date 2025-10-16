@@ -3,6 +3,8 @@
 let
   inherit (pkgs) callPackage;
 
+  readTree = import ../../lib/readTree {};
+
   haskellPackagesProfpatsch = import ./haskell-overlay.nix { inherit pkgs; };
 
   # Takes a derivation and a list of binary names
@@ -21,7 +23,7 @@ let
 
   # Create a store path where the executable `exe`
   # is linked to $out/bin/${name}.
-  # This is useful for e.g. including it as a “package”
+  # This is useful for e.g. including it as a "package"
   # in `buildInputs` of a shell.nix.
   #
   # For example, if I have the exeutable /nix/store/…-hello,
@@ -80,7 +82,7 @@ let
         }) execline;
 
       tests = import ./execline/run-execline-tests.nix {
-        # can’t use runExeclineLocal in the tests,
+        # can't use runExeclineLocal in the tests,
         # because it is tested by the tests (well, it does
         # work, but then you have to run the tests every time)
         runExecline = it;
@@ -109,93 +111,7 @@ let
 
   writeExeclineFns = callPackage ./execline/write-execline.nix {};
 
-in rec {
-
   homeRepo = import ./home-repo.nix { inherit pkgs; };
-
-  inherit (nixperiments)
-    # canonical pattern matching primitive
-    match
-    # generate an option parser for scripts
-    script
-    # derivation testing
-    drvSeq drvSeqL withTests
-    # using the nix evaluator as a json transformation runtime
-    #json2json json2string
-    ;
-
-  inherit (nixperiments.filterSourceGitignore)
-    # filterSource by parsing a .gitignore file
-    filterSourceGitignoreWith
-    readGitignoreFile
-    ;
-
-  inherit (import ./deploy.nix { inherit pkgs getBins; })
-    deploy
-    ;
-
-  backlight = callPackage ./backlight { inherit (pkgs) acpilight; };
-  display-infos = callPackage ./display-infos { inherit sfttime; };
-  git-commit-index = callPackage ./git-commit-index { inherit script; };
-  nix-http-serve = callPackage ./nix-http-serve {};
-  nman = callPackage ./nman {
-    inherit writeRustSimpleBin;
-    inherit (sternenseemann) temp;
-  };
-  sfttime = callPackage ./sfttime {};
-  show-qr-code = callPackage ./show-qr-code {};
-  read-qr-code = callPackage ./read-qr-code.nix {
-    inherit writeExecline getBins;
-  };
-  read-qr-code-from-camera = callPackage ./read-qr-code-from-camera.nix {
-    inherit writeExecline getBins;
-  };
-  youtube2audiopodcast = callPackage ./youtube2audiopodcast {
-    inherit writeExecline writeHaskellInterpret getBins runInEmptyEnv sandbox;
-  };
-
-  xrandr = import ./xrandr.nix { inherit pkgs getBins runExeclineLocal writeExecline toNetstringKeyVal; };
-
-  inherit (callPackage ./utils-hs {})
-    until
-    # watch-server
-    haskellPackages;
-
-  query-audio-streams = callPackage ./query-album-streams {
-    inherit writeExecline writeHaskellInterpret getBins;
-  };
-
-  # patched version of droopy, with javascript user-enhancement
-  droopy = pkgs.droopy.overrideDerivation (old: {
-    src = pkgs.fetchFromGitHub {
-      owner = "Profpatsch";
-      repo = "Droopy";
-      rev = "55c60c612b913f9fbce9fceebbcb3a332152f1a4";
-      sha256 = "0jcazj9gkdf4k7vsi33dpw9myyy02gjihwsy36dfqq4bas312cq1";
-    };
-    installPhase = old.installPhase or "" + ''
-      mkdir -p $out/share/droopy
-      cp -r $src/static $out/share/droopy
-    '';
-    makeWrapperArgs = old.makeWrapperArgs or [] ++ [
-      "--set DROOPY_STATIC \"$out/share/droopy/static\""
-    ];
-  });
-
-  inherit (import ./write-rust.nix { inherit pkgs runExeclineLocal getBins drvSeqL; })
-    writeRustSimple
-    writeRustSimpleBin
-    writeRustSimpleLib
-    ;
-
-  inherit (runExeclineFns)
-    runExecline runExeclineLocal;
-  inherit (writeExeclineFns)
-    writeExecline writeExeclineBin;
-  inherit (import ./execline/runblock.nix { inherit pkgs; })
-    runblock;
-  inherit (import ./execline/e.nix { inherit pkgs writeExecline getBins writeRustSimple; })
-    e;
 
   toNetstring = s:
     "${toString (builtins.stringLength s)}:${s},";
@@ -209,103 +125,93 @@ in rec {
         (k: v: toNetstring (toNetstring k + toNetstring v))
         attrs);
 
+  writeRust = import ./write-rust.nix {
+    inherit pkgs getBins;
+    inherit (runExeclineFns) runExeclineLocal;
+    inherit (nixperiments) drvSeqL;
+  };
+
+  sandboxFns = import ./sandbox.nix { inherit pkgs; inherit (writeExeclineFns) writeExecline; };
+
+  # All utility functions and libraries that packages might need
+  utilityArgs = {
+    inherit stdenv lib pkgs sternenseemann lazy-packages homeRepo;
+    inherit getBins binify exactSource;
+    inherit writeHaskellInterpret;
+    inherit (nixperiments) match script drvSeq drvSeqL withTests filterSourceGitignoreWith readGitignoreFile;
+    inherit (runExeclineFns) runExecline runExeclineLocal runExeclineLocalNoSeqL;
+    inherit (writeExeclineFns) writeExecline writeExeclineBin;
+    inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
+    inherit (sandboxFns) sandbox runInEmptyEnv;
+    inherit toNetstring toNetstringList toNetstringKeyVal;
+    inherit haskellPackagesProfpatsch testing;
+    inherit (sternenseemann) temp;  # For nman
+  };
+
+in readTree.fix (self: let
+  # Discover all packages using readTree
+  discovered = readTree {
+    path = ./.;
+    args = utilityArgs // {
+      profpatsch = self;
+    };
+  };
+
+  # Additional packages that need special handling (not auto-discovered)
+  specialPackages = rec {
+    # Re-exports from homeRepo
+    inherit (homeRepo.users.Profpatsch) lyric alacritty;
+
+    # .nix files that aren't auto-discovered because default.nix exists in root
+    rust-deps = import ./rust-deps.nix { inherit (pkgs) buildRustCrate; };
+    importPurescript = import ./importPurescript.nix { inherit pkgs exactSource; inherit (pkgs) haskellPackages; };
+
+    # Standalone package files (import with utilityArgs + pkgs + discovered packages)
+    standaloneArgs = utilityArgs // pkgs // { runblock = discovered.execline.runblock; };
+    read-qr-code = import ./read-qr-code.nix standaloneArgs;
+    read-qr-code-from-camera = import ./read-qr-code-from-camera.nix standaloneArgs;
+    xrandr = import ./xrandr.nix standaloneArgs;
+    deploy = (import ./deploy.nix standaloneArgs).deploy;
+    nix-tools-set = import ./nix-tools.nix standaloneArgs;
+    nix-run = nix-tools-set.nix-run;
+    nix-run-bin = nix-tools-set.nix-run-bin;
+    nix-eval = nix-tools-set.nix-eval;
+    blight = import ./blight.nix standaloneArgs;
+    e = (import ./execline/e.nix (standaloneArgs // { inherit (writeExeclineFns) writeExecline; })).e;
+
+    # Packages that need complex setup
+    droopy = pkgs.droopy.overrideDerivation (old: {
+      src = pkgs.fetchFromGitHub {
+        owner = "Profpatsch";
+        repo = "Droopy";
+        rev = "55c60c612b913f9fbce9fceebbcb3a332152f1a4";
+        sha256 = "0jcazj9gkdf4k7vsi33dpw9myyy02gjihwsy36dfqq4bas312cq1";
+      };
+      installPhase = old.installPhase or "" + ''
+        mkdir -p $out/share/droopy
+        cp -r $src/static $out/share/droopy
+      '';
+      makeWrapperArgs = old.makeWrapperArgs or [] ++ [
+        "--set DROOPY_STATIC \"$out/share/droopy/static\""
+      ];
+    });
+
+    gitit = import (pkgs.fetchFromGitHub {
+      owner = "Profpatsch";
+      repo = "gitit";
+      rev = "bcfba01472f09abec211c3509ec33726629068ea";
+      sha256 = "sha256-v8s6GN4FTCfcsAxLdaP3HBYIDrJlZeKv+TOiRRt4bf4=";
+    }) { inherit pkgs; };
+  };
+
+in discovered // specialPackages // {
+  # Export utility functions for backwards compatibility
   inherit getBins binify;
-
-  inherit (import ./sandbox.nix {inherit pkgs writeExecline; })
-    sandbox runInEmptyEnv;
-
-  symlink = pkgs.callPackage ./execline/symlink.nix {
-    inherit runExecline toNetstring;
-  };
-
-  importer = pkgs.callPackage ./execline/importer.nix {
-    inherit symlink;
-  };
-
-  inherit (import ./profpatsch.de {
-    inherit pkgs lib homeRepo
-      toNetstring toNetstringList writeExecline runExecline getBins writeRustSimple netencode-rs el-semicolon el-exec el-substitute netencode record-get;
-  })
-    websiteStatic
-    index-server
-    importas-if
-    concatenatedCss
-    ;
-
-  inherit (import ./nix-tools.nix { inherit pkgs getBins writeExecline runblock; })
-    nix-run
-    nix-run-bin
-    nix-eval
-    ;
-
-  # s6 = pkgs.callPackage ./s6 {
-  #   inherit (haskellPackages) dhall-nix;
-  #   inherit runExeclineLocal;
-  # };
-
-  # dhall-experiment = pkgs.callPackage ./dhall-experiment {
-  #   inherit (haskellPackages) dhall-nix;
-  # };
-
-  inherit (import ./importPurescript.nix { inherit pkgs exactSource; haskellPackages = haskellPackagesProfpatsch; })
-    importPurescript
-    ;
-
-  rust-deps = (import ./rust-deps.nix { inherit (pkgs) buildRustCrate; });
-
-  inherit (import ./xdg-open { inherit pkgs homeRepo getBins importPurescript writeExecline runExeclineLocal netencode-rs writeRustSimple record-get el-exec lazy-packages show-qr-code; })
-    xdg-open
-    xdg-open-module
-    read-headers-and-follow-redirect
-    mini-url
-    assert-printf
-    as-stdin
-    printenv
-    ;
-
-  text-letter = import ./text-letter.nix { inherit pkgs rust-deps writeRustSimple writeExecline getBins; };
-
-  inherit (import ./netencode { inherit pkgs writeRustSimpleLib writeRustSimple el-semicolon el-exec; })
-    netencode-rs
-    netencode-rs-tests
-    record-get
-    ;
-
-  # inherit (import ./execline/el-semicolon.nix { inherit writeRustSimpleLib; });
-
-  inherit (import ./execline/default.nix { inherit pkgs writeRustSimpleLib rust-deps; })
-    el-semicolon
-    el-exec
-    el-substitute
-    ;
-
-  netencode = import ./netencode/netencode.nix;
-
-  inherit (import ./lru.nix { inherit pkgs writeRustSimple; })
-    lru-dir
-    ;
-
-
-  backup = import ./backup { inherit pkgs writeExecline getBins; };
-
-  jaeger = import ./jaeger { inherit pkgs writeExecline; };
-
-  gpg-private-offline-key = import ./gpg-private-offline-key { inherit pkgs writeExecline getBins; };
-
-  inherit (homeRepo.users.Profpatsch)
-    lyric
-    alacritty;
-
-  blight = callPackage ./blight.nix { };
-
-  gitit = import (pkgs.fetchFromGitHub {
-    owner = "Profpatsch";
-    repo = "gitit";
-    rev = "bcfba01472f09abec211c3509ec33726629068ea";
-    sha256 = "sha256-v8s6GN4FTCfcsAxLdaP3HBYIDrJlZeKv+TOiRRt4bf4=";
-  }) { inherit pkgs; };
-
-  micro = callPackage ./micro { };
-  #television = callPackage ./television { };
-
-}
+  inherit toNetstring toNetstringList toNetstringKeyVal;
+  inherit (runExeclineFns) runExecline runExeclineLocal;
+  inherit (writeExeclineFns) writeExecline writeExeclineBin;
+  inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
+  inherit (sandboxFns) sandbox runInEmptyEnv;
+  inherit homeRepo;
+  inherit (nixperiments) match script drvSeq drvSeqL withTests filterSourceGitignoreWith readGitignoreFile;
+})

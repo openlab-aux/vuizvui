@@ -1,6 +1,7 @@
 { lib
 , writeRustSimpleBin
 , temp
+, ...
 }:
 
 writeRustSimpleBin "nman" {

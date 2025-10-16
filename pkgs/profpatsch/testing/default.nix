@@ -1,5 +1,5 @@
 { runCommandLocal, lib
-, runExecline, bin }:
+, runExecline, bin, ... }:
 
 let
 

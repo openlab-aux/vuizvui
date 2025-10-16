@@ -1,4 +1,4 @@
-{ pkgs, getBins, writeExecline }:
+{ pkgs, getBins, writeExecline, ... }:
 
 let
 

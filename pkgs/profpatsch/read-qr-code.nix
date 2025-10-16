@@ -1,4 +1,4 @@
-{ stdenv, writeExecline, getBins, zbar, libnotify, imagemagick }:
+{ stdenv, writeExecline, getBins, zbar, libnotify, imagemagick, ... }:
 
 let
   bins = getBins zbar [ "zbarimg" ]

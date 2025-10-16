@@ -1,4 +1,4 @@
-{ pkgs, writeExecline, getBins, runblock }:
+{ pkgs, writeExecline, getBins, runblock, ... }:
 
 let
   bins = getBins pkgs.nix [ "nix-build" "nix-instantiate" ];

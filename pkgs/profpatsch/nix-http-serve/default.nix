@@ -1,7 +1,7 @@
-{ stdenv, pkgs, fetchFromGitHub }:
+{ pkgs, ... }:
 
 let
-  src = fetchFromGitHub {
+  src = pkgs.fetchFromGitHub {
     owner = "Profpatsch";
     repo = "nix-http-serve";
     rev = "f1f188da4a78c3d359cc1a92663d82ee8c6acd2f";

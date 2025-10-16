@@ -1,4 +1,4 @@
-{ cdb, git, writeShellScriptBin, symlinkJoin, lib, script, runCommandLocal }:
+{ cdb, git, writeShellScriptBin, symlinkJoin, lib, script, runCommandLocal, ... }:
 
 let
   pathPlus = ''PATH="$PATH:${lib.makeBinPath [cdb git]}"'';

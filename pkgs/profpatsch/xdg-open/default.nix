@@ -1,13 +1,10 @@
 { pkgs, getBins, homeRepo,
-importPurescript,
 writeExecline,
 runExeclineLocal,
 writeRustSimple,
-netencode-rs,
-record-get,
-el-exec,
 lazy-packages,
-show-qr-code
+profpatsch,
+...
 }:
 
 let
@@ -23,7 +20,7 @@ let
       // getBins pkgs.dmenu [ "dmenu" "dmenu_path" ]
       # TODO: make sure these are the ones from the environment
       // getBins pkgs.ranger [ "ranger" ]
-      // getBins show-qr-code [ "show-qr-code" ]
+      // getBins profpatsch.show-qr-code [ "show-qr-code" ]
       // getBins pkgs.claws-mail [ "claws" ]
       ;
 
@@ -94,13 +91,13 @@ let
   fetchHttpUrlMime = {
     exe = writeExecline "fetch-http-url-mime" { readNArgs = 1; } [
       "pipeline" [ read-headers-and-follow-redirect "$1" ]
-      record-get [ "content-type" ]
+      profpatsch.netencode.record-get [ "content-type" ]
       printenv "content-type"
     ];
     args = file: [ file ];
   };
 
-  xdg-open-module = (importPurescript {
+  xdg-open-module = (profpatsch.importPurescript.importPurescript {
     name = "xdg-open-module";
     root = ./purs;
 
@@ -227,13 +224,13 @@ let
     (let go = writeExecline "go" {} [
       "pipeline" [ http-request ]
       "pipeline" [ read-http ]
-      record-get [ "status" "status-text" "headers" ]
+      profpatsch.netencode.record-get [ "status" "status-text" "headers" ]
       "importas" "-ui" "status" "status"
       # TODO: a test util for netencode values
       "ifelse" [ bins.eltest "$status" "=" "n6:301," ]
       # retry the redirection location
       [ as-stdin "headers"
-        record-get [ "Location" ]
+        profpatsch.netencode.record-get [ "Location" ]
         "importas" "-ui" "Location" "Location"
         "export" "host" "$Location"
         "if" [ "echo" "redirected to \${Location}" ]
@@ -251,12 +248,12 @@ let
     ]);
 
   read-http = writeRustSimple "read-http" {
-    dependencies = [ httparse netencode-rs ];
+    dependencies = [ httparse profpatsch.netencode.netencode-rs ];
     buildInputs = [ pkgs.skalibs ];
   } ./read-http.rs;
 
   mini-url = writeRustSimple "mini-url" {
-    dependencies = [ el-exec ];
+    dependencies = [ profpatsch.execline.el-exec ];
     buildInputs = [ pkgs.skalibs ];
     release = false;
     # buildTests = true;

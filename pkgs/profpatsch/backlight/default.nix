@@ -1,4 +1,4 @@
-{ stdenv, python3, acpilight}:
+{ stdenv, pkgs, ...}:
 
 stdenv.mkDerivation rec {
   name = "backlight";
@@ -6,12 +6,12 @@ stdenv.mkDerivation rec {
   src = ./backlight.py;
   phases = [ "installPhase" "fixupPhase" ];
 
-  buildInputs = [ python3 ];
+  buildInputs = [ pkgs.python3 ];
 
   installPhase = ''
     install -D ${src} $out/bin/backlight
     substituteInPlace $out/bin/backlight \
-      --replace '"xbacklight"' '"${acpilight}/bin/xbacklight"'
+      --replace '"xbacklight"' '"${pkgs.acpilight}/bin/xbacklight"'
   '';
 
 }

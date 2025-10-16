@@ -161,7 +161,7 @@ in {
       # minimal set of gui applications
       guiPkgs = [
         dmenu             # minimal launcher
-        (pkgs.vuizvui.profpatsch.binify { exe = pkgs.vuizvui.profpatsch.xdg-open; name = "xdg-open"; }) # override the crap freedesktop crap
+        (pkgs.vuizvui.profpatsch.binify { exe = pkgs.vuizvui.profpatsch.xdg-open.xdg-open; name = "xdg-open"; }) # override the crap freedesktop crap
       ];
     in basePkgs ++ guiPkgs;
 

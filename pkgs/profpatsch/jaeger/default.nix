@@ -1,4 +1,4 @@
-{ pkgs, writeExecline, ... }:
+{ pkgs, ... }:
 let
   drv =
     pkgs.stdenv.mkDerivation {

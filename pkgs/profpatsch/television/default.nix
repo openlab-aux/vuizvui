@@ -5,6 +5,7 @@
   testers,
   television,
   nix-update-script,
+  ...
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "television";

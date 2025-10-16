@@ -1,4 +1,4 @@
-{ pkgs, writeRustSimpleLib, writeRustSimple, el-semicolon, el-exec }:
+{ pkgs, writeRustSimpleLib, writeRustSimple, profpatsch, ... }:
 
 let
   version-check = pkgs.buildRustCrate {
@@ -35,16 +35,19 @@ let
   netencode-rs = netencode-rs-common false;
 
   record-get = writeRustSimple "record-get" {
-    dependencies = [ netencode-rs el-semicolon ];
+    dependencies = [ netencode-rs profpatsch.execline.el-semicolon ];
     # TODO: for some reason the skarnet linker flag
     # is propagated by the link target is not?
   } ./record-get.rs;
 
+
+  netencode = import ./netencode.nix;
 
 in {
   inherit
    netencode-rs
    netencode-rs-tests
    record-get
+   netencode
    ;
 }

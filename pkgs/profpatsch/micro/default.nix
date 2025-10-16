@@ -1,24 +1,21 @@
 # COPIED from nixpkgs for https://github.com/zyedidia/micro/pull/3868
 {
   lib,
-  buildGoModule,
-  callPackage,
-  fetchFromGitHub,
-  installShellFiles,
-  stdenv,
+  pkgs,
   # Deprecated options
   # Remove them as soon as possible
   withXclip ? null,
   withWlClipboard ? null,
   withWlclip ? null,
+  ...
 }:
 
 let
-  self = buildGoModule {
+  self = pkgs.buildGoModule {
     pname = "micro";
     version = "2.0.14";
 
-    src = fetchFromGitHub {
+    src = pkgs.fetchFromGitHub {
       owner = "zyedidia";
       repo = "micro";
       rev = "5b6eed51f8dff5a9fa00e581d4277e198231fedd";
@@ -27,7 +24,7 @@ let
 
     vendorHash = "sha256-UF5q7YJN1l19JlwhPWSDnIDsNNI1kHI5vGXTa9aII1E=";
 
-    nativeBuildInputs = [ installShellFiles ];
+    nativeBuildInputs = [ pkgs.installShellFiles ];
 
     outputs = [
       "out"
@@ -61,10 +58,10 @@ let
 
     passthru = {
       tests = lib.packagesFromDirectoryRecursive {
-        inherit callPackage;
+        callPackage = pkgs.callPackage;
         directory = ./tests;
       };
-      wrapper = callPackage ./wrapper.nix { micro = self; };
+      wrapper = pkgs.callPackage ./wrapper.nix { micro = self; };
     };
 
     meta = {

@@ -1,5 +1,5 @@
 # The only deployment tool that anybody should take seriously
-{ pkgs, getBins }:
+{ pkgs, getBins, ... }:
 
 let
   bins = getBins pkgs.coreutils [ "realpath" ]

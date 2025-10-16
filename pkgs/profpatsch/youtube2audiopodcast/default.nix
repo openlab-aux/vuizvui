@@ -1,4 +1,4 @@
-{ pkgs, lib, writeExecline, writeHaskellInterpret, getBins, runInEmptyEnv, sandbox }:
+{ pkgs, lib, writeExecline, writeHaskellInterpret, getBins, runInEmptyEnv, sandbox, ... }:
 
 config@{ url, internalPort }:
 
