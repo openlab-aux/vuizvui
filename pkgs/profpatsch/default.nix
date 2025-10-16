@@ -154,10 +154,6 @@ in rec {
     inherit writeExecline writeHaskellInterpret getBins runInEmptyEnv sandbox;
   };
 
-  weechat = callPackage ./tmp.nix {
-    inherit writeExecline getBins;
-  };
-
   xrandr = import ./xrandr.nix { inherit pkgs getBins runExeclineLocal writeExecline toNetstringKeyVal; };
 
   inherit (callPackage ./utils-hs {})
@@ -251,7 +247,7 @@ in rec {
   #   inherit (haskellPackages) dhall-nix;
   # };
 
-  xmonad = pkgs.callPackage ./xmonad { };
+  # xmonad = pkgs.callPackage ./xmonad { };
 
   inherit (import ./importPurescript.nix { inherit pkgs exactSource; haskellPackages = haskellPackagesProfpatsch; })
     importPurescript
@@ -267,7 +263,6 @@ in rec {
     assert-printf
     as-stdin
     printenv
-    nix
     ;
 
   text-letter = import ./text-letter.nix { inherit pkgs rust-deps writeRustSimple writeExecline getBins; };
@@ -297,54 +292,9 @@ in rec {
 
   jaeger = import ./jaeger { inherit pkgs writeExecline; };
 
-  # ate = import ./ate {
-  #   inherit pkgs;
-  #   inherit getBins runExeclineLocal dhall dhall-nix;
-  # };
-
-  shotgun =
-    let
-        naersk = pkgs.callPackage (pkgs.fetchFromGitHub {
-          owner = "nmattia";
-          repo = "naersk";
-          rev = "f17317465e43ad7b9945e6492295e190946fb4ac";
-          sha256 = "1hp1l86qlkmipcas90p4s4q5bhgh0531nl3lkignz1q455vrga0f";
-        }) {};
-        shotgun = (naersk.buildPackage (pkgs.fetchFromGitHub {
-          owner = "neXromancers";
-          repo = "shotgun";
-          rev = "abc3c468b2964baf190a003247ac29cf61cf5f0c";
-          sha256 = "0fpc09yvxjcvjkai7afyig4gyc7inaqxxrwzs17mh8wdgzawb6dl";
-        }) {
-          doDoc = false;
-          buildInputs = [ pkgs.xorg.libX11 pkgs.xorg.libXrandr pkgs.pkg-config ];
-        }).overrideAttrs (old: {
-          prePatch = ''
-            rm build.rs
-            sed -e "/build =/d" -i Cargo.toml
-          '';
-        });
-    in shotgun;
-
-  shadowenv = pkgs.rustPlatform.buildRustPackage rec {
-    name = "shadowenv";
-    src = pkgs.fetchFromGitHub {
-      owner = "Shopify";
-      repo = "shadowenv";
-      rev = "1.3.1";
-      sha256 = "1s59ra99wcyyqz8gzly4qmcq5rh22c50c75cdi2kyajm7ghgryy9";
-    };
-    cargoSha256 = "0mg1m5hfvzm1n4xh3xsps7f2id48gwr3k22833mzqy2qz4v93c0z";
-  };
-
-  tmp = import ./tmp.nix {
-    inherit pkgs getBins writeExecline;
-    pkgsStatic = pkgs.pkgsStatic; };
-
   gpg-private-offline-key = import ./gpg-private-offline-key { inherit pkgs writeExecline getBins; };
 
   blight = callPackage ./blight.nix { };
-
 
   gitit = import (pkgs.fetchFromGitHub {
     owner = "openlab-aux";
@@ -355,10 +305,5 @@ in rec {
 
   micro = callPackage ./micro { };
   television = callPackage ./television { };
-
-
-  # business = import ./business.nix { inherit pkgs; };
-
-  # mes = import ./mes { inherit pkgs; };
 
 }
