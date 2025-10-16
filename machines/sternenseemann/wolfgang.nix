@@ -5,15 +5,16 @@ let
 in
 
 {
-  imports = builtins.map (p: (import ../../nixos-hardware-path.nix) + p) [
-    "/common/pc/ssd"
-  ] ++ [
+  imports = [
     ./base-laptop.nix
     ./wireguard.nix
     ./user-lukas.nix
   ] ++ lib.optionals (builtins.pathExists ./local.nix) [
     ./local.nix
   ];
+
+  # From nixos-hardware: common/pc/ssd
+  services.fstrim.enable = lib.mkDefault true;
 
   boot.kernelParams = [
     # Try to work around random freezes
