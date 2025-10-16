@@ -1,9 +1,21 @@
 path: cfg:
 
 let
+  # Extract optional module selection from cfg
+  # If cfg has _moduleSelection, use selectModules; otherwise use all modules
+  moduleSelection = cfg._moduleSelection or null;
+  selectModules = import ./select-modules.nix;
+  selectedModules =
+    if moduleSelection != null
+    then selectModules moduleSelection
+    else import ../modules/module-list.nix;
+
+  # Remove _moduleSelection from cfg before passing to modules
+  cleanCfg = builtins.removeAttrs cfg [ "_moduleSelection" ];
+
   __withPkgsPath = nixpkgs: rec {
     eval = import "${nixpkgs}/nixos/lib/eval-config.nix" {
-      modules = [ path cfg ] ++ import ../modules/module-list.nix;
+      modules = [ path cleanCfg ] ++ selectedModules;
     };
 
     build = eval.config.system.build.toplevel;
@@ -54,7 +66,7 @@ let
     };
 
     config = {
-      imports = [ path cfg ] ++ import ../modules/module-list.nix;
+      imports = [ path cleanCfg ] ++ selectedModules;
     };
 
     vm = (import "${nixpkgs}/nixos" {
