@@ -1,0 +1,5 @@
+{ ... }:
+
+{
+  favouriteColour = "orange";
+}
