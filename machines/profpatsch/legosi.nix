@@ -193,6 +193,95 @@ in {
           alias = "/sync/www/mlp/";
         };
       };
+      virtualHosts.${"decentsoftwa.re"} = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/".root =
+          let
+            index = pkgs.writeText "index.html" ''
+              <!DOCTYPE html>
+              <html>
+                <head>
+                  <meta charset="utf-8">
+                  <title>decentsoftwa.re</title>
+                  <!--
+                  prevent favicon request, based on answers in
+                  https://stackoverflow.com/questions/1321878/how-to-prevent-favicon-ico-requests
+                  TODO: create favicon
+                  -->
+                  <link rel="icon" href="data:,">
+                </head>
+                <body>
+                  <script>
+	                function createFavicon() {
+	                   const canvas = document.createElement('canvas');
+	                   const context = canvas.getContext('2d');
+	                   canvas.width = 32; // Set the size of the icon
+	                   canvas.height = 32;
+
+	                   context.fillStyle = 'rgba(0,0,0,0)'; // Background color
+	                   context.fillRect(0, 0, canvas.width, canvas.height);
+	                   context.font = '15px sans-serif'; // Font and size
+	                   // Text color based on color sheme
+	                   context.fillStyle = window.matchMedia('(prefers-color-scheme: dark').matches ? 'white' : 'black';
+	                   context.fillText('DCT', 0, 24); // Draw the Unicode character
+
+	                   const link = document.createElement('link');
+	                   link.rel = 'icon';
+	                   link.href = canvas.toDataURL('image/png');
+	                   document.head.appendChild(link);
+	                }
+	                createFavicon();
+	                // switch favicon color on dark mode change
+	                window.matchMedia('(prefers-color-scheme: dark').addEventListener('change', (v) => {createFavicon()})
+	              </script>
+                </body>
+              </html>
+            '';
+            
+            warcry = pkgs.writeText "warcry.txt" ''
+              No modes
+              No build steps
+			  No frameworks
+			  No hot new shit
+			  No BDFLs
+			  No blessed domains
+			  No free speech maximalism
+            '';
+          in pkgs.runCommandLocal "decentsoftware-www" {} ''
+            mkdir $out
+            cp ${index} $out/index.html
+            cp ${warcry} $out/warcry.txt
+          '';
+
+        locations."/.well-known/matrix/".root = pkgs.linkFarm "well-known-decentsoftwa.re-matrix" [
+          { name = ".well-known/matrix/server";
+            path = pkgs.writers.writeJSON "matrix-server-well-known" {
+              "m.server" = "matrix.decentsoftwa.re:443";
+            };
+          }
+        ];
+
+        # account.conversations.im XMPP certificate signature
+        locations."/.well-known/posh".root = pkgs.linkFarm "well-known-xmpp-client-thingy" [
+          { name = ".well-known/posh/xmpp-client.json";
+            path = pkgs.writers.writeJSON "conversations.im-xmpp-client.json" {
+              fingerprints = [ { "sha-256" = "pSWZpTkHmNZdGk6CjsaNXXexlCAu+NcXg8MIzUB8tbU="; } ];
+              "expires" = 3600;
+            };
+          }
+        ];
+
+        # make XMPP clients know about the conversations.im BOSH endpoint
+        locations."/.well-known/host-meta" = {
+          proxyPass = "https://conversations.im/.well-known/host-meta";
+          # https://jsxc.readthedocs.io/en/latest/getting-started/requirements.html#nginx
+          extraConfig = ''
+            proxy_set_header Host $proxy_host;
+            tcp_nodelay on;
+          '';
+        };
+      };
     };
 
     systemd.services.index-server = {
