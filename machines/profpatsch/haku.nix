@@ -18,6 +18,9 @@ let
   tailscaleInterface = "tailscale0";
   tailscaleAddress = "100.122.12.129";
   gonicPortTailscale = 4747;
+  transmissionDownloadDirectory = "/var/lib/transmission/Downloads";
+  transmissionDownloadDirectoryGroup = "transmission";
+  whatcdResolverReverseProxyPortTailscale = 9092;
   whatcdResolverPortTailscale = 9093;
   whatcdResolverJaegerPortTailscale = 16686;
   sambaPortTailscale = 445;
@@ -78,6 +81,9 @@ in
     boot.initrd.availableKernelModules = [ "ahci" ];
     boot.kernelModules = [ "kvm-intel" ];
 
+    # make sure /boot does not run out of space
+    boot.loader.systemd-boot.configurationLimit = 5;
+
     fileSystems = {
       "/" = {
         device = "/dev/sda3";
@@ -107,13 +113,14 @@ in
 
       zipped-transmission = {
         isSystemUser = true;
-        group = "transmission";
+        group = transmissionDownloadDirectoryGroup;
       };
       whatcd-resolver = {
         isSystemUser = true;
         home = "/var/lib/whatcd-resolver";
         createHome = true;
         group = "whatcd-resolver";
+        extraGroups = [ transmissionDownloadDirectoryGroup ];
       };
       openlab-tools = {
         isSystemUser = true;
@@ -145,12 +152,12 @@ in
     vuizvui.services.profpatsch.gonic = {
       enable = true;
       listenAddress = "${tailscaleAddress}:${toString gonicPortTailscale}";
-      musicDir = "/var/lib/transmission/Downloads";
-      musicDirGroup = "transmission";
+      musicDir = transmissionDownloadDirectory;
+      musicDirGroup = transmissionDownloadDirectoryGroup;
       podcastDir = "/var/lib/gonic/podcasts";
-      podcastDirGroup = "transmission";
+      podcastDirGroup = transmissionDownloadDirectoryGroup;
       playlistsDir = "/var/lib/gonic/playlists";
-      playlistsDirGroup = "transmission";
+      playlistsDirGroup = transmissionDownloadDirectoryGroup;
       scanIntervalMinutes = 10;
     };
     systemd.services.gonic.serviceConfig.wantedBy = [ "tailscaled.target" ];
@@ -161,7 +168,7 @@ in
       in {
         description = "internally served public files (see nginx)";
         wantedBy = [ "default.target" ];
-        serviceConfig.WorkingDirectory = "/var/lib/transmission/Downloads";
+        serviceConfig.WorkingDirectory = transmissionDownloadDirectory;
         script = ''${pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.httzip}'';
         serviceConfig.User = user.name;
       };
@@ -176,9 +183,11 @@ in
         serviceConfig.WorkingDirectory = "/var/lib/whatcd-resolver";
         script = "${pkgs.vuizvui.profpatsch.writeExecline "run-whatcd-resolver-jaeger" {} [
           "envfile" "/var/lib/whatcd-resolver/whatcd-resolver-env"
-          pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.whatcd-resolver
+          pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.whatcd-resolver.whatcd-resolver
         ]}";
         serviceConfig.User = user.name;
+        # transmission extra group
+        serviceConfig.Environment = "WHATCD_RESOLVER_TRANSMISSION_DOWNLOAD_DIRECTORY=${transmissionDownloadDirectory}";
       };
     systemd.services.whatcd-resolver-jaeger =
       let user = config.users.users.whatcd-resolver;
@@ -237,6 +246,84 @@ in
         locations."/openlab-tools/" = {
           proxyPass = "http://127.0.0.1:${toString openlabToolsPort}/";
         };
+        locations."/openlab-api/" = {
+          root = pkgs.linkFarm "openlab-api" [
+            { name = "openlab-api/hackerspaceinfo-openlab-static.json";
+              path = ./openlab-api-static.json;
+            }
+          ];
+        };
+
+        locations."/opengraph-experiment/".root = pkgs.linkFarm "opengraph-player-root" [
+            { name = "opengraph-experiment/index.html";
+            path = pkgs.writeText "index.html" ''
+                <!DOCTYPE html>
+                <html>
+
+                <head>
+                    <title>Opengraph player example</title>
+                    <meta property="twitter:card" content="player">
+
+                    <meta property="og:title" content="Opengraph rich embed example">
+                    <meta property="og:type" content="music.song">
+                            <meta property="og:site_name" content="NONELOL">
+                    <meta property="og:description" content="You would not believe your eyes">
+                    <meta property="og:video"
+                      content="https://haku.profpatsch.de/opengraph-experiment/mini-player.html">
+                    <meta property="og:video:secure_url"
+                      content="https://haku.profpatsch.de/opengraph-experiment/mini-player.html">
+                    <meta property="twitter:player"
+                      content="https://haku.profpatsch.de/opengraph-experiment/mini-player.html">
+                    <meta property="og:video:type" content="text/html">
+                    <meta property="og:video:height" content="120">
+                    <meta property="og:video:width" content="400">
+                    <meta property="twitter:player:height" content="467">
+                    <meta property="twitter:player:width" content="350">
+                </head>
+
+                <body>
+                    <progress-player
+                        style="max-width: 400px"
+                        src="https://haku.profpatsch.de/public/lecker-bierchen.mp4"
+                        coverart="lecker-bierchen.png"
+                        artist="Lecker"
+                        title="Bierchen">
+                    </progress-player>
+                    <script src="progress-player.js"></script>
+                </body>
+
+                </html>
+            '';
+          }
+          { name = "opengraph-experiment/mini-player.html";
+            path = pkgs.writeText "mini-player.html" ''
+                <!DOCTYPE html>
+                <html>
+
+                <head>
+                    <title>Player example</title>
+                </head>
+
+                <body style="margin: 0px">
+                    <progress-player
+                        src="https://haku.profpatsch.de/public/lecker-bierchen.mp4"
+                        coverart="lecker-bierchen.png"
+                        artist="Lecker"
+                        title="Bierchen">
+                    </progress-player>
+                    <script src="progress-player.js"></script>
+                </body>
+
+                </html>
+            '';
+          }
+          { name = "opengraph-experiment/progress-player.js";
+            path = /home/philip/depot/users/Profpatsch/whatcd-resolver/static/progress-player.js;
+          }
+          { name = "opengraph-experiment/lecker-bierchen.png";
+            path = ./lecker-bierchen.png;
+          }
+        ];
         # locations."${youtube2audiopodcastSubdir}/" = {
         #   proxyPass = "http://127.0.0.1:${toString youtube2audiopodcastPort}/";
         # };
@@ -279,18 +366,41 @@ in
           '';
         };
       };
-      virtualHosts.${"decentsoftwa.re"} = {
-        forceSSL = true;
-        enableACME = true;
-        locations."/.well-known/matrix/".root = pkgs.linkFarm "well-known-decentsoftwa.re-matrix" [
-          { name = ".well-known/matrix/server";
-            path = pkgs.writers.writeJSON "matrix-server-well-known" {
-              "m.server" = "matrix.decentsoftwa.re:443";
-            };
-          }
-        ];
-      };
     };
+
+    services.caddy = {
+      enable = true;
+
+      configFile = pkgs.writeText "Caddyfile" ''
+        {
+          http_port 9092
+          default_bind ${tailscaleAddress}
+        }
+
+        :9092 {
+          # Serve files from the directory specified by WHATCD_RESOLVER_TRANSMISSION_DOWNLOAD_DIRECTORY
+          handle_path /files/* {
+            root * ${transmissionDownloadDirectory}
+            file_server {
+              browse off
+            }
+          }
+
+          handle_path /static/* {
+
+            root * ${pkgs.vuizvui.profpatsch.tvl.users.Profpatsch.whatcd-resolver.static-directory}
+            file_server {
+              browse off
+            }
+          }
+
+          # Reverse proxy from localhost:9092 to localhost:9093
+          reverse_proxy * http://${tailscaleAddress}:${toString whatcdResolverPortTailscale}
+        }
+
+      '';
+    };
+    users.users.caddy.extraGroups = [ transmissionDownloadDirectoryGroup ];
 
     networking = {
       hostName = "haku";
@@ -313,10 +423,14 @@ in
         # warning: Strict reverse path filtering breaks Tailscale exit node use and some subnet routing setups. Consider setting `networking.firewall.checkReversePath` = 'loose'
         checkReversePath = "loose";
 
+        # filter tailscale interface with my firewall
+        extraInputRules = ''
+          iptables -A INPUT -i tailscale0 -j DROP  # Block incoming traffic via Tailscale
+        '';
         interfaces.${tailscaleInterface} = {
           allowedTCPPorts = [
             gonicPortTailscale
-            whatcdResolverPortTailscale
+            whatcdResolverReverseProxyPortTailscale
             whatcdResolverJaegerPortTailscale
             # sambaPortTailscale
           ];
