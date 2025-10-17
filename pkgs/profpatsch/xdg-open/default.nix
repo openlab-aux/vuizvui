@@ -1,4 +1,4 @@
-{ pkgs, getBins, homeRepo,
+{ pkgs, homeRepo,
 writeExecline,
 runExeclineLocal,
 writeRustSimple,
@@ -9,19 +9,19 @@ profpatsch,
 
 let
   lib = pkgs.lib;
-  bins = getBins pkgs.libnotify [ "notify-send" ]
-      // getBins pkgs.file [ "file" ]
-      // getBins pkgs.coreutils [ "printf" "ln" "echo" ]
-      // getBins pkgs.fdtools [ "multitee" ]
-      // getBins pkgs.s6 [ "s6-ioconnect" ]
-      // getBins pkgs.execline [ "eltest" ]
-      // getBins pkgs.s6-networking [ "s6-tcpclient" ]
-      // getBins pkgs.libressl.nc [ "nc" ]
-      // getBins pkgs.dmenu [ "dmenu" "dmenu_path" ]
+  bins = profpatsch.utils.getBins pkgs.libnotify [ "notify-send" ]
+      // profpatsch.utils.getBins pkgs.file [ "file" ]
+      // profpatsch.utils.getBins pkgs.coreutils [ "printf" "ln" "echo" ]
+      // profpatsch.utils.getBins pkgs.fdtools [ "multitee" ]
+      // profpatsch.utils.getBins pkgs.s6 [ "s6-ioconnect" ]
+      // profpatsch.utils.getBins pkgs.execline [ "eltest" ]
+      // profpatsch.utils.getBins pkgs.s6-networking [ "s6-tcpclient" ]
+      // profpatsch.utils.getBins pkgs.libressl.nc [ "nc" ]
+      // profpatsch.utils.getBins pkgs.dmenu [ "dmenu" "dmenu_path" ]
       # TODO: make sure these are the ones from the environment
-      // getBins pkgs.ranger [ "ranger" ]
-      // getBins profpatsch.show-qr-code [ "show-qr-code" ]
-      // getBins pkgs.claws-mail [ "claws" ]
+      // profpatsch.utils.getBins pkgs.ranger [ "ranger" ]
+      // profpatsch.utils.getBins profpatsch.show-qr-code [ "show-qr-code" ]
+      // profpatsch.utils.getBins pkgs.claws-mail [ "claws" ]
       ;
 
   notify = msg: {

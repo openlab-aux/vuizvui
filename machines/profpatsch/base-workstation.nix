@@ -159,9 +159,12 @@ in {
         gitFull           # git with send-email
       ];
       # minimal set of gui applications
-      guiPkgs = [
+      guiPkgs =
+        let
+          inherit (pkgs.vuizvui.profpatsch.utils) binify;
+        in [
         dmenu             # minimal launcher
-        (pkgs.vuizvui.profpatsch.binify { exe = pkgs.vuizvui.profpatsch.xdg-open.xdg-open; name = "xdg-open"; }) # override the crap freedesktop crap
+        (binify { exe = pkgs.vuizvui.profpatsch.xdg-open.xdg-open; name = "xdg-open"; }) # override the crap freedesktop crap
       ];
     in basePkgs ++ guiPkgs;
 

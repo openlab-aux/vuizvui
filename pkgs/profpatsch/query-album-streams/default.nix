@@ -1,3 +1,3 @@
-{ pkgs, writeExecline, getBins, writeHaskellInterpret, ... }@attrs:
+{ pkgs, writeExecline, profpatsch, ... }@attrs:
 
 import ./last-fm-api.nix attrs

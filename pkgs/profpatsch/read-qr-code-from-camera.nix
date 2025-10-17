@@ -1,11 +1,11 @@
-{ stdenv, writeExecline, getBins, zbar, libnotify, imagemagick, ... }:
+{ stdenv, writeExecline, profpatsch, zbar, libnotify, imagemagick, ... }:
 {
   # videoDevice is a string, e.g. "/dev/video0"
   videoDevice
 }:
 
 let
-  bins = getBins zbar [ "zbarcam" ];
+  bins = profpatsch.utils.getBins zbar [ "zbarcam" ];
 
   script = writeExecline "read-qr-code-from-camera" {} [
     bins.zbarcam

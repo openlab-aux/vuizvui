@@ -1,7 +1,7 @@
-{ pkgs, writeExecline, getBins, runblock, ... }:
+{ pkgs, writeExecline, profpatsch, runblock, ... }:
 
 let
-  bins = getBins pkgs.nix [ "nix-build" "nix-instantiate" ];
+  bins = profpatsch.utils.getBins pkgs.nix [ "nix-build" "nix-instantiate" ];
 
   # TODO: both of these don’t prevent `result` from being created. good? bad?
 

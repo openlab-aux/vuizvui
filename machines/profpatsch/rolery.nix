@@ -378,6 +378,7 @@ in {
       ];
       userScripts = with pkgs.vuizvui.profpatsch;
         let
+          inherit (pkgs.vuizvui.profpatsch.utils) binify;
           di-notify = pkgs.vuizvui.profpatsch.writeExeclineBin "display-infos-notify" {} [
             "backtick" "-i" "DI" [ "${display-infos}/bin/display-infos" ]
             "importas" "DI" "DI"
@@ -387,11 +388,11 @@ in {
         display-infos  # show time & battery
         di-notify      # same, but pipe to libnotify
         show-qr-code   # display a QR code
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.read-qr-code;
           name = "read-qr-code";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.read-qr-code-from-camera {
             videoDevice = laptop.cameraDevice;
           };
@@ -409,60 +410,63 @@ in {
         nix-prefetch-scripts      # prefetch store paths from various destinations
         # pkgs.vuizvui.taalo-build  # build derivation on taalo
       ];
-      tmpPkgs = [
+      tmpPkgs =
+        let
+          inherit (pkgs.vuizvui.profpatsch.utils) binify;
+        in [
         # TODO needs user service
-        redshift   # increases screen warmth at night (so i don’t have to feel cold)
+        redshift   # increases screen warmth at night (so i don't have to feel cold)
         # pdfjam is the best CLI pdf modification suite
         (texlive.combine { inherit (texlive) scheme-small pdfjam; })
         # move script/nix-cache-binary to here
         cdb
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.e;
           name = "e";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.nix-run;
           name = "nix-run";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.nix-run-bin;
           name = "nix-run-bin";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.nix-eval;
           name = "nix-eval";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.deploy;
           name = "deploy";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.xrandr.two-monitor-setup;
           # this is still referenced in my .xbindkeysrc, which is not in my nixpkgs config
           name = "monitor-home";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.xrandr.laptop-monitor-only-setup;
           # this is still referenced in my .xbindkeysrc, which is not in my nixpkgs config
           name = "monitor-laptop-only";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.lyric.lyric;
           name = "lyric";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = pkgs.vuizvui.profpatsch.alacritty.alacritty;
           name = "terminal-emulator";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = homeRepo.aliases.bell;
           name = "bell";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = homeRepo.aliases.prefer-light;
           name = "prefer-light";
         })
-        (pkgs.vuizvui.profpatsch.binify {
+        (binify {
           exe = homeRepo.aliases.prefer-dark;
           name = "prefer-dark";
         })

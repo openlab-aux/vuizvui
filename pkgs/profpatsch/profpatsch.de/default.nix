@@ -1,12 +1,12 @@
-{ pkgs, homeRepo, lib, toNetstring, toNetstringList, writeExecline, runExecline, getBins, writeRustSimple, profpatsch, ... }:
+{ pkgs, homeRepo, lib, writeExecline, runExecline, writeRustSimple, profpatsch, ... }:
 
 let
-  bins = getBins pkgs.coreutils [ "ln" "mkdir" "echo" "printenv" "cat" "env" "printf" "test" ]
-    // getBins pkgs.fdtools [ "multitee" ]
-    // getBins pkgs.s6-networking [ "s6-tcpserver" ]
-    // getBins pkgs.time [ "time" ]
-    // getBins pkgs.curl [ "curl" ]
-    // getBins pkgs.execline [ "fdmove" ]
+  bins = profpatsch.utils.getBins pkgs.coreutils [ "ln" "mkdir" "echo" "printenv" "cat" "env" "printf" "test" ]
+    // profpatsch.utils.getBins pkgs.fdtools [ "multitee" ]
+    // profpatsch.utils.getBins pkgs.s6-networking [ "s6-tcpserver" ]
+    // profpatsch.utils.getBins pkgs.time [ "time" ]
+    // profpatsch.utils.getBins pkgs.curl [ "curl" ]
+    // profpatsch.utils.getBins pkgs.execline [ "fdmove" ]
     ;
 
   # eprintf: printf to stderr
@@ -78,7 +78,7 @@ let
       cssConcatenated =
         let
           concatCss = cssFiles: runExecline "concat-css" {
-            stdin = toNetstringList (map (c: c.path) cssFiles);
+            stdin = profpatsch.utils.netstring.toNetstringList (map (c: c.path) cssFiles);
           } [
             "importas" "out" "out"
             "forstdin" "-Ed" "" "css"
@@ -164,7 +164,7 @@ let
   linkStaticFiles = files: runExecline "link-static-files" {
     stdin = lib.concatStrings (
       lib.mapAttrsToList (_: static:
-         toNetstring
+         profpatsch.utils.netstring.toNetstring
            (profpatsch.netencode.netencode.record
              ((lib.optional (static.relativeDir != []) { key = "relDir"; val = profpatsch.netencode.netencode.binary (joinPath static.relativeDir); })
              ++ [

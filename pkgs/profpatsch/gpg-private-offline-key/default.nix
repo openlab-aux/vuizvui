@@ -1,14 +1,14 @@
-{ pkgs, writeExecline, getBins, ... }:
+{ pkgs, writeExecline, profpatsch, ... }:
 
 let
 # split
 
-  bins = getBins pkgs.coreutils [ "split" "mktemp" "rm" "rmdir" ]
-      // getBins pkgs.lr [ "lr" ]
-      // getBins pkgs.xe [ "xe" ]
-      // getBins pkgs.qrencode [ "qrencode" ]
-      // getBins pkgs.zbar [ "zbarimg" ]
-      // getBins pkgs.sane-backends [ "scanimg" ];
+  bins = profpatsch.utils.getBins pkgs.coreutils [ "split" "mktemp" "rm" "rmdir" ]
+      // profpatsch.utils.getBins pkgs.lr [ "lr" ]
+      // profpatsch.utils.getBins pkgs.xe [ "xe" ]
+      // profpatsch.utils.getBins pkgs.qrencode [ "qrencode" ]
+      // profpatsch.utils.getBins pkgs.zbar [ "zbarimg" ]
+      // profpatsch.utils.getBins pkgs.sane-backends [ "scanimg" ];
 
   qr-code-props = {
     # second highest redundancy level

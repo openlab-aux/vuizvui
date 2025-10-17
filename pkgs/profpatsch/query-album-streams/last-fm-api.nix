@@ -1,14 +1,14 @@
-{ pkgs, getBins, writeExecline, writeHaskellInterpret }:
+{ pkgs, writeExecline, profpatsch }:
 let
 
   lib = pkgs.lib;
-  bins = getBins pkgs.httpie [ "http" ];
+  bins = profpatsch.utils.getBins pkgs.httpie [ "http" ];
 
   develop = true;
 
   writeHaskell = name: { interpret ? false, withPackages }:
     if interpret
-    then writeHaskellInterpret name { inherit withPackages; }
+    then profpatsch.utils.writeHaskellInterpret name { inherit withPackages; }
     else pkgs.writers.writeHaskell name { libraries = withPackages pkgs.haskellPackages; };
 
   # see https://hackage.haskell.org/package/aeson-schema-0.4.1.2/docs/Data-Aeson-Schema-Types.html#t:Schema

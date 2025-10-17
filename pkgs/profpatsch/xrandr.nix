@@ -1,11 +1,11 @@
-{ pkgs, getBins, writeExecline, runExeclineLocal, toNetstringKeyVal, ... }:
+{ pkgs, writeExecline, runExeclineLocal, profpatsch, ... }:
 
 let
   inherit (pkgs) lib;
-  bins = getBins pkgs.nodejs [ "node" ]
-      // getBins pkgs.coreutils [ "echo" "ln" "mkdir" ]
-      // getBins pkgs.dhall-json [ "json-to-dhall" ]
-      // getBins pkgs.xorg.xrandr [ "xrandr" ]
+  bins = profpatsch.utils.getBins pkgs.nodejs [ "node" ]
+      // profpatsch.utils.getBins pkgs.coreutils [ "echo" "ln" "mkdir" ]
+      // profpatsch.utils.getBins pkgs.dhall-json [ "json-to-dhall" ]
+      // profpatsch.utils.getBins pkgs.xorg.xrandr [ "xrandr" ]
       ;
 
   writeNodejs = {
@@ -16,7 +16,7 @@ let
   }:
     let
       node_modules = runExeclineLocal "${name}-node_modules" {
-        stdin = toNetstringKeyVal dependencies;
+        stdin = profpatsch.utils.netstring.toNetstringKeyVal dependencies;
       } [
         "importas" "out" "out"
         "if" [ bins.mkdir "$out" ]

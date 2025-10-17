@@ -1,9 +1,9 @@
-{ pkgs, rust-deps, writeRustSimple, writeExecline, getBins }:
+{ pkgs, rust-deps, writeRustSimple, writeExecline, profpatsch }:
 
 let
-  bins = getBins pkgs.coreutils [ "date" "cat" ]
-      // getBins pkgs.paps [ "paps" ]
-      // getBins pkgs.ghostscript [ "ps2pdf" ];
+  bins = profpatsch.utils.getBins pkgs.coreutils [ "date" "cat" ]
+      // profpatsch.utils.getBins pkgs.paps [ "paps" ]
+      // profpatsch.utils.getBins pkgs.ghostscript [ "ps2pdf" ];
 
   mustache-interpol = writeRustSimple "mustache-interpol" {
     dependencies = [

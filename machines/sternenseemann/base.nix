@@ -2,7 +2,7 @@
 
 let
 
-  inherit (pkgs.vuizvui.profpatsch)
+  inherit (pkgs.vuizvui.profpatsch.utils)
     getBins
     ;
 

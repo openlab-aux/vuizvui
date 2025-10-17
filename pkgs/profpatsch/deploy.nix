@@ -1,10 +1,10 @@
 # The only deployment tool that anybody should take seriously
-{ pkgs, getBins, ... }:
+{ pkgs, profpatsch, ... }:
 
 let
-  bins = getBins pkgs.coreutils [ "realpath" ]
-      // getBins pkgs.openssh [ "ssh" ]
-      // getBins pkgs.nix [ "nix-build" "nix-copy-closure" "nix-env" ]
+  bins = profpatsch.utils.getBins pkgs.coreutils [ "realpath" ]
+      // profpatsch.utils.getBins pkgs.openssh [ "ssh" ]
+      // profpatsch.utils.getBins pkgs.nix [ "nix-build" "nix-copy-closure" "nix-env" ]
       ;
 
   deploy = pkgs.writers.writeDash "deploy-machine-profpatsch" ''

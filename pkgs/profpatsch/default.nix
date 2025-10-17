@@ -7,33 +7,9 @@ let
 
   haskellPackagesProfpatsch = import ./haskell-overlay.nix { inherit pkgs; };
 
-  # Takes a derivation and a list of binary names
-  # and returns an attribute set of `name -> path`.
-  # The list can also contain renames in the form of
-  # { use, as }, which goes `as -> usePath`.
-  getBins = drv: xs:
-    let f = x:
-      # TODO: typecheck
-      let x' = if builtins.isString x then { use = x; as = x; } else x;
-      in {
-        name = x'.as;
-        value = "${lib.getBin drv}/bin/${x'.use}";
-      };
-    in builtins.listToAttrs (builtins.map f xs);
-
-  # Create a store path where the executable `exe`
-  # is linked to $out/bin/${name}.
-  # This is useful for e.g. including it as a "package"
-  # in `buildInputs` of a shell.nix.
-  #
-  # For example, if I have the exeutable /nix/store/…-hello,
-  # I can make it into /nix/store/…-binify-hello/bin/hello
-  # with `binify { exe = …; name = "hello" }`.
-  binify = { exe, name }:
-    pkgs.runCommandLocal "binify-${name}" {} ''
-      mkdir -p $out/bin
-      ln -sT ${lib.escapeShellArg exe} $out/bin/${lib.escapeShellArg name}
-    '';
+  # Manual imports of utilities for use within default.nix itself
+  # (These are also auto-discovered by readTree for use by other packages)
+  getBins = import ./utils/getBins.nix { inherit lib; };
 
   exactSource = import ./exact-source.nix;
 
@@ -54,17 +30,6 @@ let
     inherit (pkgs) runCommandLocal;
     bin = getBins pkgs.s6-portable-utils [ "s6-touch" "s6-echo" ];
   };
-
-  # TODO: upstream
-  writeHaskellInterpret = nameOrPath: { withPackages ? lib.const [] }: content:
-    let ghc = pkgs.haskellPackages.ghcWithPackages withPackages; in
-    pkgs.writers.makeScriptWriter {
-      interpreter = "${ghc}/bin/runhaskell";
-      check = pkgs.writers.writeDash "ghc-typecheck" ''
-        ln -s "$1" ./Main.hs
-        ${ghc}/bin/ghc -fno-code -Wall ./Main.hs
-      '';
-    } nameOrPath content;
 
   runExeclineFns =
     # todo: factor out calling tests
@@ -113,18 +78,6 @@ let
 
   homeRepo = import ./home-repo.nix { inherit pkgs; };
 
-  toNetstring = s:
-    "${toString (builtins.stringLength s)}:${s},";
-
-  toNetstringList = xs:
-    lib.concatStrings (map toNetstring xs);
-
-  toNetstringKeyVal = attrs:
-    lib.concatStrings
-      (lib.mapAttrsToList
-        (k: v: toNetstring (toNetstring k + toNetstring v))
-        attrs);
-
   writeRust = import ./write-rust.nix {
     inherit pkgs getBins;
     inherit (runExeclineFns) runExeclineLocal;
@@ -136,14 +89,12 @@ let
   # All utility functions and libraries that packages might need
   utilityArgs = {
     inherit stdenv lib pkgs sternenseemann lazy-packages homeRepo;
-    inherit getBins binify exactSource;
-    inherit writeHaskellInterpret;
+    inherit exactSource;
     inherit (nixperiments) match script drvSeq drvSeqL withTests filterSourceGitignoreWith readGitignoreFile;
     inherit (runExeclineFns) runExecline runExeclineLocal runExeclineLocalNoSeqL;
     inherit (writeExeclineFns) writeExecline writeExeclineBin;
     inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
     inherit (sandboxFns) sandbox runInEmptyEnv;
-    inherit toNetstring toNetstringList toNetstringKeyVal;
     inherit haskellPackagesProfpatsch testing;
     inherit (sternenseemann) temp;  # For nman
   };
@@ -167,7 +118,10 @@ in readTree.fix (self: let
     importPurescript = import ./importPurescript.nix { inherit pkgs exactSource; inherit (pkgs) haskellPackages; };
 
     # Standalone package files (import with utilityArgs + pkgs + discovered packages)
-    standaloneArgs = utilityArgs // pkgs // { runblock = discovered.execline.runblock; };
+    standaloneArgs = utilityArgs // pkgs // {
+      runblock = discovered.execline.runblock;
+      profpatsch = self;
+    };
     read-qr-code = import ./read-qr-code.nix standaloneArgs;
     read-qr-code-from-camera = import ./read-qr-code-from-camera.nix standaloneArgs;
     xrandr = import ./xrandr.nix standaloneArgs;
@@ -205,13 +159,8 @@ in readTree.fix (self: let
   };
 
 in discovered // specialPackages // {
-  # Export utility functions for backwards compatibility
-  inherit getBins binify;
-  inherit toNetstring toNetstringList toNetstringKeyVal;
-  inherit (runExeclineFns) runExecline runExeclineLocal;
+  # Re-export for backward compatibility (used by machine configs and other packages)
+  inherit homeRepo;
   inherit (writeExeclineFns) writeExecline writeExeclineBin;
   inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
-  inherit (sandboxFns) sandbox runInEmptyEnv;
-  inherit homeRepo;
-  inherit (nixperiments) match script drvSeq drvSeqL withTests filterSourceGitignoreWith readGitignoreFile;
 })
