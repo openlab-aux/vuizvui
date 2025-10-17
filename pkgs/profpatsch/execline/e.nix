@@ -1,9 +1,10 @@
 { writeExecline, profpatsch, pkgs, writeRustSimple, ... }:
 let
 
-  bins = profpatsch.utils.getBins pkgs.rlwrap [ "rlwrap" ]
-    // profpatsch.utils.getBins pkgs.s6-portable-utils [ { use = "s6-cat"; as = "cat"; } ]
-    // profpatsch.utils.getBins pkgs.execline [ "execlineb" ];
+  inherit (profpatsch.utils) getBins;
+  bins = getBins pkgs.rlwrap [ "rlwrap" ]
+    // getBins pkgs.s6-portable-utils [ { use = "s6-cat"; as = "cat"; } ]
+    // getBins pkgs.execline [ "execlineb" ];
 
   # minimal execline shell
   shell =

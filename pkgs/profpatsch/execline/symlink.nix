@@ -1,4 +1,7 @@
 { lib, s6-portable-utils, coreutils, runExecline, profpatsch }:
+let
+  inherit (profpatsch.utils.netstring) toNetstring toNetstringList toNetstringKeyVal;
+in
 # DrvPath :: path relative to the derivation
 # AbsPath :: absolute path in the store
 #    Name
@@ -9,8 +12,8 @@ name: links:
 runExecline name {
   derivationArgs = {
     pathTuples = lib.concatMapStrings
-      ({dest, orig}: profpatsch.utils.netstring.toNetstring
-        (profpatsch.utils.netstring.toNetstring dest + (profpatsch.utils.netstring.toNetstring orig)))
+      ({dest, orig}: toNetstring
+        (toNetstring dest + (toNetstring orig)))
       links;
     passAsFile = [ "pathTuples" ];
     PATH = lib.makeBinPath [ s6-portable-utils ];

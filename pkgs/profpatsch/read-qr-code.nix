@@ -1,8 +1,9 @@
 { stdenv, writeExecline, profpatsch, zbar, libnotify, imagemagick, ... }:
 
 let
-  bins = profpatsch.utils.getBins zbar [ "zbarimg" ]
-      // profpatsch.utils.getBins imagemagick [ "import" ];
+  inherit (profpatsch.utils) getBins;
+  bins = getBins zbar [ "zbarimg" ]
+      // getBins imagemagick [ "import" ];
 
   script = writeExecline "read-qr-code" {} [
     "pipeline" [

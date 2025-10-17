@@ -2,9 +2,10 @@
 
 let
 
-  bins = profpatsch.utils.getBins pkgs.duplicity [ "duplicity" ]
-      // profpatsch.utils.getBins pkgs.pass [ "pass" ]
-      // profpatsch.utils.getBins pkgs.coreutils [ "printf" "echo" ];
+  inherit (profpatsch.utils) getBins;
+  bins = getBins pkgs.duplicity [ "duplicity" ]
+      // getBins pkgs.pass [ "pass" ]
+      // getBins pkgs.coreutils [ "printf" "echo" ];
 
   gpgKeyId = "4ACFD7592710266E18CEBB28C5CFD08B22247CDF";
 

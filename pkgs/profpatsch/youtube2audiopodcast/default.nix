@@ -3,15 +3,16 @@
 config@{ url, internalPort }:
 
 let
-  bins = profpatsch.utils.getBins pkgs.hello [ "hello" ]
-    // profpatsch.utils.getBins pkgs.coreutils [ "printf" "wc" "tr" "cut" "mktemp" "mkdir" "ls" ]
-    // profpatsch.utils.getBins pkgs.youtube-dl [ "youtube-dl" ]
-    // profpatsch.utils.getBins pkgs.s6-networking [ "s6-tcpserver" ]
-    // profpatsch.utils.getBins pkgs.execline [ "fdmove" "backtick" "importas" "if" "redirfd" "pipeline" ]
-    // profpatsch.utils.getBins pkgs.s6-portable-utils [
+  inherit (profpatsch.utils) getBins;
+  bins = getBins pkgs.hello [ "hello" ]
+    // getBins pkgs.coreutils [ "printf" "wc" "tr" "cut" "mktemp" "mkdir" "ls" ]
+    // getBins pkgs.youtube-dl [ "youtube-dl" ]
+    // getBins pkgs.s6-networking [ "s6-tcpserver" ]
+    // getBins pkgs.execline [ "fdmove" "backtick" "importas" "if" "redirfd" "pipeline" ]
+    // getBins pkgs.s6-portable-utils [
          { use = "s6-cat"; as = "cat"; }
        ]
-    // profpatsch.utils.getBins (pkgs.haskell.lib.justStaticExecutables pkgs.jl) [ "jl" ];
+    // getBins (pkgs.haskell.lib.justStaticExecutables pkgs.jl) [ "jl" ];
 
   # fetch the audio of a youtube video to ./audio.opus, given video ID
   youtube-dl-audio = writeExecline "youtube-dl-audio" { readNArgs = 1; } [
