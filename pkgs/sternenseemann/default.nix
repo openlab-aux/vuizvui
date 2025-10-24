@@ -141,7 +141,10 @@ in
     inherit packageScriptFile;
     inherit (writers) writeBashBin;
     emojiTestTxt = fetchurl {
-      url = "https://www.unicode.org/Public/emoji/17.0/emoji-test.txt";
+      urls = [
+        "https://www.unicode.org/Public/emoji/17.0/emoji-test.txt"
+        "https://www.unicode.org/Public/emoji/latest/emoji-test.txt"
+      ];
       sha256 = "1nmc06i066r322br8hs5wb55p6b77kppy5n5yxz2z5fpi17r92hx";
     };
   };
