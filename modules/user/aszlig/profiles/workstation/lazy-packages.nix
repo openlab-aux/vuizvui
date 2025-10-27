@@ -9,7 +9,6 @@ pkgs: with pkgs; [
   haskellPackages.cabal2nix
   haskellPackages.cabal-install
   haskellPackages.hlint
-  haxe
   libchipcard
   lftp
   mpg123
