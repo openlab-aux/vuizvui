@@ -767,7 +767,6 @@ let
         ["nixos" "systemd"]
         ["nixos" "systemd-analyze"]
         ["nixos" "systemd-nspawn"]
-        ["nixos" "systemd-timesyncd"]
       ];
     }
     { check = anyAttrs (s: s.confinement.enable) config.systemd.services;
