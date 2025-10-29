@@ -73,6 +73,7 @@ in wrapFirefox firefoxNoSigning {
     lockPref('browser.gesture.pinch.in', "");
     lockPref('browser.gesture.pinch.out', "");
     lockPref('browser.laterrun.enabled', false);
+    lockPref('browser.ml.chat.menu', false);
     lockPref('browser.newtab.extensionControlled', true);
     lockPref('browser.newtab.privateAllowed', false);
     lockPref('browser.newtabpage.enabled', false);
@@ -144,6 +145,7 @@ in wrapFirefox firefoxNoSigning {
     EncryptedMediaExtensions.Locked = true;
     FirefoxHome.Pocket = false;
     FirefoxHome.Snippets = false;
+    GenerativeAI.Enabled = false;
     OverrideFirstRunPage = "";
     UserMessaging.ExtensionRecommendations = false;
     UserMessaging.SkipOnboarding = false;
