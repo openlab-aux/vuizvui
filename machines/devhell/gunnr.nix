@@ -43,7 +43,7 @@
       enable = true;
       extraPackages = with pkgs; [
         libvdpau-va-gl
-        vaapiVdpau
+        libva-vdpau-driver
       ];
     };
   };
@@ -121,10 +121,10 @@
    nixpkgs.config.mpv.bs2bSupport = true;
 
    environment.systemPackages = with pkgs; [
-     glxinfo
+     mesa-demos
      libva
      libvdpau-va-gl
-     vaapiVdpau
+     libva-vdpau-driver
      vdpauinfo
      xbindkeys
    ];

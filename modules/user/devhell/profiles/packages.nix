@@ -101,7 +101,7 @@ in {
       dmidecode
       dos2unix
       dstask
-      du-dust
+      dust
       dua
       duf
       e2fsprogs
@@ -162,7 +162,7 @@ in {
       kanshi
       kmon
       lemmeknow
-      lfs
+      dysk
       lftp
       libarchive
       libreoffice
@@ -183,7 +183,7 @@ in {
       mmv
       mosh
       mp3gain
-      mpc_cli
+      mpc
       mpv
       msmtp
       navi
@@ -241,7 +241,7 @@ in {
       rq
       rsync
       rustcat
-      rustic-rs
+      rustic
       rustmission
       rwpspread
       safecopy

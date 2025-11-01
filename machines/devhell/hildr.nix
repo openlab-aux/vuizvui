@@ -26,7 +26,7 @@
     cpu.intel.updateMicrocode = true;
     opengl = {
       enable = true;
-      extraPackages = [ pkgs.libvdpau-va-gl pkgs.vaapiVdpau pkgs.vaapiIntel ];
+      extraPackages = [ pkgs.libvdpau-va-gl pkgs.libva-vdpau-driver pkgs.intel-vaapi-driver ];
     };
   };
 
@@ -187,7 +187,7 @@
     minicom
     acpica-tools
     pmutils
-    vaapiVdpau
+    libva-vdpau-driver
     vdpauinfo
     xbindkeys
   ];

@@ -190,7 +190,7 @@ in {
         tt2020
         ultimate-oldschool-pc-font-pack
         unifont
-        vistafonts
+        vista-fonts
         wqy_microhei
       ] ++ lib.filter lib.isDerivation (lib.attrValues lohit-fonts ++ lib.attrValues nerd-fonts);
     };

@@ -36,8 +36,8 @@
       enable = true;
       extraPackages = with pkgs; [
         libvdpau-va-gl
-        vaapiVdpau
-        vaapiIntel
+        libva-vdpau-driver
+        intel-vaapi-driver
       ];
     };
   };
@@ -186,7 +186,7 @@
   environment.systemPackages = with pkgs; [
     cdrtools
     dvdplusrwtools
-    glxinfo
+    mesa-demos
     horst
     iw
     libva
@@ -194,7 +194,7 @@
     minicom
     acpica-tools
     pmutils
-    vaapiVdpau
+    libva-vdpau-driver
     vdpauinfo
     xbindkeys
   ];

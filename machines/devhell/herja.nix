@@ -35,7 +35,7 @@
       enable = true;
       extraPackages = with pkgs; [
         libvdpau-va-gl
-        vaapiVdpau
+        libva-vdpau-driver
       ];
     };
   };
@@ -139,7 +139,7 @@
     minicom
     acpica-tools
     pmutils
-    vaapiVdpau
+    libva-vdpau-driver
     vdpauinfo
     xbindkeys
   ];

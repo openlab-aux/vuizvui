@@ -20,7 +20,7 @@ pkgs: with pkgs; [
   gdb
   ghostscript
   vuizvui.aszlig.git-detach
-  glxinfo
+  mesa-demos
   gnumake
   gnupg1compat
   vuizvui.aszlig.gopass

@@ -29,7 +29,7 @@
   hardware = {
     cpu.intel.updateMicrocode = true;
     opengl = {
-      extraPackages = [ pkgs.vaapiVdpau ];
+      extraPackages = [ pkgs.libva-vdpau-driver ];
     };
   };
 
