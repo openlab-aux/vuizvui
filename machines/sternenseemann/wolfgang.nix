@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  browser = pkgs.firefox-wayland;
+  browser = pkgs.firefox;
 in
 
 {
