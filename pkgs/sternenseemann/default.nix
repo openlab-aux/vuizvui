@@ -188,5 +188,29 @@ in
   } // texliveCommon);
 
   # packaged 3rd party software
+  arr =
+    let
+      rev = "7f7b69afd3d6f9dad9901ffe2194464a53acd7a9";
+    in
+    pkgs.stdenv.mkDerivation {
+      pname = "arr";
+      version = lib.substring 0 7 rev;
+      src = pkgs.fetchFromGitHub {
+        owner = "leahneukirchen";
+        repo = "arr";
+        inherit rev;
+        hash = "sha256-+uoZKbuPZmNwnMS1Kd7GimrnBqX9CMGaj1crhR6Y7/o=";
+      };
+
+      makeFlags = [
+        "DESTDIR=${placeholder "out"}"
+        "PREFIX="
+      ];
+
+      buildInputs = [
+        pkgs.ruby
+      ];
+    };
+
   saneterm = pkgs.python3Packages.callPackage ./saneterm.nix { };
 }
