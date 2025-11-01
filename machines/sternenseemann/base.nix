@@ -168,5 +168,18 @@ in {
       [merge]
           conflictstyle = diff3
     '';
+
+  environment.etc."inputrc".text = lib.mkAfter ''
+    set search-ignore-case on
+
+    set completion-ignore-case on
+    set menu-complete-display-prefix on
+    set show-all-if-unmodified on
+    set skip-completed-text on
+
+    # https://lists.gnu.org/archive/html/bug-bash/2005-08/msg00003.html
+    set bind-tty-special-chars off
+    C-w: unix-filename-rubout
+  '';
   };
 }
