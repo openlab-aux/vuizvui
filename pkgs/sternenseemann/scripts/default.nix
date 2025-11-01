@@ -3,7 +3,7 @@
 , makeWrapper
 , borgbackup, cryptsetup
 , ghostscript
-, poppler_utils
+, poppler-utils
 , openssl
 , mandoc
 , msr-tools
@@ -46,7 +46,7 @@ let
       // (getBins mandoc [ "man" ])
       // (getBins openssl [ "openssl" ])
       // (getBins ghostscript [ "gs" ])
-      // (getBins poppler_utils [ "pdftotext" ])
+      // (getBins poppler-utils [ "pdftotext" ])
       ;
 
 in

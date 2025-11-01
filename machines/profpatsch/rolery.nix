@@ -367,7 +367,7 @@ in {
         mediainfo            # Swiss army knife of media metadata file information
         myPkgs.mpv           # you are my sun and my stars, and you play my stuff.
         pass                 # standard unix password manager
-        poppler_utils        # pdfto*
+        poppler-utils        # pdfto*
         sqlite-interactive sqlite-utils datasette
         zathura              # pdf viewer
         ghc                  # powerful pocket calculator
