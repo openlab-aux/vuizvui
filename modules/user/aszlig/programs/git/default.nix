@@ -95,8 +95,8 @@ in {
 
     environment.systemPackages = [
       gitPatched
-      pkgs.gitAndTools.git-remote-hg
-      pkgs.gitAndTools.hub
+      pkgs.git-remote-hg
+      pkgs.hub
     ] ++ lib.optional cfg.delta.enable deltaPatched;
   };
 }
