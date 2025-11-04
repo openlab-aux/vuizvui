@@ -3,7 +3,6 @@
 let
   inherit (pkgs)
     lib
-    dontRecurseIntoAttrs
     fetchurl
     fetchFromGitHub
     ocamlPackages
@@ -132,7 +131,7 @@ in
     };
   } ./nix-env-diff.rs;
 
-  scripts = dontRecurseIntoAttrs (callPackage ./scripts {
+  scripts = lib.dontRecurseIntoAttrs (callPackage ./scripts {
     inherit (writers) writeBashBin;
     inherit getBins packageScriptFile;
   });

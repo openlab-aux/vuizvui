@@ -22,4 +22,4 @@ fn: let
 
   super = mkOverridable f args;
 
-in pkgs.recurseIntoAttrs super
+in pkgs.lib.recurseIntoAttrs super
