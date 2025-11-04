@@ -36,7 +36,6 @@ in
         (google-fonts-subset [ "InclusiveSans" ])
 
         noto-fonts             # noto fonts: great for fallbacks
-        noto-fonts-extra
         noto-fonts-cjk-sans
       ];
 
