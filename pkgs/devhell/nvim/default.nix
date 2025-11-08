@@ -5,52 +5,33 @@ pkgs.neovim-unwrapped.overrideAttrs (drv: {
     packages.myplugins = with pkgs.vimPlugins; {
       start = [
         mini-nvim
-        ccc-nvim
-        tender-vim
         vim-nix
         vim-sleuth
-        swayconfig-vim
         nvim-lastplace
-        delimitMate
         gitsigns-nvim
         zen-mode-nvim
         twilight-nvim
         nvim-web-devicons
-        indent-blankline-nvim
       ];
       opt = [ ];
     };
     customRC = ''
-     filetype plugin indent on
-     set termguicolors
-     set autoindent
-     set background=dark
-     set cc=80
-     set cursorline
-     set expandtab
-     set history=500
-     set hlsearch
-     set ignorecase
-     set incsearch
-     set modeline
-     set nocompatible
-     set number
-     set ruler
-     set laststatus=2
-     set signcolumn=number
-     set timeout timeoutlen=5000 ttimeoutlen=100
-     set shiftwidth=4
-     set showcmd
-     set showmatch
-     set smartcase
-     set smartindent
-     set smarttab
-     set softtabstop=4
-     set tabstop=4
-     set ttyfast
-     set signcolumn=auto
-     syntax on
-     colorscheme tender
+     vim.opt.termguicolors = true
+     vim.opt.tabstop = 4
+     vim.opt.softtabstop = 4
+     vim.opt.shiftwidth = 4
+     vim.opt.expandtab = true
+     vim.opt.autoindent = true
+     vim.opt.smartindent = true
+     vim.opt.colorcolumn = 80
+     vim.opt.history = 500
+     vim.opt.hlsearch = true
+     vim.opt.incsearch = true
+     vim.opt.nu = true
+     vim.opt.showmatch = true
+     vim.opt.smartcase = true
+     vim.opt.smarttab = true
+     vim.opt.signcolumn = "yes"
 
      lua require('mini.indentscope').setup()
      lua require('mini.trailspace').setup()
@@ -63,7 +44,6 @@ pkgs.neovim-unwrapped.overrideAttrs (drv: {
      lua require('nvim-lastplace').setup()
      lua require('nvim-web-devicons').setup()
      lua require('gitsigns').setup()
-     lua require('ccc').setup()
     '';
   };
 
