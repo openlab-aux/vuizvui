@@ -65,14 +65,12 @@ in
     pkgs.intel-media-driver
     pkgs.intel-compute-runtime-legacy1
   ];
+  hardware.amdgpu.initrd.enable = false;
 
   # Manage Receiver of Logitech M570 with ltunify
   hardware.logitech.wireless.enable = true;
 
-  boot.loader.systemd-boot = {
-    enable = true;
-    memtest86.enable = true;
-  };
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "wolfgang";
