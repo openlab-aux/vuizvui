@@ -6,8 +6,6 @@
 { name, gameId, uploadId, sha256, version ? null }:
 
 let
-  cafile = "${cacert}/etc/ssl/certs/ca-bundle.crt";
-
   getDownloadURL = writeText "getitch.py" ''
     import os, sys, json
 
@@ -67,10 +65,8 @@ in stdenv.mkDerivation {
   outputHashAlgo = "sha256";
   outputHash = sha256;
 
-  SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";
-
   preferLocalBuild = true;
-  nativeBuildInputs = [ python3Packages.python ];
+  nativeBuildInputs = [ python3Packages.python cacert ];
 
   buildCommand = ''
     url="$(python "${getDownloadURL}")"
