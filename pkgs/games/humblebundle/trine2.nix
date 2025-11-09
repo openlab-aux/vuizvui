@@ -1,5 +1,5 @@
 { buildGame, fetchHumbleBundle, makeWrapper, runCommandCC, writeText
-, coreutils, openal, libvorbis, libGLU, SDL2, freetype, alsaLib
+, coreutils, openal, libvorbis, libGLU, SDL2, freetype, alsa-lib
 }:
 
 buildGame rec {
@@ -13,7 +13,7 @@ buildGame rec {
   };
 
   nativeBuildInputs = [ makeWrapper ];
-  buildInputs = [ openal libvorbis libGLU freetype alsaLib ];
+  buildInputs = [ openal libvorbis libGLU freetype alsa-lib ];
 
   patchPhase = ''
     patchelf --replace-needed libSDL-1.3.so.0 libSDL.so \

@@ -1,5 +1,5 @@
 { stdenv, lib, fetchGog, fetchFromGitHub, innoextract, runCommand, buildSandbox
-, SDL2, SDL2_net, freetype, libGLU, libGL, glew, alsaLib
+, SDL2, SDL2_net, freetype, libGLU, libGL, glew, alsa-lib
 , libogg, libvorbis, xvfb-run
 }:
 
@@ -60,7 +60,7 @@ let
 
     enableParallelBuilding = true;
     buildInputs = [
-      SDL2 SDL2_net freetype libGLU libGL glew alsaLib
+      SDL2 SDL2_net freetype libGLU libGL glew alsa-lib
       libogg libvorbis
     ];
 

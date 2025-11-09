@@ -1,7 +1,7 @@
 { stdenv, lib, buildSandbox, fetchGog, gogUnpackHook, bchunk, p7zip
 
 , fetchFromGitHub, cmake, gettext, boost, miniupnpc, bzip2
-, SDL, SDL_mixer, libpulseaudio, alsaLib, libGL, lua5_2
+, SDL, SDL_mixer, libpulseaudio, alsa-lib, libGL, lua5_2
 }:
 
 let
@@ -71,7 +71,7 @@ in buildSandbox (stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ cmake gettext ];
   buildInputs = [
-    boost miniupnpc SDL SDL_mixer bzip2 libpulseaudio alsaLib libGL lua5_2
+    boost miniupnpc SDL SDL_mixer bzip2 libpulseaudio alsa-lib libGL lua5_2
   ];
 
   postInstall = ''

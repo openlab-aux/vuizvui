@@ -1,5 +1,5 @@
 { stdenv, lib, buildSandbox, fetchGog, gogUnpackHook, fetchzip
-, SDL2, SDL2_mixer, bchunk, p7zip, alsaLib, writeText, makeWrapper, libGL
+, SDL2, SDL2_mixer, bchunk, p7zip, alsa-lib, writeText, makeWrapper, libGL
 
 # For static recompilation
 , fetchFromGitHub, scons, judy, python, nasm, autoreconfHook
@@ -21,7 +21,7 @@ let
     name = "${variant}-0.2.3.5patched";
     src = "${staticRecompilerSource}/midi-libs/${variant}-0.2.3.5svn";
     nativeBuildInputs = [ autoreconfHook ];
-    buildInputs = [ alsaLib ];
+    buildInputs = [ alsa-lib ];
     patches = [ ./wildmidi-build-fixes.patch ];
     postPatch = ''
       sed -i -e '/^CFLAGS/s/-pedantic//' configure.ac

@@ -1,4 +1,4 @@
-{ lib, buildGame, fetchGog, alsaLib, libGL, libpulseaudio, xorg
+{ lib, buildGame, fetchGog, alsa-lib, libGL, libpulseaudio, xorg
 , python3, python3Packages, runCommand
 }:
 
@@ -14,7 +14,7 @@ buildGame rec {
   nativeBuildInputs = [ python3 python3Packages.r2pipe ];
 
   buildInputs = [
-    alsaLib libGL libpulseaudio xorg.libICE xorg.libSM xorg.libX11
+    alsa-lib libGL libpulseaudio xorg.libICE xorg.libSM xorg.libX11
     xorg.libXcursor xorg.libXext xorg.libXinerama xorg.libXrandr
   ];
 
