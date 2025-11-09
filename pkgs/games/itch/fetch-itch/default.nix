@@ -74,8 +74,7 @@ in stdenv.mkDerivation {
 
   buildCommand = ''
     url="$(python "${getDownloadURL}")"
-    header "downloading $name from $url"
+    echo "downloading $name from $url"
     "${curl.bin or curl}/bin/curl" --fail --output "$out" "$url"
-    stopNest
   '';
 }
