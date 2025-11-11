@@ -101,13 +101,15 @@ in {
       dmidecode
       dos2unix
       dstask
-      dust
       dua
       duf
+      dust
+      dysk
       e2fsprogs
       easyeffects
       ethtool
       eva
+      eww
       exfat
       fastfetch
       fd
@@ -162,7 +164,6 @@ in {
       kanshi
       kmon
       lemmeknow
-      dysk
       lftp
       libarchive
       libreoffice
