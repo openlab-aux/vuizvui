@@ -152,7 +152,6 @@ in {
       shellInit = ''
         export GPG_AGENT_INFO=$HOME/.gnupg/S.gpg-agent
         export LIBVIRT_DEFAULT_URI=qemu:///system
-        export LS_COLORS="$(vivid generate tokyonight-night)"
         export GROFF_NO_SGR=1
       '';
       shells = [ pkgs.zsh ];
