@@ -152,7 +152,7 @@ in {
       shellInit = ''
         export GPG_AGENT_INFO=$HOME/.gnupg/S.gpg-agent
         export LIBVIRT_DEFAULT_URI=qemu:///system
-        export LS_COLORS="$(vivid generate snazzy)"
+        export LS_COLORS="$(vivid generate tokyonight-night)"
         export LESS_TERMCAP_mb=$'\E[1;31m'
         export LESS_TERMCAP_md=$'\E[1;36m'
         export LESS_TERMCAP_me=$'\E[0m'
