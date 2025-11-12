@@ -153,14 +153,7 @@ in {
         export GPG_AGENT_INFO=$HOME/.gnupg/S.gpg-agent
         export LIBVIRT_DEFAULT_URI=qemu:///system
         export LS_COLORS="$(vivid generate tokyonight-night)"
-        export LESS_TERMCAP_mb=$'\E[1;31m'
-        export LESS_TERMCAP_md=$'\E[1;36m'
-        export LESS_TERMCAP_me=$'\E[0m'
-        export LESS_TERMCAP_so=$'\E[01;33m'
-        export LESS_TERMCAP_se=$'\E[0m'
-        export LESS_TERMCAP_us=$'\E[1;32m'
-        export LESS_TERMCAP_ue=$'\E[0m'
-        export EDITOR='vim'
+        export GROFF_NO_SGR=1
       '';
       shells = [ pkgs.zsh ];
     };
