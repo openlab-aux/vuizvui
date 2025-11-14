@@ -8,6 +8,6 @@
 
   gogUnpackHook = makeSetupHook {
     name = "gog-unpack-hook";
-    deps = [ libarchive innoextract ];
+    propagatedBuildInputs = [ libarchive innoextract ];
   } ./gog-unpack.sh;
 }
