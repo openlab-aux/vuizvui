@@ -1,5 +1,11 @@
 #include <iostream>
 
+#if NIX_VERSION >= 231
+#include <nix/store/globals.hh>
+#endif
+#if NIX_VERSION >= 229
+#include <nix/store/store-open.hh>
+#endif
 #if NIX_VERSION >= 228
 #include <nix/store/local-fs-store.hh>
 #include <nix/store/config.hh>
