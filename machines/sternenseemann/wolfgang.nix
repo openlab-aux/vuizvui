@@ -80,8 +80,7 @@ in
 
     editors = {
       enable = true;
-      editor = "emacs";
-      alternate = "ma";
+      editor = "ma";
       acme.enable = true;
       emacs.enable = true;
       ma.enable = true;

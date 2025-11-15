@@ -29,6 +29,7 @@ let
       // (getBins tep [ "tep" ])
       // (getBins config.vuizvui.user.sternenseemann.services.mako.package [ "makoctl" ])
       // (getBins pkgs.foot [ "footclient" ])
+      // (getBins config.vuizvui.user.sternenseemann.programs.ma.package [ "win" ])
       // (getBins pkgs.brightnessctl [ "brightnessctl" ])
       // (getBins pkgs.swaylock [ "swaylock" ])
       // (getBins pkgs.wireplumber [ "wpctl" ])
@@ -265,8 +266,8 @@ in
     }
 
      binds {
-         Mod+Return { spawn "${bins.footclient}"; }
-         // TODO(sterni): colors
+         Mod+Return { spawn "${bins.win}"; }
+         Mod+Shift+Return { spawn "${bins.footclient}"; }
          Mod+D { spawn "${bins.bemenu-run}" "-p" "run>"; }
          Super+Alt+L { spawn "${bins.swaylock}" "-k" "-l" "-c" "${acmeColors.yellow}"; }
          Mod+c { spawn "${bins.makoctl}" "dismiss" "-a"; }

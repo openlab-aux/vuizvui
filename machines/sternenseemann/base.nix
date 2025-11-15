@@ -55,20 +55,29 @@ in {
       ];
     };
 
-    programs.fish = {
-      enable = true;
-      vendor.completions.enable = true;
-      shellInit = ''
-        set -x fish_greeting ""
+    environment.shellAliases = { l = null; ll = null; ls = null; };
+    programs.bash = {
+      enableLsColors = false;
+      interactiveShellInit = lib.mkAfter ''
+        # APL style space prompt, react to nix-shell
+        # TODO(sterni): revert space after fixing enter in ma
+        sterni_prompt() {
+          if [[ -n "$MA" ]]; then
+            # awd is very slow due to the tcl send overhead
+            awd "bash" &
+          else
+            echo -n "$1 "
+          fi
+          { (( UID == 0  )) && echo -n "# "; } \
+            || { [[ -n "$IN_NIX_SHELL" ]] && echo -n "❄ "; } \
+            || echo -n "  "
+        }
+        export PS1='$(sterni_prompt "\w")'
+        export NIX_SHELL_PRESERVE_PROMPT=1
 
-        # an adisbladis original
-        function bonk
-          for arg in $argv
-            set -l store_path (string unescape (nix-instantiate --eval --expr "with (import <nixpkgs> {}); builtins.toString (lib.getBin $arg)"))
-            nix-store --realise "$store_path"
-            set PATH "$store_path/bin" $PATH
-          end
-        end
+        if [[ "''${TERM:-}" = "foot" ]]; then
+          source "${pkgs.path + "/nixos/modules/programs/foot/bashrc"}"
+        fi
       '';
     };
 

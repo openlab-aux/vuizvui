@@ -21,14 +21,6 @@ in
 
   config = lib.mkIf cfg.enable {
     environment = {
-      etc."profile".text = ''
-        if [ "$TERM" = "dumb" ]; then
-          export PAGER=cat
-          export GIT_PAGER=cat
-        fi
-
-        export PS1="; "
-      '';
       systemPackages = [
         cfg.package
       ];
