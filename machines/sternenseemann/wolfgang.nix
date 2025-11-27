@@ -125,6 +125,10 @@ in
     # gpxsee # rarely need it nowadays
   ];
 
+  environment.etc.latexmkrc.text = ''
+    $pdf_previewer = 'start zathura %O %S'
+  '';
+
   # Needs https://github.com/NixOS/nixpkgs/pull/378620
   environment.etc.zathurarc.text = ''
     set database sqlite
