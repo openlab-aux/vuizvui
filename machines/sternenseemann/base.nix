@@ -13,8 +13,8 @@ in {
     boot.tmp.cleanOnBoot = true;
 
     nix = {
+      package = pkgs.lixPackageSets.latest.lix.override { withAWS = false; };
       # waiting on https://github.com/tvlfyi/nix/pull/5
-      package = pkgs.lix.override { withAWS = false; };
       # package = pkgs.nix_2_3.override { withAWS = false; };
 
       settings = {
