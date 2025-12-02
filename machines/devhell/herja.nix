@@ -102,7 +102,7 @@
   services = {
     gnome.gnome-keyring.enable = true;
     printing = {
-      enable = true;
+      enable = false;
       drivers = [ pkgs.hplip ];
     };
     offlineimap = {
