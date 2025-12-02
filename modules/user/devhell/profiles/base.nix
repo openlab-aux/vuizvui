@@ -165,6 +165,19 @@ in {
       fontconfig = {
         enable = true;
         useEmbeddedBitmaps = true;
+        localConf = ''
+          <?xml version='1.0'?>
+          <!DOCTYPE fontconfig SYSTEM 'urn:fontconfig:fonts.dtd'>
+          <fontconfig>
+          <alias binding="same">
+          <family>MxPlus IBM VGA 8x16</family>
+          <prefer>
+            <family>MxPlus IBM VGA 8x16</family>
+            <family>DejaVuSansM Nerd Font</family>
+          </prefer>
+          </alias>
+          </fontconfig>
+        '';
       };
       enableGhostscriptFonts = true;
       packages = with pkgs; [
