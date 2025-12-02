@@ -4,7 +4,7 @@
   vuizvui.user.devhell.profiles.base.enable = true;
 
   boot = {
-    binfmt.emulatedSystems = [ "aarch64-linux" ];
+#    binfmt.emulatedSystems = [ "aarch64-linux" ];
     loader = {
       timeout = 2;
       systemd-boot = {
@@ -83,7 +83,7 @@
 
   nix = {
     settings.max-jobs = lib.mkDefault 16;
-    settings.extra-platforms = config.boot.binfmt.emulatedSystems;
+ #   settings.extra-platforms = config.boot.binfmt.emulatedSystems;
   };
 
   i18n = {
@@ -141,7 +141,6 @@
     pmutils
     libva-vdpau-driver
     vdpauinfo
-    xbindkeys
   ];
 
   system.stateVersion = "24.05";
