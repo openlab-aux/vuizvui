@@ -121,11 +121,9 @@
    nixpkgs.config.mpv.bs2bSupport = true;
 
    environment.systemPackages = with pkgs; [
-     mesa-demos
      libva
      libvdpau-va-gl
      libva-vdpau-driver
      vdpauinfo
-     xbindkeys
    ];
 }
