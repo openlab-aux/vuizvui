@@ -80,7 +80,7 @@ in {
       nh.enable = true;
       vscode = {
         enable = true;
-        package = pkgs.vscodium;
+        package = pkgs.vscodium.fhs;
       };
       steam = {
         enable = true;
