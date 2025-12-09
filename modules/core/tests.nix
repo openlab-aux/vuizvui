@@ -880,8 +880,8 @@ let
       path  = ["nixos" "yggdrasil"];
     }
     { check = config.boot.supportedFilesystems.zfs or false
-           && config.boot.zfs.package.version == pkgs.zfs_2_2.version;
-      path  = ["nixos" "zfs" "series_2_2"];
+           && config.boot.zfs.package.version == pkgs.zfs_2_3.version;
+      path  = ["nixos" "zfs" "series_2_3"];
     }
     { check = config.boot.supportedFilesystems.zfs or false
            && config.boot.zfs.package.version == pkgs.zfs_unstable.version;
