@@ -182,23 +182,17 @@ in {
       };
       enableGhostscriptFonts = true;
       packages = with pkgs; [
-        clearlyU
-        fixedsys-excelsior
-        cm_unicode
+        unscii
         corefonts
         cozette
-        dosemu_fonts
-        freefont_ttf
         google-fonts
         junicode
         siji
-        tewi-font
         tt2020
         ultimate-oldschool-pc-font-pack
         unifont
         vista-fonts
-        wqy_microhei
-      ] ++ lib.filter lib.isDerivation (lib.attrValues lohit-fonts ++ lib.attrValues nerd-fonts);
+      ] ++ lib.filter lib.isDerivation (lib.attrValues nerd-fonts);
     };
   };
 }
