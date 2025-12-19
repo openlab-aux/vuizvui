@@ -1,5 +1,5 @@
 { lib, buildDunePackage, fetchFromGitHub
-, ocaml_lwt, jingoo, ptime, angstrom, astring, cow}:
+, lwt, jingoo, ptime, angstrom, astring, cow}:
 
 buildDunePackage rec {
   version = "unstable-2025-01-01";
@@ -14,7 +14,7 @@ buildDunePackage rec {
     sha256 = "1rvb1n22c4lrna5y9x4h2kb66cpnaqn9isk0fk3f5cljvfq0plwx";
   };
 
-  buildInputs = [ cow ocaml_lwt jingoo ];
+  buildInputs = [ cow lwt jingoo ];
   propagatedBuildInputs = [ ptime angstrom astring ];
 
   meta = with lib; {
