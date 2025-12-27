@@ -16,9 +16,9 @@ buildPythonApplication {
   build-system = [ setuptools ];
 
   src = fetchgit {
-    url = "git://git.8pit.net/saneterm.git";
-    rev = "e91ae2bddafa0301e4a6265505ac14875e79d2c8";
-    sha256 = "1ddknh7hrygzw7w2y314f9anyrqdrrc7z52ia8s9a6wbn0x4zkln";
+    url = "https://git.8pit.net/saneterm.git";
+    rev = "973cdccb4fd052641faafb3f352507efc4dd45bb";
+    hash = "sha256-dKCRwwy9LHfFld55fIw+nlVSW+NmdDGLnGfzVa3WAAo=";
   };
 
   nativeBuildInputs = [
