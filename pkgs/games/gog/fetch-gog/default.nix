@@ -303,7 +303,7 @@ in stdenv.mkDerivation {
   preferLocalBuild = true;
 
   nativeBuildInputs = [
-    curl python3Packages.tabulate python3Packages.MechanicalSoup
+    curl python3Packages.tabulate python3Packages.mechanicalsoup
   ];
 
   buildCommand = ''
