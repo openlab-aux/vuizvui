@@ -145,6 +145,7 @@ in {
       grim
       gurk-rs
       handlr
+      hcloud
       hdparm
       hexedit
       hexyl
