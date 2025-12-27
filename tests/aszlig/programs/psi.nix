@@ -6,14 +6,10 @@
   machine = { pkgs, ... }: {
     imports = [
       "${nixpkgsPath}/nixos/tests/common/user-account.nix"
-      "${nixpkgsPath}/nixos/tests/common/auto.nix"
+      "${nixpkgsPath}/nixos/tests/common/x11.nix"
     ];
-    services.xserver.enable = true;
-    test-support.displayManager.auto.enable = true;
     test-support.displayManager.auto.user = "alice";
     environment.systemPackages = [ pkgs.vuizvui.aszlig.psi ];
-    services.displayManager.defaultSession = "none+evilwm";
-    services.xserver.windowManager.evilwm.enable = true;
   };
 
   enableOCR = true;
