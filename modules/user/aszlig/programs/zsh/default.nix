@@ -153,8 +153,8 @@ in {
 
       autoload -Uz zmv
 
-      source ${lib.escapeShellArg "${highlighter}/${
-        "share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
+      source ${lib.escapeShellArg "${highlighter}/share/zsh/${
+        "plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
       }"}
     '';
 
