@@ -14,20 +14,14 @@ let
   exactSource = import ./exact-source.nix;
 
   # various nix utils and fun experiments
-  nixperiments =
-    let
-      src = pkgs.fetchFromGitHub {
-        owner = "Profpatsch";
-        repo = "nixperiments";
-        rev = "e04abced1a4fef7ad63f67ec621f6484226ed104";
-        sha256 = "1if9szjj1g1l5n31pmbiyp5f3llwl6xlqxklc6g2xf4rq59d2d6w";
-      };
-    in import src { nixpkgs = pkgs; };
+  nixperiments = import (pkgs.fetchFromGitHub {
+    owner = "Profpatsch"; repo = "nixperiments";
+    rev = "e04abced1a4fef7ad63f67ec621f6484226ed104";
+    sha256 = "1if9szjj1g1l5n31pmbiyp5f3llwl6xlqxklc6g2xf4rq59d2d6w";
+  }) { nixpkgs = pkgs; };
 
   testing = import ./testing {
-    inherit lib;
-    inherit (runExeclineFns) runExecline;
-    inherit (pkgs) runCommandLocal;
+    inherit lib; inherit (runExeclineFns) runExecline; inherit (pkgs) runCommandLocal;
     bin = getBins pkgs.s6-portable-utils [ "s6-touch" "s6-echo" ];
   };
 
@@ -40,9 +34,7 @@ let
   homeRepo = import ./home-repo.nix { inherit pkgs; };
 
   writeRust = import ./write-rust.nix {
-    inherit pkgs getBins;
-    inherit (runExeclineFns) runExeclineLocal;
-    inherit (nixperiments) drvSeqL;
+    inherit pkgs getBins; inherit (runExeclineFns) runExeclineLocal; inherit (nixperiments) drvSeqL;
   };
 
   sandboxFns = import ./sandbox.nix { inherit pkgs; inherit (writeExeclineFns) writeExecline; };
@@ -95,33 +87,13 @@ in readTree.fix (self: let
     e = (import ./execline/e.nix (standaloneArgs // { inherit (writeExeclineFns) writeExecline; })).e;
 
     # Packages that need complex setup
-    droopy = pkgs.droopy.overrideDerivation (old: {
-      src = pkgs.fetchFromGitHub {
-        owner = "Profpatsch";
-        repo = "Droopy";
-        rev = "55c60c612b913f9fbce9fceebbcb3a332152f1a4";
-        sha256 = "0jcazj9gkdf4k7vsi33dpw9myyy02gjihwsy36dfqq4bas312cq1";
-      };
-      installPhase = old.installPhase or "" + ''
-        mkdir -p $out/share/droopy
-        cp -r $src/static $out/share/droopy
-      '';
-      makeWrapperArgs = old.makeWrapperArgs or [] ++ [
-        "--set DROOPY_STATIC \"$out/share/droopy/static\""
-      ];
-    });
-
-    gitit = import (pkgs.fetchFromGitHub {
-      owner = "Profpatsch";
-      repo = "gitit";
-      rev = "bcfba01472f09abec211c3509ec33726629068ea";
-      sha256 = "sha256-v8s6GN4FTCfcsAxLdaP3HBYIDrJlZeKv+TOiRRt4bf4=";
-    }) { inherit pkgs; };
+    droopy = import ./special-packages/droopy.nix { inherit pkgs; };
+    gitit = import ./special-packages/gitit.nix { inherit pkgs; };
   };
 
 in discovered // specialPackages // {
   # Re-export for backward compatibility (used by machine configs and other packages)
-  inherit homeRepo;
+  inherit homeRepo getBins;
   inherit (writeExeclineFns) writeExecline writeExeclineBin;
   inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
 })
