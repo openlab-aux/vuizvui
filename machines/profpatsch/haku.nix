@@ -3,7 +3,6 @@
 let
   myLib  = import ./lib.nix  { inherit pkgs lib; };
   myPkgs = import ./pkgs.nix { inherit pkgs lib myLib; };
-  homeRepo = pkgs.vuizvui.profpatsch.homeRepo;
 
   hakuHostName = "haku.profpatsch.de";
   testHostName = "test.profpatsch.de";
@@ -170,7 +169,7 @@ in
         description = "internally served public files (see nginx)";
         wantedBy = [ "default.target" ];
         serviceConfig.WorkingDirectory = transmissionDownloadDirectory;
-        script = ''${homeRepo.users.Profpatsch.httzip}'';
+        script = ''${pkgs.vuizvui.profpatsch.homeRepo.users.Profpatsch.httzip}'';
         serviceConfig.User = user.name;
       };
 
@@ -180,11 +179,11 @@ in
       let user = config.users.users.whatcd-resolver;
       in {
         description = "what?";
-        wantedBy = [ "default.target" ];
+        wantedBy = [  "default.target" ];
         serviceConfig.WorkingDirectory = "/var/lib/whatcd-resolver";
         script = "${pkgs.vuizvui.profpatsch.writeExecline "run-whatcd-resolver-jaeger" {} [
           "envfile" "/var/lib/whatcd-resolver/whatcd-resolver-env"
-          homeRepo.users.Profpatsch.whatcd-resolver.whatcd-resolver
+          pkgs.vuizvui.profpatsch.homeRepo.users.Profpatsch.whatcd-resolver.whatcd-resolver
         ]}";
         serviceConfig.User = user.name;
         # transmission extra group
@@ -208,7 +207,7 @@ in
         description = "tooling for openlabs";
         wantedBy = [ "default.target" ];
         serviceConfig.WorkingDirectory = "/var/lib/openlab-tools";
-        script = ''${homeRepo.users.Profpatsch.openlab-tools}'';
+        script = ''${pkgs.vuizvui.profpatsch.homeRepo.users.Profpatsch.openlab-tools}'';
         serviceConfig.User = user.name;
       };
 
@@ -247,6 +246,14 @@ in
         locations."/openlab-tools/" = {
           proxyPass = "http://127.0.0.1:${toString openlabToolsPort}/";
         };
+        # TODO: restore when openlab-api-static.json is available
+        # locations."/openlab-api/" = {
+        #   root = pkgs.linkFarm "openlab-api" [
+        #     { name = "openlab-api/hackerspaceinfo-openlab-static.json";
+        #       path = ./openlab-api-static.json;
+        #     }
+        #   ];
+        # };
 
         locations."/opengraph-experiment/".root = pkgs.linkFarm "opengraph-player-root" [
             { name = "opengraph-experiment/index.html";
@@ -283,7 +290,7 @@ in
                         artist="Lecker"
                         title="Bierchen">
                     </progress-player>
-                    <script src="progress-player.js"></script>
+                    <!-- <script src="progress-player.js"></script> -->
                 </body>
 
                 </html>
@@ -305,15 +312,16 @@ in
                         artist="Lecker"
                         title="Bierchen">
                     </progress-player>
-                    <script src="progress-player.js"></script>
+                    <!-- <script src="progress-player.js"></script> -->
                 </body>
 
                 </html>
             '';
           }
-          { name = "opengraph-experiment/progress-player.js";
-            path = "${homeRepo.users.Profpatsch.whatcd-resolver.static-directory}/progress-player.js";
-          }
+          # TODO: restore when depot file is available
+          # { name = "opengraph-experiment/progress-player.js";
+          #   path = /home/philip/depot/users/Profpatsch/whatcd-resolver/static/progress-player.js;
+          # }
           { name = "opengraph-experiment/lecker-bierchen.png";
             path = ./lecker-bierchen.png;
           }
@@ -382,7 +390,7 @@ in
 
           handle_path /static/* {
 
-            root * ${homeRepo.users.Profpatsch.whatcd-resolver.static-directory}
+            root * ${pkgs.vuizvui.profpatsch.homeRepo.users.Profpatsch.whatcd-resolver.static-directory}
             file_server {
               browse off
             }
@@ -444,6 +452,7 @@ in
 
     services.transmission = {
       enable = true;
+      package = pkgs.transmission_4;
       user = "transmission";
       group = "transmission";
       settings = {

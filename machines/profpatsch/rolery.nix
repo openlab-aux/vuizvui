@@ -120,6 +120,9 @@ in {
       enable = true;
       jack.enable = true;
       pulse.enable = true;
+
+      #tmp
+      #wireplumber.enable = false;
     };
 
     # needed by steam to run
@@ -338,7 +341,7 @@ in {
       ];
       programmingTools = [
         github-cli                   # official github cli
-        homeRepo.gitu # magit-like standalone
+        gitu # magit-like standalone
 
         # TODO: move to user config
         direnv
@@ -352,7 +355,6 @@ in {
         pkgs.vuizvui.profpatsch.utils-hs.until        # restart until cmd succeeds
         execline
         pkgs.dhall
-        llm
       ];
       documentation = [
         # mustache-spec NOT IN 16.09
@@ -456,7 +458,7 @@ in {
         })
         (binify {
           exe = pkgs.vuizvui.profpatsch.alacritty.alacritty;
-          name = "terminal-emulator";
+          name = "alacritty";
         })
         (binify {
           exe = homeRepo.aliases.bell;
@@ -487,7 +489,7 @@ in {
     # Automount
     services.udisks2.enable = true;
 
-    services.logind.extraConfig = lib.generators.toKeyValue {} {
+    services.logind.settings.Login = {
 
       # I don’t want the machine to go off immediately
       # when I accidentally touch the power button.
@@ -501,6 +503,14 @@ in {
 
     services.gnome.gnome-keyring.enable = true;
     # TMP
+
+    services.couchdb = {
+      enable = true;
+      bindAddress = "127.0.0.1";
+      port = 1025;
+      adminUser = "admin";
+      adminPass = "spurdo";
+    };
 
     # vuizvui.services.guix.enable = true;
 
@@ -519,9 +529,9 @@ in {
         pkgs.source-code-pro
         pkgs.hasklig
         pkgs.dejavu_fonts
-        pkgs.ubuntu_font_family
+        pkgs.ubuntu-classic
         pkgs.league-of-moveable-type
-        pkgs.noto-fonts-emoji
+        pkgs.noto-fonts-color-emoji
         # pkgs.zbalermorna
       ];
 

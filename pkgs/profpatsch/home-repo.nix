@@ -1,7 +1,7 @@
 { homeRepoSrc ? pkgs.fetchgit {
     url = "https://codeberg.org/Profpatsch/Profpatsch";
-    rev = "5d3104861c2794ad73abc113d1d1b9e8ede66f63"; # 2025-10-16
-    sha256 = "0i56ia6khaj60la29cjr6cdc5dss9dd0ak610j7i69dbq9b40hk6";
+    rev = "2582dbe90bf8088928835a86bc98610b49a96a19"; # 2025-11-05
+    sha256 = "sha256-tYKIihnYpyMP+31A360VbocyLL+EWPZDf4l9MTWTTn4=";
   }
 , pkgs
 }:

@@ -103,7 +103,7 @@ in {
             export PATH+=":$HOME/scripts" #add utility scripts
             export PATH+=":$HOME/bin" #add user-specific binaries (filled by nix-home)
             export EDITOR=micro
-            export TERMINAL=terminal-emulator
+            export TERMINAL=alacritty
 
             ${pkgs.xorg.xset}/bin/xset r rate 250 35
 
