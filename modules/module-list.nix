@@ -6,7 +6,6 @@
   ./hardware/gamecontroller.nix
   ./hardware/rtl8192cu
   ./hardware/thinkpad.nix
-  ./hardware/t14s.nix
   ./hardware/tolino.nix
   ./hardware/tuxedo-pulse1502
   ./profiles/tvl.nix
