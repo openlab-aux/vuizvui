@@ -21,6 +21,7 @@ in
       enableGhostscriptFonts = false;
 
       packages = with pkgs; [
+        apl2741-unicode        # for fun
         atkinson-hyperlegible  # Sans serif for accessibility
         b612                   # highly legible font family for aircraft cockpits
         corefonts              # microsoft fonts
