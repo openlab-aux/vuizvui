@@ -53,6 +53,7 @@ in {
       #nixopsUnstable
       #onefetch
       #oterm
+      #pipr
       #rustdesk
       #spek
       #visidata
@@ -220,7 +221,6 @@ in {
       pciutils
       peep
       pigz
-      pipr
       pixz
       podman
       podman-compose
