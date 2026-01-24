@@ -27,6 +27,7 @@
   hardware = {
     cpu.amd.updateMicrocode = true;
     enableRedistributableFirmware = true;
+    bluetooth.enable = true;
     trackpoint = {
       enable = true;
       emulateWheel = true;
@@ -131,6 +132,8 @@
 
   environment.systemPackages = with pkgs; [
     aircrack-ng
+    bluez
+    bluetui
     fwupd
     horst
     ipmitool
