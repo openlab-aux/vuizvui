@@ -42,6 +42,7 @@ in {
     '';
 
     environment.systemPackages = with pkgs; [
+      #bcal
       #dcfldd
       #dogdns
       #freerdpUnstable
@@ -74,7 +75,6 @@ in {
       axel
       bandwhich
       bc
-      bcal
       beets
       binutils
       bmon
