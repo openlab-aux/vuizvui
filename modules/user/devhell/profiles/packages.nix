@@ -156,6 +156,7 @@ in {
       hydra-check
       hyperfine
       imagemagick
+      impala
       inetutils
       ipcalc
       iprange
