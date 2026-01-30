@@ -71,7 +71,6 @@ pkgs: with pkgs; [
   vbindiff
   vorbis-tools
   w3m
-  wcc
   whois
   wireshark
   xorg.xhost
