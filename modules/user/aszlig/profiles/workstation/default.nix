@@ -172,7 +172,7 @@ in {
       udev.extraRules = ''
         # Enttec DMX device
         SUBSYSTEM=="usb*|tty", ACTION=="add|change", ATTRS{idVendor}=="0403", \
-          ATTRS{idProduct}=="6001", OWNER="aszlig"
+          ATTRS{idProduct}=="6001", GROUP="dmx"
       '';
 
       redshift = {
@@ -220,7 +220,9 @@ in {
       uid = 1000;
       isNormalUser = true;
       description = "aszlig";
-      extraGroups = [ "wheel" "video" ];
+      extraGroups = [ "wheel" "video" "dmx" ];
     };
+
+    users.groups.dmx = {};
   };
 }
