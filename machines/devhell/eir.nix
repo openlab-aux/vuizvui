@@ -184,17 +184,19 @@
   };
 
   environment.systemPackages = with pkgs; [
+    acpica-tools
+    bluetui
+    bluez
     cdrtools
     dvdplusrwtools
-    mesa-demos
     horst
     iw
     libva
-    libvdpau-va-gl
-    minicom
-    acpica-tools
-    pmutils
     libva-vdpau-driver
+    libvdpau-va-gl
+    mesa-demos
+    minicom
+    pmutils
     vdpauinfo
     xbindkeys
   ];
