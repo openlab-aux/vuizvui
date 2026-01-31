@@ -29,7 +29,6 @@
   hardware = {
     cpu.intel.updateMicrocode = true;
     enableRedistributableFirmware = true;
-    intelgpu.vaapiDriver = "intel-vaapi-driver";
     bluetooth = {
       enable = true;
       powerOnBoot = false;
@@ -43,6 +42,7 @@
       extraPackages = with pkgs; [
         libvdpau-va-gl
         libva-vdpau-driver
+        intel-vaapi-driver
       ];
     };
   };
