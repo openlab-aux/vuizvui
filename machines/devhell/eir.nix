@@ -14,8 +14,8 @@
     };
 
     initrd = {
-      availableKernelModules = [ "ehci_pci" "ahci" "usb_storage" ];
-      kernelModules = [ "fuse" "iwlwifi" ];
+      availableKernelModules = [ "i915" "ehci_pci" "ahci" "usb_storage" ];
+      kernelModules = [ "fuse" ];
       postDeviceCommands = ''
         echo none > /sys/block/sda/queue/scheduler
       '';
