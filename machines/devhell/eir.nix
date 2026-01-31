@@ -132,7 +132,6 @@
 #  };
 
   services.tlp.enable = true;
-  services.illum.enable = true;
 
   #### Machine-specific packages configuration ####
 
