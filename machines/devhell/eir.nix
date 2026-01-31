@@ -15,14 +15,13 @@
 
     initrd = {
       availableKernelModules = [ "ehci_pci" "ahci" "usb_storage" ];
-      kernelModules = [ "fuse" ];
+      kernelModules = [ "fuse" "iwlwifi" ];
       postDeviceCommands = ''
         echo none > /sys/block/sda/queue/scheduler
       '';
     };
 
     kernelModules = [ "tp_smapi" ];
-    kernelParams = [ "i915.enable_rc6=7" ];
     extraModulePackages = [ config.boot.kernelPackages.tp_smapi ];
   };
 
@@ -86,7 +85,11 @@
   powerManagement = {
     powertop.enable = true;
     cpuFreqGovernor = "powersave";
+    powerUpCommands = ''
+      ${pkgs.hdparm}/bin/hdparm -S 60 /dev/sdb
+    '';
   };
+
   nix = {
     settings.max-jobs = lib.mkDefault 4;
   };
@@ -125,19 +128,6 @@
 #  services.udev = {
 #    extraRules = ''
 #      SUBSYSTEM=="firmware", ACTION=="add", ATTR{loading}="-1"
-#    '';
-#  };
-#
-#  services.acpid = {
-#    enable = true;
-#    lidEventCommands = ''
-#      LID="/proc/acpi/button/lid/LID/state"
-#      state=`cat $LID | ${pkgs.gawk}/bin/awk '{print $2}'`
-#      case "$state" in
-#        *open*) ;;
-#        *close*) systemctl suspend ;;
-#        *) logger -t lid-handler "Failed to detect lid state ($state)" ;;
-#      esac
 #    '';
 #  };
 
