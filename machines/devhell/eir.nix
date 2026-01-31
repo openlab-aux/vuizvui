@@ -22,22 +22,27 @@
     };
 
     kernelModules = [ "tp_smapi" ];
+    kernelParams = [ "i915.enable_rc6=7" ];
     extraModulePackages = [ config.boot.kernelPackages.tp_smapi ];
   };
 
   hardware = {
     cpu.intel.updateMicrocode = true;
     enableRedistributableFirmware = true;
+    intelgpu.vaapiDriver = "intel-vaapi-driver";
+    bluetooth = {
+      enable = true;
+      powerOnBoot = false;
+    };
     trackpoint = {
       enable = true;
       emulateWheel = true;
     };
-    opengl = {
+    graphics = {
       enable = true;
       extraPackages = with pkgs; [
         libvdpau-va-gl
         libva-vdpau-driver
-        intel-vaapi-driver
       ];
     };
   };
@@ -46,10 +51,10 @@
     device = "/dev/disk/by-uuid/4788e218-db0f-4fd6-916e-e0c484906eb0";
     fsType = "btrfs";
     options = [
-      "autodefrag"
       "space_cache"
       "compress=zstd"
       "noatime"
+      "autodefrag"
     ];
   };
 
@@ -57,8 +62,6 @@
     device = "/dev/disk/by-uuid/BDBC-FC8B";
     fsType = "vfat";
   };
-
-  swapDevices = [ ];
 
   # FIXME Check if this is still necessary in the future
   systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
@@ -68,6 +71,7 @@
     matchConfig.Name = "virbr* vnet*";
     linkConfig.Unmanaged = true;
   };
+
   networking = {
     hostName = "eir";
     wireless.iwd.enable = true;
@@ -79,6 +83,10 @@
     };
   };
 
+  powerManagement = {
+    powertop.enable = true;
+    cpuFreqGovernor = "powersave";
+  };
   nix = {
     settings.max-jobs = lib.mkDefault 4;
   };
@@ -114,64 +122,27 @@
     };
   };
 
-  services.udev = {
-    extraRules = ''
-      SUBSYSTEM=="firmware", ACTION=="add", ATTR{loading}="-1"
-    '';
-  };
-
-  services.acpid = {
-    enable = true;
-    lidEventCommands = ''
-      LID="/proc/acpi/button/lid/LID/state"
-      state=`cat $LID | ${pkgs.gawk}/bin/awk '{print $2}'`
-      case "$state" in
-        *open*) ;;
-        *close*) systemctl suspend ;;
-        *) logger -t lid-handler "Failed to detect lid state ($state)" ;;
-      esac
-    '';
-  };
-
-  services.xserver = {
-    enable = true;
-    layout = "gb";
-    videoDrivers = [ "modesetting" ];
-
-    libinput = {
-      enable = true;
-      touchpad = {
-        disableWhileTyping = true;
-        middleEmulation = true;
-      };
-    };
-#    synaptics = {
-#      enable = true;
-#      twoFingerScroll = true;
-#      palmDetect = true;
-#    };
-
-    # XXX: Factor out and make DRY, because a lot of the stuff here is
-    # duplicated in the other machine configurations.
-    displayManager.sessionCommands = ''
-      ${pkgs.nitrogen}/bin/nitrogen --restore &
-      ${pkgs.rofi}/bin/rofi &
-      ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.conf" ''
-        Xft.dpi:                     96
-        Xft.antialias:               true
-        Xft.hinting:                 full
-        Xft.hintstyle:               hintslight
-        Xft.rgba:                    rgb
-        Xft.lcdfilter:               lcddefault
-        Xft.autohint:                1
-        Xcursor.theme:               Vanilla-DMZ-AA
-        Xcursor.size:                22
-        *.charClass:33:48,35:48,37:48,43:48,45-47:48,61:48,63:48,64:48,95:48,126:48,35:48,58:48
-      ''}"
-    '';
-  };
+#  services.udev = {
+#    extraRules = ''
+#      SUBSYSTEM=="firmware", ACTION=="add", ATTR{loading}="-1"
+#    '';
+#  };
+#
+#  services.acpid = {
+#    enable = true;
+#    lidEventCommands = ''
+#      LID="/proc/acpi/button/lid/LID/state"
+#      state=`cat $LID | ${pkgs.gawk}/bin/awk '{print $2}'`
+#      case "$state" in
+#        *open*) ;;
+#        *close*) systemctl suspend ;;
+#        *) logger -t lid-handler "Failed to detect lid state ($state)" ;;
+#      esac
+#    '';
+#  };
 
   services.tlp.enable = true;
+  services.illum.enable = true;
 
   #### Machine-specific packages configuration ####
 
@@ -180,11 +151,12 @@
   nixpkgs.config.mpv.vaapiSupport = true;
 
   programs = {
-    light.enable = true;
+    light.enable = false;
   };
 
   environment.systemPackages = with pkgs; [
     acpica-tools
+    aircrack-ng
     bluetui
     bluez
     cdrtools
@@ -193,11 +165,10 @@
     iw
     libva
     libva-vdpau-driver
-    libvdpau-va-gl
-    mesa-demos
     minicom
     pmutils
     vdpauinfo
-    xbindkeys
   ];
+
+  system.stateVersion = "24.05";
 }
