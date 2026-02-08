@@ -22,6 +22,8 @@ in {
         log-lines = 0;
         # allow only trusted users
         allowed-users = [ ];
+        # older Nixpkgs versions I need to evaluate use this
+        extra-deprecated-features = [ "url-literals" ];
       };
     };
 
