@@ -14,13 +14,12 @@ in {
 
     nix = {
       package = pkgs.lixPackageSets.latest.lix.override { withAWS = false; };
-      # waiting on https://github.com/tvlfyi/nix/pull/5
-      # package = pkgs.nix_2_3.override { withAWS = false; };
 
       settings = {
         sandbox = true;
         gc-keep-derivations = false;
         builders-use-substitutes = true;
+        log-lines = 0;
         # allow only trusted users
         allowed-users = [ ];
       };
