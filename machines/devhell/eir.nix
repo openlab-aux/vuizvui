@@ -21,7 +21,7 @@
       '';
     };
 
-    kernelModules = [ "tp_smapi" ];
+    kernelModules = [ "tp_smapi" "drivetemp" ];
     extraModulePackages = [ config.boot.kernelPackages.tp_smapi ];
   };
 
