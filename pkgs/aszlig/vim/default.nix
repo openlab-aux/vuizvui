@@ -423,6 +423,13 @@ let
       rev = "428e8698347f254d24b248af9f656194a80081e5";
       sha256 = "0vindr83v4q26a7jxfwk87vpl1kymsh6cclhvpkmb6cpq0iv3yii";
     };
+
+    wgsl = fetchFromGitHub {
+      owner = "DingDean";
+      repo = "wgsl.vim";
+      rev = "bb6516e0356e81cc10a885e63273ef1d63cc74b1";
+      hash = "sha256-2+slQRWbBLmMYOFfFvCV1BxS+0iUwCYEHKMEzJb1H1o";
+    };
   };
 
   generic = ''
