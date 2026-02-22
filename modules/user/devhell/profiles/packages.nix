@@ -81,6 +81,7 @@ in {
       bottom
       brave
       broot
+      caligula
       catgirl
       cbonsai
       ccrypt
