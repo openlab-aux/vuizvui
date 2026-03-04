@@ -253,7 +253,7 @@ in {
       sd
       shellcheck
       shellharden
-      signal-desktop-bin
+      signal-desktop
       silicon
       silver-searcher
       slurp
