@@ -129,10 +129,6 @@
 
   nixpkgs.config.mpv.vaapiSupport = true;
 
-  programs = {
-    light.enable = false;
-  };
-
   environment.systemPackages = with pkgs; [
     aircrack-ng
     bluez

@@ -139,10 +139,6 @@
 
   nixpkgs.config.mpv.vaapiSupport = true;
 
-  programs = {
-    light.enable = false;
-  };
-
   environment.systemPackages = with pkgs; [
     acpica-tools
     aircrack-ng
