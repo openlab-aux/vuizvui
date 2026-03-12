@@ -200,7 +200,7 @@ in {
       netrw
       nix-output-monitor
       nix-update
-      nixfmt-rfc-style
+      nixfmt
       nixpkgs-fmt
       nixpkgs-review
       nload
