@@ -13,7 +13,7 @@ pkgs.vim-full.overrideAttrs (drv: {
         lightline-vim
         limelight-vim
         minimap-vim
-        sleuth
+        vim-sleuth
         tabular
 #        vim-clap
         vim-illuminate
