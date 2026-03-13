@@ -78,7 +78,5 @@
     middleEmulation = false;
   };
 
-  programs.light.enable = true;
-
   nix.settings.max-jobs = 16;
 }
