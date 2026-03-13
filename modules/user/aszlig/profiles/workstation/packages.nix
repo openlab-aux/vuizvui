@@ -5,7 +5,6 @@ pkgs: with pkgs; [
   ascii
   aspellDicts.de
   aspellDicts.en
-  bc
   beets
   chromium
   dash
@@ -13,6 +12,7 @@ pkgs: with pkgs; [
   entr
   fd
   feh
+  fend
   ffmpeg
   figlet
   vuizvui.aszlig.firefox
