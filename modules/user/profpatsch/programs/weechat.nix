@@ -16,10 +16,24 @@ let
     getBins
     ;
 
+  weechat-matrix-patched = pkgs.weechatScripts.weechat-matrix.overridePythonAttrs (old: {
+    patches = (old.patches or []) ++ [
+      # Drop python-future dependency (incompatible with python3.13+)
+      (pkgs.fetchpatch {
+        url = "https://github.com/poljar/weechat-matrix/commit/61a8a0e7ca53fdb3297bfbdba780494998ad3a79.patch";
+        hash = "sha256-1MwgzpZt5wxFAk54ywzHU3jLjz3EFLMNpSjd6cFg1Lg=";
+        excludes = [ "pyproject.toml" "requirements.txt" ];
+      })
+    ];
+    propagatedBuildInputs = builtins.filter
+      (p: p.pname or "" != "future")
+      (old.propagatedBuildInputs or []);
+  });
+
   weechat-with-scripts = pkgs.weechat.override {
     configure = { availablePlugins, ... }: {
       scripts = [
-        pkgs.weechatScripts.weechat-matrix
+        weechat-matrix-patched
       ];
     };
   };

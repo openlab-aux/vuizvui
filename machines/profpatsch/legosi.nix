@@ -116,6 +116,8 @@ in {
 
     # };
 
+    environment.systemPackages = [ pkgs.git ];
+
     users.users = {
       root.openssh.authorizedKeys.keys = [ myKey ];
     };
@@ -172,6 +174,13 @@ in {
         '';
         locations."/" = {
           root = pkgs.vuizvui.profpatsch.websiteStatic;
+        };
+        locations."/essays/" = {
+          alias = "/var/www/essays/users/Profpatsch/essays/";
+          extraConfig = ''
+            default_type "text/html; charset=utf-8";
+            try_files $uri $uri.html =404;
+          '';
         };
         # gpg-wks-client --print-wkd-hash mail@profpatsch.de
         locations."/.well-known/openpgpkey/hu".root = pkgs.linkFarm "well-known-pgp-keys" [

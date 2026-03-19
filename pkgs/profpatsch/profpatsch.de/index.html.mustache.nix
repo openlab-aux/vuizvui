@@ -66,6 +66,11 @@
       <h1>Posts</h1>
       ${posts-html-snippet}
 
+      <h1>Essays</h1>
+      <ul>
+        <li><a href="/essays/ethical-use-of-common-resources">Ethical use of Common Resources</a></li>
+      </ul>
+
     </main>
   </body>
 </html>
