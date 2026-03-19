@@ -13,16 +13,16 @@
 let
   self = pkgs.buildGoModule {
     pname = "micro";
-    version = "2.0.14";
+    version = "2.0.15";
 
     src = pkgs.fetchFromGitHub {
       owner = "zyedidia";
       repo = "micro";
-      rev = "5b6eed51f8dff5a9fa00e581d4277e198231fedd";
-      hash = "sha256-gr2OGziWTnEWg3qpYldsI1n3uu6NVLZIAG488DT+fDc=";
+      rev = "v2.0.15";
+      hash = "sha256-4C6TtMU6PIYX7lO+o4GRVnIsKnYJxjAqPdoOyAwi7Gc=";
     };
 
-    vendorHash = "sha256-UF5q7YJN1l19JlwhPWSDnIDsNNI1kHI5vGXTa9aII1E=";
+    vendorHash = "sha256-Pn3C/Te47qXeqgB9UPynB8aPtnwnjrqq/ZE9bA7JRVs=";
 
     nativeBuildInputs = [ pkgs.installShellFiles ];
 
