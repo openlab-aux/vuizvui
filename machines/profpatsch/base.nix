@@ -67,6 +67,7 @@ in
       file              # file information
       htop              # top replacement
       ncdu              # disk size checker
+      net-tools         # netstat
       nmap              # stats about clients in the network
       man-pages          # system manpages (not included by default)
       mkpasswd          # UNIX password creator

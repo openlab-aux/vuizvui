@@ -165,7 +165,9 @@ function appendTalkies(append_to_element) {
           , link: "https://cohost.org/jkap/post/696031-empty" },
         { talk: "The agent is a point that shifts position"
           , link: "https://mastodon.xyz/@gutenberg_org@mastodon.social/113673662384391140" },
-        { talk: "unlearned helplessness" }
+        { talk: "unlearned helplessness" },
+        { talk: "This page is a proof that executes on every reader capable of understanding it"
+        , link: "https://poc.bcachefs.org/blog/hello.html" }
     ];
     var talkie = talkies[Math.floor(Math.random()*talkies.length)];
     var elem = null;

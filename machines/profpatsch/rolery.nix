@@ -342,6 +342,9 @@ in {
       programmingTools = [
         github-cli                   # official github cli
         gitu # magit-like standalone
+        television           # fuzzy finding as TUI
+        bat                  # file viewer, required for television
+        fd                   # fast search tool, required for television
 
         # TODO: move to user config
         direnv
@@ -354,7 +357,6 @@ in {
         # pkgs.vuizvui.profpatsch.watch-server # restart server on code change
         pkgs.vuizvui.profpatsch.utils-hs.until        # restart until cmd succeeds
         execline
-        pkgs.dhall
       ];
       documentation = [
         # mustache-spec NOT IN 16.09
@@ -376,7 +378,7 @@ in {
         ghc                  # powerful pocket calculator
         libreoffice
         dfu-util
-        television           # fuzzy finding as TUI
+        alsa-scarlett-gui
       ];
       userScripts = with pkgs.vuizvui.profpatsch;
         let
