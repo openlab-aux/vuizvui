@@ -31,11 +31,7 @@ let
 
   writeExeclineFns = callPackage ./execline/write-execline.nix {};
 
-  homeRepoSrc = pkgs.fetchgit {
-    url = "https://codeberg.org/Profpatsch/Profpatsch";
-    rev = "2659b58d5e52b80364feef89ded9aad65eed881b"; # 2026-03-18
-    sha256 = "sha256-mJ2nXJhpq0KWypaC0u9iLeikgX9VmE6pBEt4cPV0AhA=";
-  };
+  homeRepoSrc = import ./home-repo-src.nix;
 
   homeRepo = import ./home-repo.nix { inherit pkgs homeRepoSrc; };
 
@@ -96,14 +92,8 @@ in readTree.fix (self: let
     droopy = import ./special-packages/droopy.nix { inherit pkgs; };
     gitit = import ./special-packages/gitit.nix { inherit pkgs; };
 
-    # profpatsch.de returns a plain attrset, not a derivation, so readTree
-    # doesn't flatten it — re-export the relevant attrs here explicitly.
-    inherit (import ./profpatsch.de standaloneArgs)
-      websiteStatic
-      index-server
-      importas-if
-      concatenatedCss
-      ;
+    # TODO: move to kot/Profpatsch once el-exec/el-substitute are migrated there
+    inherit (import ./profpatsch.de standaloneArgs) importas-if;
   };
 
 in discovered // specialPackages // {

@@ -6,13 +6,6 @@ let
 
   hostname = "legosi";
 
-  gpgPublicKeyring = pkgs.runCommandLocal "keyring" {} ''
-    export GNUPGHOME=.
-    ${pkgs.gnupg}/bin/gpg --import ${../../pkgs/profpatsch/profpatsch.de/key.asc}
-    cp ./pubring.kbx $out
-  '';
-  gpgPublicKeyId = "4ACFD7592710266E18CEBB28C5CFD08B22247CDF";
-
   myKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNMQvmOfon956Z0ZVdp186YhPHtSBrXsBwaCt0JAbkf/U/P+4fG0OROA++fHDiFM4RrRHH6plsGY3W6L26mSsCM2LtlHJINFZtVILkI26MDEIKWEsfBatDW+XNAvkfYEahy16P5CBtTVNKEGsTcPD+VDistHseFNKiVlSLDCvJ0vMwOykHhq+rdJmjJ8tkUWC2bNqTIH26bU0UbhMAtJstWqaTUGnB0WVutKmkZbnylLMICAvnFoZLoMPmbvx8efgLYY2vD1pRd8Uwnq9MFV1EPbkJoinTf1XSo8VUo7WCjL79aYSIvHmXG+5qKB9ed2GWbBLolAoXkZ00E4WsVp9H philip@nyx";
   qwerkyKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM3ORvMbdHaJfgPgMhWTqgVrP1L7kkvuETQpzl0IjP2G tc@windoof";
 
@@ -20,16 +13,17 @@ let
   tailscaleAddress = "100.89.52.54";
 
   xandikosPort = 2345;
-  siteServerPort = 2346;
-  gititPort = 2347;
-  indexServerPort = 2348;
 in {
   imports = [
     ./base-server.nix
     "${modulesPath}/profiles/qemu-guest.nix"
+    "${import ../../pkgs/profpatsch/home-repo-src.nix}/users/Profpatsch/website"
   ];
 
   config = {
+    profpatsch.website.enable = true;
+    _module.args.depot = pkgs.vuizvui.profpatsch.homeRepo;
+
     vuizvui.modifyNixPath = false;
     nix = {
       nixPath = [
@@ -65,7 +59,7 @@ in {
         interfaces.${tailscaleInterface} = {
           allowedTCPPorts = [
             xandikosPort
-            gititPort
+            config.profpatsch.website.gititPort
           ];
         };
       };
@@ -147,7 +141,7 @@ in {
       enable = true;
       stateDirName = "gitit-blog";
       config = {
-        port = gititPort;
+        port = config.profpatsch.website.gititPort;
         # disable-registration = "no";
       };
     };
@@ -159,49 +153,6 @@ in {
       enable = true;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
-      virtualHosts.${"profpatsch.de"} = {
-        forceSSL = true;
-        enableACME = true;
-        locations."/index.html" = {
-          proxyPass = "http://localhost:${toString indexServerPort}";
-        };
-        # this is a horrible workaround for having a proxy-pass for the index.html
-        # while still using the static files from the site server
-        extraConfig = ''
-          location = / {
-            try_files $uri $uri/ /index.html;
-          }
-        '';
-        locations."/" = {
-          root = pkgs.vuizvui.profpatsch.websiteStatic;
-        };
-        locations."/essays/" = {
-          alias = "/var/www/essays/users/Profpatsch/essays/";
-          extraConfig = ''
-            default_type "text/html; charset=utf-8";
-            try_files $uri $uri.html =404;
-          '';
-        };
-        # gpg-wks-client --print-wkd-hash mail@profpatsch.de
-        locations."/.well-known/openpgpkey/hu".root = pkgs.linkFarm "well-known-pgp-keys" [
-          { name = ".well-known/openpgpkey/hu/dizb37aqa5h4skgu7jf1xjr4q71w4paq";
-            path = ./../../pkgs/profpatsch/profpatsch.de/key.asc;
-          }
-        ];
-        # pass the rest to the site server (TODO: make static!)
-        locations."/notes" = {
-          proxyPass = "http://localhost:${toString gititPort}";
-        };
-        locations."/projects" = {
-          proxyPass = "http://localhost:${toString siteServerPort}";
-        };
-        locations."/posts" = {
-          proxyPass = "http://localhost:${toString siteServerPort}";
-        };
-        locations."/mlp/" = {
-          alias = "/sync/www/mlp/";
-        };
-      };
       virtualHosts.${"decentsoftwa.re"} = {
         forceSSL = true;
         enableACME = true;
@@ -293,36 +244,7 @@ in {
       };
     };
 
-    systemd.services.index-server = {
-      description = "index server for my website";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
-      serviceConfig = {
-        ExecStart = pkgs.vuizvui.profpatsch.index-server {
-          port = toString indexServerPort;
-        };
-        Restart = "always";
-        RestartSec = "1s";
-        DynamicUser = true;
-      };
-    };
 
-    systemd.services.notes-server = {
-      description   = "notes for my website";
-      wantedBy      = [ "multi-user.target" ];
-      after         = [ "network.target" ];
-      serviceConfig = {
-        ExecStart = pkgs.vuizvui.profpatsch.homeRepo.users.Profpatsch.blog.site-server {
-          port = toString siteServerPort;
-          # TODO: css has to be adjusted for articles
-          # cssFile = pkgs.vuizvui.profpatsch.concatenatedCss;
-          cssFile = null;
-        };
-        Restart = "always";
-        RestartSec = "1s";
-        DynamicUser = true;
-      };
-    };
 
     services.xandikos = {
       enable = true;
