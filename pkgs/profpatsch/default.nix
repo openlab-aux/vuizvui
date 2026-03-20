@@ -39,8 +39,6 @@ let
     inherit pkgs getBins; inherit (runExeclineFns) runExeclineLocal; inherit (nixperiments) drvSeqL;
   };
 
-  sandboxFns = import ./sandbox.nix { inherit pkgs; inherit (writeExeclineFns) writeExecline; };
-
   # All utility functions and libraries that packages might need
   utilityArgs = {
     inherit stdenv lib pkgs sternenseemann lazy-packages homeRepo;
@@ -49,7 +47,6 @@ let
     inherit (runExeclineFns) runExecline runExeclineLocal runExeclineLocalNoSeqL;
     inherit (writeExeclineFns) writeExecline writeExeclineBin;
     inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
-    inherit (sandboxFns) sandbox runInEmptyEnv;
     inherit haskellPackagesProfpatsch testing;
     inherit (sternenseemann) temp;  # For nman
   };
@@ -70,7 +67,6 @@ in readTree.fix (self: let
 
     # .nix files that aren't auto-discovered because default.nix exists in root
     rust-deps = import ./rust-deps.nix { inherit (pkgs) buildRustCrate; };
-    importPurescript = import ./importPurescript.nix { inherit pkgs exactSource; inherit (pkgs) haskellPackages; };
 
     # Standalone package files (import with utilityArgs + pkgs + discovered packages)
     standaloneArgs = utilityArgs // pkgs // {
