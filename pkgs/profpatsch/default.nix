@@ -77,16 +77,16 @@ in readTree.fix (self: let
       runblock = discovered.execline.runblock;
       profpatsch = self;
     };
-    read-qr-code = import ./read-qr-code.nix standaloneArgs;
-    read-qr-code-from-camera = import ./read-qr-code-from-camera.nix standaloneArgs;
-    xrandr = import ./xrandr.nix standaloneArgs;
     deploy = (import ./deploy.nix standaloneArgs).deploy;
-    nix-tools-set = import ./nix-tools.nix standaloneArgs;
-    nix-run = nix-tools-set.nix-run;
-    nix-run-bin = nix-tools-set.nix-run-bin;
-    nix-eval = nix-tools-set.nix-eval;
     blight = import ./blight.nix standaloneArgs;
-    e = (import ./execline/e.nix (standaloneArgs // { inherit (writeExeclineFns) writeExecline; })).e;
+
+    # Re-exports from homeRepo (migrated from vuizvui)
+    inherit (homeRepo.users.Profpatsch) read-qr-code read-qr-code-from-camera e sandbox;
+    xdg-open = homeRepo.users.Profpatsch.xdg-open;
+    xrandr = homeRepo.users.Profpatsch.xrandr;
+    nix-run = homeRepo.users.Profpatsch.nix-tools.nix-run;
+    nix-run-bin = homeRepo.users.Profpatsch.nix-tools.nix-run-bin;
+    nix-eval = homeRepo.users.Profpatsch.nix-tools.nix-eval;
 
     # Packages that need complex setup
     droopy = import ./special-packages/droopy.nix { inherit pkgs; };
