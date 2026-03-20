@@ -92,8 +92,6 @@ in readTree.fix (self: let
     droopy = import ./special-packages/droopy.nix { inherit pkgs; };
     gitit = import ./special-packages/gitit.nix { inherit pkgs; };
 
-    # TODO: move to kot/Profpatsch once el-exec/el-substitute are migrated there
-    inherit (import ./profpatsch.de standaloneArgs) importas-if;
   };
 
 in discovered // specialPackages // {

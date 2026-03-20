@@ -3,5 +3,6 @@
 # Update rev/narHash whenever the homeRepo pin is bumped.
 builtins.fetchGit {
   url = "https://codeberg.org/Profpatsch/Profpatsch.git";
-  rev = "27597cc6b49e69e6186c64fcb4d231c4c5402cc3";
+  allRefs = true;
+  rev = "cc44ab3ab7974e6665362828ce9f78a443f0b0fa";
 }
