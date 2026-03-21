@@ -18,10 +18,15 @@ in {
     ./base-server.nix
     "${modulesPath}/profiles/qemu-guest.nix"
     "${import ../../pkgs/profpatsch/home-repo-src.nix}/users/Profpatsch/website"
+    "${import ../../pkgs/profpatsch/home-repo-src.nix}/users/Profpatsch/softwaregardening"
   ];
 
   config = {
     profpatsch.website.enable = true;
+    profpatsch.softwaregardening.enable = true;
+    profpatsch.softwaregardening.boosterBotAdmins = [
+      "https://mastodon.xyz/users/Profpatsch"
+    ];
     _module.args.depot = pkgs.vuizvui.profpatsch.homeRepo;
 
     vuizvui.modifyNixPath = false;
