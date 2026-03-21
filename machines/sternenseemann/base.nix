@@ -87,7 +87,7 @@ in {
       dev.enable = true;
       man = {
         enable = true;
-        generateCaches = true;
+        cache.enable = true;
         man-db.enable = false;
         mandoc = {
           enable = true;
