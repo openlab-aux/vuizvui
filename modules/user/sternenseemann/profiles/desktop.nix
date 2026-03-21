@@ -164,15 +164,23 @@ in
    # for trash:// support in pcmanfm
    services.gvfs.enable = true;
 
+   # See <https://github.com/niri-wm/niri/blob/main/resources/niri-portals.conf>
    xdg.portal = {
      enable = true;
      extraPortals = with pkgs; [
        xdg-desktop-portal-gtk
        xdg-desktop-portal-gnome
-       # keyring is added via its module
      ];
-     # niri's screensharing depends on the GNOME portal
-     config.common.default = "gnome";
+     config.common = {
+       # niri's screensharing depends on the GNOME portal
+       default = [
+         "gnome"
+         "gtk"
+       ];
+       # Secret is added via the gnome-keyring module
+       "org.freedesktop.impl.portal.Access" = "gtk";
+       "org.freedesktop.impl.portal.Notification" = "gtk";
+     };
    };
 
    systemd.user = {
@@ -330,7 +338,7 @@ in
          Mod+F { maximize-column; }
          Mod+Shift+F { fullscreen-window; }
 
-         Mod+Mod5+t { set-column-width "-5%"; } // Mod+t
+         Mod+Mod5+t { set-column-width "-5%"; } // Mod+-
          Mod+Mod5+b { set-column-width "+5%"; } // Mod++
          Mod+Mod5+Shift+t { set-window-height "-5%"; }
          Mod+Mod5+Shift+b { set-window-height "+5%"; }
