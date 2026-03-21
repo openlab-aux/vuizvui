@@ -180,6 +180,7 @@ in
        # Secret is added via the gnome-keyring module
        "org.freedesktop.impl.portal.Access" = "gtk";
        "org.freedesktop.impl.portal.Notification" = "gtk";
+       "org.freedesktop.impl.portal.FileChooser" = "gtk";
      };
    };
 
