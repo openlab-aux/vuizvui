@@ -64,7 +64,6 @@ in {
         interfaces.${tailscaleInterface} = {
           allowedTCPPorts = [
             xandikosPort
-            config.profpatsch.website.gititPort
           ];
         };
       };
@@ -140,15 +139,6 @@ in {
 
     vuizvui.user.profpatsch.services.bitlbee = {
        enable = true;
-    };
-
-    vuizvui.user.profpatsch.services.gitit = {
-      enable = true;
-      stateDirName = "gitit-blog";
-      config = {
-        port = config.profpatsch.website.gititPort;
-        # disable-registration = "no";
-      };
     };
 
     security.acme.acceptTerms = true;
