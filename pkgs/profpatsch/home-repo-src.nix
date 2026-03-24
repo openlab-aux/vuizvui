@@ -4,5 +4,5 @@
 builtins.fetchGit {
   url = "https://codeberg.org/Profpatsch/Profpatsch.git";
   allRefs = true;
-  rev = "63de9d5aa45b0a1ed1ea1a12b684e223496c414a";
+  rev = "699607c1215fdd72a2de51cbcf0ff57cf6cc3fba";
 }
