@@ -8,7 +8,6 @@ pkgs.vim-full.overrideAttrs (drv: {
         awesome-vim-colorschemes
         delimitMate
         goyo-vim
-        i3config-vim
         indentLine
         lightline-vim
         limelight-vim
@@ -26,7 +25,6 @@ pkgs.vim-full.overrideAttrs (drv: {
         vim-hexokinase
         vim-shellcheck
         markdown-preview-nvim
-        swayconfig-vim
       ];
       opt = [ vimtex ];
     };
