@@ -88,7 +88,6 @@ in {
       chromaprint
       cifs-utils
       cmatrix
-      codeberg-cli
       colmena
       cryptsetup
       csvlens
@@ -124,6 +123,7 @@ in {
       filen-cli
       firefox
       flac
+      forgejo-cli
       fortune
       fzf
       gammastep
