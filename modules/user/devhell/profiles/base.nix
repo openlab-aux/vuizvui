@@ -78,10 +78,6 @@ in {
       liboping.enable = true;
       htop.enable = true;
       nh.enable = true;
-      vscode = {
-        enable = true;
-        package = pkgs.vscodium.fhs;
-      };
       steam = {
         enable = true;
         fontPackages = with pkgs; lib.mkForce [ dejavu_fonts freefont_ttf gyre-fonts liberation_ttf
