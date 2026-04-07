@@ -4,7 +4,7 @@ with lib;
 
 let
   mappingType = (types.addCheck types.str (val: let
-    pattern = "[ab][0-9]+|h[0-9]+\.[0-9]+";
+    pattern = "[ab][0-9]+|h[0-9]+\\.[0-9]+";
   in builtins.match pattern val == [])) // {
     name = "aI (axis), bI (button) or hI.M (hat) where I=index, M=mask";
   };
