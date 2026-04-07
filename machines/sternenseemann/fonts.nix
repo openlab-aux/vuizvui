@@ -2,7 +2,7 @@
 
 let
   google-fonts-subset = fonts:
-    pkgs.runCommandNoCC "google-fonts-subset-${pkgs.google-fonts.version}" { } ''
+    pkgs.runCommand "google-fonts-subset-${pkgs.google-fonts.version}" { } ''
       # google-fonts in nixpkgs is all TTF at the moment
       source="${pkgs.google-fonts}/share/fonts/truetype"
       target="$out/share/fonts/truetype"

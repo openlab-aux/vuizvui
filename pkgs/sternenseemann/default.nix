@@ -8,7 +8,7 @@ let
     ocamlPackages
     python3Packages
     writers
-    runCommandNoCC
+    runCommand
     makeWrapper
     ;
 
@@ -93,7 +93,7 @@ let
       binPath = lib.makeBinPath runtimeDependencies;
     in
 
-    runCommandNoCC name {
+    runCommand name {
       buildInputs = [ interpreter ];
       nativeBuildInputs = [ makeWrapper ];
       meta.mainProgram = name;

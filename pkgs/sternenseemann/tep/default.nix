@@ -1,4 +1,4 @@
-{ writeBashBin, writeText, packageScriptFile, runCommandNoCC
+{ writeBashBin, writeText, packageScriptFile, runCommand
 , lib
 , gawk
 , bemenu
@@ -18,7 +18,7 @@ let
     · dot time character
   '';
 
-  emojis = runCommandNoCC "emojis.txt" {} ''
+  emojis = runCommand "emojis.txt" {} ''
     ${lib.getExe tep-data} < ${emojiTestTxt} > tep-data.txt
     cat ${static} tep-data.txt > "$out"
   '';
