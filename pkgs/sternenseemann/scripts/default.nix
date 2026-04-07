@@ -1,5 +1,5 @@
-{ lib, writeBashBin, writeText, runCommandNoCC, getBins, packageScriptFile, fetchurl
-, bash, ruby, cbqn, perl
+{ lib, writeBashBin, writeText, runCommand, getBins, packageScriptFile, fetchurl
+, bash, ruby, cbqn, perl, execline
 , makeWrapper
 , borgbackup, cryptsetup
 , ghostscript
@@ -7,6 +7,7 @@
 , openssl
 , mandoc
 , msr-tools
+, less
 , sternenseemann
 }:
 
@@ -60,6 +61,7 @@ in
     self.nix-instantiate-to
     self.nix-build-on
     self.uni
+    self.dumbpager
   ];
 
   borg-wrapper = writeBashBin "borg-wrapper" ''
@@ -324,5 +326,15 @@ in
     file = ./focus.sh;
     isShell = true;
     interpreter = bash;
+  };
+
+  dumbpager = packageScriptFile {
+    name = "dumbpager";
+    # also use absolute paths for col(1) and cat(1)?
+    file = runCommand "dumbpager.el" { } ''
+      substitute  ${./dumbpager.el} "$out" \
+        --replace-fail "less -R" "${lib.getExe' less "less"} -R"
+    '';
+    interpreter = execline;
   };
 }

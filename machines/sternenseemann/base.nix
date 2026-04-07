@@ -2,11 +2,9 @@
 
 let
 
-  inherit (pkgs.vuizvui.profpatsch.utils)
-    getBins
+  inherit (pkgs.vuizvui.sternenseemann.scripts)
+    dumbpager
     ;
-
-  bins = getBins pkgs.less [ "less" ];
 
 in {
   config = {
@@ -147,10 +145,8 @@ in {
     };
 
     environment.variables = {
-      PAGER = "${bins.less} -R";
-      # git-diff without the extra options passed to less
-      GIT_PAGER = bins.less;
-      LESS = "-R";
+      PAGER = lib.getExe dumbpager;
+      GIT_PAGER = lib.getExe dumbpager;
       RIPGREP_CONFIG_PATH = pkgs.writeText "ripgreprc" ''
         --max-columns=150
         --max-columns-preview
