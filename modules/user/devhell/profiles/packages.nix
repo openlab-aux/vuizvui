@@ -79,7 +79,6 @@ in {
       binutils
       bmon
       bottom
-      brave
       broot
       caligula
       catgirl
@@ -170,7 +169,6 @@ in {
       lemmeknow
       lftp
       libarchive
-      libreoffice
       lm_sensors
       lsd
       lsof
@@ -229,8 +227,6 @@ in {
       powertop
       procs
       profanity
-      pulseaudio
-      pulsemixer
       pv
       pxz
       qemu
@@ -284,7 +280,6 @@ in {
       treefmt
       tty-clock
       tuifeed
-      tut
       ugrep
       units
       unrar
