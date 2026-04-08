@@ -348,6 +348,12 @@ in
          Ctrl+Print { screenshot-screen; }
          Alt+Print { screenshot-window; }
      }
+
+     window-rule {
+       // TODO(sterni): ma should always have app-id = Ma, but doesn't yet
+       match title=r#"\+Errors$"#
+       open-focused false
+     }
    '';
 
    vuizvui.user.sternenseemann.services.mako = {
