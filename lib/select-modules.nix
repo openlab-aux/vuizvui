@@ -8,7 +8,11 @@
 prefixes:
 
 let
-  lib = import <nixpkgs/lib>;
+  hasPrefix = p: s:
+    builtins.substring 0 (builtins.stringLength p) s == p;
+  removePrefix = p: s:
+    if !(hasPrefix p s) then s else builtins.substring (builtins.stringLength p) (-1) s;
+
   allModules = import ../modules/module-list.nix;
 
   # Get the absolute path to the modules directory
@@ -21,12 +25,12 @@ let
       moduleAbsPath = toString modulePath;
       # Extract the relative part after the modules directory
       # e.g., "/path/to/modules/core/common.nix" -> "core/common.nix"
-      relPath = lib.removePrefix (modulesDir + "/") moduleAbsPath;
+      relPath = removePrefix (modulesDir + "/") moduleAbsPath;
     in
-      lib.any (prefix:
+      builtins.any (prefix:
         # Remove leading ./ from prefix for comparison
-        let cleanPrefix = lib.removePrefix "./" prefix;
-        in lib.hasPrefix cleanPrefix relPath
+        let cleanPrefix = removePrefix "./" prefix;
+        in hasPrefix cleanPrefix relPath
       ) prefixes;
 
 in
