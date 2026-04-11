@@ -40,7 +40,7 @@ let
     };
 
     mkIso = isoModule: extraConfig: let
-      wrapIso = { config, pkgs, lib, ... }@attrs: let
+      wrapIso = { config, pkgs, lib, utils, ... }@attrs: let
         isoEval = import "${nixpkgs}/nixos/modules/${isoModule}" attrs;
         isoEvalcfg = isoEval.config or {};
         bootcfg = isoEvalcfg.boot or {};
