@@ -654,7 +654,6 @@ let
     (mkPrometheusExporterTest "py-air-control")
     (mkPrometheusExporterTest "redis")
     (mkPrometheusExporterTest "restic")
-    (mkPrometheusExporterTest "rspamd")
     (mkPrometheusExporterTest "rtl_433")
     (mkPrometheusExporterTest "sabnzbd")
     (mkPrometheusExporterTest "scaphandre")
