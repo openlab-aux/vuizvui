@@ -16,9 +16,16 @@
     initrd = {
       availableKernelModules = [ "i915" "ehci_pci" "ahci" "usb_storage" ];
       kernelModules = [ "fuse" ];
-      postDeviceCommands = ''
-        echo none > /sys/block/sda/queue/scheduler
-      '';
+      systemd = {
+        enable = true;
+        services.set-scheduler = {
+          wantedBy = [ "initrd.target" ];
+          serviceConfig.Type = "oneshot";
+          script = ''
+            echo none > /sys/block/sda/queue/scheduler
+          '';
+        };
+      };
     };
 
     kernelModules = [ "tp_smapi" "drivetemp" ];
