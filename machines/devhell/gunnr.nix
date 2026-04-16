@@ -24,10 +24,17 @@
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
       kernelModules = [ "fuse" "amdgpu" ];
-      postDeviceCommands = ''
-        echo none > /sys/block/sda/queue/scheduler
-        echo none > /sys/block/sdb/queue/scheduler
-      '';
+      systemd = {
+        enable = true;
+        services.set-scheduler = {
+          wantedBy = [ "initrd.target" ];
+          serviceConfig.Type = "oneshot";
+          script = ''
+            echo none > /sys/block/sda/queue/scheduler
+            echo none > /sys/block/sdb/queue/scheduler
+          '';
+        };
+      };
     };
 
     kernelParams = [ "pcie_aspm=off" ];
