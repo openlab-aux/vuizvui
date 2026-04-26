@@ -79,7 +79,7 @@ in {
     programs.command-not-found = {
       # NixOS 25.11 disables command-not-found by default because it doesn't work
       # with flake based systems. This doesn't affect vuizvui.
-      enable = lib.mkDefault true;
+      enable = lib.mkOverride 990 true;
       # correct path used by command-not-found
       dbPath = lib.mkDefault "${channelPath}/nixpkgs/programs.sqlite";
     };
