@@ -32,7 +32,6 @@ let
 
     aszlig = callPackageScope ./aszlig;
     devhell = callPackageScope ./devhell;
-    openlab = callPackageScope ./openlab;
     profpatsch = callPackageScope ./profpatsch;
     sternenseemann = callPackageScope ./sternenseemann;
 

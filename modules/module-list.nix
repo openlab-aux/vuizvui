@@ -31,10 +31,6 @@
   ./user/devhell/profiles/base.nix
   ./user/devhell/profiles/packages.nix
   ./user/devhell/profiles/services.nix
-  ./user/openlab/base.nix
-  ./user/openlab/labtops.nix
-  ./user/openlab/speedtest.nix
-  ./user/openlab/stackenblocken.nix
   ./user/sternenseemann/services/sway.nix
   ./user/sternenseemann/services/mako
   ./user/sternenseemann/profiles/desktop.nix
