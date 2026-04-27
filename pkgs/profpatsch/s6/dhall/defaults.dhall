@@ -1,1 +1,0 @@
-{ ServiceDirectory = ./ServiceDirectory/default.dhall }

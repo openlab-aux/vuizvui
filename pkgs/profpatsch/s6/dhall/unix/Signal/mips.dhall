@@ -1,1 +1,0 @@
-./common/mips.dhall ⫽ ./misc/mips.dhall

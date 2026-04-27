@@ -1,1 +1,0 @@
-{ SIGIOT : Natural, SIGIO : Natural, SIGPWR : Natural, SIGWINCH : Natural }
