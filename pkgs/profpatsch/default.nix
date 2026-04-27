@@ -31,17 +31,13 @@ let
 
   writeExeclineFns = callPackage ./execline/write-execline.nix {};
 
-  homeRepoSrc = import ./home-repo-src.nix;
-
-  homeRepo = import ./home-repo.nix { inherit pkgs homeRepoSrc; };
-
   writeRust = import ./write-rust.nix {
     inherit pkgs getBins; inherit (runExeclineFns) runExeclineLocal; inherit (nixperiments) drvSeqL;
   };
 
   # All utility functions and libraries that packages might need
   utilityArgs = {
-    inherit stdenv lib pkgs sternenseemann lazy-packages homeRepo;
+    inherit stdenv lib pkgs sternenseemann lazy-packages;
     inherit exactSource;
     inherit (nixperiments) match script drvSeq drvSeqL withTests filterSourceGitignoreWith readGitignoreFile;
     inherit (runExeclineFns) runExecline runExeclineLocal runExeclineLocalNoSeqL;
@@ -60,39 +56,9 @@ in readTree.fix (self: let
     };
   };
 
-  # Additional packages that need special handling (not auto-discovered)
-  specialPackages = rec {
-    # Re-exports from homeRepo
-    inherit (homeRepo.users.Profpatsch) lyric alacritty;
-
-    # .nix files that aren't auto-discovered because default.nix exists in root
-    rust-deps = import ./rust-deps.nix { inherit (pkgs) buildRustCrate; };
-
-    # Standalone package files (import with utilityArgs + pkgs + discovered packages)
-    standaloneArgs = utilityArgs // pkgs // {
-      runblock = discovered.execline.runblock;
-      profpatsch = self;
-    };
-    deploy = (import ./deploy.nix standaloneArgs).deploy;
-    blight = import ./blight.nix standaloneArgs;
-
-    # Re-exports from homeRepo (migrated from vuizvui)
-    inherit (homeRepo.users.Profpatsch) read-qr-code read-qr-code-from-camera e sandbox;
-    xdg-open = homeRepo.users.Profpatsch.xdg-open;
-    xrandr = homeRepo.users.Profpatsch.xrandr;
-    nix-run = homeRepo.users.Profpatsch.nix-tools.nix-run;
-    nix-run-bin = homeRepo.users.Profpatsch.nix-tools.nix-run-bin;
-    nix-eval = homeRepo.users.Profpatsch.nix-tools.nix-eval;
-
-    # Packages that need complex setup
-    droopy = import ./special-packages/droopy.nix { inherit pkgs; };
-    gitit = import ./special-packages/gitit.nix { inherit pkgs; };
-
-  };
-
-in discovered // specialPackages // {
-  # Re-export for backward compatibility (used by machine configs and other packages)
-  inherit homeRepo getBins;
+in discovered // {
+  # Re-export for use by other packages
+  inherit getBins;
   inherit (writeExeclineFns) writeExecline writeExeclineBin;
   inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
 })

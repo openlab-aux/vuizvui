@@ -35,14 +35,6 @@
   ./user/openlab/labtops.nix
   ./user/openlab/speedtest.nix
   ./user/openlab/stackenblocken.nix
-  ./user/profpatsch/programs/scanning.nix
-  ./user/profpatsch/programs/weechat.nix
-  ./user/profpatsch/hardware/external-monitor-control.nix
-  ./user/profpatsch/services/bitlbee.nix
-  ./user/profpatsch/services/gonic.nix
-  ./user/profpatsch/services/dunst.nix
-  ./user/profpatsch/services/xmonad.nix
-  ./user/profpatsch/services/gitit.nix
   ./user/sternenseemann/services/sway.nix
   ./user/sternenseemann/services/mako
   ./user/sternenseemann/profiles/desktop.nix
