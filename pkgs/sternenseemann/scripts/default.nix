@@ -178,7 +178,7 @@ in
   '';
 
   lowview = writeBashBin "lowview" ''
-    lowdown -Tterm $@ | less -R
+    lowdown -Tterm $@ | $PAGER
   '';
 
   pdfcombine = writeBashBin "pdfcombine" ''
