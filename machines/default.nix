@@ -1,6 +1,5 @@
 with import ../lib;
 
-in
 {
   aszlig = {
     dnyarri   = callMachine ./aszlig/dnyarri.nix {};
