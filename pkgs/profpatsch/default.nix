@@ -20,12 +20,6 @@ let
     sha256 = "1if9szjj1g1l5n31pmbiyp5f3llwl6xlqxklc6g2xf4rq59d2d6w";
   }) { nixpkgs = pkgs; };
 
-  runExeclineFns = import ./execline/runExeclineFns.nix {
-    inherit stdenv lib pkgs getBins;
-  };
-
-  writeExeclineFns = callPackage ./execline/write-execline.nix {};
-
   writeRust = import ./write-rust.nix {
     inherit pkgs; inherit (nixperiments) drvSeqL;
   };
@@ -35,8 +29,6 @@ let
     inherit stdenv lib pkgs sternenseemann lazy-packages;
     inherit exactSource;
     inherit (nixperiments) match script drvSeq drvSeqL withTests filterSourceGitignoreWith readGitignoreFile;
-    inherit (runExeclineFns) runExecline runExeclineLocal runExeclineLocalNoSeqL;
-    inherit (writeExeclineFns) writeExecline writeExeclineBin;
     inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
     inherit haskellPackagesProfpatsch;
     inherit (sternenseemann) temp;  # For nman
@@ -54,6 +46,5 @@ in readTree.fix (self: let
 in discovered // {
   # Re-export for use by other packages
   inherit getBins;
-  inherit (writeExeclineFns) writeExecline writeExeclineBin;
   inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
 })
