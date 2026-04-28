@@ -5,8 +5,6 @@ let
 
   readTree = import ../../lib/readTree {};
 
-  haskellPackagesProfpatsch = import ./haskell-overlay.nix { inherit pkgs; };
-
   # Manual imports of utilities for use within default.nix itself
   # (These are also auto-discovered by readTree for use by other packages)
   getBins = import ./utils/getBins.nix { inherit lib; };
@@ -30,7 +28,6 @@ let
     inherit exactSource;
     inherit (nixperiments) match script drvSeq drvSeqL withTests filterSourceGitignoreWith readGitignoreFile;
     inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
-    inherit haskellPackagesProfpatsch;
     inherit (sternenseemann) temp;  # For nman
   };
 
