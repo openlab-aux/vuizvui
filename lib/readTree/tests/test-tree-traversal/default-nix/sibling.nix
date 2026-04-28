@@ -1,1 +1,0 @@
-"I’m left alone"
