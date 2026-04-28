@@ -21,10 +21,10 @@
     # right outputs first and is as lazy as possible
     # (any other outputs need network to be realised).
     system.extraDependencies = [
-      pkgs.lowdown.man
-      pkgs.man-pages.out
-      pkgs.libunwind.devman
-      pkgs.w3m.out
+      (lib.getMan pkgs.lowdown)
+      (lib.getMan pkgs.man-pages)
+      (lib.getOutput "devman" pkgs.libunwind)
+      (lib.getMan pkgs.w3m)
     ];
 
     environment.variables = {
