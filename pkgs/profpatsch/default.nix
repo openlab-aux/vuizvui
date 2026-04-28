@@ -27,7 +27,7 @@ let
   writeExeclineFns = callPackage ./execline/write-execline.nix {};
 
   writeRust = import ./write-rust.nix {
-    inherit pkgs getBins; inherit (runExeclineFns) runExeclineLocal; inherit (nixperiments) drvSeqL;
+    inherit pkgs; inherit (nixperiments) drvSeqL;
   };
 
   # All utility functions and libraries that packages might need
