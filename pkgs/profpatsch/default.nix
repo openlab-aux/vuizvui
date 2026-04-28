@@ -3,13 +3,7 @@
 let
   inherit (pkgs) callPackage;
 
-  readTree = import ../../lib/readTree {};
-
-  # Manual imports of utilities for use within default.nix itself
-  # (These are also auto-discovered by readTree for use by other packages)
-  getBins = import ./utils/getBins.nix { inherit lib; };
-
-  exactSource = import ./exact-source.nix;
+  getBins = import ./getBins.nix { inherit lib; };
 
   # various nix utils and fun experiments
   nixperiments = import (pkgs.fetchFromGitHub {
@@ -22,26 +16,15 @@ let
     inherit pkgs; inherit (nixperiments) drvSeqL;
   };
 
-  # All utility functions and libraries that packages might need
-  utilityArgs = {
-    inherit stdenv lib pkgs sternenseemann lazy-packages;
-    inherit exactSource;
-    inherit (nixperiments) match script drvSeq drvSeqL withTests filterSourceGitignoreWith readGitignoreFile;
-    inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
-    inherit (sternenseemann) temp;  # For nman
+  nman = import ./nman {
+    inherit lib;
+    inherit (sternenseemann) temp;
+    inherit (writeRust) writeRustSimpleBin;
   };
+in
 
-in readTree.fix (self: let
-  # Discover all packages using readTree
-  discovered = readTree {
-    path = ./.;
-    args = utilityArgs // {
-      profpatsch = self;
-    };
-  };
-
-in discovered // {
+{
   # Re-export for use by other packages
-  inherit getBins;
+  inherit getBins nman;
   inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
-})
+}
