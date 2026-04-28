@@ -20,13 +20,8 @@ let
     sha256 = "1if9szjj1g1l5n31pmbiyp5f3llwl6xlqxklc6g2xf4rq59d2d6w";
   }) { nixpkgs = pkgs; };
 
-  testing = import ./testing {
-    inherit lib; inherit (runExeclineFns) runExecline; inherit (pkgs) runCommandLocal;
-    bin = getBins pkgs.s6-portable-utils [ "s6-touch" "s6-echo" ];
-  };
-
   runExeclineFns = import ./execline/runExeclineFns.nix {
-    inherit stdenv lib pkgs getBins testing;
+    inherit stdenv lib pkgs getBins;
   };
 
   writeExeclineFns = callPackage ./execline/write-execline.nix {};
@@ -43,7 +38,7 @@ let
     inherit (runExeclineFns) runExecline runExeclineLocal runExeclineLocalNoSeqL;
     inherit (writeExeclineFns) writeExecline writeExeclineBin;
     inherit (writeRust) writeRustSimple writeRustSimpleBin writeRustSimpleLib;
-    inherit haskellPackagesProfpatsch testing;
+    inherit haskellPackagesProfpatsch;
     inherit (sternenseemann) temp;  # For nman
   };
 
