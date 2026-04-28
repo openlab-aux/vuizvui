@@ -1,4 +1,4 @@
-{ stdenv, lib, pkgs, getBins, testing }:
+{ stdenv, lib, pkgs, getBins, drvSeqL }:
 
 # todo: factor out calling tests
 let
@@ -19,7 +19,6 @@ let
     # because it is tested by the tests (well, it does
     # work, but then you have to run the tests every time)
     runExecline = it;
-    inherit (testing) drvSeqL;
     inherit (pkgs) coreutils;
     inherit stdenv;
     bin = (getBins pkgs.execline [
@@ -34,7 +33,7 @@ let
 in {
   runExecline = it;
   runExeclineLocal = name: args: execline:
-    testing.drvSeqL tests (itLocal name args execline);
+    drvSeqL tests (itLocal name args execline);
 
   # This is just a stupid workaround to prevent nix restricted mode
   # from stumbling over the symlink in the derivation output.
