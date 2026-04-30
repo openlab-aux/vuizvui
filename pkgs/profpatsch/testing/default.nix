@@ -1,4 +1,4 @@
-{ runCommand, lib }:
+{ runCommandLocal, lib }:
 
 let
 
@@ -14,13 +14,11 @@ let
   drvSeqL = drvDeps: drvOut: let
     drvOutOutputs = drvOut.outputs or ["out"];
   in
-    runCommand drvOut.name {
+    runCommandLocal drvOut.name {
       # we inherit all attributes in order to replicate
       # the original derivation as much as possible
       outputs = drvOutOutputs;
       passthru = drvOut.drvAttrs;
-      preferLocalBuild = true;
-      allowSubstitutes = false;
       # depend on drvDeps (by putting it in builder context)
       inherit drvDeps;
     }
@@ -44,13 +42,10 @@ let
     assert lib.isDerivation drv; # drv needs to be a derivation!
     let testDrvs = lib.mapAttrsToList
       (name: testScript:
-        runCommand "${drv.name}-test-${name}" {
-          preferLocalBuild = true;
-          allowSubstitutes = false;
-        } ''
+        runCommandLocal "${drv.name}-test-${name}" { } ''
           ${testScript}
           touch "$out"
-      '') tests;
+        '') tests;
     in drvSeqL testDrvs drv;
 
 
