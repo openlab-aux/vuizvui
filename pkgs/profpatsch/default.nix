@@ -3,7 +3,7 @@
 let
   getBins = import ./getBins.nix { inherit lib; };
 
-  testing = import ./testing { inherit (pkgs) runCommand; inherit lib; };
+  testing = import ./testing { inherit (pkgs) runCommandLocal; inherit lib; };
 
   writeRust = import ./write-rust.nix {
     inherit pkgs; inherit (testing) drvSeqL;
