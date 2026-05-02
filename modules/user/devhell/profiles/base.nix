@@ -78,6 +78,12 @@ in {
       liboping.enable = true;
       htop.enable = true;
       nh.enable = true;
+      neovim = {
+        enable = true;
+        withPython3 = true;
+        withNodeJs = true;
+        withRuby = true;
+      };
       steam = {
         enable = true;
         fontPackages = with pkgs; lib.mkForce [ dejavu_fonts freefont_ttf gyre-fonts liberation_ttf

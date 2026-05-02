@@ -294,7 +294,6 @@ in {
       vlock
       vorbis-tools
       vorbisgain
-      vuizvui.devhell.nvim
       vuizvui.devhell.vim
       w3m
       wavpack
