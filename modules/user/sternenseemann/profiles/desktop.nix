@@ -32,6 +32,7 @@ let
       // (getBins config.vuizvui.user.sternenseemann.programs.ma.package [ "win" ])
       // (getBins pkgs.brightnessctl [ "brightnessctl" ])
       // (getBins pkgs.swaylock [ "swaylock" ])
+      // (getBins pkgs.swaybg [ "swaybg" ])
       // (getBins pkgs.wireplumber [ "wpctl" ])
       // (getBins pkgs.niri [ "niri" ])
       // (getBins pkgs.jq [ "jq" ])
@@ -71,6 +72,8 @@ let
     darkCyan = "#9EEEEE";
     lightCyan = "#eaffff";
   };
+
+  gray = "#737473";
 
   niriGaps = 10;
   niriBorder = 2;
@@ -205,10 +208,21 @@ in
        };
      };
 
+     services.swaybg = rec {
+       description = "Set wayland background color";
+       after = [ "graphical-session.target" ];
+       partOf = after;
+
+       serviceConfig = {
+         ExecStart = "${bins.swaybg} -c '${gray}'";
+         Restart = "on-failure";
+       };
+     };
+
      targets.graphical-session.wants = [
-       # niri doesn't implement xwayland itself
        "foot-server.socket"
        "gammastep.service"
+       "swaybg.service"
      ];
    };
 
