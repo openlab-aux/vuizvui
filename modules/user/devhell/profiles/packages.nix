@@ -265,6 +265,7 @@ in {
       swaybg
       swayidle
       swaylock-effects
+      swtpm
       taskwarrior-tui
       taskwarrior3
       tealdeer

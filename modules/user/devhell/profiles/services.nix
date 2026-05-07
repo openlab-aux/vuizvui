@@ -18,7 +18,12 @@ in {
       };
       libvirtd = {
         enable = true;
-        qemu.package = pkgs.qemu_kvm;
+        qemu = {
+          package = pkgs.qemu_kvm;
+          swtpm = {
+            enable = true;
+          };
+        };
       };
       podman.enable = true;
     };
