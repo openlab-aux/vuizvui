@@ -10,6 +10,16 @@ in {
   config = {
     boot.tmp.cleanOnBoot = true;
 
+    boot.extraModprobeConfig = ''
+      # copy.fail mitigation, until we're on a kernel that has it patched
+      # TODO(sterni): disable other APIs as well? https://news.ycombinator.com/item?id=47956312
+      install algif_aead exit 1
+      # Dirty Frag mitigation, no patched kernel available as of writing this
+      install esp4 exit 1
+      install esp6 exit 1
+      install rxrpc exit 1
+    '';
+
     nix = {
       package = pkgs.lixPackageSets.latest.lix.override { withAWS = false; };
 
