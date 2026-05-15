@@ -38,7 +38,11 @@ let
         imports = (isoEval.imports or []) ++ [ extraConfig ];
         config = isoEvalcfg // {
           boot = bootcfg // lib.optionalAttrs (bootcfg ? loader) {
-            loader = lib.mkForce bootcfg.loader;
+            loader = let
+              isOverride = val: val._type or "" == "override";
+              cond = val: !isOverride val;
+              fun = _: val: if isOverride val then val.content else val;
+            in lib.mkForce (lib.mapAttrsRecursiveCond cond fun bootcfg.loader);
           };
           fileSystems = lib.mapAttrs (lib.const lib.mkForce) fscfg // {
             "/boot" = lib.mkForce (fscfg."/boot" or {
