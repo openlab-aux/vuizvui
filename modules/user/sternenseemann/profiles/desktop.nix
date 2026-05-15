@@ -144,6 +144,12 @@ in
    programs.xwayland.enable = true;
    security.pam.services.swaylock = { };
 
+   # for git-send-email(1)
+   programs.ssh = {
+     enableAskPassword = true;
+     askPassword = "${pkgs.openssh-askpass}/libexec/gtk-ssh-askpass"; # uses gtk
+   };
+
    systemd.packages = [
      niri
    ];
