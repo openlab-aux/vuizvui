@@ -31,6 +31,6 @@ in channel // {
   # XXX: We're adding meta.isHydraChannel outside of mkDerivation to avoid a
   # typecheck on meta since it doesn't include isHydraChannel.
   meta = (channel.meta or {}) // {
-    isHydraChannel = true;
+    isChannel = true;
   };
 }
