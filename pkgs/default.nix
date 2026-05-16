@@ -34,7 +34,5 @@ let
     devhell = callPackageScope ./devhell;
     profpatsch = callPackageScope ./profpatsch;
     sternenseemann = callPackageScope ./sternenseemann;
-
-    tvl = dontRecurseIntoAttrs (callPackage ./tvl { });
   };
 in self.vuizvui

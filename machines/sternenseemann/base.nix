@@ -35,19 +35,7 @@ in {
       };
     };
 
-    nixpkgs = {
-      config.allowUnfree = true;
-      # Use local depot if rebuilding on a machine where it's available
-      overlays = lib.optionals (builtins.pathExists "/home/lukas/src/depot") [
-        (self: super: {
-          vuizvui = super.vuizvui // {
-            tvl = super.vuizvui.tvl.override {
-              tvlSrc = /home/lukas/src/depot;
-            };
-          };
-        })
-      ];
-    };
+    nixpkgs.config.allowUnfree = true;
 
     services.journald.extraConfig = lib.mkDefault "SystemMaxUse=500M";
 
@@ -132,20 +120,14 @@ in {
     '';
 
     environment.systemPackages =
-      let
-         tvl = pkgs.vuizvui.tvl.users.sterni;
-      in
       with pkgs;
       [
         curl wget
         man-pages
         man-pages-posix
-        tvl.dot-time-man-pages
         gitFull
         file htop psmisc
         ripgrep
-        tvl.acme.plan9port.g
-        tvl.git-only-push
       ];
 
     vuizvui.user.sternenseemann.profiles.editors = {
