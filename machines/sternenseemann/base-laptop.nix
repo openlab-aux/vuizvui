@@ -60,6 +60,15 @@
       networkmanager.enable = true;
     };
 
+    # Less extreme way than `networking.wireless.enableHardening = false`
+    # to allow wpa_supplicant reading certificates required for eduroam
+    systemd.services.wpa_supplicant.serviceConfig = {
+      ProtectHome = lib.mkForce "tmpfs";
+      BindReadOnlyPaths = [
+        "/home/lukas/files/crypto/wpa2-enterprise"
+      ];
+    };
+
     services.printing = {
       enable = true;
       drivers = [
