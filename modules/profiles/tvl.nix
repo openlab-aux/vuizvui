@@ -12,6 +12,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    networking = {
+      # For TVL short link resolution.
+      # tvl.su only has inbox, status and cache
+      search = [
+        "tvl.fyi"
+      ];
+    };
     nix.settings = {
       trusted-public-keys = [
         "cache.tvl.su:kjc6KOMupXc1vHVufJUoDUYeLzbwSr9abcAKdn/U1Jk="
