@@ -295,7 +295,6 @@ in {
       vlock
       vorbis-tools
       vorbisgain
-      vuizvui.devhell.vim
       w3m
       wavpack
       waybar
