@@ -31,7 +31,6 @@ let
     taalo-build = callPackage ./taalo-build { };
 
     aszlig = callPackageScope ./aszlig;
-    devhell = callPackageScope ./devhell;
     profpatsch = callPackageScope ./profpatsch;
     sternenseemann = callPackageScope ./sternenseemann;
 
