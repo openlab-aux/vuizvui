@@ -106,7 +106,6 @@ in {
       dust
       dysk
       e2fsprogs
-      easyeffects
       ethtool
       eva
       eww
