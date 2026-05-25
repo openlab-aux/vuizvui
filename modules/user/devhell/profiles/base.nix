@@ -83,6 +83,9 @@ in {
         withPython3 = true;
         withNodeJs = true;
         withRuby = true;
+        defaultEditor = true;
+        viAlias = true;
+        vimAlias = true;
       };
       steam = {
         enable = true;

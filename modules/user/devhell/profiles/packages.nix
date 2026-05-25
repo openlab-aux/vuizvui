@@ -74,6 +74,7 @@ in {
       aspellDicts.en
       axel
       bandwhich
+      bash-language-server
       bc
       beets
       binutils
@@ -171,11 +172,14 @@ in {
       lm_sensors
       lsd
       lsof
+      ltex-ls-plus
+      lua-language-server
       macchina
       mako
       man-pages
       man-pages-posix
       mapcidr
+      marksman
       mdbook
       mdbook-admonish
       mdbook-mermaid
@@ -197,6 +201,7 @@ in {
       netrw
       nix-output-monitor
       nix-update
+      nixd
       nixfmt
       nixpkgs-fmt
       nixpkgs-review
@@ -228,6 +233,9 @@ in {
       profanity
       pv
       pxz
+      pyright
+      python314Packages.pynvim
+      python3Minimal
       qemu
       qrencode
       radeontop
@@ -265,6 +273,7 @@ in {
       swayidle
       swaylock-effects
       swtpm
+      taplo
       taskwarrior-tui
       taskwarrior3
       tealdeer
@@ -277,6 +286,7 @@ in {
       toilet
       tokei
       tree
+      tree-sitter
       treefmt
       tty-clock
       tuifeed
