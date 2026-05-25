@@ -152,6 +152,7 @@ in {
       hexyl
       hicolor-icon-theme
       hplipWithPlugin
+      hpx
       htop
       hydra-check
       hyperfine
@@ -166,6 +167,7 @@ in {
       jql
       kanshi
       kmon
+      lazygit
       lemmeknow
       lftp
       libarchive
@@ -185,6 +187,7 @@ in {
       mdbook-mermaid
       mediainfo
       menyoki
+      mermaid-cli
       miniserve
       mmv
       mosh
@@ -277,10 +280,12 @@ in {
       taskwarrior-tui
       taskwarrior3
       tealdeer
+      tectonic
       termdown
       termshark
       termusic
       testdisk
+      texlab
       tig
       tinty
       toilet
@@ -326,6 +331,7 @@ in {
       xfsprogs
       xh
       xwayland-satellite
+      yaml-language-server
       yt-dlp
       zathura
       zbar
