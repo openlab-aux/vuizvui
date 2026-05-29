@@ -406,10 +406,7 @@ in
          variant = "neo";
        };
      };
-     displayManager.gdm = {
-       wayland = true;
-       enable = true;
-     };
+     displayManager.gdm.enable = true;
      # Don't need it, personally
      speechd.enable = false;
    };
