@@ -170,7 +170,7 @@ in {
     environment.etc."gitconfig".text = ''
       [user]
           email = sternenseemann@systemli.org
-          name = sternenseemann
+          name = sterni
       [push]
           default = matching
       [pull]
