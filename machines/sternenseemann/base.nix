@@ -107,7 +107,7 @@ in {
 
         if [[ "''${TERM:-}" = "foot" ]]; then
           source "${pkgs.path + "/nixos/modules/programs/foot/bashrc"}"
-          PS1+=$'\x1b]2;['"$(hostname)"$'] \w\x1b\\'
+          PROMPT_COMMAND="printf '\x1b]2;[%s] %s\x1b\\' '$(hostname)' \"\$PWD\"; $PROMPT_COMMAND"
         fi
       '';
     };
