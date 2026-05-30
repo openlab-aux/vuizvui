@@ -68,6 +68,27 @@ in {
     programs.bash = {
       enableLsColors = false;
       interactiveShellInit = lib.mkAfter ''
+        # 1GB history file assuming 80 bytes per entry
+        export HISTSIZE=12500000
+        export HISTCONTROL=ignorespace:ignoredups
+        shopt -s histappend
+
+        alias r='fc -s'
+        h() {
+          if (( $# == 0 )); then
+            history 18
+          else
+            if [[ "$1" =~ ^-[0-9]+ ]]; then
+              history "''${1:1}"
+            else
+              history | grep "$@"
+            fi
+          fi
+        }
+
+        # only exact matches, but we only want to ignore trivial uses!
+        export HISTIGNORE=h:history
+
         # APL style space prompt, react to nix-shell
         # TODO(sterni): revert space after fixing enter in ma
         sterni_prompt() {
