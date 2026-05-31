@@ -89,20 +89,18 @@ in {
         # only exact matches, but we only want to ignore trivial uses!
         export HISTIGNORE=h:history
 
-        # APL style space prompt, react to nix-shell
-        # TODO(sterni): revert space after fixing enter in ma
-        sterni_prompt() {
-          if [[ -n "$MA" ]]; then
-            # awd is very slow due to the tcl send overhead
-            awd "bash" &
-          else
-            echo -n "$1 "
-          fi
-          { (( UID == 0  )) && echo -n "# "; } \
-            || { [[ -n "$IN_NIX_SHELL" ]] && echo -n "❄ "; } \
-            || echo -n "  "
-        }
-        export PS1='$(sterni_prompt "\w")'
+        if [[ -n "$MA" ]]; then
+           PROMPT_COMMAND="awd bash; $PROMPT_COMMAND"
+           export PS1=""
+        else
+           export PS1="\w "
+        fi
+
+        # APL style space prompt in ma, react to nix-shell, root
+        { (( UID == 0 )) && PS1+='# '; } \
+          || { [[ -n "$IN_NIX_SHELL" ]] && PS1+='❄ '; } \
+          || PS1+='  '
+
         export NIX_SHELL_PRESERVE_PROMPT=1
 
         if [[ "''${TERM:-}" = "foot" ]]; then
