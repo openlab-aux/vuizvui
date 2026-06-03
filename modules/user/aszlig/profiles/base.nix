@@ -84,10 +84,6 @@ in {
 
     nixpkgs.overlays = lib.singleton (lib.const (super: {
       nix = super.nixVersions.latest;
-      uqm = super.uqm.override {
-        use3DOVideos = true;
-        useRemixPacks = true;
-      };
       w3m = super.w3m.override {
         graphicsSupport = true;
       };

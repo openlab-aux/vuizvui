@@ -18,6 +18,5 @@ pkgs: with pkgs; [
   picard
   rtmpdump
   rtorrent
-  uqm
   xournalpp
 ]
