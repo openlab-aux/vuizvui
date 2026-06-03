@@ -156,10 +156,6 @@ let
     { check = config.services.deluge.enable;
       path  = ["nixos" "deluge"];
     }
-    { check = config.security.dhparams.enable
-           && config.security.dhparams.stateful;
-      path  = ["nixos" "dhparams"];
-    }
     { check = config.services.dnscrypt-proxy2.enable;
       path  = ["nixos" "dnscrypt-proxy2"];
     }
