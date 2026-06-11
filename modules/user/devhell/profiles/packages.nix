@@ -261,7 +261,6 @@ in {
       shellharden
       signal-desktop
       silicon
-      silver-searcher
       slurp
       smartmontools
       so
