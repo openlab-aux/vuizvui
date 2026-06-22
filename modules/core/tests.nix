@@ -652,7 +652,6 @@ let
     (mkPrometheusExporterTest "restic")
     (mkPrometheusExporterTest "rtl_433")
     (mkPrometheusExporterTest "sabnzbd")
-    (mkPrometheusExporterTest "scaphandre")
     (mkPrometheusExporterTest "script")
     (mkPrometheusExporterTest "shelly")
     (mkPrometheusExporterTest "smartctl")
