@@ -61,6 +61,7 @@ in {
     ];
 
     programs = {
+      fuse.enable = true;
       trippy.enable = true;
       vivid.enable = true;
       bat.enable = true;
