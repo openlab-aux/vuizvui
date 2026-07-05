@@ -17,7 +17,7 @@ index 785c01f4..d617ac81 100644
          if_TYPE_return_TOOL(TYPE_CIRCLECOUNT, CircleCountTool);
          if_TYPE_return_TOOL(TYPE_SIZEINCREASE, SizeIncreaseTool);
 diff --git a/src/utils/confighandler.cpp b/src/utils/confighandler.cpp
-index 370d18af..e6a41031 100644
+index 1a7c91d8..deaa6578 100644
 --- a/src/utils/confighandler.cpp
 +++ b/src/utils/confighandler.cpp
 @@ -99,7 +99,7 @@ static QMap<class QString, QSharedPointer<ValueHandler>>
@@ -29,7 +29,16 @@ index 370d18af..e6a41031 100644
      OPTION("savePathFixed"               ,Bool               ( false         )),
      OPTION("saveAsFileExtension"         ,SaveFileExtension  (               )),
      OPTION("saveLastRegion"              ,Bool               ( false         )),
-@@ -171,9 +171,6 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
+@@ -150,7 +150,7 @@ static QMap<class QString, QSharedPointer<ValueHandler>>
+ #if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS)
+     // Bypass freedesktop portal and use Qt's native X11
+     // screenshot method. Intended for WMs without xdg-desktop-portal.
+-    OPTION("useX11LegacyScreenshot"      ,Bool               ( false         )),
++    OPTION("useX11LegacyScreenshot"      ,Bool               ( true          )),
+ #endif
+ };
+ 
+@@ -172,9 +172,6 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
      SHORTCUT("TYPE_CANCEL"              ,   "Ctrl+Backspace"        ),
  #ifdef ENABLE_IMGUR
      SHORTCUT("TYPE_IMAGEUPLOADER"       ,                           ),
@@ -39,7 +48,7 @@ index 370d18af..e6a41031 100644
  #endif
      SHORTCUT("TYPE_PIXELATE"            ,   "B"                     ),
      SHORTCUT("TYPE_INVERT"              ,   "I"                     ),
-@@ -205,7 +202,6 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
+@@ -206,7 +203,6 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
  #else
      SHORTCUT("TYPE_DELETE_CURRENT_TOOL" ,   "Delete"                ),
  #endif
@@ -47,7 +56,7 @@ index 370d18af..e6a41031 100644
      SHORTCUT("TYPE_SIZEINCREASE"        ,                           ),
      SHORTCUT("TYPE_SIZEDECREASE"        ,                           ),
      SHORTCUT("TYPE_CIRCLECOUNT"         ,                           ),
-@@ -215,15 +211,8 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
+@@ -216,15 +212,8 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
  // CLASS CONFIGHANDLER
  
  ConfigHandler::ConfigHandler()
@@ -65,7 +74,7 @@ index 370d18af..e6a41031 100644
      static bool firstInitialization = true;
      if (firstInitialization) {
 diff --git a/src/utils/confighandler.h b/src/utils/confighandler.h
-index adc5d1e0..e69c8a08 100644
+index 38ee31e4..6ee0e3ef 100644
 --- a/src/utils/confighandler.h
 +++ b/src/utils/confighandler.h
 @@ -9,6 +9,7 @@
@@ -130,10 +139,10 @@ index 2a3eaaf9..ce61ab04 100644
 +    CaptureTool::TYPE_ACCEPT,
  };
 diff --git a/src/widgets/capture/capturewidget.cpp b/src/widgets/capture/capturewidget.cpp
-index 25a887a8..501ce99d 100644
+index 73222e3d..16d33223 100644
 --- a/src/widgets/capture/capturewidget.cpp
 +++ b/src/widgets/capture/capturewidget.cpp
-@@ -345,8 +345,6 @@ void CaptureWidget::initButtons()
+@@ -347,8 +347,6 @@ void CaptureWidget::initButtons()
  #ifdef ENABLE_IMGUR
              buttonList->removeOne(CaptureTool::TYPE_IMAGEUPLOADER);
  #endif
