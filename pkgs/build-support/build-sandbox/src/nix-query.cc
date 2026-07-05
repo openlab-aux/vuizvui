@@ -18,6 +18,11 @@
 #include <nix/store-api.hh>
 #endif
 
+#if NIX_VERSION >= 234
+#define PathSet nix::StringSet
+#define Path std::string
+#endif
+
 using namespace nix;
 
 struct query_state {
@@ -71,7 +76,11 @@ extern "C" {
     struct query_state *new_query(void)
     {
         query_state *initial = new query_state();
+#if NIX_VERSION >= 234
+        settings.getLocalSettings().buildUsersGroup = "";
+#else
         settings.buildUsersGroup = "";
+#endif
 #if NIX_VERSION >= 229
         initLibStore(false);
 #else
