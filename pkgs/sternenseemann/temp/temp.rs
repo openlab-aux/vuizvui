@@ -32,8 +32,7 @@ use std::path::Path;
 
 // libc interaction
 
-#[link(name = "c")]
-extern {
+extern "C" {
     fn mkdtemp(template: *mut u8) -> *mut u8;
     fn mkstemp(template: *mut u8) -> *mut u8;
 }
