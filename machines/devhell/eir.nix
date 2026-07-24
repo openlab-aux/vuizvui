@@ -23,6 +23,7 @@
           serviceConfig.Type = "oneshot";
           script = ''
             echo none > /sys/block/sda/queue/scheduler
+            ${pkgs.hdparm}/bin/hdparm -S 60 /dev/sdb
           '';
         };
       };
@@ -92,9 +93,6 @@
   powerManagement = {
     powertop.enable = true;
     cpuFreqGovernor = "powersave";
-    powerUpCommands = ''
-      ${pkgs.hdparm}/bin/hdparm -S 60 /dev/sdb
-    '';
   };
 
   nix = {
