@@ -110,24 +110,30 @@ in wrapFirefox firefoxNoSigning {
     pref('browser.uiCustomization.state', ${jsString (builtins.toJSON {
       placements = {
         widget-overflow-fixed-list = [];
+        unified-extensions-area = [];
         nav-bar = [
           "back-button"
           "forward-button"
+          "vertical-spacer"
           "stop-reload-button"
           "urlbar-container"
           "downloads-button"
           "fxa-toolbar-menu-button"
           "nixos_ff2mpv-browser-action"
-          "nixos_multi_account_containers-browser-action"
-          "nixos_stylus-browser-action"
           "nixos_styl-us-browser-action"
-          "nixos_multi-account-containers-browser-action"
+          "reset-pbm-toolbar-button"
+          "unified-extensions-button"
         ];
         toolbar-menubar = [ "menubar-items" ];
-        TabsToolbar = [ "tabbrowser-tabs" "new-tab-button" "alltabs-button" ];
+        TabsToolbar = [
+          "firefox-view-button"
+          "tabbrowser-tabs"
+          "new-tab-button"
+          "alltabs-button"
+        ];
         PersonalToolbar = [ "import-button" "personal-bookmarks" ];
       };
-      currentVersion = 17;
+      currentVersion = 24;
     })});
   '';
 

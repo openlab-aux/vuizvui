@@ -4,15 +4,11 @@
     "hash": "sha256:f5edb75698ebd73d7a6d4034a37636022019adde712379b7a43e741b2a179b9d"
   },
   "styl-us": {
-    "url": "https://addons.mozilla.org/firefox/downloads/file/4451438/styl_us-2.3.14.xpi",
-    "hash": "sha256:02861b4256d7001a091ce1fbeaaf5ddcf670c3df9db55be3af2bd703a11315d8"
+    "url": "https://addons.mozilla.org/firefox/downloads/file/4907275/styl_us-2.4.8.xpi",
+    "hash": "sha256:455426890a38bd3ee511000112ece51675f8bbc21e988be2170c3ae6900cbedf"
   },
   "tridactyl-vim": {
-    "url": "https://addons.mozilla.org/firefox/downloads/file/4405615/tridactyl_vim-1.24.2.xpi",
-    "hash": "sha256:807925f26aab56ab19a28e663ade73743a033e3b77aa09edd3f77bf92e5fb36e"
-  },
-  "multi-account-containers": {
-    "url": "https://addons.mozilla.org/firefox/downloads/file/4355970/multi_account_containers-8.2.0.xpi",
-    "hash": "sha256:1ce35650853973572bc1ce770076d93e00b6b723b799f7b90c3045268c64b422"
+    "url": "https://addons.mozilla.org/firefox/downloads/file/4854935/tridactyl_vim-1.24.6.xpi",
+    "hash": "sha256:13abd6fef2b5d13a2eca70addb5485a4fba0800436f6a12c57abb03f3cf99205"
   }
 }
