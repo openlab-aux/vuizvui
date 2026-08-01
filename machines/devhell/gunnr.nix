@@ -93,7 +93,7 @@
   };
 
   console = {
-    keyMap = "uk";
+    keyMap = "dvorak";
   };
 
   #### Machine-specific service configuration ####
