@@ -11,8 +11,12 @@ use std::process::{Command, ExitStatus, Stdio};
 use temp::TempDir;
 
 enum CliAction<'a> {
-    /// attribute, section, page
-    Man(&'a str, Option<&'a str>, &'a str),
+    Man {
+        attr: &'a str,
+        section: Option<&'a str>,
+        page: &'a str,
+        file_path: Option<&'a str>,
+    },
 }
 
 enum CliResult<'a> {
@@ -22,37 +26,85 @@ enum CliResult<'a> {
 
 fn main() {
     use CliResult::*;
-    let (opts, args): (Vec<String>, Vec<String>) =
-        std::env::args().partition(|s| s.starts_with("-"));
-
-    let mut cli_res: CliResult = match args.len() {
-        2 => Action(CliAction::Man(&args[1], None, &args[1])),
-        3 => match parse_man_section(&args[2]) {
-            Ok(s) => Action(CliAction::Man(&args[1], Some(s), &args[1])),
-            Err(_) => Action(CliAction::Man(&args[1], None, &args[2])),
-        },
-        4 => match parse_man_section(&args[2]) {
-            Err(err_msg) => ShowUsage {
-                err_msg: Some(err_msg),
-            },
-            Ok(s) => Action(CliAction::Man(&args[1], Some(s), &args[3])),
-        },
-        _ => ShowUsage {
-            err_msg: Some("Unexpected number of arguments"),
-        },
-    };
-
+    let all_args: Vec<String> = std::env::args().collect();
+    
     let mut is_debug: bool = false;
-    for opt in opts {
-        match &opt[..] {
-            "--help" | "--usage" | "-h" => cli_res = ShowUsage { err_msg: None },
-            "--verbose" | "-v" => is_debug = true,
-            _ => {
-                cli_res = ShowUsage {
-                    err_msg: Some("Unknown option"),
+    let mut file_path: Option<&str> = None;
+    let mut cli_res: CliResult = ShowUsage { err_msg: Some("Unexpected number of arguments") };
+    let mut positional_args = Vec::new();
+
+    let mut i = 1; // Skip program name
+    while i < all_args.len() {
+        let arg = &all_args[i];
+        
+        if arg.starts_with("-") {
+            match &arg[..] {
+                "--help" | "--usage" | "-h" => {
+                    cli_res = ShowUsage { err_msg: None };
+                    break;
+                },
+                "--verbose" | "-v" => is_debug = true,
+                "-f" | "--file" => {
+                    if i + 1 >= all_args.len() {
+                        cli_res = ShowUsage {
+                            err_msg: Some("Option -f/--file requires an argument"),
+                        };
+                        break;
+                    }
+                    file_path = Some(&all_args[i + 1]);
+                    i += 1; // Skip the next argument since it's the file path
+                },
+                _ => {
+                    cli_res = ShowUsage {
+                        err_msg: Some("Unknown option"),
+                    };
+                    break;
                 }
             }
+        } else {
+            positional_args.push(arg);
         }
+        i += 1;
+    }
+    
+    // Only process positional arguments if we haven't already set an error
+    if let ShowUsage { err_msg: _ } = cli_res {
+        cli_res = match positional_args.len() {
+            1 => Action(CliAction::Man {
+                attr: &positional_args[0],
+                section: None,
+                page: extract_page_name_from_attr(&positional_args[0]),
+                file_path,
+            }),
+            2 => match parse_man_section(&positional_args[1]) {
+                Ok(s) => Action(CliAction::Man {
+                    attr: &positional_args[0],
+                    section: Some(s),
+                    page: extract_page_name_from_attr(&positional_args[0]),
+                    file_path,
+                }),
+                Err(_) => Action(CliAction::Man {
+                    attr: &positional_args[0],
+                    section: None,
+                    page: &positional_args[1],
+                    file_path,
+                }),
+            },
+            3 => match parse_man_section(&positional_args[1]) {
+                Err(err_msg) => ShowUsage {
+                    err_msg: Some(err_msg),
+                },
+                Ok(s) => Action(CliAction::Man {
+                    attr: &positional_args[0],
+                    section: Some(s),
+                    page: &positional_args[2],
+                    file_path,
+                }),
+            },
+            _ => ShowUsage {
+                err_msg: Some("Unexpected number of arguments"),
+            },
+        };
     }
 
     let main = Main { is_debug };
@@ -61,11 +113,15 @@ fn main() {
             if let Some(msg) = err_msg {
                 eprintln!("nman: usage error: {}", msg);
             }
-            println!("Usage: {} ATTR [PAGE | SECTION [PAGE]]", &args[0]);
+            println!("Usage: {} [OPTIONS] ATTR [PAGE | SECTION [PAGE]]", &all_args[0]);
+            println!("Options:");
+            println!("  -h, --help, --usage  Show this help message");
+            println!("  -v, --verbose        Enable verbose output");
+            println!("  -f, --file <path>    Use specified .nix file instead of <nixpkgs>");
             std::process::exit(NmanError::Usage.code());
         }
         Action(action) => match action {
-            CliAction::Man(attr, section, page) => match main.open_man_page(attr, section, page) {
+            CliAction::Man { attr, section, page, file_path } => match main.open_man_page(attr, section, page, file_path) {
                 Ok(_) => (),
                 Err(t) => {
                     let msg = t.msg();
@@ -304,13 +360,24 @@ impl Main {
         attr: &'a str,
         section: Option<&'a str>,
         page: &'a str,
+        file_path: Option<&'a str>,
     ) -> Result<(), NmanError<'a>> {
         let tmpdir = TempDir::new("nman").map_err(NmanError::IO)?;
-        // TODO(sterni): allow selecting other base package sets,
-        //               like <vuizvui>, /home/lukas/src/nix/nixpkgs, …
+        let nix_import = match file_path {
+            Some(path) => {
+                if path.starts_with('/') {
+                    // Absolute path - strip trailing slashes
+                    path.trim_end_matches('/').to_string()
+                } else {
+                    // Relative path - prepend ./
+                    format!("./{}", path)
+                }
+            },
+            None => "<nixpkgs>".to_string(),
+        };
         let expr = format!(
-            "with (import <nixpkgs> {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
-            attr, attr
+            "with (import {} {{}}); builtins.map (o: {}.\"${{o}}\") {}.outputs",
+            nix_import, attr, attr
         );
         let inst = self
             .debug_log_command(
@@ -603,6 +670,13 @@ fn match_man_page_file(name: &str, section: &str, page: &str) -> bool {
     }
 }
 
+/// Extract the page name from a dotted attribute path.
+/// For example, "pkgs.profpatsch.nman" becomes "nman".
+/// If there are no dots, returns the original string.
+fn extract_page_name_from_attr(attr: &str) -> &str {
+    attr.split('.').last().unwrap_or(attr)
+}
+
 /// Check if a string describes a man section,
 /// i. e. is a number or "3p" (Perl Developer's
 /// manual). Used to distinguish between man pages
@@ -691,6 +765,24 @@ mod tests {
         assert!(parse_man_section("ocamlPackages.sexp").is_err());
         assert!(parse_man_section("lowdown").is_err());
         assert!(parse_man_section("").is_err());
+    }
+
+    #[test]
+    fn test_extract_page_name_from_attr() {
+        // Simple case without dots
+        assert_eq!(extract_page_name_from_attr("nman"), "nman");
+        assert_eq!(extract_page_name_from_attr("hello"), "hello");
+        
+        // Dotted attribute paths
+        assert_eq!(extract_page_name_from_attr("pkgs.profpatsch.nman"), "nman");
+        assert_eq!(extract_page_name_from_attr("a.b.c.d"), "d");
+        assert_eq!(extract_page_name_from_attr("nixpkgs.hello"), "hello");
+        
+        // Edge cases
+        assert_eq!(extract_page_name_from_attr(""), "");
+        assert_eq!(extract_page_name_from_attr("."), "");
+        assert_eq!(extract_page_name_from_attr("package."), "");
+        assert_eq!(extract_page_name_from_attr(".package"), "package");
     }
 
     #[test]
