@@ -125,7 +125,6 @@ in {
       forgejo-cli
       fortune
       fzf
-      gammastep
       gcc
       gdb
       gh
@@ -271,6 +270,7 @@ in {
       steam-tui
       stow
       strace
+      sunsetr
       swaybg
       swayidle
       swaylock-effects
