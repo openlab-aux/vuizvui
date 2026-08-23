@@ -186,7 +186,6 @@ in {
       mdbook-mermaid
       mediainfo
       menyoki
-      mermaid-cli
       miniserve
       mmv
       mosh
