@@ -3,7 +3,6 @@ with import ../lib;
 {
   aszlig = {
     dnyarri   = callMachine ./aszlig/dnyarri.nix {};
-    meshuggah = callMachine ./aszlig/meshuggah.nix {};
     slylandro = callMachine ./aszlig/slylandro.nix {};
   };
   devhell = {
