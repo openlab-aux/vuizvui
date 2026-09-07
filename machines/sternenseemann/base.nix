@@ -49,7 +49,7 @@ in {
       ];
     };
 
-    services.journald.extraConfig = lib.mkDefault "SystemMaxUse=500M";
+    services.journald.settings.Journal.SystemMaxUse = lib.mkDefault "500M";
 
     console.keyMap = lib.mkDefault "de-latin1";
 

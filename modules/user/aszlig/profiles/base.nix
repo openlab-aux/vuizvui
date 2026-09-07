@@ -47,9 +47,7 @@ in {
     vuizvui.user.aszlig.programs.zsh.enable = true;
     vuizvui.enableGlobalNixpkgsConfig = true;
 
-    services.journald.extraConfig = ''
-      MaxRetentionSec=3month
-    '';
+    services.journald.settings.Journal.MaxRetentionSec = "3month";
 
     services.openssh.settings = {
       PasswordAuthentication = lib.mkOverride 500 false;
