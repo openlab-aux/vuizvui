@@ -1,5 +1,5 @@
 { lib, writeTextFile, writers, wrapFirefox, fetchFirefoxAddon
-, pkgs, tridactyl-native
+, firefox-unwrapped, tridactyl-native
 }:
 
 let
@@ -9,14 +9,11 @@ let
 
   extensions = lib.mapAttrs mkExtension (lib.importJSON ./addons.json);
 
-  firefoxNoSigning = ((pkgs.extend (self: super: {
-    buildMozillaMach = opts: super.buildMozillaMach (opts // {
-      requireSigning = false;
-      allowAddonSideload = true;
-    });
-  })).firefox-unwrapped.override {
-    crashreporterSupport = false;
-    drmSupport = false;
+  firefoxNoSigning = (firefox-unwrapped.override {
+    enableAddonSideload = true;
+    enableAddonSigning = false;
+    enableDataReporting = false;
+    enableEMENagbar = false;
   }).overrideAttrs (drv: {
     patches = (drv.patches or []) ++ [
       ./mute-by-default.patch
