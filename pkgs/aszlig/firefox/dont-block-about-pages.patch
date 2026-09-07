@@ -1,11 +1,11 @@
-diff --git a/browser/components/enterprisepolicies/Policies.sys.mjs b/browser/components/enterprisepolicies/Policies.sys.mjs
-index 21e3e8804f60..106ec235c5c0 100644
---- a/browser/components/enterprisepolicies/Policies.sys.mjs
-+++ b/browser/components/enterprisepolicies/Policies.sys.mjs
-@@ -2615,6 +2615,7 @@ function clearBlockedAboutPages() {
+diff --git a/toolkit/components/enterprisepolicies/PoliciesHelpers.sys.mjs b/toolkit/components/enterprisepolicies/PoliciesHelpers.sys.mjs
+index 22aeaf068590..19d59d3069d8 100644
+--- a/toolkit/components/enterprisepolicies/PoliciesHelpers.sys.mjs
++++ b/toolkit/components/enterprisepolicies/PoliciesHelpers.sys.mjs
+@@ -644,6 +644,7 @@ export function clearBlockedAboutPages() {
  }
  
- function blockAboutPage(manager, feature) {
+ export function blockAboutPage(manager, feature) {
 +  return;
    addChromeURLBlocker();
    gBlockedAboutPages.push(feature);
