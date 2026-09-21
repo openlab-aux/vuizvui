@@ -1,25 +1,34 @@
 diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 7be92d07430e..f039b7bd90b0 100644
+index 2cff9fcbf7404..3c3f40ecd7af0 100644
 --- a/drivers/nvme/host/nvme.h
 +++ b/drivers/nvme/host/nvme.h
-@@ -178,6 +178,12 @@ enum nvme_quirks {
- 	 * Align dma pool segment size to 512 bytes
+@@ -183,6 +183,12 @@ enum nvme_quirks {
+ 	 * Admin queue DMA buffers must be page aligned
  	 */
- 	NVME_QUIRK_DMAPOOL_ALIGN_512		= (1 << 22),
+ 	NVME_QUIRK_ADMIN_PAGE_ALIGN		= (1 << 23),
 +
 +	/*
 +	 * Disables entering D3cold state for devices that might not wake up
 +	 * again afterwards.
 +	 */
-+	NVME_QUIRK_NO_D3_COLD			= (1 << 23),
++	NVME_QUIRK_NO_D3_COLD			= (1 << 24),
  };
  
- /*
+ static inline char *nvme_quirk_name(enum nvme_quirks q)
+@@ -236,6 +242,8 @@ static inline char *nvme_quirk_name(enum nvme_quirks q)
+ 		return "dmapool_align_512";
+ 	case NVME_QUIRK_ADMIN_PAGE_ALIGN:
+ 		return "admin_page_align";
++	case NVME_QUIRK_NO_D3_COLD:
++		return "no_d3_cold";
+ 	}
+ 
+ 	return "unknown";
 diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 3ad7f197c808..e1e64e80d5f7 100644
+index 5440cf18b55b2..8dfa9ed54cced 100644
 --- a/drivers/nvme/host/pci.c
 +++ b/drivers/nvme/host/pci.c
-@@ -3163,6 +3163,15 @@ static unsigned long check_vendor_combination_bug(struct pci_dev *pdev)
+@@ -3662,6 +3662,15 @@ static unsigned long check_vendor_combination_bug(struct pci_dev *pdev)
  		    dmi_match(DMI_BOARD_NAME, "PH4PRX1_PH6PRX1") ||
  		    dmi_match(DMI_BOARD_NAME, "PH6PG01_PH6PG71"))
  			return NVME_QUIRK_FORCE_NO_SIMPLE_SUSPEND;
@@ -35,7 +44,7 @@ index 3ad7f197c808..e1e64e80d5f7 100644
  	}
  
  	/*
-@@ -3223,6 +3232,9 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
+@@ -3741,6 +3750,9 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
  	dma_set_min_align_mask(&pdev->dev, NVME_CTRL_PAGE_SIZE - 1);
  	dma_set_max_seg_size(&pdev->dev, 0xffffffff);
  
