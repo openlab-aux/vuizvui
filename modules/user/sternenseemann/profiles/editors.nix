@@ -3,8 +3,6 @@
 let
   cfg = config.vuizvui.user.sternenseemann.profiles.editors;
 
-  tvl = pkgs.vuizvui.tvl.users.sterni;
-
   # Slightly modified version of
   # https://leahneukirchen.org/blog/archive/2020/05/a-minimal-vimrc.html
   vimrc = pkgs.writeText "vimrc" ''
@@ -59,14 +57,9 @@ in
         '';
       };
 
-      acme = mkEditor {
-        name = "acme";
-        pkg = tvl.acme.plan9port.wrapper;
-      };
-
       emacs = mkEditor {
         name = "emacs";
-        pkg = tvl.emacs;
+        pkg = pkgs.emacs;
         exe = "emacsclient";
       };
 

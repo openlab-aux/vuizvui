@@ -81,7 +81,6 @@ in
     editors = {
       enable = true;
       editor = "ma";
-      acme.enable = true;
       emacs.enable = true;
       ma.enable = true;
     };
