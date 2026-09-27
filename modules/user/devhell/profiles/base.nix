@@ -79,6 +79,16 @@ in {
       liboping.enable = true;
       htop.enable = true;
       nh.enable = true;
+      dconf.profiles.user.databases = [
+        {
+          lockAll = true;
+          settings = {
+            "org/gnome/desktop/interface" = {
+              color-scheme = "prefer-dark";
+            };
+          };
+        }
+      ];
       neovim = {
         enable = true;
         withPython3 = true;
@@ -91,7 +101,7 @@ in {
       steam = {
         enable = true;
         fontPackages = with pkgs; lib.mkForce [ dejavu_fonts freefont_ttf gyre-fonts liberation_ttf
-           unifont noto-fonts-color-emoji ];
+          unifont noto-fonts-color-emoji ];
       };
       fzf = {
         keybindings = true;
@@ -120,11 +130,11 @@ in {
         promptInit = ''
           eval "$(${pkgs.starship}/bin/starship init zsh)"
           ${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin
-        '';
+          '';
         interactiveShellInit = ''
           zstyle ':completion:*' menu select
           source ${pkgs.fzf}/share/fzf/key-bindings.zsh
-        '';
+          '';
         shellAliases = {
           ls = "lsd";
           ip = "ip --color=auto";
@@ -135,12 +145,12 @@ in {
         };
         setOptions = [
           "auto_cd"
-          "auto_pushd"
-          "correct"
-          "hist_fcntl_lock"
-          "hist_ignore_dups"
-          "hist_no_store"
-          "hist_reduce_blanks"
+            "auto_pushd"
+            "correct"
+            "hist_fcntl_lock"
+            "hist_ignore_dups"
+            "hist_no_store"
+            "hist_reduce_blanks"
         ];
       };
     };
