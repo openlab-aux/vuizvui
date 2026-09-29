@@ -134,7 +134,7 @@ in with pkgsUpstream.lib; with builtins; {
       machine.eval.config.vuizvui.requiresTests
     ) machineList);
     mkTest = path: setAttrByPath path (getAttrFromPath path allTests);
-  in fold recursiveUpdate {} (map mkTest activatedTests) // {
+  in foldr recursiveUpdate {} (map mkTest activatedTests) // {
     inherit (allTests) vuizvui;
   };
 

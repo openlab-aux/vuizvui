@@ -58,7 +58,7 @@ let
 in {
   options.vuizvui.services.postfix = {
     enable = mkEnableOption "Vuizvui Postfix";
-    restrictions = fold mergeAttrs {} (catAttrs "option" restrictions);
+    restrictions = foldr mergeAttrs {} (catAttrs "option" restrictions);
   };
 
   config = mkIf cfg.enable (mkMerge (catAttrs "config" restrictions));
