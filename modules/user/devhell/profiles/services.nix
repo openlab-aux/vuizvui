@@ -52,7 +52,7 @@ in {
       openssh.enable = true;
       udisks2.enable = true;
       haveged.enable = true;
-      automatic-timezoned.enable = true;
+      tzupdate.enable = true;
       geoclue2 = {
         enable = true;
         enableWifi = true;
