@@ -104,7 +104,7 @@ in
     rlwrap
     watchexec
     jq
-    cbqn ngn-k
+    cbqn
     gdb
     libreoffice
     vuizvui.profpatsch.nman
