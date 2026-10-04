@@ -81,6 +81,7 @@ in {
       bmon
       bottom
       broot
+      btdu
       caligula
       catgirl
       cbonsai
@@ -153,6 +154,7 @@ in {
       hplipWithPlugin
       hpx
       htop
+      hwatch
       hydra-check
       hyperfine
       imagemagick
@@ -253,6 +255,7 @@ in {
       rustmission
       rwpspread
       safecopy
+      sampler
       screen
       sd
       shellcheck
@@ -280,6 +283,7 @@ in {
       tealdeer
       tectonic
       termdown
+      terminaltexteffects
       termshark
       termusic
       testdisk
