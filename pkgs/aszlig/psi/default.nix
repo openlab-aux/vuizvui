@@ -18,13 +18,13 @@ let
 
   usrsctp = stdenv.mkDerivation {
     pname = "usrsctp";
-    version = "git20251016";
+    version = "git20261007";
 
     src = fetchFromGitHub {
       owner = "sctplab";
       repo = "usrsctp";
-      rev = "fd070e05a7474f38c7fecdf4d4b6005d2547ee00";
-      hash = "sha256-2oZozn+W/nlyg6uKEu5ygQNAD5NxmQ4lXFzjWVpIFu8=";
+      rev = "c625e21950600460cb5c6075616eb1622df2b06a";
+      hash = "sha256-DvnQecl9QH1Je0kPofplf5t2Uuc2MapLTEcsSjzN28k";
     };
 
     nativeBuildInputs = [ cmake ];
