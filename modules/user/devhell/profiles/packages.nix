@@ -339,7 +339,7 @@ in {
       zbar
       zellij
       zip
-      zotero
+      #zotero
       zstd
     ];
   };
