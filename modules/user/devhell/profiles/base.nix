@@ -67,7 +67,6 @@ in {
       bat.enable = true;
       dconf.enable = true;
       iftop.enable = true;
-      iotop.enable = true;
       usbtop.enable = true;
       less.enable = true;
       tmux.enable = true;
