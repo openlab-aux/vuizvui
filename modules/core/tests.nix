@@ -428,9 +428,6 @@ let
     { check = config.services.miniflux.enable;
       path  = ["nixos" "miniflux"];
     }
-    { check = config.services.minio.enable;
-      path  = ["nixos" "minio"];
-    }
     { check = config.services.minidlna.enable;
       path  = ["nixos" "minidlna"];
     }
