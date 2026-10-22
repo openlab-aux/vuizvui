@@ -20,67 +20,6 @@ let
 
   bins = getBins pkgs.bemenu [ "bemenu" ];
 
-  texliveCommon = {
-    inherit (pkgs.texlive)
-      adjustbox
-      biber
-      biblatex
-      biblatex-anonymous
-      biblatex-archaeology
-      biblatex-arthistory-bonn
-      biblatex-bookinarticle
-      biblatex-bookinother
-      biblatex-chicago
-      biblatex-dw
-      biblatex-ext
-      biblatex-fiwi
-      biblatex-german-legal
-      biblatex-historian
-      biblatex-ieee
-      biblatex-iso690
-      biblatex-morenames
-      biblatex-multiple-dm
-      biblatex-oxref
-      biblatex-philosophy
-      biblatex-publist
-      biblatex-readbbl
-      biblatex-realauthor
-      biblatex-shortfields
-      biblatex-socialscienceshuberlin
-      biblatex-software
-      biblatex-source-division
-      biblatex-trad
-      biblatex-true-citepages-omit
-      biblatex-unified
-      biblatex-vancouver
-      breakurl
-      capt-of
-      chemfig
-      chemformula
-      collectbox
-      csquotes
-      dashrule
-      enumitem
-      footmisc
-      geschichtsfrkl
-      hyphen-greek
-      ifmtarg
-      latexmk
-      libertine
-      minted
-      noto
-      noto-emoji
-      notomath
-      quoting
-      texcount
-      titlesec
-      units
-      wrapfig
-      xgreek
-      xstring
-    ;
-  };
-
   packageScriptFile =
     { name
     , file ? ./scripts + "/${name}"
@@ -171,20 +110,70 @@ in
     '';
   });
 
-  texlive = pkgs.texlive.combine ({
-    inherit (pkgs.texlive)
-      # collections
-      scheme-medium
-      collection-bibtexextra
-      collection-latex
-      # collection-langgreek
-      ;
-  } // texliveCommon);
+  texlive = pkgs.texlive.schemes.texliveMedium.withPackages (ps: [
+    ps.collection-bibtexextra
+    ps.collection-latex
+    ps.collection-langgreek
 
-  # avoid dependency on Java since this is unsupported on i686
-  texlive-small = pkgs.texlive.combine ({
-    inherit (pkgs.texlive) scheme-small;
-  } // texliveCommon);
+    ps.adjustbox
+    ps.biber
+    ps.biblatex
+    ps.biblatex-anonymous
+    ps.biblatex-archaeology
+    ps.biblatex-arthistory-bonn
+    ps.biblatex-bookinarticle
+    ps.biblatex-bookinother
+    ps.biblatex-chicago
+    ps.biblatex-dw
+    ps.biblatex-ext
+    ps.biblatex-fiwi
+    ps.biblatex-german-legal
+    ps.biblatex-historian
+    ps.biblatex-ieee
+    ps.biblatex-iso690
+    ps.biblatex-morenames
+    ps.biblatex-multiple-dm
+    ps.biblatex-oxref
+    ps.biblatex-philosophy
+    ps.biblatex-publist
+    ps.biblatex-readbbl
+    ps.biblatex-realauthor
+    ps.biblatex-shortfields
+    ps.biblatex-socialscienceshuberlin
+    ps.biblatex-software
+    ps.biblatex-source-division
+    ps.biblatex-trad
+    ps.biblatex-true-citepages-omit
+    ps.biblatex-unified
+    ps.biblatex-vancouver
+    ps.breakurl
+    ps.capt-of
+    ps.chemfig
+    ps.chemformula
+    ps.collectbox
+    ps.csquotes
+    ps.dashrule
+    ps.enumitem
+    ps.footmisc
+    ps.geschichtsfrkl
+    ps.hyphen-greek
+    ps.ifmtarg
+    ps.latexmk
+    ps.libertine
+    ps.minted
+    ps.noto
+    ps.noto-emoji
+    ps.notomath
+    ps.quoting
+    ps.standalone
+    ps.tikz-cd
+    ps.texcount
+    ps.titlesec
+    ps.units
+    ps.wrapfig
+    ps.xgreek
+    ps.xstring
+  ]);
 
   # packaged 3rd party software
   arr =
