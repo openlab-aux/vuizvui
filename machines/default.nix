@@ -2,7 +2,7 @@ with import ../lib;
 
 {
   aszlig = {
-    dnyarri   = callMachine ./aszlig/dnyarri.nix {};
+    dnyarri   = callMachine ./aszlig/dnyarri {};
     slylandro = callMachine ./aszlig/slylandro.nix {};
   };
   devhell = {
