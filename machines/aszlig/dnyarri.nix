@@ -99,7 +99,7 @@ in {
       ACTION=="add", DEVPATH=="${path}", SUBSYSTEM=="sound", ATTR{id}="${id}"
     '';
   in lib.concatStrings (lib.mapAttrsToList mkRule {
-    lower = "/devices/pci0000:00/0000:00:03.1/0000:02:00.0/*/sound/card?*";
+    lower = "/devices/pci0000:20/0000:20:03.1/0000:23:00.0/*/sound/card?*";
     upper = "/devices/pci0000:40/0000:40:01.1/0000:41:00.0/*/sound/card?*";
   });
 
