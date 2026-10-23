@@ -18,15 +18,11 @@ let
   };
 
 in {
+  imports = [ ./pipewire.nix ];
+
   vuizvui.user.aszlig.profiles.workstation.enable = true;
 
   nix.settings.max-jobs = 24;
-
-  # XXX: This machine has a pretty complicated audio setup, so until this works
-  #      properly with PipeWire, let's stay with PulseAudio for now.
-  services.pipewire.enable = lib.mkOverride 90 false;
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio.package = pkgs.pulseaudioFull;
 
   hardware.printers.ensureDefaultPrinter = "Bunti";
   hardware.printers.ensurePrinters = lib.singleton {
@@ -90,18 +86,6 @@ in {
   };
 
   services.btrfs.autoScrub.enable = true;
-
-  # The machine has two identical sound cards, so let's give them stable
-  # identifiers because the device names assigned by the kernel are based on
-  # initialisation order.
-  services.udev.extraRules = let
-    mkRule = id: path: ''
-      ACTION=="add", DEVPATH=="${path}", SUBSYSTEM=="sound", ATTR{id}="${id}"
-    '';
-  in lib.concatStrings (lib.mapAttrsToList mkRule {
-    lower = "/devices/pci0000:20/0000:20:03.1/0000:23:00.0/*/sound/card?*";
-    upper = "/devices/pci0000:40/0000:40:01.1/0000:41:00.0/*/sound/card?*";
-  });
 
   swapDevices = map ({ name, ... }: {
     device = "/dev/mapper/${name}";
