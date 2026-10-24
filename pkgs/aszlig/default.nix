@@ -1,4 +1,4 @@
-{ callPackage, vim-full, gopass, kitty, mutt, xterm, radare2, rustfmt }:
+{ callPackage, vim-full, gopass, kitty, mutt, niri, xterm, radare2, rustfmt }:
 
 {
   aacolorize = callPackage ./aacolorize { };
@@ -8,6 +8,7 @@
   kitty = callPackage ./kitty { inherit kitty; };
   lockdev = callPackage ./lockdev { };
   mutt = callPackage ./mutt { inherit mutt; };
+  niri = callPackage ./niri { inherit niri; };
   nlast = callPackage ./nlast { };
   psi = callPackage ./psi { };
   vim = callPackage ./vim { vim = vim-full; };

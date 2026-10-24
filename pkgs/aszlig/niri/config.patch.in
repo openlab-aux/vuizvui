@@ -1,0 +1,555 @@
+diff --git a/niri-config/src/lib.rs b/niri-config/src/lib.rs
+index 329b7669..9f57d8eb 100644
+--- a/niri-config/src/lib.rs
++++ b/niri-config/src/lib.rs
+@@ -460,11 +460,16 @@ where
+ }
+ 
+ impl Config {
+-    pub fn load_default() -> Self {
++    pub fn load_default() -> ConfigParseResult<Self, miette::Report> {
+         let res = Config::parse(
+             Path::new("default-config.kdl"),
+             include_str!("../../resources/default-config.kdl"),
+-        );
++        )
++        .map_config_res(|res| {
++            let config = res.context("error parsing")?;
++            debug!("loaded default config");
++            Ok(config)
++        });
+ 
+         // Includes in the default config can break its parsing at runtime.
+         assert!(
+@@ -472,7 +477,7 @@ impl Config {
+             "default config must not have includes",
+         );
+ 
+-        res.config.unwrap()
++        res
+     }
+ 
+     pub fn load(path: &Path) -> ConfigParseResult<Self, miette::Report> {
+@@ -537,16 +542,12 @@ impl Config {
+ }
+ 
+ impl ConfigPath {
+-    /// Loads the config, returns an error if it doesn't exist.
++    /// Loads the config, returns default config if it doesn't exist.
+     pub fn load(&self) -> ConfigParseResult<Config, miette::Report> {
+         let _span = tracy_client::span!("ConfigPath::load");
+ 
+-        self.load_inner(|user_path, system_path| {
+-            Err(miette!(
+-                "no config file found; create one at {user_path:?} or {system_path:?}",
+-            ))
+-        })
+-        .map_config_res(|res| res.context("error loading config"))
++        self.load_inner(|_, _| Ok(None))
++            .map_config_res(|res| res.context("error loading config"))
+     }
+ 
+     /// Loads the config, or creates it if it doesn't exist.
+@@ -555,7 +556,8 @@ impl ConfigPath {
+     ///
+     /// If the config was created, but for some reason could not be read afterwards,
+     /// this may return `(Some(_), Err(_))`.
+-    pub fn load_or_create(&self) -> (Option<&Path>, ConfigParseResult<Config, miette::Report>) {
++    #[expect(unused)]
++    fn load_or_create(&self) -> (Option<&Path>, ConfigParseResult<Config, miette::Report>) {
+         let _span = tracy_client::span!("ConfigPath::load_or_create");
+ 
+         let mut created_at = None;
+@@ -563,7 +565,7 @@ impl ConfigPath {
+         let result = self
+             .load_inner(|user_path, _| {
+                 Self::create(user_path, &mut created_at)
+-                    .map(|()| user_path)
++                    .map(|()| Some(user_path))
+                     .with_context(|| format!("error creating config at {user_path:?}"))
+             })
+             .map_config_res(|res| res.context("error loading config"));
+@@ -573,18 +575,18 @@ impl ConfigPath {
+ 
+     fn load_inner<'a>(
+         &'a self,
+-        maybe_create: impl FnOnce(&'a Path, &'a Path) -> miette::Result<&'a Path>,
++        maybe_create: impl FnOnce(&'a Path, &'a Path) -> miette::Result<Option<&'a Path>>,
+     ) -> ConfigParseResult<Config, miette::Report> {
+         let path = match self {
+-            ConfigPath::Explicit(path) => path.as_path(),
++            ConfigPath::Explicit(path) => Some(path.as_path()),
+             ConfigPath::Regular {
+                 user_path,
+                 system_path,
+             } => {
+                 if user_path.exists() {
+-                    user_path.as_path()
++                    Some(user_path.as_path())
+                 } else if system_path.exists() {
+-                    system_path.as_path()
++                    Some(system_path.as_path())
+                 } else {
+                     match maybe_create(user_path.as_path(), system_path.as_path()) {
+                         Ok(x) => x,
+@@ -593,7 +595,8 @@ impl ConfigPath {
+                 }
+             }
+         };
+-        Config::load(path)
++        path.map(Config::load)
++            .unwrap_or_else(|| Config::load_default())
+     }
+ 
+     fn create<'a>(path: &'a Path, created_at: &mut Option<&'a Path>) -> miette::Result<()> {
+diff --git a/resources/default-config.kdl b/resources/default-config.kdl
+index ccad1ac2..283116ef 100644
+--- a/resources/default-config.kdl
++++ b/resources/default-config.kdl
+@@ -13,16 +13,16 @@ input {
+             // For more information, see xkeyboard-config(7).
+ 
+             // For example:
+-            // layout "us,ru"
++            layout "us"
++            model "pc104"
++            variant "dvorak"
++            options "caps:none"
+             // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
+ 
+             // If this section is empty, niri will fetch xkb settings
+             // from org.freedesktop.locale1. You can control these using
+             // localectl set-x11-keymap.
+         }
+-
+-        // Enable numlock on startup, omitting this setting disables it.
+-        numlock
+     }
+ 
+     // Next sections include libinput settings.
+@@ -31,11 +31,12 @@ input {
+     touchpad {
+         // off
+         tap
++        click-method "clickfinger"
+         // dwt
+         // dwtp
+         // drag false
+         // drag-lock
+-        natural-scroll
++        // natural-scroll
+         // accel-speed 0.2
+         // accel-profile "flat"
+         // scroll-method "two-finger"
+@@ -66,7 +67,16 @@ input {
+ 
+     // Focus windows and outputs automatically when moving the mouse into them.
+     // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
+-    // focus-follows-mouse max-scroll-amount="0%"
++    focus-follows-mouse max-scroll-amount="0%"
++}
++
++cursor {
++    xcursor-theme "catppuccin-frappe-lavender-cursors"
++    xcursor-size 24
++}
++
++xwayland-satellite {
++    path "@xwaylandSatellite@"
+ }
+ 
+ // You can configure outputs by their name, which you can find
+@@ -111,7 +121,7 @@ input {
+ // https://niri-wm.github.io/niri/Configuration:-Layout
+ layout {
+     // Set gaps around windows in logical pixels.
+-    gaps 16
++    gaps 8
+ 
+     // When to center a column when changing focus, options are:
+     // - "never", default behavior, focusing an off-screen column will keep at the left
+@@ -134,6 +144,8 @@ layout {
+         // fixed 1920
+     }
+ 
++    background-color "#000000"
++
+     // You can also customize the heights that "switch-preset-window-height" (Mod+Ctrl+Shift+R) toggles between.
+     // preset-window-heights { }
+ 
+@@ -159,7 +171,7 @@ layout {
+         // off
+ 
+         // How many logical pixels the ring extends out from the windows.
+-        width 4
++        width 2
+ 
+         // Colors can be set in a variety of ways:
+         // - CSS named colors: "red"
+@@ -268,7 +280,7 @@ layout {
+ // See the binds section below for more spawn examples.
+ 
+ // This line starts waybar, a commonly used bar for Wayland compositors.
+-spawn-at-startup "waybar"
++// spawn-at-startup "waybar"
+ 
+ // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
+ // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
+@@ -283,12 +295,12 @@ hotkey-overlay {
+ // Additionally, clients will be informed that they are tiled, removing some client-side rounded corners.
+ // This option will also fix border/focus ring drawing behind some semitransparent windows.
+ // After enabling or disabling this, you need to restart the apps for this to take effect.
+-// prefer-no-csd
++prefer-no-csd
+ 
+ // You can change the path where screenshots are saved.
+ // A ~ at the front will be expanded to the home directory.
+ // The path is formatted with strftime(3) to give you the screenshot date and time.
+-screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
++screenshot-path "~/screenshots/%Y-%m-%d_%H_%M.png"
+ 
+ // You can also set this to null to disable saving screenshots to disk.
+ // screenshot-path null
+@@ -304,13 +316,19 @@ animations {
+     // slowdown 3.0
+ }
+ 
++gestures {
++    hot-corners {
++        off
++    }
++}
++
+ // Window rules let you adjust behavior for individual windows.
+ // Find more information on the wiki:
+ // https://niri-wm.github.io/niri/Configuration:-Window-Rules
+ 
+ // Work around WezTerm's initial configure bug
+ // by setting an empty default-column-width.
+-window-rule {
++/-window-rule {
+     // This regular expression is intentionally made as specific as possible,
+     // since this is the default config, and we want no false positives.
+     // You can get away with just app-id="wezterm" if you want.
+@@ -318,8 +336,11 @@ window-rule {
+     default-column-width {}
+ }
+ 
++workspace "IM"
++workspace "FF"
++
+ // Open the Firefox picture-in-picture player as floating by default.
+-window-rule {
++/-window-rule {
+     // This app-id regular expression will work for both:
+     // - host Firefox (app-id is "firefox")
+     // - Flatpak Firefox (app-id is "org.mozilla.firefox")
+@@ -327,6 +348,27 @@ window-rule {
+     open-floating true
+ }
+ 
++window-rule {
++    match app-id=r#"^firefox$"#
++    open-on-workspace "FF"
++}
++
++window-rule {
++    match app-id=r#"^psi$"#
++    open-on-workspace "IM"
++    block-out-from "screencast"
++}
++
++window-rule {
++    match app-id=r#"^org\.gnupg\.pinentry-qt$"#
++    block-out-from "screen-capture"
++}
++
++window-rule {
++    match app-id=r#"^steam$"#
++    block-out-from "screencast"
++}
++
+ // Example: block out two password managers from screen capture.
+ // (This example rule is commented out with a "/-" in front.)
+ /-window-rule {
+@@ -346,6 +388,11 @@ window-rule {
+     clip-to-geometry true
+ }
+ 
++layer-rule {
++    match namespace=r#"^notifications$"#
++    block-out-from "screencast"
++}
++
+ binds {
+     // Keys consist of modifiers separated by + signs, followed by an XKB key name
+     // in the end. To find an XKB name for a particular key, you may use a program
+@@ -362,61 +409,53 @@ binds {
+     Mod+Shift+Slash { show-hotkey-overlay; }
+ 
+     // Suggested binds for running programs: terminal, app launcher, screen locker.
+-    Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
+-    Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
+-    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
++    Mod+Shift+Return hotkey-overlay-title="Open terminal" { spawn "@systemctl@" "--user" "start" "kitty.service"; }
++    Mod+P hotkey-overlay-title="Open launcher" { spawn "@systemctl@" "--user" "start" "anyrun.service"; }
++    Mod+L hotkey-overlay-title="Lock screen" { spawn "@systemctl@" "--user" "start" "swaylock.service"; }
+ 
+     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
+     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
+     // For example, this is a standard bind to toggle the screen reader (orca).
+-    Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
++    // Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
+ 
+     // Example volume keys mappings for PipeWire & WirePlumber.
+     // The allow-when-locked=true property makes them work even when the session is locked.
+     // Using spawn-sh allows to pass multiple arguments together with the command.
+     // "-l 1.0" limits the volume to 100%.
+-    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
+-    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+-    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+-    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
++    // XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
++    // XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
++    // XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
++    // XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+ 
+     // Example media keys mapping using playerctl.
+     // This will work with any MPRIS-enabled media player.
+-    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+-    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
+-    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
+-    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
++    // XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
++    // XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
++    // XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
++    // XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
+ 
+     // Example brightness key mappings for brightnessctl.
+     // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
+     // but you need to manually put each argument in separate "" quotes.
+-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
++    XF86MonBrightnessUp allow-when-locked=true { spawn "@brightnessctl@" "--class=backlight" "set" "+5%"; }
++    XF86MonBrightnessDown allow-when-locked=true { spawn "@brightnessctl@" "--class=backlight" "set" "5%-"; }
+ 
+     // Open/close the Overview: a zoomed-out view of workspaces and windows.
+     // You can also move the mouse into the top-left hot corner,
+     // or do a four-finger swipe up on a touchpad.
+     Mod+O repeat=false { toggle-overview; }
+ 
+-    Mod+Q repeat=false { close-window; }
++    Mod+Shift+C repeat=false { close-window; }
+ 
+     Mod+Left  { focus-column-left; }
+     Mod+Down  { focus-window-down; }
+     Mod+Up    { focus-window-up; }
+     Mod+Right { focus-column-right; }
+-    Mod+H     { focus-column-left; }
+-    Mod+J     { focus-window-down; }
+-    Mod+K     { focus-window-up; }
+-    Mod+L     { focus-column-right; }
+ 
+-    Mod+Ctrl+Left  { move-column-left; }
+-    Mod+Ctrl+Down  { move-window-down; }
+-    Mod+Ctrl+Up    { move-window-up; }
+-    Mod+Ctrl+Right { move-column-right; }
+-    Mod+Ctrl+H     { move-column-left; }
+-    Mod+Ctrl+J     { move-window-down; }
+-    Mod+Ctrl+K     { move-window-up; }
+-    Mod+Ctrl+L     { move-column-right; }
++    Mod+Shift+Left  { move-column-left; }
++    Mod+Shift+Down  { move-window-down; }
++    Mod+Shift+Up    { move-window-up; }
++    Mod+Shift+Right { move-column-right; }
+ 
+     // Alternative commands that move across workspaces when reaching
+     // the first or last window in a column.
+@@ -430,23 +469,20 @@ binds {
+     Mod+Ctrl+Home { move-column-to-first; }
+     Mod+Ctrl+End  { move-column-to-last; }
+ 
+-    Mod+Shift+Left  { focus-monitor-left; }
+-    Mod+Shift+Down  { focus-monitor-down; }
+-    Mod+Shift+Up    { focus-monitor-up; }
+-    Mod+Shift+Right { focus-monitor-right; }
+-    Mod+Shift+H     { focus-monitor-left; }
+-    Mod+Shift+J     { focus-monitor-down; }
+-    Mod+Shift+K     { focus-monitor-up; }
+-    Mod+Shift+L     { focus-monitor-right; }
++    Mod+V         { focus-monitor-left; }
++    Mod+Z         { focus-monitor-down; }
++    Mod+S         { focus-monitor-up; }
++    Mod+Backslash { focus-monitor-right; }
+ 
+-    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+-    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+-    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+-    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+-    Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+-    Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+-    Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+-    Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
++    Mod+Shift+V         { move-column-to-monitor-left; }
++    Mod+Shift+Z         { move-column-to-monitor-down; }
++    Mod+Shift+S         { move-column-to-monitor-up; }
++    Mod+Shift+Backslash { move-column-to-monitor-right; }
++
++    Mod+Alt+V         { move-workspace-to-monitor-left; }
++    Mod+Alt+Z         { move-workspace-to-monitor-down; }
++    Mod+Alt+S         { move-workspace-to-monitor-up; }
++    Mod+Alt+Backslash { move-workspace-to-monitor-right; }
+ 
+     // Alternatively, there are commands to move just a single window:
+     // Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
+@@ -458,12 +494,8 @@ binds {
+ 
+     Mod+Page_Down      { focus-workspace-down; }
+     Mod+Page_Up        { focus-workspace-up; }
+-    Mod+U              { focus-workspace-down; }
+-    Mod+I              { focus-workspace-up; }
+     Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+     Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+-    Mod+Ctrl+U         { move-column-to-workspace-down; }
+-    Mod+Ctrl+I         { move-column-to-workspace-up; }
+ 
+     // Alternatively, there are commands to move just a single window:
+     // Mod+Ctrl+Page_Down { move-window-to-workspace-down; }
+@@ -471,8 +503,6 @@ binds {
+ 
+     Mod+Shift+Page_Down { move-workspace-down; }
+     Mod+Shift+Page_Up   { move-workspace-up; }
+-    Mod+Shift+U         { move-workspace-down; }
+-    Mod+Shift+I         { move-workspace-up; }
+ 
+     // You can bind mouse wheel scroll ticks using the following syntax.
+     // These binds will change direction based on the natural-scroll setting.
+@@ -523,21 +553,27 @@ binds {
+     Mod+7 { focus-workspace 7; }
+     Mod+8 { focus-workspace 8; }
+     Mod+9 { focus-workspace 9; }
+-    Mod+Ctrl+1 { move-column-to-workspace 1; }
+-    Mod+Ctrl+2 { move-column-to-workspace 2; }
+-    Mod+Ctrl+3 { move-column-to-workspace 3; }
+-    Mod+Ctrl+4 { move-column-to-workspace 4; }
+-    Mod+Ctrl+5 { move-column-to-workspace 5; }
+-    Mod+Ctrl+6 { move-column-to-workspace 6; }
+-    Mod+Ctrl+7 { move-column-to-workspace 7; }
+-    Mod+Ctrl+8 { move-column-to-workspace 8; }
+-    Mod+Ctrl+9 { move-column-to-workspace 9; }
++    Mod+Shift+1 { move-column-to-workspace focus=false 1; }
++    Mod+Shift+2 { move-column-to-workspace focus=false 2; }
++    Mod+Shift+3 { move-column-to-workspace focus=false 3; }
++    Mod+Shift+4 { move-column-to-workspace focus=false 4; }
++    Mod+Shift+5 { move-column-to-workspace focus=false 5; }
++    Mod+Shift+6 { move-column-to-workspace focus=false 6; }
++    Mod+Shift+7 { move-column-to-workspace focus=false 7; }
++    Mod+Shift+8 { move-column-to-workspace focus=false 8; }
++    Mod+Shift+9 { move-column-to-workspace focus=false 9; }
++
++    Mod+I { focus-workspace "IM"; }
++    Mod+Shift+I { move-column-to-workspace "IM"; }
++
++    Mod+B { focus-workspace "FF"; }
++    Mod+Shift+B { move-column-to-workspace "FF"; }
+ 
+     // Alternatively, there are commands to move just a single window:
+     // Mod+Ctrl+1 { move-window-to-workspace 1; }
+ 
+     // Switches focus between the current and the previous workspace.
+-    // Mod+Tab { focus-workspace-previous; }
++    Mod+Tab { focus-workspace-previous; }
+ 
+     // The following binds move the focused window in and out of a column.
+     // If the window is alone, they will consume it into the nearby column to the side.
+@@ -559,13 +595,8 @@ binds {
+     Mod+Ctrl+R { reset-window-height; }
+ 
+     Mod+F { maximize-column; }
+-    Mod+Shift+F { fullscreen-window; }
+-
+-    // While maximize-column leaves gaps and borders around the window,
+-    // maximize-window-to-edges doesn't: the window expands to the edges of the screen.
+-    // This bind corresponds to normal window maximizing,
+-    // e.g. by double-clicking on the titlebar.
+-    Mod+M { maximize-window-to-edges; }
++    Mod+Shift+F { maximize-window-to-edges; }
++    Mod+Alt+F { fullscreen-window; }
+ 
+     // Expand the focused column to space not taken up by other fully visible columns.
+     // Makes the column "fill the rest of the space".
+@@ -592,13 +623,13 @@ binds {
+     Mod+Shift+Equal { set-window-height "+10%"; }
+ 
+     // Move the focused window between the floating and the tiling layout.
+-    Mod+V       { toggle-window-floating; }
+-    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
++    Mod+Shift+Space       { toggle-window-floating; }
++    Mod+Space { switch-focus-between-floating-and-tiling; }
+ 
+     // Toggle tabbed column display mode.
+     // Windows in this column will appear as vertical tabs,
+     // rather than stacked on top of each other.
+-    Mod+W { toggle-column-tabbed-display; }
++    Mod+T { toggle-column-tabbed-display; }
+ 
+     // Actions to switch layouts.
+     // Note: if you uncomment these, make sure you do NOT have
+@@ -623,7 +654,7 @@ binds {
+     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+ 
+     // The quit action will show a confirmation dialog to avoid accidental exits.
+-    Mod+Shift+E { quit; }
++    Mod+Shift+Q { quit; }
+     Ctrl+Alt+Delete { quit; }
+ 
+     // Powers off the monitors. To turn them back on, do any input like
+diff --git a/src/cursor.rs b/src/cursor.rs
+index a856de94..8d4f3ba9 100644
+--- a/src/cursor.rs
++++ b/src/cursor.rs
+@@ -189,6 +189,7 @@ impl CursorManager {
+     /// Set the common XCURSOR env variables.
+     fn ensure_env(theme: &str, size: u8) {
+         env::set_var("XCURSOR_THEME", theme);
++        env::set_var("XCURSOR_PATH", "@xcursorPath@");
+         env::set_var("XCURSOR_SIZE", size.to_string());
+     }
+ 
+diff --git a/src/main.rs b/src/main.rs
+index e80992ee..59ddc37a 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -25,7 +25,7 @@ use niri::utils::spawning::{
+     REMOVE_ENV_RUST_BACKTRACE, REMOVE_ENV_RUST_LIB_BACKTRACE,
+ };
+ use niri::utils::{cause_panic, version, watcher, xwayland, IS_SYSTEMD_SERVICE};
+-use niri_config::{Config, ConfigPath};
++use niri_config::ConfigPath;
+ use niri_ipc::socket::SOCKET_PATH_ENV;
+ use sd_notify::NotifyState;
+ use smithay::reexports::wayland_server::Display;
+@@ -148,12 +148,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
+     // Load the config.
+     let config_path = config_path(cli.config);
+     env::remove_var("NIRI_CONFIG");
+-    let (config_created_at, config_load_result) = config_path.load_or_create();
++    let config_load_result = config_path.load();
+     let config_errored = config_load_result.config.is_err();
+-    let mut config = config_load_result.config.unwrap_or_else(|err| {
+-        warn!("{err:?}");
+-        Config::load_default()
+-    });
++    let mut config = config_load_result.config?;
+     let config_includes = config_load_result.includes;
+ 
+     let spawn_at_startup = mem::take(&mut config.spawn_at_startup);
+@@ -261,8 +258,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
+     if config_errored {
+         state.niri.config_error_notification.show();
+         state.ipc_config_loaded(true);
+-    } else if let Some(path) = config_created_at {
+-        state.niri.config_error_notification.show_created(path);
+     }
+ 
+     // Run the compositor.
