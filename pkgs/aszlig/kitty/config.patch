@@ -1,0 +1,105 @@
+diff --git a/kitty/options/definition.py b/kitty/options/definition.py
+index 3ef839681..d97b25060 100644
+--- a/kitty/options/definition.py
++++ b/kitty/options/definition.py
+@@ -44,7 +44,7 @@
+ 
+ opt(
+     'font_family',
+-    'monospace',
++    'MxPlus IBM VGA 8x16',
+     option_type='parse_font_spec',
+     long_text="""
+ You can specify different fonts for the bold/italic/bold-italic variants.
+@@ -61,7 +61,7 @@
+ 
+ opt('bold_italic_font', 'auto', option_type='parse_font_spec')
+ 
+-opt('font_size', '11.0', option_type='to_font_size', ctype='double', long_text='Font size (in pts).')
++opt('font_size', '13.0', option_type='to_font_size', ctype='double', long_text='Font size (in pts).')
+ 
+ opt(
+     'force_ltr',
+@@ -514,7 +514,7 @@
+ 
+ opt(
+     'scrollback_lines',
+-    '2000',
++    '10000',
+     option_type='scrollback_lines',
+     long_text="""
+ Number of lines of history to keep in memory for scrolling back. Memory is
+@@ -1436,7 +1436,7 @@
+ 
+ opt(
+     'enable_audio_bell',
+-    'yes',
++    'no',
+     option_type='to_bool',
+     ctype='bool',
+     long_text="""
+@@ -2367,7 +2367,7 @@
+ 
+ opt(
+     'background_opacity',
+-    '1.0',
++    '0.7',
+     option_type='unit_float',
+     ctype='float',
+     long_text="""
+@@ -3659,7 +3659,7 @@
+ 
+ map(
+     'Scroll page up',
+-    'scroll_page_up kitty_mod+page_up scroll_page_up',
++    'scroll_page_up shift+page_up scroll_page_up',
+ )
+ map(
+     'Scroll page up',
+@@ -3669,7 +3669,7 @@
+ 
+ map(
+     'Scroll page down',
+-    'scroll_page_down kitty_mod+page_down scroll_page_down',
++    'scroll_page_down shift+page_down scroll_page_down',
+ )
+ map(
+     'Scroll page down',
+@@ -4554,5 +4554,24 @@
+     'quit cmd+q quit',
+     only='macos',
+ )
++
++map('Disable media play/pause key',
++    'disable_media_play_key media_play discard_event',
++    long_text='''
++This is a Typematrix-specific annoyance, because below the semicolon key, is
++the media play/pause key, which when pressed will insert "<ESC>[57428u" and
++that in turn will run "undo" in Vim 7428 times.
++'''
++)
++
++map('Disable menu key',
++    'disable_menu_key menu discard_event',
++    long_text='''
++Similar to the play/pause but a little bit less annoying since it doesn't undo
++lots of stuff in Vim, but it's still annoying enough to warrant disabling it
++since that key is directly to the right of the play/pause key.
++'''
++)
++
+ egr()  # }}}
+ egr()  # }}}
+diff --git a/kitty_tests/screen.py b/kitty_tests/screen.py
+index 0ba9191e5..797246403 100644
+--- a/kitty_tests/screen.py
++++ b/kitty_tests/screen.py
+@@ -1802,7 +1802,7 @@ def q(send, expected=None):
+         q({'transparent_background_color2': 'red@0.5'})
+         q({'transparent_background_color2': '?'}, {'transparent_background_color2': (Color(255, 0, 0), 126)})
+         q({'transparent_background_color2': '#ffffff@-1'})
+-        q({'transparent_background_color2': '?'}, {'transparent_background_color2': (Color(255, 255, 255), 255)})
++        q({'transparent_background_color2': '?'}, {'transparent_background_color2': (Color(255, 255, 255), 177)})
+         opts.color114 = Color(1, 1, 4)
+         s.color_profile.reload_from_opts(opts)
+         self.assertTrue(s.color_profile.palette_color_is_generated(213))
