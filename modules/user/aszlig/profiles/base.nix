@@ -75,7 +75,6 @@ in {
     ];
 
     nixpkgs.config = {
-      pulseaudio = true;
       allowBroken = true;
     };
 
