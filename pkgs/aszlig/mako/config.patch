@@ -1,0 +1,33 @@
+diff --git a/config.c b/config.c
+index 817f7e9..1233b3d 100644
+--- a/config.c
++++ b/config.c
+@@ -102,7 +102,7 @@ void init_default_style(struct mako_style *style) {
+ 	style->icon_path = strdup("");  // hicolor and pixmaps are implicit.
+ 	style->icon_border_radius = 0;
+ 
+-	style->font = strdup("monospace 10");
++	style->font = strdup("MxPlus IBM VGA 8x16");
+ 	style->markup = true;
+ 	style->format = strdup("<b>%s</b>\n%b");
+ 	style->text_alignment = PANGO_ALIGN_LEFT;
+@@ -123,16 +123,16 @@ void init_default_style(struct mako_style *style) {
+ 	style->icon_location = MAKO_ICON_LOCATION_LEFT;
+ 
+ 	style->output = strdup("");
+-	style->layer = ZWLR_LAYER_SHELL_V1_LAYER_TOP;
++	style->layer = ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY;
+ 	style->max_visible = 5;
+ 
+ 	style->anchor =
+-		ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP | ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
++		ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM | ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
+ 
+ 	style->button_bindings.left.action = MAKO_BINDING_INVOKE_ACTION;
+ 	style->button_bindings.left.action_name = strdup(DEFAULT_ACTION_KEY);
+ 	style->button_bindings.right.action = MAKO_BINDING_DISMISS;
+-	style->button_bindings.middle.action = MAKO_BINDING_NONE;
++	style->button_bindings.middle.action = MAKO_BINDING_DISMISS_ALL;
+ 	style->touch_binding.action = MAKO_BINDING_DISMISS;
+ 
+ 	// Everything in the default config is explicitly specified.

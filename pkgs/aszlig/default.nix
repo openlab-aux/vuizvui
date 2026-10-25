@@ -1,5 +1,5 @@
-{ callPackage, vim-full, anyrun, gopass, kitty, mutt, niri, xterm, radare2
-, rustfmt
+{ callPackage, vim-full, anyrun, gopass, kitty, mako, mutt, niri, xterm
+, radare2, rustfmt
 }:
 
 {
@@ -10,6 +10,7 @@
   gopass = callPackage ./gopass { inherit gopass; };
   kitty = callPackage ./kitty { inherit kitty; };
   lockdev = callPackage ./lockdev { };
+  mako = callPackage ./mako { inherit mako; };
   mutt = callPackage ./mutt { inherit mutt; };
   niri = callPackage ./niri { inherit niri; };
   nlast = callPackage ./nlast { };
