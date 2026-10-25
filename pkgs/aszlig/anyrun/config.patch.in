@@ -1,0 +1,284 @@
+diff --git a/anyrun/res/style.css b/anyrun/res/style.css
+index 32d0e7e..3ea92b2 100644
+--- a/anyrun/res/style.css
++++ b/anyrun/res/style.css
+@@ -1,76 +1,25 @@
+-@define-color accent #5599d2;
+-@define-color bg-color #161616;
+-@define-color fg-color #eeeeee;
+-@define-color desc-color #cccccc;
+-
+ window {
+-  background: transparent;
++  background-color: rgba(0, 0, 0, 0);
+ }
+ 
+-box.main {
+-  padding: 5px;
+-  margin: 10px;
++box#main {
+   border-radius: 10px;
+-  border: 2px solid @accent;
+-  background-color: @bg-color;
+-  box-shadow: 0 0 5px black;
++  background-color: #161616;
+ }
+ 
+-
+-text {
+-  min-height: 30px;
+-  padding: 5px;
+-  border-radius: 5px;
+-  color: @fg-color;
+-}
+-
+-.matches {
++list#main {
+   background-color: rgba(0, 0, 0, 0);
+   border-radius: 10px;
+ }
+ 
+-box.plugin:first-child {
+-  margin-top: 5px;
+-}
+-
+-box.plugin.info {
+-  min-width: 200px;
+-}
+-
+-list.plugin {
++list#plugin {
+   background-color: rgba(0, 0, 0, 0);
+ }
+ 
+-label.match {
+-  color: @fg-color;
+-}
+-
+-label.match.description {
++label#match-desc {
+   font-size: 10px;
+-  color: @desc-color;
+ }
+ 
+-label.plugin.info {
++label#plugin {
+   font-size: 14px;
+-  color: @fg-color;
+ }
+-
+-.match {
+-  background: transparent;
+-}
+-
+-.match:selected {
+-  border-left: 4px solid @accent;
+-  background: transparent;
+-  animation: fade 0.1s linear;
+-}
+-
+-@keyframes fade {
+-  0% {
+-    opacity: 0;
+-  }
+-
+-  100% {
+-    opacity: 1;
+-  }
+-}
+\ No newline at end of file
+diff --git a/anyrun/src/config.rs b/anyrun/src/config.rs
+index 0c06353..a580ea1 100644
+--- a/anyrun/src/config.rs
++++ b/anyrun/src/config.rs
+@@ -143,7 +143,7 @@ impl Default for Config {
+             hide_plugin_info: false,
+             ignore_exclusive_zones: false,
+             close_on_click: false,
+-            show_results_immediately: false,
++            show_results_immediately: true,
+             max_entries: None,
+             layer: Self::default_layer(),
+             keyboard_mode: Self::default_keyboard_mode(),
+diff --git a/anyrun/src/main.rs b/anyrun/src/main.rs
+index a7ac1df..3b03367 100644
+--- a/anyrun/src/main.rs
++++ b/anyrun/src/main.rs
+@@ -141,7 +141,9 @@ fn main() {
+             };
+             let env = std::env::vars().collect();
+ 
+-            if app.is_remote() {
++            // *Always* try to contact the daemon because we run in a systemd
++            // service and if the daemon is unavailable we should fail hard.
++            if true {
+                 let res = proxy
+                     .call_sync(
+                         "Show",
+diff --git a/plugins/applications/src/lib.rs b/plugins/applications/src/lib.rs
+index a4f8f34..a4e19a9 100644
+--- a/plugins/applications/src/lib.rs
++++ b/plugins/applications/src/lib.rs
+@@ -3,7 +3,7 @@ use anyrun_plugin::{anyrun_interface::HandleResult, *};
+ use fuzzy_matcher::FuzzyMatcher;
+ use scrubber::DesktopEntry;
+ use serde::Deserialize;
+-use std::{env, fs, path::PathBuf, process::Command};
++use std::{env, fs, process::Command};
+ 
+ #[derive(Deserialize)]
+ pub struct Config {
+@@ -11,14 +11,6 @@ pub struct Config {
+     max_entries: usize,
+     #[serde(default)]
+     hide_description: bool,
+-    terminal: Option<Terminal>,
+-    preprocess_exec_script: Option<PathBuf>,
+-}
+-
+-#[derive(Deserialize)]
+-pub struct Terminal {
+-    command: String,
+-    args: String,
+ }
+ 
+ impl Default for Config {
+@@ -27,8 +19,6 @@ impl Default for Config {
+             desktop_actions: false,
+             max_entries: 5,
+             hide_description: false,
+-            preprocess_exec_script: None,
+-            terminal: None,
+         }
+     }
+ }
+@@ -54,102 +44,37 @@ pub fn handler(selection: Match, state: &State) -> HandleResult {
+         })
+         .unwrap();
+ 
+-    let exec = if let Some(script) = &state.config.preprocess_exec_script {
+-        let output = Command::new("sh")
+-            .arg("-c")
+-            .arg(format!(
+-                "{} {} {}",
+-                script.display(),
+-                if entry.term { "term" } else { "no-term" },
+-                &entry.exec
+-            ))
+-            .output()
+-            .unwrap_or_else(|why| {
+-                eprintln!("[applications] Error running preprocess script: {}", why);
+-                std::process::exit(1);
+-            });
++    let mut cmd = Command::new("@systemd-run@");
+ 
+-        String::from_utf8_lossy(&output.stdout).trim().to_string()
+-    } else {
+-        entry.exec.clone()
+-    };
++    cmd.args([
++        "--user",
++        "--collect",
++        "--property=Requires=graphical-session.target",
++    ]);
++
++    cmd.arg(match &entry.path {
++        Some(path) if path.exists() => [
++            std::ffi::OsStr::new("--working-directory="),
++            path.as_os_str(),
++        ]
++        .into_iter()
++        .collect::<std::ffi::OsString>(),
++        _ => "--same-dir".into(),
++    });
++
++    cmd.args(env::vars_os().map(|(key, val)| {
++        ["--setenv=".into(), key, "=".into(), val]
++            .into_iter()
++            .collect::<std::ffi::OsString>()
++    }));
++
++    cmd.arg("--");
+ 
+     if entry.term {
+-        match &state.config.terminal {
+-            Some(term) => {
+-                if let Err(why) = Command::new("sh")
+-                    .arg("-c")
+-                    .arg(format!(
+-                        "{} {}",
+-                        term.command,
+-                        term.args.replace("{}", &exec)
+-                    ))
+-                    .spawn()
+-                {
+-                    eprintln!("[applications] Error running desktop entry: {}", why);
+-                }
+-            }
+-            None => {
+-                let sensible_terminals = &[
+-                    Terminal {
+-                        command: "alacritty".to_string(),
+-                        args: "-e {}".to_string(),
+-                    },
+-                    Terminal {
+-                        command: "foot".to_string(),
+-                        args: "-e \"{}\"".to_string(),
+-                    },
+-                    Terminal {
+-                        command: "kitty".to_string(),
+-                        args: "-e \"{}\"".to_string(),
+-                    },
+-                    Terminal {
+-                        command: "wezterm".to_string(),
+-                        args: "-e \"{}\"".to_string(),
+-                    },
+-                    Terminal {
+-                        command: "wterm".to_string(),
+-                        args: "-e \"{}\"".to_string(),
+-                    },
+-                    Terminal {
+-                        command: "ghostty".to_string(),
+-                        args: "-e \"{}\"".to_string(),
+-                    },
+-                ];
+-                for term in sensible_terminals {
+-                    if Command::new("which")
+-                        .arg(&term.command)
+-                        .output()
+-                        .is_ok_and(|output| output.status.success())
+-                    {
+-                        if let Err(why) = Command::new("sh")
+-                            .arg("-c")
+-                            .arg(format!(
+-                                "{} {}",
+-                                term.command,
+-                                term.args.replace("{}", &exec)
+-                            ))
+-                            .spawn()
+-                        {
+-                            eprintln!("Error running desktop entry: {}", why);
+-                        }
+-                        break;
+-                    }
+-                }
+-            }
+-        }
+-    } else if let Err(why) = {
+-        let current_dir = &env::current_dir().unwrap();
++        cmd.arg("@kitty@").arg("--");
++    }
+ 
+-        Command::new("sh")
+-            .arg("-c")
+-            .arg(&exec)
+-            .current_dir(match &entry.path {
+-                Some(path) if path.exists() => path,
+-                _ => current_dir,
+-            })
+-            .spawn()
+-    } {
++    if let Err(why) = cmd.args(["@dash@", "-c"]).arg(&entry.exec).status() {
+         eprintln!("Error running desktop entry: {}", why);
+     }
+ 

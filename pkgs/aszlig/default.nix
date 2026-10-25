@@ -1,7 +1,10 @@
-{ callPackage, vim-full, gopass, kitty, mutt, niri, xterm, radare2, rustfmt }:
+{ callPackage, vim-full, anyrun, gopass, kitty, mutt, niri, xterm, radare2
+, rustfmt
+}:
 
 {
   aacolorize = callPackage ./aacolorize { };
+  anyrun = callPackage ./anyrun { inherit anyrun; };
   firefox = callPackage ./firefox { };
   git-detach = callPackage ./git-detach { };
   gopass = callPackage ./gopass { inherit gopass; };
