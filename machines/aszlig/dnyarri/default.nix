@@ -92,18 +92,4 @@ in {
   }) cryptDevices.swap;
 
   users.users.aszlig.extraGroups = [ "scanner" ];
-
-  services.xserver.videoDrivers = [ "amdgpu" ];
-  services.xserver.xrandrHeads = [ "DisplayPort-0" "DisplayPort-1" ];
-  services.xserver.wacom.enable = true;
-
-  vuizvui.user.aszlig.services.i3.workspaces."1" = {
-    label = "XMPP";
-    assign = lib.singleton { class = "^(?:Tkabber|Gajim|Psi)\$"; };
-  };
-
-  vuizvui.user.aszlig.services.i3.workspaces."3" = {
-    label = "Browser";
-    assign = lib.singleton { class = "^Firefox\$"; };
-  };
 }
