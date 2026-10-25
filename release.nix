@@ -1,6 +1,6 @@
 { vuizvuiSrc ? null
 , nixpkgsSrc ? <nixpkgs>
-, supportedSystems ? [ "i686-linux" "x86_64-linux" ]
+, supportedSystems ? [ "x86_64-linux" ]
 }:
 
 let
