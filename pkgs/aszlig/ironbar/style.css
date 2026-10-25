@@ -1,0 +1,41 @@
+* {
+  font-family: 'MxPlus IBM VGA 8x16';
+  font-size: 13pt;
+
+  border: none;
+  background-color: transparent;
+  margin: 0;
+  text-shadow: none;
+  -gtk-icon-shadow: none;
+  outline-style: none;
+}
+
+button, label {
+  color: white;
+}
+
+.container button {
+  background: none;
+}
+
+.workspaces .item {
+  border-radius: 0;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.workspaces .item.focused {
+  box-shadow: inset 0 -4px #9191ff;
+}
+
+.workspaces *:not(.focused):hover {
+  box-shadow: inset 0 -3px;
+}
+
+.tray .item {
+  padding: 0;
+}
+
+.clock {
+  font-weight: bold;
+}

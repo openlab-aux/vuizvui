@@ -1,5 +1,5 @@
-{ callPackage, vim-full, anyrun, gopass, kitty, mako, mutt, niri, xterm
-, radare2, rustfmt
+{ callPackage, vim-full, anyrun, gopass, ironbar, kitty, mako, mutt, niri
+, xterm, radare2, rustfmt
 }:
 
 {
@@ -8,6 +8,7 @@
   firefox = callPackage ./firefox { };
   git-detach = callPackage ./git-detach { };
   gopass = callPackage ./gopass { inherit gopass; };
+  ironbar = callPackage ./ironbar { inherit ironbar; };
   kitty = callPackage ./kitty { inherit kitty; };
   lockdev = callPackage ./lockdev { };
   mako = callPackage ./mako { inherit mako; };

@@ -1,0 +1,57 @@
+diff --git a/src/config/mod.rs b/src/config/mod.rs
+index 1281982..0c3bac0 100644
+--- a/src/config/mod.rs
++++ b/src/config/mod.rs
+@@ -532,9 +532,10 @@ impl Default for DoubleClickTime {
+     }
+ }
+ 
+-#[derive(Debug, Serialize, Deserialize, Clone)]
++#[derive(Debug, Serialize, Deserialize, Default, Clone)]
+ #[serde(untagged)]
+ pub enum ConfigLocation {
++    #[default]
+     Minimal,
+     Desktop,
+     Custom(PathBuf),
+@@ -552,12 +553,6 @@ impl FromStr for ConfigLocation {
+     }
+ }
+ 
+-impl Default for ConfigLocation {
+-    fn default() -> Self {
+-        Self::Custom(Self::default_path())
+-    }
+-}
+-
+ impl ConfigLocation {
+     pub fn default_path() -> PathBuf {
+         dirs::config_dir()
+@@ -597,22 +592,21 @@ impl Config {
+     ) -> (Config, CssSource, ErrorLevel) {
+         cfg_if! {
+             if #[cfg(feature = "config+corn")] {
+-                const CONFIG_MINIMAL: (&str, FileFormat) = (include_str!("../../examples/minimal/config.corn"), FileFormat::Corn);
++                const CONFIG_MINIMAL: (&str, FileFormat) = (include_str!(env!("IRONBAR_CONFIG")), FileFormat::Corn);
+                 const CONFIG_DESKTOP: (&str, FileFormat) = (include_str!("../../examples/desktop/config.corn"), FileFormat::Corn);
+             } else if #[cfg(feature = "config+json")] {
+-                const CONFIG_MINIMAL: (&str, FileFormat) = (include_str!("../../examples/minimal/config.json"), FileFormat::Json);
++                const CONFIG_MINIMAL: (&str, FileFormat) = (include_str!(env!("IRONBAR_CONFIG")), FileFormat::Json);
+                 const CONFIG_DESKTOP: (&str, FileFormat) = (include_str!("../../examples/desktop/config.json"), FileFormat::Json);
+             } else if #[cfg(feature = "config+yaml")] {
+-                const CONFIG_MINIMAL: (&str, FileFormat) = (include_str!("../../examples/minimal/config.yaml"), FileFormat::Yaml);
++                const CONFIG_MINIMAL: (&str, FileFormat) = (include_str!(env!("IRONBAR_CONFIG")), FileFormat::Yaml);
+                 const CONFIG_DESKTOP: (&str, FileFormat) = (include_str!("../../examples/desktop/config.yaml"), FileFormat::Yaml);
+             } else if #[cfg(feature = "config+toml")] {
+-                const CONFIG_MINIMAL: (&str, FileFormat) = (include_str!("../../examples/minimal/config.toml"), FileFormat::Toml);
++                const CONFIG_MINIMAL: (&str, FileFormat) = (include_str!(env!("IRONBAR_CONFIG")), FileFormat::Toml);
+                 const CONFIG_DESKTOP: (&str, FileFormat) = (include_str!("../../examples/desktop/config.toml"), FileFormat::Toml);
+             }
+         }
+ 
+-        const CSS_MINIMAL: CssSource =
+-            CssSource::String(include_str!("../../examples/minimal/style.css"));
++        const CSS_MINIMAL: CssSource = CssSource::String(include_str!(env!("IRONBAR_CSS")));
+ 
+         const CSS_DESKTOP: CssSource =
+             CssSource::String(include_str!("../../examples/desktop/style.css"));
