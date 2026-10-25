@@ -69,7 +69,6 @@ in {
       termdown
       unfreePkgs.unrar
       unzip
-      vlock
       vuizvui.aszlig.vim
       wget
       xz

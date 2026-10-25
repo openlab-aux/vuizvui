@@ -26,9 +26,7 @@
   ./user/aszlig/programs/git
   ./user/aszlig/programs/mpv
   ./user/aszlig/programs/zsh
-  ./user/aszlig/services/i3
   ./user/aszlig/services/niri
-  ./user/aszlig/services/vlock
   ./user/devhell/profiles/base.nix
   ./user/devhell/profiles/packages.nix
   ./user/devhell/profiles/services.nix

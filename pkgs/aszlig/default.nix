@@ -1,5 +1,5 @@
 { callPackage, vim-full, anyrun, gopass, ironbar, kitty, mako, mutt, niri
-, xterm, radare2, rustfmt
+, radare2, rustfmt
 }:
 
 {
@@ -17,5 +17,4 @@
   nlast = callPackage ./nlast { };
   psi = callPackage ./psi { };
   vim = callPackage ./vim { vim = vim-full; };
-  xterm = callPackage ./xterm { inherit xterm; };
 }

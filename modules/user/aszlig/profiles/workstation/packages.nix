@@ -73,7 +73,6 @@ pkgs: with pkgs; [
   w3m
   whois
   wireshark
-  xorg.xhost
   yt-dlp
   zathura
   zbar

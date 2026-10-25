@@ -2,7 +2,6 @@
 
 let
   cfg = config.vuizvui.user.aszlig.profiles.workstation;
-  inherit (config.services.xserver) xrandrHeads;
 in {
   options.vuizvui.user.aszlig.profiles.workstation = {
     enable = lib.mkEnableOption "Workstation profile for aszlig";
@@ -17,20 +16,7 @@ in {
     # Allow sync, sak and unraw
     boot.kernel.sysctl."kernel.sysrq" = 20;
 
-    environment.systemPackages = with lib; let
-      mkRandrConf = acc: rcfg: acc ++ singleton {
-        name = rcfg.output;
-        value = "--output ${lib.escapeShellArg rcfg.output} --preferred"
-              + optionalString rcfg.primary " --primary"
-              + optionalString (acc != []) " --right-of '${(head acc).name}'";
-      };
-      randrConf = map (getAttr "value") (foldl mkRandrConf [] xrandrHeads);
-      xreset = pkgs.writeScriptBin "xreset" ''
-        #!${pkgs.stdenv.shell}
-        ${pkgs.xorg.xrandr}/bin/xrandr ${concatStringsSep " " randrConf}
-      '';
-    in [
-      xreset
+    environment.systemPackages = [
       config.boot.kernelPackages.perf
       (pkgs.vuizvui.aszlig.psi.override {
         jid = "aszlig@aszlig.net";
@@ -67,13 +53,7 @@ in {
       packages = lib.singleton pkgs.ultimate-oldschool-pc-font-pack;
     };
 
-    vuizvui.user.aszlig.services.i3.enable = true;
-    vuizvui.user.aszlig.services.vlock.enable = true;
-    vuizvui.user.aszlig.services.vlock.user = "aszlig";
-
-    programs.i3lock.enable = true;
-
-    vuizvui.user.aszlig.programs.flameshot.enable = true;
+    vuizvui.user.aszlig.services.niri.enable = true;
     vuizvui.user.aszlig.programs.mpv.enable = true;
 
     vuizvui.user.aszlig.programs.git.enable = true;
@@ -156,8 +136,6 @@ in {
     services = {
       openssh.enable = true;
 
-      xfs.enable = false;
-
       gpm = {
         enable = true;
         protocol = "exps2";
@@ -175,34 +153,8 @@ in {
           ATTRS{idProduct}=="6001", GROUP="dmx"
       '';
 
-      redshift = {
-        enable = true;
-        temperature.day = 5500;
-        temperature.night = 3500;
-        brightness.night = "0.5";
-      };
-
-      xserver.enable = true;
-      xserver.displayManager.lightdm.enable = true;
-      xserver.displayManager.sessionCommands = ''
-        ${pkgs.xorg.xrdb}/bin/xrdb "${pkgs.writeText "xrdb.config" ''
-          XTerm*termName:            xterm-direct
-          XTerm*directColor:         true
-          XTerm*faceName:            MxPlus IBM VGA 8x16
-          XTerm*faceSize:            12
-          XTerm*renderFont:          true
-          XTerm*saveLines:           10000
-          XTerm*bellIsUrgent:        true
-          XTerm*background:          black
-          XTerm*foreground:          grey
-
-          XTerm*backarrowKeyIsErase: true
-          XTerm*ptyInitialErase:     true
-        ''}"
-      '';
-
       displayManager = {
-        defaultSession = "none+i3";
+        ly.enable = true;
       } // lib.optionalAttrs (config.boot.initrd.luks.devices != {}) {
         # All of my workstations are single-user machines with encrypted root
         # and swap, so there is no need to prompt another time for a password
@@ -211,10 +163,6 @@ in {
         autoLogin.user = "aszlig";
       };
     };
-
-    nixpkgs.overlays = lib.singleton (lib.const (super: {
-      xterm = super.vuizvui.aszlig.xterm;
-    }));
 
     users.users.aszlig = {
       uid = 1000;

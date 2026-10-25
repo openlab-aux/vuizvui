@@ -27,9 +27,6 @@
   hardware.firmware = [ pkgs.linux-firmware ];
   vuizvui.hardware.tuxedo.pulse15.gen2.enable = true;
 
-  services.xserver.dpi = 188;
-  services.xserver.xkb.options = "caps:none";
-
   networking.hostName = "slylandro";
   networking.wireless.enable = lib.mkForce true;
   networking.interfaces.bond0.useDHCP = true;
@@ -68,15 +65,6 @@
   };
 
   services.tlp.enable = true;
-
-  services.xserver.videoDrivers = [ "amdgpu" ];
-
-  services.libinput.enable = true;
-  services.libinput.touchpad = {
-    clickMethod = "clickfinger";
-    sendEventsMode = "disabled-on-external-mouse";
-    middleEmulation = false;
-  };
 
   nix.settings.max-jobs = 16;
 }
