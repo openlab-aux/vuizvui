@@ -25,7 +25,6 @@
       availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
       kernelModules = [ "fuse" "amdgpu" ];
       systemd = {
-        enable = true;
         services.set-scheduler = {
           wantedBy = [ "initrd.target" ];
           serviceConfig.Type = "oneshot";
