@@ -1,4 +1,4 @@
-{ lib, replaceVarsWith, niri, brightnessctl, systemd, catppuccin-cursors
+{ lib, replaceVarsWith, niri, brightnessctl, systemd, mako, catppuccin-cursors
 , xwayland-satellite
 }:
 
@@ -10,6 +10,7 @@ niri.overrideAttrs (drv: {
     replacements = {
       brightnessctl = "${lib.getBin brightnessctl}/bin/brightnessctl";
       systemctl = "${lib.getBin systemd}/bin/systemctl";
+      makoctl = "${lib.getBin mako}/bin/makoctl";
       xcursorPath = "${catppuccin-cursors.frappeLavender}/share/icons";
 
       xwaylandSatellite = "${
