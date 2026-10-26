@@ -19,7 +19,7 @@ let
     folder.__raw = "\"imap://${serverRaw}/\"";
     imap_user.__raw = "\"${userRaw}\"";
     imap_pass = passwd;
-    smtp_url.__raw = "\"smtp://${userRaw}@${serverRaw}/\"";
+    smtp_url.__raw = "\"smtp://${userRaw}@${serverRaw}:587/\"";
     smtp_pass = passwd;
     spoolfile = "+INBOX";
 
