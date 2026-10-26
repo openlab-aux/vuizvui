@@ -90,6 +90,7 @@ let
       sys.stdout.write("text/html\n\n" + document + "\n")
     '';
 
+    signature = "${gopass}/bin/gopass show -o ${gopassEntry} signature|";
     use_from = true;
     from.__raw = "\"${addressRaw}\"";
     realname = realName;
