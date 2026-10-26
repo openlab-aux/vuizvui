@@ -1,7 +1,7 @@
 { lib, writers, gopass, writeScript, mutt
 
+, programName ? "mutt"
 , realName ? "aszlig"
-, emailAddr ? "aszlig@nix.build"
 , gopassEntry ? "misc/mailfresser"
 }:
 
@@ -12,6 +12,7 @@ let
 
   passwd = execCommand "${gopass}/bin/gopass show -o ${gopassEntry}";
   userRaw = "`${gopass}/bin/gopass show ${gopassEntry} username`";
+  addressRaw = "`${gopass}/bin/gopass show ${gopassEntry} address`";
   serverRaw = "`${gopass}/bin/gopass show ${gopassEntry} server`";
 
   config = {
@@ -90,7 +91,7 @@ let
     '';
 
     use_from = true;
-    from = emailAddr;
+    from.__raw = "\"${addressRaw}\"";
     realname = realName;
     envelope_from = true;
 
@@ -216,8 +217,15 @@ let
   '';
 
 in mutt.overrideAttrs (drv: {
+  pname = programName;
+
   postInstall = (drv.postInstall or "") + ''
     echo -n ${lib.escapeShellArg (genConfig config)} > "$out/etc/Muttrc"
     echo -n ${lib.escapeShellArg trailer} >> "$out/etc/Muttrc"
+    ${lib.optionalString (programName != "mutt") ''
+      mv "$out/bin/mutt" mutt.tmp
+      rm "$out/bin/"*
+      mv mutt.tmp "$out/bin/"${lib.escapeShellArg programName}
+    ''}
   '';
 })

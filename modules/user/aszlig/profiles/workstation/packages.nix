@@ -40,6 +40,10 @@ pkgs: with pkgs; [
   mosh
   mtr
   vuizvui.aszlig.mutt
+  (vuizvui.aszlig.mutt.override {
+    programName = "tdf-mutt";
+    gopassEntry = "tdf/mail";
+  })
   ncdu
   nix-prefetch-scripts
   nmap
