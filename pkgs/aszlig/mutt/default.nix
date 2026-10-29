@@ -1,4 +1,4 @@
-{ lib, writers, gopass, writeScript, mutt
+{ lib, gopass, writeShellScript, mutt
 
 , programName ? "mutt"
 , realName ? "aszlig"
@@ -29,65 +29,23 @@ let
     postponed = "+Drafts";
 
     send_multipart_alternative = askYes;
-    send_multipart_alternative_filter = writers.writePython3 "multipart" {
-      flakeIgnore = [ "E111" "E121" ];
-    } ''
-      import string
-      import sys
+    send_multipart_alternative_filter = writeShellScript "multipart" ''
+      echo ${lib.escapeShellArg ''
+        text/html
 
-      DELAY_SEC = 20
-
-      in_escape = False
-
-      original = ""
-      for c in sys.stdin.read():
-        if c == "'":
-          original += r"\'"
-        elif c == "\\":
-          original += r"\\"
-        elif c in "\n<>" or (in_escape and c in string.hexdigits):
-          original += r'\{:X}'.format(ord(c))
-          in_escape = True
-          continue
-        else:
-          original += c
-        in_escape = False
-
-      style = '''.join([
-        '#liar::after{content:"... okay, I lied. Here\'s the text:"}',
-        "#original::after{content:'" + original + "'}",
-        '#content{',
-        f'-webkit-animation:dontbesocruelwk 0s {DELAY_SEC}s forwards;',
-        f'-moz-animation:dontbesocruelmoz 0s {DELAY_SEC}s forwards;',
-        f'-o-animation:dontbesocruelo 0s {DELAY_SEC}s forwards;',
-        f'animation:dontbesocruel 0s {DELAY_SEC}s forwards',
-        '}',
-        '@-webkit-keyframes dontbesocruelwk{to{visibility:visible}}',
-        '@-moz-keyframes dontbesocruelmoz{to{visibility:visible}}',
-        '@-o-keyframes dontbesocruelo{to{visibility:visible}}',
-        '@keyframes dontbesocruel{to{visibility:visible}}',
-      ])
-
-      document = '''.join([
-        '<!DOCTYPE html><html lang="en">',
-        '<head>',
-        '<title>&#128169;</title>',
-        f'<style>{style}</style>',
-        '</head>',
-        '<body>',
-        '<p>',
-        'This email can only be read in ',
-        '<a href="https://useplaintext.email/">plain text</a>.',
-        '</p>',
-        '<div id="content" style="visibility:hidden">',
-        '<p id="liar"></p>',
-        '<pre id="original"></pre>',
-        '</div>',
-        '</body>',
-        '</html>',
-      ])
-
-      sys.stdout.write("text/html\n\n" + document + "\n")
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <title>&#128169;</title>
+        </head>
+        <body>
+          <p>
+            This email can only be read in
+            <a href="https://useplaintext.email/">plain text</a>.
+          </p>
+        </body>
+        </html>
+      ''}
     '';
 
     signature = "${gopass}/bin/gopass show -o ${gopassEntry} signature|";
