@@ -41,6 +41,10 @@ in {
 
     kernelPackages = pkgs.linuxPackages_latest;
 
+    # My monitors come with a USB storage drive that contains Windows drivers,
+    # which I obviously don't want and it just clutters up dmesg and lsblk.
+    kernelParams = lib.singleton "usb-storage.quirks=1462:3fa4:i";
+
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "nvme" ];
       luks.devices =
