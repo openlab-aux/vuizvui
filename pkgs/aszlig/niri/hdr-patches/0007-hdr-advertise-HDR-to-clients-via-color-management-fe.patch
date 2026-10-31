@@ -1,0 +1,661 @@
+From c74f8848a5fb26ed9e36daad084f3a6dacb304a6 Mon Sep 17 00:00:00 2001
+From: dividebysandwich <josef.jahn@gmail.com>
+Date: Fri, 3 Jul 2026 21:49:24 +0200
+Subject: [PATCH 07/10] hdr: advertise HDR to clients via color-management
+ feedback
+
+---
+ docs/wiki/Configuration:-Outputs.md |  24 ++++-
+ niri-config/src/lib.rs              |   3 +-
+ niri-config/src/output.rs           |  30 ++++++
+ src/backend/mod.rs                  |  17 +++
+ src/backend/tty.rs                  |   8 +-
+ src/handlers/mod.rs                 |   8 ++
+ src/niri.rs                         | 161 +++++++++++++++++++++++++++-
+ src/tests/client.rs                 |  77 +++++++++++--
+ src/tests/color_management.rs       | 104 ++++++++++++++++++
+ 9 files changed, 419 insertions(+), 13 deletions(-)
+
+diff --git a/docs/wiki/Configuration:-Outputs.md b/docs/wiki/Configuration:-Outputs.md
+index a298189c..77f7b71f 100644
+--- a/docs/wiki/Configuration:-Outputs.md
++++ b/docs/wiki/Configuration:-Outputs.md
+@@ -322,16 +322,34 @@ Opts this output into HDR. When present, niri:
+ 
+ With no `hdr` node on any output, color management is not advertised at all and behavior is unchanged.
+ HDR signalling only works on the TTY backend, and requires a GPU/display that exposes the HDR
+-connector properties (amdgpu and recent Intel do).
++connector properties (amdgpu, recent Intel, and nvidia do).
+ 
+-The optional `reference-luminance` child (in cd/m²) is reserved for the upcoming color-managed
+-compositing and currently has no effect.
++The optional `mode` property controls when applications are told the output prefers HDR:
++
++- `mode="auto"` (the default): applications are told to prefer HDR (PQ / BT.2020) only while they are
++  the active fullscreen window on this output. Applications that listen for preference changes (SDL3
++  games, mpv with `--target-colorspace-hint`) switch to HDR when they go fullscreen.
++- `mode="on"`: applications on this output are told to prefer HDR upfront. Use this for games that
++  only probe HDR support once at startup and never re-check — with `auto`, such applications never
++  detect HDR. Note: until color-managed compositing lands, HDR content still only displays correctly
++  while fullscreen; a window rendering HDR while windowed will look washed out.
++
++The optional `reference-luminance` child (in cd/m²) is the luminance that SDR white is mapped to in
++HDR mode; it is reported to clients as the reference white level and defaults to 203 (the BT.2408
++reference). Its full effect arrives with the upcoming color-managed compositing.
+ 
+ ```kdl
+ // Enable HDR on the internal display.
+ output "eDP-1" {
+     hdr
+ }
++
++// Games that only probe HDR at startup: advertise HDR upfront.
++output "DP-1" {
++    hdr mode="on" {
++        reference-luminance 203
++    }
++}
+ ```
+ 
+ ### `hot-corners`
+diff --git a/niri-config/src/lib.rs b/niri-config/src/lib.rs
+index cda8b21f..7bff2daf 100644
+--- a/niri-config/src/lib.rs
++++ b/niri-config/src/lib.rs
+@@ -745,7 +745,7 @@ mod tests {
+                 position x=10 y=20
+                 mode "1920x1080@144"
+                 max-bpc 10
+-                hdr {
++                hdr mode="on" {
+                     reference-luminance 203
+                 }
+                 variable-refresh-rate on-demand=true
+@@ -1169,6 +1169,7 @@ mod tests {
+                         ),
+                         hdr: Some(
+                             Hdr {
++                                mode: On,
+                                 reference_luminance: Some(
+                                     FloatOrInt(
+                                         203.0,
+diff --git a/niri-config/src/output.rs b/niri-config/src/output.rs
+index 7c670669..ede5ccc7 100644
+--- a/niri-config/src/output.rs
++++ b/niri-config/src/output.rs
+@@ -151,12 +151,42 @@ pub struct Vrr {
+ /// only acted upon for outputs whose driver exposes the corresponding DRM connector properties.
+ #[derive(knuffel::Decode, Debug, Clone, PartialEq, Default)]
+ pub struct Hdr {
++    /// When HDR engages on this output.
++    #[knuffel(property, str, default)]
++    pub mode: HdrMode,
+     /// Luminance, in cd/m² (nits), that SDR white (the value 1.0) is mapped to while the output is
+     /// in HDR mode. Defaults to 203 cd/m² (the BT.2408 reference white) when unset.
+     #[knuffel(child, unwrap(argument))]
+     pub reference_luminance: Option<FloatOrInt<0, 10000>>,
+ }
+ 
++/// When HDR engages on an `hdr`-enabled output.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
++pub enum HdrMode {
++    /// HDR is signalled while a fullscreen surface with an HDR image description is shown, and the
++    /// output stays SDR otherwise.
++    #[default]
++    Auto,
++    /// The output is always treated as HDR: clients are told upfront that the output prefers
++    /// PQ/BT.2020 content, so applications that only probe HDR support once at startup (e.g. many
++    /// SDL games) detect it.
++    On,
++}
++
++impl std::str::FromStr for HdrMode {
++    type Err = miette::Error;
++
++    fn from_str(s: &str) -> Result<Self, Self::Err> {
++        match s {
++            "auto" => Ok(Self::Auto),
++            "on" => Ok(Self::On),
++            _ => Err(miette::miette!(
++                r#"invalid HDR mode, can be "auto" or "on""#
++            )),
++        }
++    }
++}
++
+ impl FromIterator<Output> for Outputs {
+     fn from_iter<T: IntoIterator<Item = Output>>(iter: T) -> Self {
+         Self(Vec::from_iter(iter))
+diff --git a/src/backend/mod.rs b/src/backend/mod.rs
+index 49fbc6b0..c928f35e 100644
+--- a/src/backend/mod.rs
++++ b/src/backend/mod.rs
+@@ -27,6 +27,23 @@ pub enum Backend {
+     Headless(Headless),
+ }
+ 
++/// HDR capabilities of an output, inserted into the [`Output`]'s user data by the backend.
++///
++/// `supported` requires the DRM connector to expose the `Colorspace` (with BT2020_RGB) and
++/// `HDR_OUTPUT_METADATA` properties, and the sink's EDID to advertise the PQ EOTF. On backends
++/// without HDR support (winit, headless) the user data entry is absent, which reads as
++/// unsupported.
++#[derive(Debug, Clone, Copy, Default)]
++pub struct OutputHdrCaps {
++    pub supported: bool,
++    /// Desired content max luminance from the EDID, in cd/m² (0 = not provided).
++    pub max_luminance: u16,
++    /// Desired content min luminance from the EDID, in 0.0001 cd/m² units (0 = not provided).
++    pub min_luminance: u16,
++    /// Desired content max frame-average luminance from the EDID, in cd/m² (0 = not provided).
++    pub max_frame_avg_luminance: u16,
++}
++
+ #[derive(PartialEq, Eq)]
+ pub enum RenderResult {
+     /// The frame was submitted to the backend for presentation.
+diff --git a/src/backend/tty.rs b/src/backend/tty.rs
+index b13cf3fb..5e068960 100644
+--- a/src/backend/tty.rs
++++ b/src/backend/tty.rs
+@@ -63,7 +63,7 @@ use smithay_drm_extras::drm_scanner::{DrmScanEvent, DrmScanner};
+ use wayland_protocols::wp::linux_dmabuf::zv1::server::zwp_linux_dmabuf_feedback_v1::TrancheFlags;
+ use wayland_protocols::wp::presentation_time::server::wp_presentation_feedback;
+ 
+-use super::{IpcOutputMap, RenderResult};
++use super::{IpcOutputMap, OutputHdrCaps, RenderResult};
+ use crate::backend::OutputId;
+ use crate::frame_clock::FrameClock;
+ use smithay::wayland::color::management::ImageDescription;
+@@ -1474,6 +1474,12 @@ impl Tty {
+             .user_data()
+             .insert_if_missing(|| TtyOutputState { node, crtc });
+         output.user_data().insert_if_missing(|| output_name.clone());
++        output.user_data().insert_if_missing(|| OutputHdrCaps {
++            supported: hdr_supported,
++            max_luminance: edid_hdr.max_luminance,
++            min_luminance: edid_hdr.min_luminance,
++            max_frame_avg_luminance: edid_hdr.max_frame_avg_luminance,
++        });
+         if let Some(x) = orientation {
+             output.user_data().insert_if_missing(|| PanelOrientation(x));
+         }
+diff --git a/src/handlers/mod.rs b/src/handlers/mod.rs
+index 7c1c4068..25ac244b 100644
+--- a/src/handlers/mod.rs
++++ b/src/handlers/mod.rs
+@@ -785,6 +785,14 @@ impl ColorManagementHandler for State {
+         // reconciles HDR signalling. A redraw is already scheduled by the surface commit.
+     }
+ 
++    fn description_for_output(&mut self, output: &Output) -> ImageDescription {
++        self.niri.output_blend_description(output)
++    }
++
++    fn preferred_description_for_surface(&mut self, surface: &WlSurface) -> ImageDescription {
++        self.niri.preferred_surface_description(surface)
++    }
++
+     fn schedule_image_description_info(
+         &mut self,
+         info: WpImageDescriptionInfoV1,
+diff --git a/src/niri.rs b/src/niri.rs
+index c69f420d..0f7d3798 100644
+--- a/src/niri.rs
++++ b/src/niri.rs
+@@ -14,7 +14,7 @@ use _server_decoration::server::org_kde_kwin_server_decoration_manager::Mode as
+ use anyhow::{bail, ensure, Context};
+ use calloop::futures::Scheduler;
+ use niri_config::debug::PreviewRender;
+-use niri_config::output::MaxBpc;
++use niri_config::output::{HdrMode, MaxBpc};
+ use niri_config::{
+     Config, FloatOrInt, Key, Modifiers, OutputName, TrackLayout, WarpMouseToFocusMode,
+     WorkspaceReference, Xkb,
+@@ -117,7 +117,7 @@ use wayland_server::protocol::wl_output::WlOutput;
+ use crate::a11y::A11y;
+ use crate::animation::Clock;
+ use crate::backend::tty::SurfaceDmabufFeedback;
+-use crate::backend::{Backend, Headless, RenderResult, Tty, Winit};
++use crate::backend::{Backend, Headless, OutputHdrCaps, RenderResult, Tty, Winit};
+ use crate::cursor::{CursorManager, CursorTextureCache, RenderCursor, XCursor};
+ #[cfg(feature = "dbus")]
+ use crate::dbus::freedesktop_locale1::Locale1ToNiri;
+@@ -491,6 +491,9 @@ pub struct OutputState {
+     screen_transition: Option<ScreenTransition>,
+     /// Damage tracker used for the debug damage visualization.
+     pub debug_damage_tracker: OutputDamageTracker,
++    /// The blend-space image description last notified to color-management clients for this
++    /// output, to avoid spurious `image_description_changed` events.
++    pub blend_description: Option<ImageDescription>,
+ }
+ 
+ #[derive(Debug, Default)]
+@@ -820,6 +823,7 @@ impl State {
+         self.niri.refresh_pointer_outputs();
+         self.niri.global_space.refresh();
+         self.niri.refresh_idle_inhibit();
++        self.niri.refresh_color_management();
+         self.refresh_pointer_contents();
+         foreign_toplevel::refresh(self);
+         ext_workspace::refresh(self);
+@@ -2245,6 +2249,158 @@ impl Niri {
+         desc.is_hdr().then_some(desc)
+     }
+ 
++    /// Returns the HDR config of an output, but only if the output can actually do HDR
++    /// (driver + sink capabilities probed by the backend), together with those capabilities.
++    fn output_hdr_config(
++        &self,
++        output: &Output,
++    ) -> Option<(niri_config::output::Hdr, OutputHdrCaps)> {
++        let caps = *output.user_data().get::<OutputHdrCaps>()?;
++        if !caps.supported {
++            return None;
++        }
++        let name = output.user_data().get::<OutputName>()?;
++        let hdr = self.config.borrow().outputs.find(name)?.hdr.clone()?;
++        Some((hdr, caps))
++    }
++
++    /// The PQ/BT.2020 image description describing an HDR output, with luminances from the
++    /// sink's EDID and the configured SDR reference white.
++    fn hdr_blend_description(
++        hdr: &niri_config::output::Hdr,
++        caps: OutputHdrCaps,
++    ) -> ImageDescription {
++        // Same placeholder as build_hdr_metadata() in the TTY backend uses for sinks whose
++        // EDID doesn't provide luminance data.
++        let max_luminance = if caps.max_luminance > 0 {
++            u32::from(caps.max_luminance)
++        } else {
++            500
++        };
++        let reference_luminance = hdr.reference_luminance.map(|v| v.0).unwrap_or(203.) as u32;
++        ImageDescription {
++            transfer: CmTransferFunction::St2084Pq,
++            primaries: CmPrimaries::Bt2020,
++            max_cll: (caps.max_luminance > 0).then(|| u32::from(caps.max_luminance)),
++            max_fall: (caps.max_frame_avg_luminance > 0)
++                .then(|| u32::from(caps.max_frame_avg_luminance)),
++            mastering_luminance: None,
++            luminances: Some((
++                u32::from(caps.min_luminance),
++                max_luminance,
++                reference_luminance,
++            )),
++        }
++    }
++
++    /// The image description describing how this output is presented (its blend space).
++    ///
++    /// With `hdr mode="on"`, an HDR-capable output always reports its PQ/BT.2020 description.
++    /// In auto mode it reports PQ only while HDR is actually engaged (fullscreen HDR content),
++    /// so clients are never told the output is in HDR before the connector is.
++    pub fn output_blend_description(&self, output: &Output) -> ImageDescription {
++        let Some((hdr, caps)) = self.output_hdr_config(output) else {
++            return ImageDescription::SRGB;
++        };
++        match hdr.mode {
++            HdrMode::On => Self::hdr_blend_description(&hdr, caps),
++            HdrMode::Auto => {
++                if self.output_hdr_image_description(output).is_some() {
++                    Self::hdr_blend_description(&hdr, caps)
++                } else {
++                    ImageDescription::SRGB
++                }
++            }
++        }
++    }
++
++    /// The image description we'd prefer a window to use, given the output it is on.
++    ///
++    /// With `hdr mode="on"`, every window on the output is told to prefer PQ upfront — this is
++    /// what lets applications that only probe HDR support once at startup (e.g. many SDL
++    /// games) detect it. In auto mode, only the active fullscreen window is told to prefer PQ
++    /// (even while its content is still SDR): clients that listen for `preferred_changed`
++    /// then switch to HDR output, which in turn engages HDR on the connector.
++    fn preferred_description_for_window(
++        &self,
++        window: &Mapped,
++        output: &Output,
++    ) -> ImageDescription {
++        let Some((hdr, caps)) = self.output_hdr_config(output) else {
++            return ImageDescription::SRGB;
++        };
++        match hdr.mode {
++            HdrMode::On => Self::hdr_blend_description(&hdr, caps),
++            HdrMode::Auto => {
++                let is_active_fullscreen = window.sizing_mode().is_fullscreen()
++                    && self
++                        .layout
++                        .monitor_for_output(output)
++                        .and_then(|mon| mon.active_window())
++                        .is_some_and(|active| active.id() == window.id());
++                if is_active_fullscreen {
++                    Self::hdr_blend_description(&hdr, caps)
++                } else {
++                    ImageDescription::SRGB
++                }
++            }
++        }
++    }
++
++    /// The image description we'd prefer the given surface to use.
++    pub fn preferred_surface_description(&self, surface: &WlSurface) -> ImageDescription {
++        if let Some((window, Some(output))) = self.layout.find_window_and_output(surface) {
++            return self.preferred_description_for_window(window, output);
++        }
++        // Non-toplevel surfaces (e.g. layer shell): prefer the output's blend space.
++        if let Some(output) = self.output_for_root(surface) {
++            let output = output.clone();
++            return self.output_blend_description(&output);
++        }
++        ImageDescription::SRGB
++    }
++
++    /// Sends color-management change notifications for outputs and surfaces whose
++    /// blend/preferred image descriptions changed.
++    ///
++    /// Called from the refresh loop; the smithay-side notifications are deduplicated, and the
++    /// per-output cache below avoids spurious `image_description_changed` events.
++    pub fn refresh_color_management(&mut self) {
++        let _span = tracy_client::span!("Niri::refresh_color_management");
++
++        let outputs: Vec<Output> = self.global_space.outputs().cloned().collect();
++        for output in &outputs {
++            let desc = self.output_blend_description(output);
++            let Some(state) = self.output_state.get_mut(output) else {
++                continue;
++            };
++            if state.blend_description != Some(desc) {
++                state.blend_description = Some(desc);
++                self.color_management_state
++                    .output_description_changed(output);
++            }
++        }
++
++        let mut updates: Vec<(WlSurface, ImageDescription)> = Vec::new();
++        for (monitor, window) in self.layout.windows() {
++            let Some(output) = monitor.map(|mon| mon.output()) else {
++                continue;
++            };
++            let desc = self.preferred_description_for_window(window, output);
++            updates.push((window.toplevel().wl_surface().clone(), desc));
++        }
++        for output in &outputs {
++            let blend = self.output_blend_description(output);
++            for layer in layer_map_for_output(output).layers() {
++                updates.push((layer.wl_surface().clone(), blend));
++            }
++        }
++        for (surface, desc) in updates {
++            self.color_management_state
++                .preferred_changed(&surface, desc);
++        }
++    }
++
+     pub fn new(
+         config: Rc<RefCell<Config>>,
+         event_loop: LoopHandle<'static, State>,
+@@ -2921,6 +3077,7 @@ impl Niri {
+             lock_color_buffer: SolidColorBuffer::new(size, CLEAR_COLOR_LOCKED),
+             screen_transition: None,
+             debug_damage_tracker: OutputDamageTracker::from_output(&output),
++            blend_description: None,
+         };
+         let rv = self.output_state.insert(output.clone(), state);
+         assert!(rv.is_none(), "output was already tracked");
+diff --git a/src/tests/client.rs b/src/tests/client.rs
+index d71e4edb..5e9fc213 100644
+--- a/src/tests/client.rs
++++ b/src/tests/client.rs
+@@ -11,6 +11,7 @@ use calloop::EventLoop;
+ use calloop_wayland_source::WaylandSource;
+ use single_pixel_buffer::v1::client::wp_single_pixel_buffer_manager_v1::WpSinglePixelBufferManagerV1;
+ use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_color_management_output_v1::{self, WpColorManagementOutputV1};
++use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_color_management_surface_feedback_v1::{self, WpColorManagementSurfaceFeedbackV1};
+ use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_color_management_surface_v1::WpColorManagementSurfaceV1;
+ use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_color_manager_v1::{
+     Primaries, RenderIntent, TransferFunction, WpColorManagerV1,
+@@ -64,6 +65,15 @@ pub struct State {
+     pub spbm: Option<WpSinglePixelBufferManagerV1>,
+     pub viewporter: Option<WpViewporter>,
+     pub color_manager: Option<WpColorManagerV1>,
++    /// Feedback objects kept alive so preferred_changed events can arrive.
++    pub surface_feedbacks: Vec<WpColorManagementSurfaceFeedbackV1>,
++    /// Identities received in preferred_changed events, in order.
++    pub preferred_changed: Vec<u32>,
++    /// Identities received in wp_image_description_v1.ready events, in order.
++    pub ready_identities: Vec<u32>,
++    /// Named transfer function / primaries from the latest image description info exchange.
++    pub info_tf: Option<TransferFunction>,
++    pub info_primaries: Option<Primaries>,
+ 
+     pub windows: Vec<Window>,
+     pub layers: Vec<LayerSurface>,
+@@ -191,6 +201,11 @@ impl Client {
+             spbm: None,
+             viewporter: None,
+             color_manager: None,
++            surface_feedbacks: Vec::new(),
++            preferred_changed: Vec::new(),
++            ready_identities: Vec::new(),
++            info_tf: None,
++            info_primaries: None,
+             windows: Vec::new(),
+             layers: Vec::new(),
+         };
+@@ -242,6 +257,30 @@ impl Client {
+         self.connection.flush().unwrap();
+     }
+ 
++    /// Drives the color-management requests an HDR-aware client (SDL3) sends at startup: create a
++    /// surface feedback object and query the preferred image description and its information. The
++    /// feedback object is kept alive so later preferred_changed events arrive.
++    pub fn probe_surface_preferred(&mut self, surface: &WlSurface) {
++        let manager = self.state.color_manager.clone().expect("manager not bound");
++        let feedback = manager.get_surface_feedback(surface, &self.qh, ());
++        let image = feedback.get_preferred(&self.qh, ());
++        let _info = image.get_information(&self.qh, ());
++        self.state.surface_feedbacks.push(feedback);
++        self.connection.flush().unwrap();
++    }
++
++    /// Re-queries the preferred description (without creating a new feedback object) and its info.
++    pub fn requery_preferred(&mut self) {
++        let feedback = self
++            .state
++            .surface_feedbacks
++            .last()
++            .expect("no feedback object");
++        let image = feedback.get_preferred(&self.qh, ());
++        let _info = image.get_information(&self.qh, ());
++        self.connection.flush().unwrap();
++    }
++
+     /// Drives the color-management requests an HDR client (mpv gpu-next) sends: build a parametric
+     /// image description and attach it to a surface.
+     pub fn create_and_attach_hdr_description(
+@@ -854,27 +893,53 @@ impl Dispatch<WpColorManagementOutputV1, ()> for State {
+ 
+ impl Dispatch<WpImageDescriptionV1, ()> for State {
+     fn event(
+-        _state: &mut Self,
++        state: &mut Self,
+         _proxy: &WpImageDescriptionV1,
+-        _event: wp_image_description_v1::Event,
++        event: wp_image_description_v1::Event,
+         _data: &(),
+         _conn: &Connection,
+         _qhandle: &QueueHandle<Self>,
+     ) {
+-        // ready / failed — ignored for these tests.
++        if let wp_image_description_v1::Event::Ready { identity } = event {
++            state.ready_identities.push(identity);
++        }
++    }
++}
++
++impl Dispatch<WpColorManagementSurfaceFeedbackV1, ()> for State {
++    fn event(
++        state: &mut Self,
++        _proxy: &WpColorManagementSurfaceFeedbackV1,
++        event: wp_color_management_surface_feedback_v1::Event,
++        _data: &(),
++        _conn: &Connection,
++        _qhandle: &QueueHandle<Self>,
++    ) {
++        if let wp_color_management_surface_feedback_v1::Event::PreferredChanged { identity } = event
++        {
++            state.preferred_changed.push(identity);
++        }
+     }
+ }
+ 
+ impl Dispatch<WpImageDescriptionInfoV1, ()> for State {
+     fn event(
+-        _state: &mut Self,
++        state: &mut Self,
+         _proxy: &WpImageDescriptionInfoV1,
+-        _event: wp_image_description_info_v1::Event,
++        event: wp_image_description_info_v1::Event,
+         _data: &(),
+         _conn: &Connection,
+         _qhandle: &QueueHandle<Self>,
+     ) {
+-        // primaries_named / tf_named / done / ... — ignored.
++        match event {
++            wp_image_description_info_v1::Event::TfNamed { tf } => {
++                state.info_tf = tf.into_result().ok();
++            }
++            wp_image_description_info_v1::Event::PrimariesNamed { primaries } => {
++                state.info_primaries = primaries.into_result().ok();
++            }
++            _ => {}
++        }
+     }
+ }
+ 
+diff --git a/src/tests/color_management.rs b/src/tests/color_management.rs
+index f34206e4..8902f305 100644
+--- a/src/tests/color_management.rs
++++ b/src/tests/color_management.rs
+@@ -10,6 +10,7 @@ use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_
+ };
+ 
+ use super::*;
++use crate::backend::OutputHdrCaps;
+ 
+ /// A fixture whose config opts an output into HDR, so the (gated) `wp_color_manager_v1` global is
+ /// advertised. Without an HDR-enabled output, niri does not advertise color management at all.
+@@ -86,3 +87,106 @@ fn create_parametric_hdr_description_like_mpv() {
+     );
+     f.double_roundtrip(id);
+ }
++
++/// Fixture whose output is `hdr mode="on"` with backend HDR capabilities injected, simulating an
++/// HDR-capable monitor on the TTY backend.
++fn fixture_with_hdr_mode_on() -> Fixture {
++    use niri_config::output::HdrMode;
++
++    let mut config = Config::default();
++    config.outputs.0.push(Output {
++        name: "headless-1".to_owned(),
++        hdr: Some(Hdr {
++            mode: HdrMode::On,
++            ..Default::default()
++        }),
++        ..Default::default()
++    });
++    let mut f = Fixture::with_config(config);
++    f.add_output(1, (1920, 1080));
++
++    // The headless backend doesn't probe HDR capabilities; inject them like the TTY backend would.
++    f.niri_output(1)
++        .user_data()
++        .insert_if_missing(|| OutputHdrCaps {
++            supported: true,
++            max_luminance: 800,
++            min_luminance: 100,
++            max_frame_avg_luminance: 600,
++        });
++    f
++}
++
++#[test]
++fn feedback_preferred_defaults_to_srgb() {
++    let mut f = fixture_with_hdr();
++    f.add_output(1, (1920, 1080));
++
++    let id = f.add_client();
++    let window = f.client(id).create_window();
++    let surface = window.surface.clone();
++    window.commit();
++    f.roundtrip(id);
++
++    f.client(id).probe_surface_preferred(&surface);
++    f.double_roundtrip(id);
++
++    let client = f.client(id);
++    assert_eq!(client.state.info_tf, Some(TransferFunction::Srgb));
++    assert_eq!(client.state.info_primaries, Some(Primaries::Srgb));
++}
++
++#[test]
++fn feedback_preferred_is_pq_with_mode_on() {
++    let mut f = fixture_with_hdr_mode_on();
++
++    let id = f.add_client();
++    let window = f.client(id).create_window();
++    let surface = window.surface.clone();
++    window.commit();
++    f.roundtrip(id);
++    let window = f.client(id).window(&surface);
++    window.attach_new_buffer();
++    window.ack_last_and_commit();
++    f.double_roundtrip(id);
++
++    // An SDL3-style client probes the preferred description once at startup, before going
++    // fullscreen. With mode "on" it must see PQ/BT.2020 right away.
++    f.client(id).probe_surface_preferred(&surface);
++    f.double_roundtrip(id);
++
++    let client = f.client(id);
++    assert_eq!(client.state.info_tf, Some(TransferFunction::St2084Pq));
++    assert_eq!(client.state.info_primaries, Some(Primaries::Bt2020));
++}
++
++#[test]
++fn preferred_identities_are_stable() {
++    let mut f = fixture_with_hdr_mode_on();
++
++    let id = f.add_client();
++    let window = f.client(id).create_window();
++    let surface = window.surface.clone();
++    window.commit();
++    f.roundtrip(id);
++    let window = f.client(id).window(&surface);
++    window.attach_new_buffer();
++    window.ack_last_and_commit();
++    f.double_roundtrip(id);
++
++    f.client(id).probe_surface_preferred(&surface);
++    f.double_roundtrip(id);
++    f.client(id).requery_preferred();
++    f.double_roundtrip(id);
++
++    let identities = &f.client(id).state.ready_identities;
++    assert!(
++        identities.len() >= 2,
++        "expected two ready events, got {identities:?}"
++    );
++    let last_two = &identities[identities.len() - 2..];
++    assert_eq!(
++        last_two[0], last_two[1],
++        "the same preferred description must keep the same identity"
++    );
++}
+-- 
+2.56.0
+

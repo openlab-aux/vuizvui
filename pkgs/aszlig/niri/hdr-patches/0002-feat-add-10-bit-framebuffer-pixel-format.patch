@@ -1,0 +1,30 @@
+From 369a1fd91a961e91efb1bf0743ba30e5d1815544 Mon Sep 17 00:00:00 2001
+From: Michael Yang <michaely4ng@proton.me>
+Date: Thu, 28 May 2026 11:00:23 +1000
+Subject: [PATCH 02/10] feat: add 10-bit framebuffer pixel format
+
+Enable true 10-bit content on supported outputs (tested).
+---
+ src/backend/tty.rs | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/backend/tty.rs b/src/backend/tty.rs
+index cb8b230c..0160a4bd 100644
+--- a/src/backend/tty.rs
++++ b/src/backend/tty.rs
+@@ -70,7 +70,11 @@ use crate::render_helpers::renderer::AsGlesRenderer;
+ use crate::render_helpers::{resources, shaders, RenderCtx, RenderTarget};
+ use crate::utils::{get_monotonic_time, is_laptop_panel, logical_output, PanelOrientation};
+ 
+-const SUPPORTED_COLOR_FORMATS: [Fourcc; 4] = [
++const SUPPORTED_COLOR_FORMATS: [Fourcc; 8] = [
++    Fourcc::Xrgb2101010,
++    Fourcc::Xbgr2101010,
++    Fourcc::Argb2101010,
++    Fourcc::Abgr2101010,
+     Fourcc::Xrgb8888,
+     Fourcc::Xbgr8888,
+     Fourcc::Argb8888,
+-- 
+2.56.0
+

@@ -103,7 +103,7 @@ index 329b7669..9f57d8eb 100644
  
      fn create<'a>(path: &'a Path, created_at: &mut Option<&'a Path>) -> miette::Result<()> {
 diff --git a/resources/default-config.kdl b/resources/default-config.kdl
-index ccad1ac2..b95bde14 100644
+index ccad1ac2..770d33e3 100644
 --- a/resources/default-config.kdl
 +++ b/resources/default-config.kdl
 @@ -13,16 +13,16 @@ input {
@@ -141,14 +141,14 @@ index ccad1ac2..b95bde14 100644
          // accel-speed 0.2
          // accel-profile "flat"
          // scroll-method "two-finger"
-@@ -66,7 +67,16 @@ input {
+@@ -66,9 +67,20 @@ input {
  
      // Focus windows and outputs automatically when moving the mouse into them.
      // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
 -    // focus-follows-mouse max-scroll-amount="0%"
 +    focus-follows-mouse max-scroll-amount="0%"
-+}
-+
+ }
+ 
 +cursor {
 +    xcursor-theme "catppuccin-frappe-lavender-cursors"
 +    xcursor-size 24
@@ -156,10 +156,14 @@ index ccad1ac2..b95bde14 100644
 +
 +xwayland-satellite {
 +    path "@xwaylandSatellite@"
- }
- 
++}
++
++/*#OUTPUT_CONFIG#*/
++
  // You can configure outputs by their name, which you can find
-@@ -111,7 +121,7 @@ input {
+ // by running `niri msg outputs` while inside a niri instance.
+ // The built-in laptop monitor is usually called "eDP-1".
+@@ -111,7 +123,7 @@ input {
  // https://niri-wm.github.io/niri/Configuration:-Layout
  layout {
      // Set gaps around windows in logical pixels.
@@ -168,7 +172,7 @@ index ccad1ac2..b95bde14 100644
  
      // When to center a column when changing focus, options are:
      // - "never", default behavior, focusing an off-screen column will keep at the left
-@@ -134,6 +144,8 @@ layout {
+@@ -134,6 +146,8 @@ layout {
          // fixed 1920
      }
  
@@ -177,7 +181,7 @@ index ccad1ac2..b95bde14 100644
      // You can also customize the heights that "switch-preset-window-height" (Mod+Ctrl+Shift+R) toggles between.
      // preset-window-heights { }
  
-@@ -159,7 +171,7 @@ layout {
+@@ -159,7 +173,7 @@ layout {
          // off
  
          // How many logical pixels the ring extends out from the windows.
@@ -186,7 +190,7 @@ index ccad1ac2..b95bde14 100644
  
          // Colors can be set in a variety of ways:
          // - CSS named colors: "red"
-@@ -268,7 +280,7 @@ layout {
+@@ -268,7 +282,7 @@ layout {
  // See the binds section below for more spawn examples.
  
  // This line starts waybar, a commonly used bar for Wayland compositors.
@@ -195,7 +199,7 @@ index ccad1ac2..b95bde14 100644
  
  // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
  // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
-@@ -283,12 +295,12 @@ hotkey-overlay {
+@@ -283,12 +297,12 @@ hotkey-overlay {
  // Additionally, clients will be informed that they are tiled, removing some client-side rounded corners.
  // This option will also fix border/focus ring drawing behind some semitransparent windows.
  // After enabling or disabling this, you need to restart the apps for this to take effect.
@@ -210,7 +214,7 @@ index ccad1ac2..b95bde14 100644
  
  // You can also set this to null to disable saving screenshots to disk.
  // screenshot-path null
-@@ -304,13 +316,19 @@ animations {
+@@ -304,13 +318,19 @@ animations {
      // slowdown 3.0
  }
  
@@ -231,7 +235,7 @@ index ccad1ac2..b95bde14 100644
      // This regular expression is intentionally made as specific as possible,
      // since this is the default config, and we want no false positives.
      // You can get away with just app-id="wezterm" if you want.
-@@ -318,8 +336,11 @@ window-rule {
+@@ -318,8 +338,11 @@ window-rule {
      default-column-width {}
  }
  
@@ -244,7 +248,7 @@ index ccad1ac2..b95bde14 100644
      // This app-id regular expression will work for both:
      // - host Firefox (app-id is "firefox")
      // - Flatpak Firefox (app-id is "org.mozilla.firefox")
-@@ -327,6 +348,29 @@ window-rule {
+@@ -327,6 +350,29 @@ window-rule {
      open-floating true
  }
  
@@ -274,7 +278,7 @@ index ccad1ac2..b95bde14 100644
  // Example: block out two password managers from screen capture.
  // (This example rule is commented out with a "/-" in front.)
  /-window-rule {
-@@ -346,6 +390,11 @@ window-rule {
+@@ -346,6 +392,11 @@ window-rule {
      clip-to-geometry true
  }
  
@@ -286,7 +290,7 @@ index ccad1ac2..b95bde14 100644
  binds {
      // Keys consist of modifiers separated by + signs, followed by an XKB key name
      // in the end. To find an XKB name for a particular key, you may use a program
-@@ -362,61 +411,54 @@ binds {
+@@ -362,61 +413,54 @@ binds {
      Mod+Shift+Slash { show-hotkey-overlay; }
  
      // Suggested binds for running programs: terminal, app launcher, screen locker.
@@ -368,7 +372,7 @@ index ccad1ac2..b95bde14 100644
  
      // Alternative commands that move across workspaces when reaching
      // the first or last window in a column.
-@@ -430,23 +472,20 @@ binds {
+@@ -430,23 +474,20 @@ binds {
      Mod+Ctrl+Home { move-column-to-first; }
      Mod+Ctrl+End  { move-column-to-last; }
  
@@ -405,7 +409,7 @@ index ccad1ac2..b95bde14 100644
  
      // Alternatively, there are commands to move just a single window:
      // Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
-@@ -458,12 +497,8 @@ binds {
+@@ -458,12 +499,8 @@ binds {
  
      Mod+Page_Down      { focus-workspace-down; }
      Mod+Page_Up        { focus-workspace-up; }
@@ -418,7 +422,7 @@ index ccad1ac2..b95bde14 100644
  
      // Alternatively, there are commands to move just a single window:
      // Mod+Ctrl+Page_Down { move-window-to-workspace-down; }
-@@ -471,8 +506,6 @@ binds {
+@@ -471,8 +508,6 @@ binds {
  
      Mod+Shift+Page_Down { move-workspace-down; }
      Mod+Shift+Page_Up   { move-workspace-up; }
@@ -427,7 +431,7 @@ index ccad1ac2..b95bde14 100644
  
      // You can bind mouse wheel scroll ticks using the following syntax.
      // These binds will change direction based on the natural-scroll setting.
-@@ -523,21 +556,27 @@ binds {
+@@ -523,21 +558,27 @@ binds {
      Mod+7 { focus-workspace 7; }
      Mod+8 { focus-workspace 8; }
      Mod+9 { focus-workspace 9; }
@@ -465,7 +469,7 @@ index ccad1ac2..b95bde14 100644
  
      // The following binds move the focused window in and out of a column.
      // If the window is alone, they will consume it into the nearby column to the side.
-@@ -559,13 +598,8 @@ binds {
+@@ -559,13 +600,8 @@ binds {
      Mod+Ctrl+R { reset-window-height; }
  
      Mod+F { maximize-column; }
@@ -481,7 +485,7 @@ index ccad1ac2..b95bde14 100644
  
      // Expand the focused column to space not taken up by other fully visible columns.
      // Makes the column "fill the rest of the space".
-@@ -592,13 +626,13 @@ binds {
+@@ -592,13 +628,13 @@ binds {
      Mod+Shift+Equal { set-window-height "+10%"; }
  
      // Move the focused window between the floating and the tiling layout.
@@ -498,7 +502,7 @@ index ccad1ac2..b95bde14 100644
  
      // Actions to switch layouts.
      // Note: if you uncomment these, make sure you do NOT have
-@@ -623,7 +657,7 @@ binds {
+@@ -623,7 +659,7 @@ binds {
      Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
  
      // The quit action will show a confirmation dialog to avoid accidental exits.

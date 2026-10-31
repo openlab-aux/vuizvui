@@ -1,0 +1,646 @@
+From 93a1a7834f1dc52d946854ed696340ffca4517da Mon Sep 17 00:00:00 2001
+From: Michael Yang <michaely4ng@proton.me>
+Date: Thu, 1 Jan 2026 05:45:17 +1100
+Subject: [PATCH 01/10] feat: add per output max-bpc config and ipc action
+
+List current max-bpc values in outputs.
+
+fix: remove 16 bpc and change default behaviour
+
+feat(ipc): add max_bpc and format to output
+
+fix: bpc on output config change
+
+docs: add bpc to Outputs
+
+feat: use atomic commits for connector properties
+
+fix: drm `value_type` breaking change
+
+fix: minor changes based on PR review
+
+Rename bpc to max-bpc.
+
+Add max-bpc output action.
+
+refactor: add set_connector_properties
+
+Fix niri-config parse test.
+
+fix: bail when outside valid max bpc range
+---
+ docs/wiki/Configuration:-Outputs.md |  18 +++
+ niri-config/src/lib.rs              |  10 +-
+ niri-config/src/output.rs           |  42 ++++++
+ niri-ipc/src/lib.rs                 |  58 +++++++++
+ src/backend/headless.rs             |   1 +
+ src/backend/tty.rs                  | 193 ++++++++++++++++++++--------
+ src/backend/winit.rs                |   1 +
+ src/ipc/client.rs                   |   5 +
+ src/niri.rs                         |   2 +
+ 9 files changed, 274 insertions(+), 56 deletions(-)
+
+diff --git a/docs/wiki/Configuration:-Outputs.md b/docs/wiki/Configuration:-Outputs.md
+index 73a02201..e804ba86 100644
+--- a/docs/wiki/Configuration:-Outputs.md
++++ b/docs/wiki/Configuration:-Outputs.md
+@@ -15,6 +15,7 @@ output "eDP-1" {
+     variable-refresh-rate // on-demand=true
+     focus-at-startup
+     backdrop-color "#001100"
++    max-bpc 8
+ 
+     hot-corners {
+         // off
+@@ -279,6 +280,23 @@ output "HDMI-A-1" {
+ }
+ ```
+ 
++### `max-bpc`
++
++<sup>Since: next release</sup>
++
++Set the maximum bits per channel (BPC) for this output.
++You *do not* need to set this option unless you hit bandwidth issues (can't set a monitor configuration that works on other compositor) or lower-than-expected color depth.
++Particularly, 10-bit color output may work even if max-bpc is 8.
++
++Valid values are `6`, `8`, `10`, `12`, `14`, `16`.
++
++```kdl
++// Set 8 max-bpc on HDMI-A-1 to lower the bandwidth.
++output "HDMI-A-1" {
++    max-bpc 8
++}
++```
++
+ ### `hot-corners`
+ 
+ <sup>Since: 25.11</sup>
+diff --git a/niri-config/src/lib.rs b/niri-config/src/lib.rs
+index 329b7669..8cb0fb05 100644
+--- a/niri-config/src/lib.rs
++++ b/niri-config/src/lib.rs
+@@ -744,6 +744,7 @@ mod tests {
+                 transform "flipped-90"
+                 position x=10 y=20
+                 mode "1920x1080@144"
++                max-bpc 10
+                 variable-refresh-rate on-demand=true
+                 background-color "rgba(25, 25, 102, 1.0)"
+                 hot-corners {
+@@ -856,7 +857,7 @@ mod tests {
+                 window-open { off; }
+ 
+                 window-close {
+-                    curve "cubic-bezier" 0.05 0.7 0.1 1  
++                    curve "cubic-bezier" 0.05 0.7 0.1 1
+                 }
+ 
+                 recent-windows-close {
+@@ -1158,6 +1159,11 @@ mod tests {
+                                 y: 20,
+                             },
+                         ),
++                        max_bpc: Some(
++                            MaxBpc(
++                                _10,
++                            ),
++                        ),
+                         mode: Some(
+                             Mode {
+                                 custom: false,
+@@ -1203,6 +1209,7 @@ mod tests {
+                         scale: None,
+                         transform: Normal,
+                         position: None,
++                        max_bpc: None,
+                         mode: Some(
+                             Mode {
+                                 custom: true,
+@@ -1229,6 +1236,7 @@ mod tests {
+                         scale: None,
+                         transform: Normal,
+                         position: None,
++                        max_bpc: None,
+                         mode: None,
+                         modeline: Some(
+                             Modeline {
+diff --git a/niri-config/src/output.rs b/niri-config/src/output.rs
+index 5d6565f5..48572f6e 100644
+--- a/niri-config/src/output.rs
++++ b/niri-config/src/output.rs
+@@ -59,6 +59,8 @@ pub struct Output {
+     pub transform: Transform,
+     #[knuffel(child)]
+     pub position: Option<Position>,
++    #[knuffel(child, unwrap(argument))]
++    pub max_bpc: Option<MaxBpc>,
+     #[knuffel(child)]
+     pub mode: Option<Mode>,
+     #[knuffel(child)]
+@@ -101,6 +103,7 @@ impl Default for Output {
+             scale: None,
+             transform: Transform::Normal,
+             position: None,
++            max_bpc: None,
+             mode: None,
+             modeline: None,
+             variable_refresh_rate: None,
+@@ -128,6 +131,9 @@ pub struct Position {
+     pub y: i32,
+ }
+ 
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
++pub struct MaxBpc(pub niri_ipc::MaxBpc);
++
+ #[derive(knuffel::Decode, Debug, Clone, PartialEq, Default)]
+ pub struct Vrr {
+     #[knuffel(property, default = false)]
+@@ -257,6 +263,42 @@ impl OutputName {
+     }
+ }
+ 
++impl<S: ErrorSpan> knuffel::DecodeScalar<S> for MaxBpc {
++    fn type_check(
++        type_name: &Option<knuffel::span::Spanned<knuffel::ast::TypeName, S>>,
++        ctx: &mut Context<S>,
++    ) {
++        if let Some(type_name) = &type_name {
++            ctx.emit_error(DecodeError::unexpected(
++                type_name,
++                "type name",
++                "no type name expected for this node",
++            ));
++        }
++    }
++
++    fn raw_decode(
++        value: &knuffel::span::Spanned<knuffel::ast::Literal, S>,
++        ctx: &mut Context<S>,
++    ) -> Result<Self, DecodeError<S>> {
++        match &**value {
++            knuffel::ast::Literal::Int(ref val) => match u8::try_from(val) {
++                Ok(v) => niri_ipc::MaxBpc::try_from(v)
++                    .map(MaxBpc)
++                    .map_err(|e| DecodeError::conversion(value, e)),
++                Err(e) => {
++                    ctx.emit_error(DecodeError::conversion(value, e));
++                    Ok(Self::default())
++                }
++            },
++            _ => {
++                ctx.emit_error(DecodeError::scalar_kind(knuffel::decode::Kind::Int, value));
++                Ok(Self::default())
++            }
++        }
++    }
++}
++
+ impl<S: ErrorSpan> knuffel::Decode<S> for Mode {
+     fn decode_node(node: &SpannedNode<S>, ctx: &mut Context<S>) -> Result<Self, DecodeError<S>> {
+         if let Some(type_name) = &node.type_name {
+diff --git a/niri-ipc/src/lib.rs b/niri-ipc/src/lib.rs
+index 0aa3cb4f..218e532c 100644
+--- a/niri-ipc/src/lib.rs
++++ b/niri-ipc/src/lib.rs
+@@ -1097,6 +1097,12 @@ pub enum OutputAction {
+         #[cfg_attr(feature = "clap", command(flatten))]
+         vrr: VrrToSet,
+     },
++    /// Set the maximum bits per channel (bit depth).
++    MaxBpc {
++        /// Maximum bits per channel to set.
++        #[cfg_attr(feature = "clap", arg())]
++        max_bpc: MaxBpc,
++    },
+ }
+ 
+ /// Output mode to set.
+@@ -1228,6 +1234,8 @@ pub struct Output {
+     ///
+     /// `None` if the output is not mapped to any logical output (for example, if it is disabled).
+     pub logical: Option<LogicalOutput>,
++    /// Maximum bits per channel (bit depth), if known.
++    pub max_bpc: Option<u8>,
+ }
+ 
+ /// Output mode.
+@@ -1291,6 +1299,32 @@ pub enum Transform {
+     Flipped270,
+ }
+ 
++/// Output maximum bits per channel.
++#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Default)]
++#[cfg_attr(feature = "clap", derive(clap::ValueEnum))]
++#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
++pub enum MaxBpc {
++    /// 6-bit.
++    #[serde(rename = "6")]
++    _6 = 6,
++    /// 8-bit.
++    #[default]
++    #[serde(rename = "8")]
++    _8 = 8,
++    /// 10-bit.
++    #[serde(rename = "10")]
++    _10 = 10,
++    /// 12-bit.
++    #[serde(rename = "12")]
++    _12 = 12,
++    /// 14-bit.
++    #[serde(rename = "14")]
++    _14 = 14,
++    /// 16-bit.
++    #[serde(rename = "16")]
++    _16 = 16,
++}
++
+ /// Toplevel window.
+ #[derive(Serialize, Deserialize, Debug, Clone)]
+ #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+@@ -1868,6 +1902,30 @@ impl FromStr for Transform {
+     }
+ }
+ 
++impl TryFrom<u8> for MaxBpc {
++    type Error = &'static str;
++
++    fn try_from(value: u8) -> Result<Self, Self::Error> {
++        match value {
++            6 => Ok(MaxBpc::_6),
++            8 => Ok(MaxBpc::_8),
++            10 => Ok(MaxBpc::_10),
++            12 => Ok(MaxBpc::_12),
++            14 => Ok(MaxBpc::_14),
++            16 => Ok(MaxBpc::_16),
++            _ => Err("invalid max-bpc, can be 6, 8, 10, 12, 14, 16"),
++        }
++    }
++}
++
++impl FromStr for MaxBpc {
++    type Err = &'static str;
++
++    fn from_str(s: &str) -> Result<Self, Self::Err> {
++        Self::try_from(s.parse::<u8>().unwrap_or_default())
++    }
++}
++
+ impl FromStr for Layer {
+     type Err = &'static str;
+ 
+diff --git a/src/backend/headless.rs b/src/backend/headless.rs
+index 8b5ee827..9bd97930 100644
+--- a/src/backend/headless.rs
++++ b/src/backend/headless.rs
+@@ -109,6 +109,7 @@ impl Headless {
+                 vrr_supported: false,
+                 vrr_enabled: false,
+                 logical: Some(logical_output(&output)),
++                max_bpc: None,
+             },
+         );
+ 
+diff --git a/src/backend/tty.rs b/src/backend/tty.rs
+index 5368c7ec..cb8b230c 100644
+--- a/src/backend/tty.rs
++++ b/src/backend/tty.rs
+@@ -14,7 +14,7 @@ use anyhow::{anyhow, bail, ensure, Context};
+ use bytemuck::cast_slice_mut;
+ use drm_ffi::drm_mode_modeinfo;
+ use libc::dev_t;
+-use niri_config::output::Modeline;
++use niri_config::output::{MaxBpc, Modeline};
+ use niri_config::{Config, OutputName};
+ use niri_ipc::{HSyncPolarity, VSyncPolarity};
+ use smithay::backend::allocator::dmabuf::Dmabuf;
+@@ -405,6 +405,8 @@ struct ConnectorProperties<'a> {
+     device: &'a DrmDevice,
+     connector: connector::Handle,
+     properties: Vec<(property::Info, property::RawValue)>,
++    has_change: bool,
++    requests: AtomicModeReq,
+ }
+ 
+ impl Tty {
+@@ -676,16 +678,19 @@ impl Tty {
+                     // Apply pending gamma changes and restore our existing gamma.
+                     let device = self.devices.get_mut(&node).unwrap();
+                     for (crtc, surface) in device.surfaces.iter_mut() {
+-                        if let Ok(props) =
++                        if let Ok(mut props) =
+                             ConnectorProperties::try_new(&device.drm, surface.connector)
+                         {
+-                            match reset_hdr(&props) {
+-                                Ok(()) => (),
+-                                Err(err) => debug!("couldn't reset HDR properties: {err:?}"),
+-                            }
++                            let max_bpc = self
++                                .config
++                                .borrow()
++                                .outputs
++                                .find(&surface.name)
++                                .and_then(|o| o.max_bpc);
++                            set_connector_properties(&mut props, max_bpc, true);
+                         } else {
+                             warn!("failed to get connector properties");
+-                        };
++                        }
+ 
+                         if let Some(ramp) = surface.pending_gamma_change.take() {
+                             let ramp = ramp.as_deref();
+@@ -1302,13 +1307,10 @@ impl Tty {
+         debug!("picking mode: {mode:?}");
+ 
+         let mut orientation = None;
+-        if let Ok(props) = ConnectorProperties::try_new(&device.drm, connector.handle()) {
+-            match reset_hdr(&props) {
+-                Ok(()) => (),
+-                Err(err) => debug!("couldn't reset HDR properties: {err:?}"),
+-            }
++        if let Ok(mut props) = ConnectorProperties::try_new(&device.drm, connector.handle()) {
++            set_connector_properties(&mut props, config.max_bpc, true);
+ 
+-            match get_panel_orientation(&props) {
++            match props.get_panel_orientation() {
+                 Ok(x) => orientation = Some(x),
+                 Err(err) => {
+                     trace!("couldn't get panel orientation: {err:?}");
+@@ -1316,7 +1318,7 @@ impl Tty {
+             }
+         } else {
+             warn!("failed to get connector properties");
+-        };
++        }
+ 
+         let mut gamma_props = GammaProps::new(&device.drm, crtc)
+             .map_err(|err| debug!("couldn't get gamma properties: {err:?}"))
+@@ -2194,6 +2196,15 @@ impl Tty {
+                     OutputId::next()
+                 });
+ 
++                let props = ConnectorProperties::try_new(&device.drm, connector.handle()).ok();
++                let max_bpc = props.as_ref().and_then(|p| p.find(c"max bpc").ok());
++                let max_bpc = max_bpc.and_then(|(info, value)| {
++                    info.value_type()
++                        .convert_value(*value)
++                        .as_unsigned_range()
++                        .map(|v| v as u8)
++                });
++
+                 let ipc_output = niri_ipc::Output {
+                     name: connector_name,
+                     make: output_name.make.unwrap_or_else(|| "Unknown".into()),
+@@ -2206,6 +2217,7 @@ impl Tty {
+                     vrr_supported,
+                     vrr_enabled,
+                     logical,
++                    max_bpc,
+                 };
+ 
+                 ipc_outputs.insert(id, ipc_output);
+@@ -2422,6 +2434,13 @@ impl Tty {
+                     },
+                 };
+ 
++                if let Ok(mut props) = ConnectorProperties::try_new(&device.drm, surface.connector)
++                {
++                    set_connector_properties(&mut props, config.max_bpc, false);
++                } else {
++                    warn!("failed to get connector properties");
++                }
++
+                 let change_mode = surface.compositor.pending_mode() != mode;
+ 
+                 let vrr_enabled = surface.compositor.vrr_enabled();
+@@ -3250,6 +3269,8 @@ impl<'a> ConnectorProperties<'a> {
+             device,
+             connector,
+             properties,
++            has_change: false,
++            requests: AtomicModeReq::new(),
+         })
+     }
+ 
+@@ -3262,35 +3283,115 @@ impl<'a> ConnectorProperties<'a> {
+ 
+         Err(anyhow!("couldn't find property: {name:?}"))
+     }
++
++    fn get_panel_orientation(&self) -> anyhow::Result<Transform> {
++        let (info, value) = self.find(c"panel orientation")?;
++        match info.value_type().convert_value(*value) {
++            property::Value::Enum(Some(val)) => match val.value() {
++                // "Normal"
++                0 => Ok(Transform::Normal),
++                // "Upside Down"
++                1 => Ok(Transform::_180),
++                // "Left Side Up"
++                2 => Ok(Transform::_90),
++                // "Right Side Up"
++                3 => Ok(Transform::_270),
++                _ => bail!("panel orientation has invalid value: {:?}", val),
++            },
++            _ => bail!("panel orientation has wrong value type"),
++        }
++    }
++
++    fn reset_hdr(&mut self) -> anyhow::Result<()> {
++        const DRM_MODE_COLORIMETRY_DEFAULT: u64 = 0;
++
++        let (info, value) = self.find(c"HDR_OUTPUT_METADATA")?;
++
++        let property::ValueType::Blob = info.value_type() else {
++            bail!("wrong property type")
++        };
++        if *value != 0 {
++            self.requests
++                .add_raw_property(self.connector.into(), info.handle(), 0);
++            self.has_change = true;
++        }
++
++        let (info, value) = self.find(c"Colorspace")?;
++        let property::ValueType::Enum(_) = info.value_type() else {
++            bail!("wrong property type")
++        };
++        if *value != DRM_MODE_COLORIMETRY_DEFAULT {
++            self.requests.add_raw_property(
++                self.connector.into(),
++                info.handle(),
++                DRM_MODE_COLORIMETRY_DEFAULT,
++            );
++            self.has_change = true;
++        }
++
++        Ok(())
++    }
++
++    fn set_max_bpc(&mut self, max_bpc: MaxBpc) -> anyhow::Result<u64> {
++        let (info, value) = self.find(c"max bpc")?;
++
++        let property::ValueType::UnsignedRange(min, max) = info.value_type() else {
++            bail!("wrong property type")
++        };
++
++        let max_bpc = max_bpc.0 as u64;
++        if !(min..=max).contains(&max_bpc) {
++            bail!("max-bpc {max_bpc} outside valid range of [{min}, {max}]");
++        }
++
++        let property::Value::UnsignedRange(value) = info.value_type().convert_value(*value) else {
++            bail!("wrong property type")
++        };
++
++        if value != max_bpc {
++            self.requests.add_raw_property(
++                self.connector.into(),
++                info.handle(),
++                property::Value::UnsignedRange(max_bpc).into(),
++            );
++            self.has_change = true;
++        }
++
++        Ok(max_bpc)
++    }
++
++    fn commit(&mut self) -> anyhow::Result<()> {
++        if self.has_change {
++            self.device.atomic_commit(
++                AtomicCommitFlags::ALLOW_MODESET,
++                std::mem::take(&mut self.requests),
++            )?;
++        }
++
++        Ok(())
++    }
+ }
+ 
+-const DRM_MODE_COLORIMETRY_DEFAULT: u64 = 0;
+-
+-fn reset_hdr(props: &ConnectorProperties) -> anyhow::Result<()> {
+-    let (info, value) = props.find(c"HDR_OUTPUT_METADATA")?;
+-    let property::ValueType::Blob = info.value_type() else {
+-        bail!("wrong property type")
+-    };
+-
+-    if *value != 0 {
+-        props
+-            .device
+-            .set_property(props.connector, info.handle(), 0)
+-            .context("error setting property")?;
++fn set_connector_properties(
++    props: &mut ConnectorProperties,
++    max_bpc: Option<MaxBpc>,
++    reset_hdr: bool,
++) {
++    if let Some(max_bpc) = max_bpc {
++        if let Err(err) = props.set_max_bpc(max_bpc) {
++            debug!("failed to set `max bpc` property: {err}");
++        }
+     }
+ 
+-    let (info, value) = props.find(c"Colorspace")?;
+-    let property::ValueType::Enum(_) = info.value_type() else {
+-        bail!("wrong property type")
+-    };
+-    if *value != DRM_MODE_COLORIMETRY_DEFAULT {
+-        props
+-            .device
+-            .set_property(props.connector, info.handle(), DRM_MODE_COLORIMETRY_DEFAULT)
+-            .context("error setting property")?;
++    if reset_hdr {
++        if let Err(err) = props.reset_hdr() {
++            debug!("failed to set HDR properties: {err}");
++        }
+     }
+ 
+-    Ok(())
++    if let Err(err) = props.commit() {
++        warn!("failed to atomically commit properties: {err}");
++    }
+ }
+ 
+ fn is_vrr_capable(device: &DrmDevice, connector: connector::Handle) -> Option<bool> {
+@@ -3298,24 +3399,6 @@ fn is_vrr_capable(device: &DrmDevice, connector: connector::Handle) -> Option<bo
+     info.value_type().convert_value(value).as_boolean()
+ }
+ 
+-fn get_panel_orientation(props: &ConnectorProperties) -> anyhow::Result<Transform> {
+-    let (info, value) = props.find(c"panel orientation")?;
+-    match info.value_type().convert_value(*value) {
+-        property::Value::Enum(Some(val)) => match val.value() {
+-            // "Normal"
+-            0 => Ok(Transform::Normal),
+-            // "Upside Down"
+-            1 => Ok(Transform::_180),
+-            // "Left Side Up"
+-            2 => Ok(Transform::_90),
+-            // "Right Side Up"
+-            3 => Ok(Transform::_270),
+-            _ => bail!("panel orientation has invalid value: {:?}", val),
+-        },
+-        _ => bail!("panel orientation has wrong value type"),
+-    }
+-}
+-
+ pub fn set_gamma_for_crtc(
+     device: &DrmDevice,
+     crtc: crtc::Handle,
+diff --git a/src/backend/winit.rs b/src/backend/winit.rs
+index a9bcc515..f25b6733 100644
+--- a/src/backend/winit.rs
++++ b/src/backend/winit.rs
+@@ -95,6 +95,7 @@ impl Winit {
+                 vrr_supported: false,
+                 vrr_enabled: false,
+                 logical: Some(logical_output(&output)),
++                max_bpc: None,
+             },
+         )])));
+ 
+diff --git a/src/ipc/client.rs b/src/ipc/client.rs
+index 40a58efa..d46377e0 100644
+--- a/src/ipc/client.rs
++++ b/src/ipc/client.rs
+@@ -568,6 +568,7 @@ fn print_output(output: Output) -> anyhow::Result<()> {
+         vrr_supported,
+         vrr_enabled,
+         logical,
++        max_bpc,
+     } = output;
+ 
+     let serial = serial.as_deref().unwrap_or("Unknown");
+@@ -651,6 +652,10 @@ fn print_output(output: Output) -> anyhow::Result<()> {
+         println!("  Transform: {transform}");
+     }
+ 
++    if let Some(max_bpc) = max_bpc {
++        println!("  Max bits per channel: {max_bpc}");
++    }
++
+     println!("  Available modes:");
+     for (idx, mode) in modes.into_iter().enumerate() {
+         let Mode {
+diff --git a/src/niri.rs b/src/niri.rs
+index ec40e01c..f90b80b1 100644
+--- a/src/niri.rs
++++ b/src/niri.rs
+@@ -14,6 +14,7 @@ use _server_decoration::server::org_kde_kwin_server_decoration_manager::Mode as
+ use anyhow::{bail, ensure, Context};
+ use calloop::futures::Scheduler;
+ use niri_config::debug::PreviewRender;
++use niri_config::output::MaxBpc;
+ use niri_config::{
+     Config, FloatOrInt, Key, Modifiers, OutputName, TrackLayout, WarpMouseToFocusMode,
+     WorkspaceReference, Xkb,
+@@ -1925,6 +1926,7 @@ impl State {
+                     None
+                 }
+             }
++            niri_ipc::OutputAction::MaxBpc { max_bpc } => config.max_bpc = Some(MaxBpc(max_bpc)),
+         });
+ 
+         self.reload_output_config();
+-- 
+2.56.0
+

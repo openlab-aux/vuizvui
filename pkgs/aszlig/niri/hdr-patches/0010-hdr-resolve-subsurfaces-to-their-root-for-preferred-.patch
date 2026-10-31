@@ -1,0 +1,47 @@
+From 8d2b9b7db83d9cbc983497d85ff22b418e3eaa49 Mon Sep 17 00:00:00 2001
+From: dividebysandwich <josef.jahn@gmail.com>
+Date: Sat, 4 Jul 2026 19:54:26 +0200
+Subject: [PATCH 10/10] hdr: resolve subsurfaces to their root for preferred
+ descriptions
+
+---
+ src/niri.rs | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/src/niri.rs b/src/niri.rs
+index 3e93ae36..b88f3de1 100644
+--- a/src/niri.rs
++++ b/src/niri.rs
+@@ -73,7 +73,7 @@ use smithay::utils::{
+ };
+ use smithay::wayland::background_effect::BackgroundEffectState;
+ use smithay::wayland::compositor::{
+-    with_states, with_surface_tree_downward, CompositorClientState, CompositorHandler,
++    get_parent, with_states, with_surface_tree_downward, CompositorClientState, CompositorHandler,
+     CompositorState, HookId, SurfaceData, TraversalAction,
+ };
+ use smithay::wayland::cursor_shape::CursorShapeManagerState;
+@@ -2351,11 +2351,18 @@ impl Niri {
+ 
+     /// The image description we'd prefer the given surface to use.
+     pub fn preferred_surface_description(&self, surface: &WlSurface) -> ImageDescription {
+-        if let Some((window, Some(output))) = self.layout.find_window_and_output(surface) {
++        // Resolve subsurfaces to their root: winewayland presents Vulkan content on a
++        // subsurface of the toplevel and may query color feedback there.
++        let mut root = surface.clone();
++        while let Some(parent) = get_parent(&root) {
++            root = parent;
++        }
++
++        if let Some((window, Some(output))) = self.layout.find_window_and_output(&root) {
+             return self.preferred_description_for_window(window, output);
+         }
+         // Non-toplevel surfaces (e.g. layer shell): prefer the output's blend space.
+-        if let Some(output) = self.output_for_root(surface) {
++        if let Some(output) = self.output_for_root(&root) {
+             let output = output.clone();
+             return self.output_blend_description(&output);
+         }
+-- 
+2.56.0
+

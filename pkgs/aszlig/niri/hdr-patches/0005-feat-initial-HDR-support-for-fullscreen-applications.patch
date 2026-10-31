@@ -1,0 +1,1811 @@
+From e5b989974acd763b13e5c0d7dea0f19c90690f91 Mon Sep 17 00:00:00 2001
+From: dividebysandwich <josef.jahn@gmail.com>
+Date: Mon, 29 Jun 2026 16:15:28 +0200
+Subject: [PATCH 05/10] feat: initial HDR support for fullscreen applications
+
+---
+ docs/wiki/Configuration:-Outputs.md |  33 ++
+ niri-config/src/lib.rs              |  14 +
+ niri-config/src/output.rs           |  17 +
+ src/backend/tty.rs                  | 373 ++++++++++++++-
+ src/handlers/mod.rs                 |  32 +-
+ src/niri.rs                         |  29 ++
+ src/protocols/color_management.rs   | 683 ++++++++++++++++++++++++++++
+ src/protocols/mod.rs                |   1 +
+ src/tests/client.rs                 | 134 ++++++
+ src/tests/color_management.rs       |  88 ++++
+ src/tests/mod.rs                    |   1 +
+ test-hdr.kdl                        |  31 ++
+ 12 files changed, 1426 insertions(+), 10 deletions(-)
+ create mode 100644 src/protocols/color_management.rs
+ create mode 100644 src/tests/color_management.rs
+ create mode 100644 test-hdr.kdl
+
+diff --git a/docs/wiki/Configuration:-Outputs.md b/docs/wiki/Configuration:-Outputs.md
+index 29241c04..a298189c 100644
+--- a/docs/wiki/Configuration:-Outputs.md
++++ b/docs/wiki/Configuration:-Outputs.md
+@@ -16,6 +16,7 @@ output "eDP-1" {
+     focus-at-startup
+     backdrop-color "#001100"
+     // max-bpc 8
++    // hdr
+ 
+     hot-corners {
+         // off
+@@ -301,6 +302,38 @@ output "HDMI-A-1" {
+ }
+ ```
+ 
++### `hdr`
++
++<sup>Since: next release</sup>
++
++> [!CAUTION]
++> HDR support is experimental and currently limited to a **single fullscreen application**.
++> There is no color-managed compositing yet, so HDR will only look correct when one HDR
++> application is fullscreen and alone on the output.
++
++Opts this output into HDR. When present, niri:
++
++- advertises the `wp-color-management-v1` protocol to clients (so an HDR app, e.g. `mpv --vo=gpu-next`
++  or gamescope, can tell niri its content is HDR);
++- requests a 10-bit (or wider) scanout buffer, and at least 10 `max-bpc`;
++- while a fullscreen application is showing HDR (PQ / BT.2020) content, switches the output into HDR
++  mode (sets the connector to BT.2020 and attaches a PQ `HDR_OUTPUT_METADATA` infoframe), and reverts
++  to SDR when it stops.
++
++With no `hdr` node on any output, color management is not advertised at all and behavior is unchanged.
++HDR signalling only works on the TTY backend, and requires a GPU/display that exposes the HDR
++connector properties (amdgpu and recent Intel do).
++
++The optional `reference-luminance` child (in cd/m²) is reserved for the upcoming color-managed
++compositing and currently has no effect.
++
++```kdl
++// Enable HDR on the internal display.
++output "eDP-1" {
++    hdr
++}
++```
++
+ ### `hot-corners`
+ 
+ <sup>Since: 25.11</sup>
+diff --git a/niri-config/src/lib.rs b/niri-config/src/lib.rs
+index 06629932..cda8b21f 100644
+--- a/niri-config/src/lib.rs
++++ b/niri-config/src/lib.rs
+@@ -745,6 +745,9 @@ mod tests {
+                 position x=10 y=20
+                 mode "1920x1080@144"
+                 max-bpc 10
++                hdr {
++                    reference-luminance 203
++                }
+                 variable-refresh-rate on-demand=true
+                 background-color "rgba(25, 25, 102, 1.0)"
+                 hot-corners {
+@@ -1164,6 +1167,15 @@ mod tests {
+                                 _10,
+                             ),
+                         ),
++                        hdr: Some(
++                            Hdr {
++                                reference_luminance: Some(
++                                    FloatOrInt(
++                                        203.0,
++                                    ),
++                                ),
++                            },
++                        ),
+                         mode: Some(
+                             Mode {
+                                 custom: false,
+@@ -1210,6 +1222,7 @@ mod tests {
+                         transform: Normal,
+                         position: None,
+                         max_bpc: None,
++                        hdr: None,
+                         mode: Some(
+                             Mode {
+                                 custom: true,
+@@ -1237,6 +1250,7 @@ mod tests {
+                         transform: Normal,
+                         position: None,
+                         max_bpc: None,
++                        hdr: None,
+                         mode: None,
+                         modeline: Some(
+                             Modeline {
+diff --git a/niri-config/src/output.rs b/niri-config/src/output.rs
+index 48572f6e..7c670669 100644
+--- a/niri-config/src/output.rs
++++ b/niri-config/src/output.rs
+@@ -62,6 +62,8 @@ pub struct Output {
+     #[knuffel(child, unwrap(argument))]
+     pub max_bpc: Option<MaxBpc>,
+     #[knuffel(child)]
++    pub hdr: Option<Hdr>,
++    #[knuffel(child)]
+     pub mode: Option<Mode>,
+     #[knuffel(child)]
+     pub modeline: Option<Modeline>,
+@@ -104,6 +106,7 @@ impl Default for Output {
+             transform: Transform::Normal,
+             position: None,
+             max_bpc: None,
++            hdr: None,
+             mode: None,
+             modeline: None,
+             variable_refresh_rate: None,
+@@ -140,6 +143,20 @@ pub struct Vrr {
+     pub on_demand: bool,
+ }
+ 
++/// HDR (high dynamic range) output configuration.
++///
++/// Presence of the `hdr` node enables HDR signalling on the output: niri will request a 10-bit (or
++/// wider) scanout buffer, set the connector `Colorspace` to BT.2020 RGB, and attach an
++/// `HDR_OUTPUT_METADATA` infoframe advertising the PQ (SMPTE ST 2084) transfer function. This is
++/// only acted upon for outputs whose driver exposes the corresponding DRM connector properties.
++#[derive(knuffel::Decode, Debug, Clone, PartialEq, Default)]
++pub struct Hdr {
++    /// Luminance, in cd/m² (nits), that SDR white (the value 1.0) is mapped to while the output is
++    /// in HDR mode. Defaults to 203 cd/m² (the BT.2408 reference white) when unset.
++    #[knuffel(child, unwrap(argument))]
++    pub reference_luminance: Option<FloatOrInt<0, 10000>>,
++}
++
+ impl FromIterator<Output> for Outputs {
+     fn from_iter<T: IntoIterator<Item = Output>>(iter: T) -> Self {
+         Self(Vec::from_iter(iter))
+diff --git a/src/backend/tty.rs b/src/backend/tty.rs
+index 0160a4bd..a79a2740 100644
+--- a/src/backend/tty.rs
++++ b/src/backend/tty.rs
+@@ -64,13 +64,26 @@ use wayland_protocols::wp::presentation_time::server::wp_presentation_feedback;
+ use super::{IpcOutputMap, RenderResult};
+ use crate::backend::OutputId;
+ use crate::frame_clock::FrameClock;
++use crate::protocols::color_management::ImageDescription;
+ use crate::niri::{Niri, RedrawState, State};
+ use crate::render_helpers::debug::draw_damage;
+ use crate::render_helpers::renderer::AsGlesRenderer;
+ use crate::render_helpers::{resources, shaders, RenderCtx, RenderTarget};
+ use crate::utils::{get_monotonic_time, is_laptop_panel, logical_output, PanelOrientation};
+ 
+-const SUPPORTED_COLOR_FORMATS: [Fourcc; 8] = [
++/// Scanout formats offered on SDR outputs: 8-bit only, matching upstream niri. Requesting a 10-bit
++/// framebuffer is not free — some drivers (notably nvidia) hang the initial modeset when asked to
++/// scan out a 2101010 buffer — so outputs that did not opt into HDR stay 8-bit as before.
++const SDR_COLOR_FORMATS: [Fourcc; 4] = [
++    Fourcc::Xrgb8888,
++    Fourcc::Xbgr8888,
++    Fourcc::Argb8888,
++    Fourcc::Abgr8888,
++];
++
++/// Scanout formats offered on HDR outputs: 10-bit preferred (needed so the PQ signal isn't crushed),
++/// falling back to 8-bit if the GPU won't scan out 10-bit at the chosen mode.
++const HDR_COLOR_FORMATS: [Fourcc; 8] = [
+     Fourcc::Xrgb2101010,
+     Fourcc::Xbgr2101010,
+     Fourcc::Argb2101010,
+@@ -378,6 +391,12 @@ struct Surface {
+     name: OutputName,
+     compositor: GbmDrmCompositor,
+     connector: connector::Handle,
++    /// The HDR signalling currently applied to this connector by the render loop (`None` = SDR).
++    /// Tracked so we only re-commit connector properties when the desired state actually changes.
++    current_hdr: Option<HdrMetadata>,
++    /// Id of the `HDR_OUTPUT_METADATA` blob currently set on the connector, owned by us. Destroyed
++    /// when the HDR state changes (the previous blob becomes unreferenced).
++    current_hdr_blob: Option<u64>,
+     dmabuf_feedback: Option<SurfaceDmabufFeedback>,
+     gamma_props: Option<GammaProps>,
+     /// Gamma change to apply upon session resume.
+@@ -690,8 +709,11 @@ impl Tty {
+                                 .borrow()
+                                 .outputs
+                                 .find(&surface.name)
+-                                .and_then(|o| o.max_bpc);
++                                .and_then(effective_max_bpc);
+                             set_connector_properties(&mut props, max_bpc, true);
++                            // The connector's HDR state was just reset to SDR; keep the render
++                            // loop's view in sync so it re-applies HDR if content still needs it.
++                            surface.current_hdr = None;
+                         } else {
+                             warn!("failed to get connector properties");
+                         }
+@@ -1312,7 +1334,7 @@ impl Tty {
+ 
+         let mut orientation = None;
+         if let Ok(mut props) = ConnectorProperties::try_new(&device.drm, connector.handle()) {
+-            set_connector_properties(&mut props, config.max_bpc, true);
++            set_connector_properties(&mut props, effective_max_bpc(&config), true);
+ 
+             match props.get_panel_orientation() {
+                 Ok(x) => orientation = Some(x),
+@@ -1440,14 +1462,35 @@ impl Tty {
+             })
+             .collect::<FormatSet>();
+ 
++        // Only offer 10-bit scanout formats on outputs that opted into HDR. Requesting a 10-bit
++        // framebuffer unconditionally hangs the initial modeset on some drivers (notably nvidia),
++        // so SDR outputs stay 8-bit exactly as upstream.
++        //
++        // Diagnostic escape hatch: NIRI_HDR_FORCE_8BIT keeps an 8-bit framebuffer even on HDR
++        // outputs, while still emitting the HDR colorspace/metadata signalling. This isolates a
++        // driver that hangs on 10-bit scanout (set the var -> boots fine) from one that hangs on the
++        // HDR infoframe commit itself (still hangs). Remove once HDR on nvidia is understood.
++        let force_8bit = std::env::var_os("NIRI_HDR_FORCE_8BIT").is_some();
++        let color_formats: &[Fourcc] = if config.hdr.is_some() && !force_8bit {
++            &HDR_COLOR_FORMATS
++        } else {
++            &SDR_COLOR_FORMATS
++        };
++
+         // Create the compositor.
++        debug!(
++            ?color_formats,
++            force_8bit,
++            hdr = config.hdr.is_some(),
++            "creating DRM compositor"
++        );
+         let res = DrmCompositor::new(
+             OutputModeSource::Auto(output.downgrade()),
+             surface,
+             None,
+             device.allocator.clone(),
+             GbmFramebufferExporter::new(device.gbm.clone(), device.render_node.into()),
+-            SUPPORTED_COLOR_FORMATS,
++            color_formats.iter().copied(),
+             // This is only used to pick a good internal format, so it can use the surface's render
+             // formats, even though we only ever render on the primary GPU.
+             render_formats.clone(),
+@@ -1477,7 +1520,7 @@ impl Tty {
+                     None,
+                     device.allocator.clone(),
+                     GbmFramebufferExporter::new(device.gbm.clone(), device.render_node.into()),
+-                    SUPPORTED_COLOR_FORMATS,
++                    color_formats.iter().copied(),
+                     render_formats,
+                     device.drm.cursor_size(),
+                     Some(device.gbm.clone()),
+@@ -1485,6 +1528,7 @@ impl Tty {
+                 .context("error creating DRM compositor")?
+             }
+         };
++        debug!("DRM compositor created");
+ 
+         if self.debug_tint {
+             compositor.set_debug_flags(DebugFlags::TINT);
+@@ -1534,6 +1578,8 @@ impl Tty {
+         let surface = Surface {
+             name: output_name,
+             connector: connector.handle(),
++            current_hdr: None,
++            current_hdr_blob: None,
+             compositor,
+             dmabuf_feedback,
+             gamma_props,
+@@ -1875,6 +1921,44 @@ impl Tty {
+             return rv;
+         }
+ 
++        // Reconcile HDR signalling with the content about to be shown. HDR must be enabled for the
++        // output in the config, and the output must be showing a fullscreen surface tagged as HDR
++        // (Phase 1 passthrough). We only re-commit the connector properties when the desired state
++        // actually changes, since that is a modeset.
++        {
++            let hdr_allowed = self
++                .config
++                .borrow()
++                .outputs
++                .find(&surface.name)
++                .is_some_and(|o| o.hdr.is_some());
++            let desired_hdr = hdr_allowed
++                .then(|| niri.output_hdr_image_description(output))
++                .flatten()
++                .map(|desc| HdrMetadata::from_image_description(&desc));
++
++            if desired_hdr != surface.current_hdr {
++                match apply_connector_hdr(&device.drm, surface.connector, desired_hdr.as_ref()) {
++                    Ok(new_blob) => {
++                        // The previously-set blob (if any) is now unreferenced; free it.
++                        if let Some(old) = surface.current_hdr_blob.take() {
++                            if let Err(err) = device.drm.destroy_property_blob(old) {
++                                warn!("failed to destroy old HDR metadata blob: {err}");
++                            }
++                        }
++                        surface.current_hdr_blob = new_blob;
++                        info!(
++                            connector = surface.name.connector,
++                            hdr = desired_hdr.is_some(),
++                            "updated HDR signalling to match content"
++                        );
++                        surface.current_hdr = desired_hdr;
++                    }
++                    Err(err) => warn!("failed to update HDR signalling: {err}"),
++                }
++            }
++        }
++
+         let mut renderer = match self.gpu_manager.renderer(
+             &self.primary_render_node,
+             &device.render_node.unwrap_or(self.primary_render_node),
+@@ -2440,7 +2524,7 @@ impl Tty {
+ 
+                 if let Ok(mut props) = ConnectorProperties::try_new(&device.drm, surface.connector)
+                 {
+-                    set_connector_properties(&mut props, config.max_bpc, false);
++                    set_connector_properties(&mut props, effective_max_bpc(&config), false);
+                 } else {
+                     warn!("failed to get connector properties");
+                 }
+@@ -3253,6 +3337,112 @@ fn get_edid_info(
+     libdisplay_info::info::Info::parse_edid(&data).context("error parsing EDID")
+ }
+ 
++/// EOTF value for the HDR metadata infoframe: SMPTE ST 2084, a.k.a. PQ (`HDMI_EOTF_SMPTE_ST2084`).
++const HDMI_EOTF_SMPTE_ST2084: u8 = 2;
++/// Static metadata descriptor id 0 == "Static Metadata Type 1" (CTA-861.3).
++const HDMI_STATIC_METADATA_TYPE1: u8 = 0;
++
++/// A CIE 1931 xy chromaticity coordinate, encoded in CTA-861.3 units (increments of 0.00002, i.e.
++/// the floating-point coordinate scaled by 50000).
++#[repr(C)]
++#[derive(Clone, Copy)]
++struct HdrColorPoint {
++    x: u16,
++    y: u16,
++}
++
++/// Binary layout of the kernel's `struct hdr_metadata_infoframe` (see `include/uapi/drm/drm_mode.h`).
++#[repr(C)]
++#[derive(Clone, Copy)]
++struct HdrMetadataInfoframe {
++    eotf: u8,
++    metadata_type: u8,
++    display_primaries: [HdrColorPoint; 3],
++    white_point: HdrColorPoint,
++    max_display_mastering_luminance: u16,
++    min_display_mastering_luminance: u16,
++    max_cll: u16,
++    max_fall: u16,
++}
++
++/// Binary layout of the kernel's `struct hdr_output_metadata`, the value of the connector's
++/// `HDR_OUTPUT_METADATA` blob property. Passed to the kernel verbatim, so the layout must match.
++#[repr(C)]
++#[derive(Clone, Copy)]
++struct HdrOutputMetadata {
++    metadata_type: u32,
++    hdmi_metadata_type1: HdrMetadataInfoframe,
++}
++
++/// The HDR signal niri attaches to a connector: PQ transfer, BT.2020 mastering primaries, and the
++/// sink's luminance characteristics. Built from the output's config and (eventually) its EDID.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub struct HdrMetadata {
++    /// Max display mastering luminance, in cd/m² (1 cd/m² units).
++    pub max_luminance: u16,
++    /// Min display mastering luminance, in 0.0001 cd/m² units.
++    pub min_luminance: u16,
++    /// Maximum content light level, in cd/m².
++    pub max_cll: u16,
++    /// Maximum frame-average light level, in cd/m².
++    pub max_fall: u16,
++}
++
++impl Default for HdrMetadata {
++    fn default() -> Self {
++        // Conservative defaults sized for a ~500 nit panel. These should ideally be derived from the
++        // sink's EDID HDR static metadata block; until then they are a sane placeholder.
++        Self {
++            max_luminance: 500,
++            min_luminance: 50,
++            max_cll: 500,
++            max_fall: 500,
++        }
++    }
++}
++
++impl HdrMetadata {
++    /// Builds the HDR metadata to signal from a client's image description, using whatever mastering
++    /// metadata it provided and falling back to defaults otherwise.
++    // TODO: also clamp to the sink's EDID HDR static metadata block.
++    fn from_image_description(desc: &ImageDescription) -> Self {
++        let mut meta = Self::default();
++        if let Some(v) = desc.mastering_max_luminance {
++            meta.max_luminance = v;
++        }
++        if let Some(v) = desc.max_cll {
++            meta.max_cll = v;
++        }
++        if let Some(v) = desc.max_fall {
++            meta.max_fall = v;
++        }
++        meta
++    }
++
++    /// Serializes into the kernel `struct hdr_output_metadata` blob layout.
++    fn to_blob(self) -> HdrOutputMetadata {
++        // BT.2020 mastering primaries + D65 white point, in CTA-861.3 units (coordinate * 50000).
++        const BT2020_RED: HdrColorPoint = HdrColorPoint { x: 35400, y: 14600 };
++        const BT2020_GREEN: HdrColorPoint = HdrColorPoint { x: 8500, y: 39850 };
++        const BT2020_BLUE: HdrColorPoint = HdrColorPoint { x: 6550, y: 2300 };
++        const D65_WHITE: HdrColorPoint = HdrColorPoint { x: 15635, y: 16450 };
++
++        HdrOutputMetadata {
++            metadata_type: u32::from(HDMI_STATIC_METADATA_TYPE1),
++            hdmi_metadata_type1: HdrMetadataInfoframe {
++                eotf: HDMI_EOTF_SMPTE_ST2084,
++                metadata_type: HDMI_STATIC_METADATA_TYPE1,
++                display_primaries: [BT2020_RED, BT2020_GREEN, BT2020_BLUE],
++                white_point: D65_WHITE,
++                max_display_mastering_luminance: self.max_luminance,
++                min_display_mastering_luminance: self.min_luminance,
++                max_cll: self.max_cll,
++                max_fall: self.max_fall,
++            },
++        }
++    }
++}
++
+ impl<'a> ConnectorProperties<'a> {
+     fn try_new(device: &'a DrmDevice, connector: connector::Handle) -> anyhow::Result<Self> {
+         let prop_vals = device
+@@ -3336,6 +3526,51 @@ impl<'a> ConnectorProperties<'a> {
+         Ok(())
+     }
+ 
++    /// Signals HDR on the connector: sets `Colorspace` to BT.2020 RGB and attaches a PQ
++    /// `HDR_OUTPUT_METADATA` infoframe describing `meta`. Requires the driver to expose both
++    /// properties (e.g. amdgpu does on DP/eDP/HDMI); errors otherwise. Returns the id of the created
++    /// metadata blob, which the caller owns and must destroy once it is no longer referenced.
++    fn set_hdr(&mut self, meta: &HdrMetadata) -> anyhow::Result<u64> {
++        // Set Colorspace to BT.2020 RGB. Resolve the enum value by name rather than hardcoding it,
++        // since the raw value is driver-defined.
++        let (info, value) = self.find(c"Colorspace")?;
++        let property::ValueType::Enum(values) = info.value_type() else {
++            bail!("Colorspace has wrong property type")
++        };
++        let (_, enums) = values.values();
++        let bt2020 = enums
++            .iter()
++            .find(|e| e.name() == c"BT2020_RGB")
++            .map(|e| e.value())
++            .context("connector does not support the BT2020_RGB colorspace")?;
++        let colorspace_prop = info.handle();
++        let colorspace_cur = *value;
++        if colorspace_cur != bt2020 {
++            self.requests
++                .add_raw_property(self.connector.into(), colorspace_prop, bt2020);
++            self.has_change = true;
++        }
++
++        // Attach the HDR static metadata blob.
++        let (info, _value) = self.find(c"HDR_OUTPUT_METADATA")?;
++        let property::ValueType::Blob = info.value_type() else {
++            bail!("HDR_OUTPUT_METADATA has wrong property type")
++        };
++        let metadata_prop = info.handle();
++        let blob = self
++            .device
++            .create_property_blob(&meta.to_blob())
++            .context("error creating HDR_OUTPUT_METADATA blob")?;
++        let property::Value::Blob(blob_id) = blob else {
++            bail!("create_property_blob returned a non-blob value");
++        };
++        self.requests
++            .add_raw_property(self.connector.into(), metadata_prop, blob_id);
++        self.has_change = true;
++
++        Ok(blob_id)
++    }
++
+     fn set_max_bpc(&mut self, max_bpc: MaxBpc) -> anyhow::Result<u64> {
+         let (info, value) = self.find(c"max bpc")?;
+ 
+@@ -3374,6 +3609,31 @@ impl<'a> ConnectorProperties<'a> {
+ 
+         Ok(())
+     }
++
++    /// Validates the pending atomic request with the kernel using `DRM_MODE_ATOMIC_TEST_ONLY`,
++    /// without applying it. Lets callers reject a configuration the driver won't accept *before*
++    /// committing it for real — important for the HDR path, where a bad commit on some drivers
++    /// (notably nvidia) can wedge the display pipe instead of returning an error. This does not
++    /// touch hardware, so it cannot catch a driver that hangs on the real commit, only one that
++    /// cleanly rejects the request.
++    fn commit_test(&self) -> anyhow::Result<()> {
++        if self.has_change {
++            self.device.atomic_commit(
++                AtomicCommitFlags::TEST_ONLY | AtomicCommitFlags::ALLOW_MODESET,
++                self.requests.clone(),
++            )?;
++        }
++
++        Ok(())
++    }
++}
++
++/// The `max-bpc` to request for an output: the configured value, or 10 when HDR is enabled but no
++/// explicit value was given (HDR needs at least 10 bits per channel so the PQ signal isn't crushed).
++fn effective_max_bpc(output: &niri_config::Output) -> Option<MaxBpc> {
++    output
++        .max_bpc
++        .or_else(|| output.hdr.is_some().then_some(MaxBpc(niri_ipc::MaxBpc::_10)))
+ }
+ 
+ fn set_connector_properties(
+@@ -3389,15 +3649,63 @@ fn set_connector_properties(
+ 
+     if reset_hdr {
+         if let Err(err) = props.reset_hdr() {
+-            debug!("failed to set HDR properties: {err}");
++            debug!("failed to reset HDR properties: {err}");
+         }
+     }
+ 
+     if let Err(err) = props.commit() {
+-        warn!("failed to atomically commit properties: {err}");
++        warn!("failed to atomically commit connector properties: {err}");
+     }
+ }
+ 
++/// Applies (or clears) HDR signalling on a connector. Used by the render loop to follow content:
++/// `Some(meta)` sets `Colorspace=BT2020_RGB` + a PQ infoframe, `None` resets to SDR. Kept separate
++/// from [`set_connector_properties`] so it can run per-content-change without touching `max bpc`.
++///
++/// On success returns the id of the newly-created metadata blob (`Some` when HDR was set), which the
++/// caller owns and must destroy once it is no longer referenced (i.e. on the next change).
++fn apply_connector_hdr(
++    device: &DrmDevice,
++    connector: connector::Handle,
++    hdr: Option<&HdrMetadata>,
++) -> anyhow::Result<Option<u64>> {
++    let mut props = ConnectorProperties::try_new(device, connector)?;
++    let new_blob = match hdr {
++        Some(meta) => Some(props.set_hdr(meta)?),
++        None => {
++            props.reset_hdr()?;
++            None
++        }
++    };
++    // Validate the request with a TEST_ONLY commit first, so a configuration the driver refuses is
++    // rejected here rather than applied. This can't save us from a driver that hangs on the real
++    // commit, but it does turn a cleanly-rejectable HDR request into a skipped no-op instead of a
++    // committed one.
++    //
++    // NOTE: this is a connector-property-only commit (Colorspace + HDR_OUTPUT_METADATA) with no
++    // CRTC/plane state. amdgpu accepts that, but nvidia treats the Colorspace change as a full
++    // modeset and can hang when handed an incomplete pipeline state. These logs bracket both
++    // drmModeAtomicCommit calls so a hang is attributable to the exact ioctl.
++    debug!(hdr = hdr.is_some(), "HDR: validating atomic commit (TEST_ONLY)");
++    if let Err(err) = props.commit_test() {
++        if let Some(blob) = new_blob {
++            let _ = device.destroy_property_blob(blob);
++        }
++        return Err(err).context("HDR atomic configuration rejected by driver (TEST_ONLY)");
++    }
++    debug!("HDR: TEST_ONLY passed, applying real atomic commit");
++    if let Err(err) = props.commit() {
++        // The commit failed, so the blob we just created is orphaned (nothing references it). Free
++        // it immediately rather than leak it.
++        if let Some(blob) = new_blob {
++            let _ = device.destroy_property_blob(blob);
++        }
++        return Err(err);
++    }
++    debug!("HDR: atomic commit applied");
++    Ok(new_blob)
++}
++
+ fn is_vrr_capable(device: &DrmDevice, connector: connector::Handle) -> Option<bool> {
+     let (_, info, value) = find_drm_property(device, connector, "vrr_capable")?;
+     info.value_type().convert_value(value).as_boolean()
+@@ -3522,7 +3830,54 @@ mod tests {
+     use niri_config::output::Modeline;
+     use niri_ipc::{HSyncPolarity, VSyncPolarity};
+ 
+-    use crate::backend::tty::{calculate_drm_mode_from_modeline, calculate_mode_cvt};
++    use crate::backend::tty::{
++        calculate_drm_mode_from_modeline, calculate_mode_cvt, HdrMetadata, HdrOutputMetadata,
++    };
++
++    #[test]
++    fn hdr_output_metadata_layout() {
++        // The blob is passed to the kernel verbatim, so the layout must match
++        // `struct hdr_output_metadata` exactly: 4-byte type + 26-byte infoframe, padded to 32.
++        assert_eq!(std::mem::size_of::<HdrOutputMetadata>(), 32);
++
++        let meta = HdrMetadata {
++            max_luminance: 500,
++            min_luminance: 50,
++            max_cll: 400,
++            max_fall: 300,
++        }
++        .to_blob();
++        let bytes = unsafe {
++            std::slice::from_raw_parts(
++                &meta as *const HdrOutputMetadata as *const u8,
++                std::mem::size_of::<HdrOutputMetadata>(),
++            )
++        };
++
++        // metadata_type: u32 = HDMI_STATIC_METADATA_TYPE1 (0)
++        assert_eq!(&bytes[0..4], &0u32.to_le_bytes());
++        // infoframe.eotf = SMPTE ST 2084 (PQ) = 2
++        assert_eq!(bytes[4], 2);
++        // infoframe.metadata_type = 0 (Static Metadata Type 1)
++        assert_eq!(bytes[5], 0);
++        // display_primaries[0] (red) = BT.2020 (0.708, 0.292) * 50000
++        assert_eq!(&bytes[6..8], &35400u16.to_le_bytes());
++        assert_eq!(&bytes[8..10], &14600u16.to_le_bytes());
++        // display_primaries[1] (green) = (0.170, 0.797) * 50000
++        assert_eq!(&bytes[10..12], &8500u16.to_le_bytes());
++        assert_eq!(&bytes[12..14], &39850u16.to_le_bytes());
++        // display_primaries[2] (blue) = (0.131, 0.046) * 50000
++        assert_eq!(&bytes[14..16], &6550u16.to_le_bytes());
++        assert_eq!(&bytes[16..18], &2300u16.to_le_bytes());
++        // white_point = D65 (0.3127, 0.3290) * 50000
++        assert_eq!(&bytes[18..20], &15635u16.to_le_bytes());
++        assert_eq!(&bytes[20..22], &16450u16.to_le_bytes());
++        // luminances and light levels
++        assert_eq!(&bytes[22..24], &500u16.to_le_bytes()); // max_display_mastering_luminance
++        assert_eq!(&bytes[24..26], &50u16.to_le_bytes()); // min_display_mastering_luminance
++        assert_eq!(&bytes[26..28], &400u16.to_le_bytes()); // max_cll
++        assert_eq!(&bytes[28..30], &300u16.to_le_bytes()); // max_fall
++    }
+ 
+     #[test]
+     fn test_calculate_drmmode_from_modeline() {
+diff --git a/src/handlers/mod.rs b/src/handlers/mod.rs
+index 3532078b..cb4ad8f5 100644
+--- a/src/handlers/mod.rs
++++ b/src/handlers/mod.rs
+@@ -80,6 +80,11 @@ use crate::protocols::ext_workspace::{self, ExtWorkspaceHandler, ExtWorkspaceMan
+ use crate::protocols::foreign_toplevel::{
+     self, ForeignToplevelHandler, ForeignToplevelManagerState,
+ };
++use smithay::reexports::wayland_protocols::wp::color_management::v1::server::wp_image_description_info_v1::WpImageDescriptionInfoV1;
++
++use crate::protocols::color_management::{
++    send_image_description_info, ColorManagementHandler, ColorManagementState, ImageDescription,
++};
+ use crate::protocols::gamma_control::{GammaControlHandler, GammaControlManagerState};
+ use crate::protocols::mutter_x11_interop::MutterX11InteropHandler;
+ use crate::protocols::output_management::{OutputManagementHandler, OutputManagementManagerState};
+@@ -91,7 +96,8 @@ use crate::protocols::virtual_pointer::{
+ };
+ use crate::utils::{output_size, send_scale_transform};
+ use crate::{
+-    delegate_ext_workspace, delegate_foreign_toplevel, delegate_gamma_control,
++    delegate_color_management, delegate_ext_workspace, delegate_foreign_toplevel,
++    delegate_gamma_control,
+     delegate_mutter_x11_interop, delegate_output_management, delegate_screencopy,
+     delegate_virtual_pointer,
+ };
+@@ -768,6 +774,30 @@ impl GammaControlHandler for State {
+ }
+ delegate_gamma_control!(State);
+ 
++impl ColorManagementHandler for State {
++    fn color_management_state(&mut self) -> &mut ColorManagementState {
++        &mut self.niri.color_management_state
++    }
++
++    fn image_description_changed(&mut self, _surface: &WlSurface) {
++        // The stored description is picked up by the TTY render loop on the next frame, which
++        // reconciles HDR signalling. A redraw is already scheduled by the surface commit.
++    }
++
++    fn schedule_image_description_info(
++        &mut self,
++        info: WpImageDescriptionInfoV1,
++        desc: ImageDescription,
++    ) {
++        // Deferred to an idle so the destructor `done` event is sent after the creating request
++        // dispatch returns (see the trait method docs).
++        self.niri.event_loop.insert_idle(move |_state| {
++            send_image_description_info(&info, &desc);
++        });
++    }
++}
++delegate_color_management!(State);
++
+ struct UrgentOnlyMarker;
+ 
+ impl XdgActivationHandler for State {
+diff --git a/src/niri.rs b/src/niri.rs
+index f90b80b1..ac23fc9d 100644
+--- a/src/niri.rs
++++ b/src/niri.rs
+@@ -147,6 +147,9 @@ use crate::layout::{
+ use crate::niri_render_elements;
+ use crate::protocols::ext_workspace::{self, ExtWorkspaceManagerState};
+ use crate::protocols::foreign_toplevel::{self, ForeignToplevelManagerState};
++use crate::protocols::color_management::{
++    surface_image_description, ColorManagementState, ImageDescription,
++};
+ use crate::protocols::gamma_control::GammaControlManagerState;
+ use crate::protocols::mutter_x11_interop::MutterX11InteropManagerState;
+ use crate::protocols::output_management::OutputManagementManagerState;
+@@ -310,6 +313,7 @@ pub struct Niri {
+     pub presentation_state: PresentationState,
+     pub security_context_state: SecurityContextState,
+     pub gamma_control_manager_state: GammaControlManagerState,
++    pub color_management_state: ColorManagementState,
+     pub activation_state: XdgActivationState,
+     pub mutter_x11_interop_state: MutterX11InteropManagerState,
+ 
+@@ -2225,6 +2229,19 @@ impl State {
+ }
+ 
+ impl Niri {
++    /// For Phase 1 HDR passthrough: if `output` is showing a fullscreen window whose surface carries
++    /// an HDR (PQ / BT.2020) image description, returns that description. The TTY backend uses this
++    /// to decide whether to signal HDR on the connector. Requires the window to be fullscreen so the
++    /// HDR signal covers the whole output and doesn't wash out surrounding SDR content.
++    pub fn output_hdr_image_description(&self, output: &Output) -> Option<ImageDescription> {
++        let window = self.layout.monitor_for_output(output)?.active_window()?;
++        if !window.sizing_mode().is_fullscreen() {
++            return None;
++        }
++        let desc = surface_image_description(window.toplevel().wl_surface())?;
++        desc.is_hdr().then_some(desc)
++    }
++
+     pub fn new(
+         config: Rc<RefCell<Config>>,
+         event_loop: LoopHandle<'static, State>,
+@@ -2352,6 +2369,17 @@ impl Niri {
+             GammaControlManagerState::new::<State, _>(&display_handle, move |client| {
+                 is_tty && !client.get_data::<ClientState>().unwrap().restricted
+             });
++        // Advertise color management only when at least one output opts into HDR in the config. This
++        // keeps HDR fully opt-in and off by default — with no `hdr` config, niri behaves exactly as
++        // before. Actual HDR signalling is additionally restricted to the TTY backend (it lives in
++        // `Tty::render`), so advertising on winit/headless is harmless. (Snapshot taken at startup;
++        // toggling `hdr` in the config needs a restart to (un)advertise the global.)
++        let advertise_color_management =
++            config.borrow().outputs.0.iter().any(|o| o.hdr.is_some());
++        let color_management_state =
++            ColorManagementState::new::<State, _>(&display_handle, move |_client| {
++                advertise_color_management
++            });
+         let activation_state = XdgActivationState::new::<State>(&display_handle);
+         event_loop
+             .insert_source(
+@@ -2559,6 +2587,7 @@ impl Niri {
+             presentation_state,
+             security_context_state,
+             gamma_control_manager_state,
++            color_management_state,
+             activation_state,
+             mutter_x11_interop_state,
+             #[cfg(test)]
+diff --git a/src/protocols/color_management.rs b/src/protocols/color_management.rs
+new file mode 100644
+index 00000000..6bb07e2e
+--- /dev/null
++++ b/src/protocols/color_management.rs
+@@ -0,0 +1,683 @@
++//! Minimal, receive-only implementation of `wp-color-management-v1` (staging).
++//!
++//! This is enough for the Phase 1 HDR use case: a client (e.g. gamescope, mpv with gpu-next) can
++//! create a parametric image description (BT.2020 + PQ, or sRGB + gamma 2.2) and attach it to a
++//! `wl_surface`. niri stores the parsed description on the surface; the rendering/output layer reads
++//! it to decide HDR signalling and (later) color conversion.
++//!
++//! We advertise the smallest useful subset: the perceptual rendering intent (ignored),
++//! the `parametric` feature (plus mastering-metadata features so HDR clients don't error),
++//! the gamma22 / sRGB / ST 2084 PQ transfer functions, and the sRGB / BT.2020 primaries. ICC and
++//! Windows-scRGB image descriptions are not supported.
++//!
++//! Modeled on [`crate::protocols::gamma_control`]. Kept independent of any Smithay color-management
++//! helper so it can be swapped for upstream later.
++
++use std::sync::Mutex;
++
++use smithay::reexports::wayland_protocols::wp::color_management::v1::server::{
++    wp_color_management_output_v1::{self, WpColorManagementOutputV1},
++    wp_color_management_surface_feedback_v1::{self, WpColorManagementSurfaceFeedbackV1},
++    wp_color_management_surface_v1::{self, WpColorManagementSurfaceV1},
++    wp_color_manager_v1::{
++        self, Feature, Primaries, RenderIntent, TransferFunction, WpColorManagerV1,
++    },
++    wp_image_description_creator_params_v1::{self, WpImageDescriptionCreatorParamsV1},
++    wp_image_description_info_v1::WpImageDescriptionInfoV1,
++    wp_image_description_v1::{self, WpImageDescriptionV1},
++};
++use smithay::reexports::wayland_server::protocol::wl_output::WlOutput;
++use smithay::reexports::wayland_server::protocol::wl_surface::WlSurface;
++use smithay::reexports::wayland_server::{
++    Client, DataInit, Dispatch, DisplayHandle, GlobalDispatch, New, Resource,
++};
++use smithay::wayland::compositor::with_states;
++
++const VERSION: u32 = 1;
++
++/// Transfer characteristic we understand. Anything else is rejected at the protocol level.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum ColorTransfer {
++    Srgb,
++    Gamma22,
++    /// SMPTE ST 2084, a.k.a. PQ — the HDR transfer function.
++    St2084Pq,
++}
++
++/// Color primaries we understand.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum ColorPrimaries {
++    Srgb,
++    Bt2020,
++}
++
++impl ColorTransfer {
++    fn from_named(tf: TransferFunction) -> Option<Self> {
++        match tf {
++            TransferFunction::Srgb => Some(Self::Srgb),
++            TransferFunction::Gamma22 => Some(Self::Gamma22),
++            TransferFunction::St2084Pq => Some(Self::St2084Pq),
++            _ => None,
++        }
++    }
++
++    fn to_named(self) -> TransferFunction {
++        match self {
++            Self::Srgb => TransferFunction::Srgb,
++            Self::Gamma22 => TransferFunction::Gamma22,
++            Self::St2084Pq => TransferFunction::St2084Pq,
++        }
++    }
++
++    /// Whether this transfer function denotes HDR content (PQ).
++    pub fn is_hdr(self) -> bool {
++        matches!(self, Self::St2084Pq)
++    }
++}
++
++impl ColorPrimaries {
++    fn from_named(primaries: Primaries) -> Option<Self> {
++        match primaries {
++            Primaries::Srgb => Some(Self::Srgb),
++            Primaries::Bt2020 => Some(Self::Bt2020),
++            _ => None,
++        }
++    }
++
++    fn to_named(self) -> Primaries {
++        match self {
++            Self::Srgb => Primaries::Srgb,
++            Self::Bt2020 => Primaries::Bt2020,
++        }
++    }
++}
++
++/// A parsed, immutable image description. This is the niri-internal representation; it is
++/// deliberately independent of the wire types so the protocol layer can be replaced later.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub struct ImageDescription {
++    pub transfer: ColorTransfer,
++    pub primaries: ColorPrimaries,
++    /// Maximum content light level, cd/m² (if the client provided it).
++    pub max_cll: Option<u16>,
++    /// Maximum frame-average light level, cd/m² (if provided).
++    pub max_fall: Option<u16>,
++    /// Mastering display max luminance, cd/m² (if provided).
++    pub mastering_max_luminance: Option<u16>,
++}
++
++impl ImageDescription {
++    /// sRGB / gamma 2.2 — the default SDR description we hand out for outputs.
++    pub const SRGB: Self = Self {
++        transfer: ColorTransfer::Srgb,
++        primaries: ColorPrimaries::Srgb,
++        max_cll: None,
++        max_fall: None,
++        mastering_max_luminance: None,
++    };
++
++    /// Whether this description denotes HDR content (PQ transfer or BT.2020 wide gamut).
++    pub fn is_hdr(&self) -> bool {
++        self.transfer.is_hdr() || matches!(self.primaries, ColorPrimaries::Bt2020)
++    }
++}
++
++/// Per-surface storage for the attached image description, kept in the surface's `data_map`.
++#[derive(Default)]
++struct SurfaceColorData(Mutex<Option<ImageDescription>>);
++
++/// Stores the image description a client attached to `surface` (or clears it with `None`). Returns
++/// whether the value actually changed — clients (e.g. mpv) re-attach the same description every
++/// frame, and we only want to react/log on real changes.
++fn store_surface_image_description(surface: &WlSurface, desc: Option<ImageDescription>) -> bool {
++    with_states(surface, |states| {
++        states
++            .data_map
++            .insert_if_missing(SurfaceColorData::default);
++        let data = states.data_map.get::<SurfaceColorData>().unwrap();
++        let mut current = data.0.lock().unwrap();
++        if *current == desc {
++            false
++        } else {
++            *current = desc;
++            true
++        }
++    })
++}
++
++/// Reads the image description a client attached to `surface`, if any.
++pub fn surface_image_description(surface: &WlSurface) -> Option<ImageDescription> {
++    with_states(surface, |states| {
++        states
++            .data_map
++            .get::<SurfaceColorData>()
++            .and_then(|d| *d.0.lock().unwrap())
++    })
++}
++
++/// User data for a `wp_image_description_v1`: the parsed image description it represents.
++pub struct ImageDescriptionData {
++    desc: ImageDescription,
++}
++
++/// Accumulated parameters of a `wp_image_description_creator_params_v1`, mutated as the client sets
++/// them and validated on `create`.
++#[derive(Default)]
++pub struct ParamsState {
++    transfer: Option<ColorTransfer>,
++    primaries: Option<ColorPrimaries>,
++    max_cll: Option<u16>,
++    max_fall: Option<u16>,
++    mastering_max_luminance: Option<u16>,
++}
++
++pub struct ColorManagementState {
++    next_identity: u32,
++}
++
++/// Global data for `wp_color_manager_v1`, carrying the visibility filter. The global is only shown to
++/// clients for which the filter returns true — niri uses this to advertise color management only when
++/// it can actually honor HDR (TTY backend with an HDR-enabled output).
++pub struct ColorManagementGlobalData {
++    filter: Box<dyn Fn(&Client) -> bool + Send + Sync>,
++}
++
++pub trait ColorManagementHandler {
++    fn color_management_state(&mut self) -> &mut ColorManagementState;
++
++    /// Called when a surface's attached image description changes (set or unset). The compositor
++    /// should re-evaluate HDR for the surface's output and schedule a redraw.
++    fn image_description_changed(&mut self, _surface: &WlSurface) {}
++
++    /// Schedules sending the information events for `info` (describing `desc`), to run *after* the
++    /// current request dispatch returns — see [`send_image_description_info`]. This MUST be deferred:
++    /// `wp_image_description_info_v1.done` is a destructor event, and destroying the object inside
++    /// the very callback that created it corrupts wayland-backend's bookkeeping (it writes the new
++    /// object's data after the callback returns, which would then be a use-after-free).
++    fn schedule_image_description_info(
++        &mut self,
++        info: WpImageDescriptionInfoV1,
++        desc: ImageDescription,
++    );
++}
++
++/// Sends the information events describing `desc` on `info`, terminating with the destructor `done`
++/// event. Must be called *outside* the request callback that created `info` (e.g. from an event-loop
++/// idle), via [`ColorManagementHandler::schedule_image_description_info`].
++pub fn send_image_description_info(info: &WpImageDescriptionInfoV1, desc: &ImageDescription) {
++    if !info.is_alive() {
++        return;
++    }
++    info.primaries_named(desc.primaries.to_named());
++    info.tf_named(desc.transfer.to_named());
++    info.done();
++}
++
++impl ColorManagementState {
++    pub fn new<D, F>(display: &DisplayHandle, filter: F) -> Self
++    where
++        D: GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData>,
++        D: Dispatch<WpColorManagerV1, ()>,
++        D: ColorManagementHandler,
++        D: 'static,
++        F: Fn(&Client) -> bool + Send + Sync + 'static,
++    {
++        let data = ColorManagementGlobalData {
++            filter: Box::new(filter),
++        };
++        display.create_global::<D, WpColorManagerV1, _>(VERSION, data);
++        Self { next_identity: 1 }
++    }
++
++    fn next_identity(&mut self) -> u32 {
++        let id = self.next_identity;
++        self.next_identity = self.next_identity.wrapping_add(1).max(1);
++        id
++    }
++}
++
++fn u32_to_u16(v: u32) -> u16 {
++    u16::try_from(v).unwrap_or(u16::MAX)
++}
++
++impl<D> GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData, D> for ColorManagementState
++where
++    D: GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData>
++        + Dispatch<WpColorManagerV1, ()>
++        + Dispatch<WpColorManagementOutputV1, WlOutput>
++        + Dispatch<WpColorManagementSurfaceV1, WlSurface>
++        + Dispatch<WpColorManagementSurfaceFeedbackV1, WlSurface>
++        + Dispatch<WpImageDescriptionCreatorParamsV1, Mutex<ParamsState>>
++        + Dispatch<WpImageDescriptionV1, ImageDescriptionData>
++        + Dispatch<WpImageDescriptionInfoV1, ()>
++        + ColorManagementHandler
++        + 'static,
++{
++    fn bind(
++        _state: &mut D,
++        _handle: &DisplayHandle,
++        _client: &Client,
++        manager: New<WpColorManagerV1>,
++        _global_data: &ColorManagementGlobalData,
++        data_init: &mut DataInit<'_, D>,
++    ) {
++        let manager = data_init.init(manager, ());
++
++        // Advertise the minimal supported subset. The order doesn't matter; `done` terminates it.
++        manager.supported_intent(RenderIntent::Perceptual);
++        manager.supported_feature(Feature::Parametric);
++        // So HDR clients can convey mastering metadata without erroring.
++        manager.supported_feature(Feature::SetMasteringDisplayPrimaries);
++        manager.supported_feature(Feature::SetLuminances);
++        manager.supported_tf_named(TransferFunction::Srgb);
++        manager.supported_tf_named(TransferFunction::Gamma22);
++        manager.supported_tf_named(TransferFunction::St2084Pq);
++        manager.supported_primaries_named(Primaries::Srgb);
++        manager.supported_primaries_named(Primaries::Bt2020);
++        manager.done();
++    }
++
++    fn can_view(client: Client, global_data: &ColorManagementGlobalData) -> bool {
++        (global_data.filter)(&client)
++    }
++}
++
++impl<D> Dispatch<WpColorManagerV1, (), D> for ColorManagementState
++where
++    D: GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData>
++        + Dispatch<WpColorManagerV1, ()>
++        + Dispatch<WpColorManagementOutputV1, WlOutput>
++        + Dispatch<WpColorManagementSurfaceV1, WlSurface>
++        + Dispatch<WpColorManagementSurfaceFeedbackV1, WlSurface>
++        + Dispatch<WpImageDescriptionCreatorParamsV1, Mutex<ParamsState>>
++        + Dispatch<WpImageDescriptionV1, ImageDescriptionData>
++        + Dispatch<WpImageDescriptionInfoV1, ()>
++        + ColorManagementHandler
++        + 'static,
++{
++    fn request(
++        _state: &mut D,
++        _client: &Client,
++        resource: &WpColorManagerV1,
++        request: <WpColorManagerV1 as Resource>::Request,
++        _data: &(),
++        _dhandle: &DisplayHandle,
++        data_init: &mut DataInit<'_, D>,
++    ) {
++        use wp_color_manager_v1::Request;
++        match request {
++            Request::GetOutput { id, output } => {
++                data_init.init(id, output);
++            }
++            Request::GetSurface { id, surface } => {
++                data_init.init(id, surface);
++            }
++            Request::GetSurfaceFeedback { id, surface } => {
++                data_init.init(id, surface);
++            }
++            Request::CreateParametricCreator { obj } => {
++                data_init.init(obj, Mutex::new(ParamsState::default()));
++            }
++            Request::CreateIccCreator { .. } => {
++                resource.post_error(
++                    wp_color_manager_v1::Error::UnsupportedFeature,
++                    "ICC image descriptions are not supported",
++                );
++            }
++            Request::CreateWindowsScrgb { .. } => {
++                resource.post_error(
++                    wp_color_manager_v1::Error::UnsupportedFeature,
++                    "Windows scRGB image descriptions are not supported",
++                );
++            }
++            Request::Destroy => {}
++            _ => {}
++        }
++    }
++}
++
++impl<D> Dispatch<WpColorManagementOutputV1, WlOutput, D> for ColorManagementState
++where
++    D: GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData>
++        + Dispatch<WpColorManagerV1, ()>
++        + Dispatch<WpColorManagementOutputV1, WlOutput>
++        + Dispatch<WpColorManagementSurfaceV1, WlSurface>
++        + Dispatch<WpColorManagementSurfaceFeedbackV1, WlSurface>
++        + Dispatch<WpImageDescriptionCreatorParamsV1, Mutex<ParamsState>>
++        + Dispatch<WpImageDescriptionV1, ImageDescriptionData>
++        + Dispatch<WpImageDescriptionInfoV1, ()>
++        + ColorManagementHandler
++        + 'static,
++{
++    fn request(
++        state: &mut D,
++        _client: &Client,
++        _resource: &WpColorManagementOutputV1,
++        request: <WpColorManagementOutputV1 as Resource>::Request,
++        _data: &WlOutput,
++        _dhandle: &DisplayHandle,
++        data_init: &mut DataInit<'_, D>,
++    ) {
++        use wp_color_management_output_v1::Request;
++        match request {
++            Request::GetImageDescription { image_description } => {
++                make_ready_description(state, image_description, ImageDescription::SRGB, data_init);
++            }
++            Request::Destroy => {}
++            _ => {}
++        }
++    }
++}
++
++impl<D> Dispatch<WpColorManagementSurfaceV1, WlSurface, D> for ColorManagementState
++where
++    D: GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData>
++        + Dispatch<WpColorManagerV1, ()>
++        + Dispatch<WpColorManagementOutputV1, WlOutput>
++        + Dispatch<WpColorManagementSurfaceV1, WlSurface>
++        + Dispatch<WpColorManagementSurfaceFeedbackV1, WlSurface>
++        + Dispatch<WpImageDescriptionCreatorParamsV1, Mutex<ParamsState>>
++        + Dispatch<WpImageDescriptionV1, ImageDescriptionData>
++        + Dispatch<WpImageDescriptionInfoV1, ()>
++        + ColorManagementHandler
++        + 'static,
++{
++    fn request(
++        state: &mut D,
++        _client: &Client,
++        _resource: &WpColorManagementSurfaceV1,
++        request: <WpColorManagementSurfaceV1 as Resource>::Request,
++        surface: &WlSurface,
++        _dhandle: &DisplayHandle,
++        _data_init: &mut DataInit<'_, D>,
++    ) {
++        use wp_color_management_surface_v1::Request;
++        match request {
++            Request::SetImageDescription {
++                image_description,
++                render_intent: _,
++            } => {
++                let desc = image_description
++                    .data::<ImageDescriptionData>()
++                    .map(|d| d.desc);
++                if let Some(desc) = desc {
++                    if store_surface_image_description(surface, Some(desc)) {
++                        if desc.is_hdr() {
++                            debug!(surface = ?surface.id(), ?desc, "client attached an HDR image description");
++                        } else {
++                            trace!(surface = ?surface.id(), ?desc, "client attached an image description");
++                        }
++                        state.image_description_changed(surface);
++                    }
++                }
++            }
++            Request::UnsetImageDescription => {
++                if store_surface_image_description(surface, None) {
++                    state.image_description_changed(surface);
++                }
++            }
++            Request::Destroy => {}
++            _ => {}
++        }
++    }
++}
++
++impl<D> Dispatch<WpColorManagementSurfaceFeedbackV1, WlSurface, D> for ColorManagementState
++where
++    D: GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData>
++        + Dispatch<WpColorManagerV1, ()>
++        + Dispatch<WpColorManagementOutputV1, WlOutput>
++        + Dispatch<WpColorManagementSurfaceV1, WlSurface>
++        + Dispatch<WpColorManagementSurfaceFeedbackV1, WlSurface>
++        + Dispatch<WpImageDescriptionCreatorParamsV1, Mutex<ParamsState>>
++        + Dispatch<WpImageDescriptionV1, ImageDescriptionData>
++        + Dispatch<WpImageDescriptionInfoV1, ()>
++        + ColorManagementHandler
++        + 'static,
++{
++    fn request(
++        state: &mut D,
++        _client: &Client,
++        _resource: &WpColorManagementSurfaceFeedbackV1,
++        request: <WpColorManagementSurfaceFeedbackV1 as Resource>::Request,
++        _surface: &WlSurface,
++        _dhandle: &DisplayHandle,
++        data_init: &mut DataInit<'_, D>,
++    ) {
++        use wp_color_management_surface_feedback_v1::Request;
++        match request {
++            Request::GetPreferred { image_description }
++            | Request::GetPreferredParametric { image_description } => {
++                make_ready_description(state, image_description, ImageDescription::SRGB, data_init);
++            }
++            Request::Destroy => {}
++            _ => {}
++        }
++    }
++}
++
++impl<D> Dispatch<WpImageDescriptionCreatorParamsV1, Mutex<ParamsState>, D> for ColorManagementState
++where
++    D: GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData>
++        + Dispatch<WpColorManagerV1, ()>
++        + Dispatch<WpColorManagementOutputV1, WlOutput>
++        + Dispatch<WpColorManagementSurfaceV1, WlSurface>
++        + Dispatch<WpColorManagementSurfaceFeedbackV1, WlSurface>
++        + Dispatch<WpImageDescriptionCreatorParamsV1, Mutex<ParamsState>>
++        + Dispatch<WpImageDescriptionV1, ImageDescriptionData>
++        + Dispatch<WpImageDescriptionInfoV1, ()>
++        + ColorManagementHandler
++        + 'static,
++{
++    fn request(
++        state: &mut D,
++        _client: &Client,
++        resource: &WpImageDescriptionCreatorParamsV1,
++        request: <WpImageDescriptionCreatorParamsV1 as Resource>::Request,
++        data: &Mutex<ParamsState>,
++        _dhandle: &DisplayHandle,
++        data_init: &mut DataInit<'_, D>,
++    ) {
++        use wp_image_description_creator_params_v1::{Error, Request};
++        match request {
++            Request::SetTfNamed { tf } => {
++                let mut params = data.lock().unwrap();
++                if params.transfer.is_some() {
++                    resource.post_error(Error::AlreadySet, "transfer function already set");
++                    return;
++                }
++                match tf.into_result().ok().and_then(ColorTransfer::from_named) {
++                    Some(tf) => params.transfer = Some(tf),
++                    None => resource.post_error(Error::InvalidTf, "unsupported transfer function"),
++                }
++            }
++            Request::SetPrimariesNamed { primaries } => {
++                let mut params = data.lock().unwrap();
++                if params.primaries.is_some() {
++                    resource.post_error(Error::AlreadySet, "primaries already set");
++                    return;
++                }
++                match primaries
++                    .into_result()
++                    .ok()
++                    .and_then(ColorPrimaries::from_named)
++                {
++                    Some(p) => params.primaries = Some(p),
++                    None => {
++                        resource.post_error(Error::InvalidPrimariesNamed, "unsupported primaries")
++                    }
++                }
++            }
++            Request::SetMasteringLuminance { min_lum: _, max_lum } => {
++                data.lock().unwrap().mastering_max_luminance = Some(u32_to_u16(max_lum));
++            }
++            Request::SetMaxCll { max_cll } => {
++                data.lock().unwrap().max_cll = Some(u32_to_u16(max_cll));
++            }
++            Request::SetMaxFall { max_fall } => {
++                data.lock().unwrap().max_fall = Some(u32_to_u16(max_fall));
++            }
++            // We advertise set_luminances and set_mastering_display_primaries so clients may call
++            // them; we just don't use the values yet.
++            Request::SetLuminances { .. } | Request::SetMasteringDisplayPrimaries { .. } => {}
++            // Not advertised — reject per protocol.
++            Request::SetTfPower { .. } => {
++                resource.post_error(Error::UnsupportedFeature, "set_tf_power is not supported");
++            }
++            Request::SetPrimaries { .. } => {
++                resource.post_error(Error::UnsupportedFeature, "set_primaries is not supported");
++            }
++            Request::Create { image_description } => {
++                let params = data.lock().unwrap();
++                let (Some(transfer), Some(primaries)) = (params.transfer, params.primaries) else {
++                    resource.post_error(
++                        Error::IncompleteSet,
++                        "transfer function and primaries are both required",
++                    );
++                    return;
++                };
++                let desc = ImageDescription {
++                    transfer,
++                    primaries,
++                    max_cll: params.max_cll,
++                    max_fall: params.max_fall,
++                    mastering_max_luminance: params.mastering_max_luminance,
++                };
++                drop(params);
++                make_ready_description(state, image_description, desc, data_init);
++            }
++            _ => {}
++        }
++    }
++}
++
++impl<D> Dispatch<WpImageDescriptionV1, ImageDescriptionData, D> for ColorManagementState
++where
++    D: GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData>
++        + Dispatch<WpColorManagerV1, ()>
++        + Dispatch<WpColorManagementOutputV1, WlOutput>
++        + Dispatch<WpColorManagementSurfaceV1, WlSurface>
++        + Dispatch<WpColorManagementSurfaceFeedbackV1, WlSurface>
++        + Dispatch<WpImageDescriptionCreatorParamsV1, Mutex<ParamsState>>
++        + Dispatch<WpImageDescriptionV1, ImageDescriptionData>
++        + Dispatch<WpImageDescriptionInfoV1, ()>
++        + ColorManagementHandler
++        + 'static,
++{
++    fn request(
++        state: &mut D,
++        _client: &Client,
++        _resource: &WpImageDescriptionV1,
++        request: <WpImageDescriptionV1 as Resource>::Request,
++        data: &ImageDescriptionData,
++        _dhandle: &DisplayHandle,
++        data_init: &mut DataInit<'_, D>,
++    ) {
++        use wp_image_description_v1::Request;
++        match request {
++            Request::GetInformation { information } => {
++                // We are lenient: even for parametric descriptions (where the spec disallows this),
++                // we report the named characteristics rather than killing the client. The actual
++                // events (ending in the destructor `done`) are sent deferred — see the handler doc.
++                let info = data_init.init(information, ());
++                state.schedule_image_description_info(info, data.desc);
++            }
++            Request::Destroy => {}
++            _ => {}
++        }
++    }
++}
++
++impl<D> Dispatch<WpImageDescriptionInfoV1, (), D> for ColorManagementState
++where
++    D: GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData>
++        + Dispatch<WpColorManagerV1, ()>
++        + Dispatch<WpColorManagementOutputV1, WlOutput>
++        + Dispatch<WpColorManagementSurfaceV1, WlSurface>
++        + Dispatch<WpColorManagementSurfaceFeedbackV1, WlSurface>
++        + Dispatch<WpImageDescriptionCreatorParamsV1, Mutex<ParamsState>>
++        + Dispatch<WpImageDescriptionV1, ImageDescriptionData>
++        + Dispatch<WpImageDescriptionInfoV1, ()>
++        + ColorManagementHandler
++        + 'static,
++{
++    fn request(
++        _state: &mut D,
++        _client: &Client,
++        _resource: &WpImageDescriptionInfoV1,
++        _request: <WpImageDescriptionInfoV1 as Resource>::Request,
++        _data: &(),
++        _dhandle: &DisplayHandle,
++        _data_init: &mut DataInit<'_, D>,
++    ) {
++        // wp_image_description_info_v1 has no requests.
++    }
++}
++
++/// Initializes a `wp_image_description_v1` carrying `desc` and immediately marks it ready.
++fn make_ready_description<D>(
++    state: &mut D,
++    image_description: New<WpImageDescriptionV1>,
++    desc: ImageDescription,
++    data_init: &mut DataInit<'_, D>,
++) where
++    D: GlobalDispatch<WpColorManagerV1, ColorManagementGlobalData>
++        + Dispatch<WpColorManagerV1, ()>
++        + Dispatch<WpColorManagementOutputV1, WlOutput>
++        + Dispatch<WpColorManagementSurfaceV1, WlSurface>
++        + Dispatch<WpColorManagementSurfaceFeedbackV1, WlSurface>
++        + Dispatch<WpImageDescriptionCreatorParamsV1, Mutex<ParamsState>>
++        + Dispatch<WpImageDescriptionV1, ImageDescriptionData>
++        + Dispatch<WpImageDescriptionInfoV1, ()>
++        + ColorManagementHandler
++        + 'static,
++{
++    let identity = state.color_management_state().next_identity();
++    let image = data_init.init(image_description, ImageDescriptionData { desc });
++    image.ready(identity);
++}
++
++#[macro_export]
++macro_rules! delegate_color_management {
++    ($(@<$( $lt:tt $( : $clt:tt $(+ $dlt:tt )* )? ),+>)? $ty: ty) => {
++        type __WpColorManagerV1 = smithay::reexports::wayland_protocols::wp::color_management::v1::server::wp_color_manager_v1::WpColorManagerV1;
++        type __WpCmOutput = smithay::reexports::wayland_protocols::wp::color_management::v1::server::wp_color_management_output_v1::WpColorManagementOutputV1;
++        type __WpCmSurface = smithay::reexports::wayland_protocols::wp::color_management::v1::server::wp_color_management_surface_v1::WpColorManagementSurfaceV1;
++        type __WpCmSurfaceFeedback = smithay::reexports::wayland_protocols::wp::color_management::v1::server::wp_color_management_surface_feedback_v1::WpColorManagementSurfaceFeedbackV1;
++        type __WpCmParams = smithay::reexports::wayland_protocols::wp::color_management::v1::server::wp_image_description_creator_params_v1::WpImageDescriptionCreatorParamsV1;
++        type __WpCmImageDesc = smithay::reexports::wayland_protocols::wp::color_management::v1::server::wp_image_description_v1::WpImageDescriptionV1;
++        type __WpCmImageDescInfo = smithay::reexports::wayland_protocols::wp::color_management::v1::server::wp_image_description_info_v1::WpImageDescriptionInfoV1;
++
++        smithay::reexports::wayland_server::delegate_global_dispatch!($(@< $( $lt $( : $clt $(+ $dlt )* )? ),+ >)? $ty: [
++            __WpColorManagerV1: $crate::protocols::color_management::ColorManagementGlobalData
++        ] => $crate::protocols::color_management::ColorManagementState);
++
++        smithay::reexports::wayland_server::delegate_dispatch!($(@< $( $lt $( : $clt $(+ $dlt )* )? ),+ >)? $ty: [
++            __WpColorManagerV1: ()
++        ] => $crate::protocols::color_management::ColorManagementState);
++
++        smithay::reexports::wayland_server::delegate_dispatch!($(@< $( $lt $( : $clt $(+ $dlt )* )? ),+ >)? $ty: [
++            __WpCmOutput: smithay::reexports::wayland_server::protocol::wl_output::WlOutput
++        ] => $crate::protocols::color_management::ColorManagementState);
++
++        smithay::reexports::wayland_server::delegate_dispatch!($(@< $( $lt $( : $clt $(+ $dlt )* )? ),+ >)? $ty: [
++            __WpCmSurface: smithay::reexports::wayland_server::protocol::wl_surface::WlSurface
++        ] => $crate::protocols::color_management::ColorManagementState);
++
++        smithay::reexports::wayland_server::delegate_dispatch!($(@< $( $lt $( : $clt $(+ $dlt )* )? ),+ >)? $ty: [
++            __WpCmSurfaceFeedback: smithay::reexports::wayland_server::protocol::wl_surface::WlSurface
++        ] => $crate::protocols::color_management::ColorManagementState);
++
++        smithay::reexports::wayland_server::delegate_dispatch!($(@< $( $lt $( : $clt $(+ $dlt )* )? ),+ >)? $ty: [
++            __WpCmParams: std::sync::Mutex<$crate::protocols::color_management::ParamsState>
++        ] => $crate::protocols::color_management::ColorManagementState);
++
++        smithay::reexports::wayland_server::delegate_dispatch!($(@< $( $lt $( : $clt $(+ $dlt )* )? ),+ >)? $ty: [
++            __WpCmImageDesc: $crate::protocols::color_management::ImageDescriptionData
++        ] => $crate::protocols::color_management::ColorManagementState);
++
++        smithay::reexports::wayland_server::delegate_dispatch!($(@< $( $lt $( : $clt $(+ $dlt )* )? ),+ >)? $ty: [
++            __WpCmImageDescInfo: ()
++        ] => $crate::protocols::color_management::ColorManagementState);
++    };
++}
+diff --git a/src/protocols/mod.rs b/src/protocols/mod.rs
+index b150cb7f..05c96a07 100644
+--- a/src/protocols/mod.rs
++++ b/src/protocols/mod.rs
+@@ -1,3 +1,4 @@
++pub mod color_management;
+ pub mod ext_workspace;
+ pub mod foreign_toplevel;
+ pub mod gamma_control;
+diff --git a/src/tests/client.rs b/src/tests/client.rs
+index 7776b6a2..aaa5ebb8 100644
+--- a/src/tests/client.rs
++++ b/src/tests/client.rs
+@@ -10,6 +10,14 @@ use std::time::Duration;
+ use calloop::EventLoop;
+ use calloop_wayland_source::WaylandSource;
+ use single_pixel_buffer::v1::client::wp_single_pixel_buffer_manager_v1::WpSinglePixelBufferManagerV1;
++use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_color_management_output_v1::{self, WpColorManagementOutputV1};
++use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_color_management_surface_v1::WpColorManagementSurfaceV1;
++use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_color_manager_v1::{
++    Primaries, RenderIntent, TransferFunction, WpColorManagerV1,
++};
++use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_image_description_creator_params_v1::WpImageDescriptionCreatorParamsV1;
++use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_image_description_info_v1::{self, WpImageDescriptionInfoV1};
++use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_image_description_v1::{self, WpImageDescriptionV1};
+ use smithay::reexports::wayland_protocols::wp::single_pixel_buffer;
+ use smithay::reexports::wayland_protocols::wp::viewporter::client::wp_viewport::WpViewport;
+ use smithay::reexports::wayland_protocols::wp::viewporter::client::wp_viewporter::WpViewporter;
+@@ -55,6 +63,7 @@ pub struct State {
+     pub layer_shell: Option<ZwlrLayerShellV1>,
+     pub spbm: Option<WpSinglePixelBufferManagerV1>,
+     pub viewporter: Option<WpViewporter>,
++    pub color_manager: Option<WpColorManagerV1>,
+ 
+     pub windows: Vec<Window>,
+     pub layers: Vec<LayerSurface>,
+@@ -181,6 +190,7 @@ impl Client {
+             layer_shell: None,
+             spbm: None,
+             viewporter: None,
++            color_manager: None,
+             windows: Vec::new(),
+             layers: Vec::new(),
+         };
+@@ -220,6 +230,49 @@ impl Client {
+         self.state.window(surface)
+     }
+ 
++    /// Drives the color-management requests `wayland-info` sends: bind an output's image description
++    /// and query its information.
++    pub fn probe_output_color_management(&mut self) {
++        let manager = self.state.color_manager.clone().expect("manager not bound");
++        let output = self
++            .state
++            .outputs
++            .keys()
++            .next()
++            .expect("no output")
++            .clone();
++
++        let output_cm = manager.get_output(&output, &self.qh, ());
++        let image = output_cm.get_image_description(&self.qh, ());
++        let _info = image.get_information(&self.qh, ());
++        self.connection.flush().unwrap();
++    }
++
++    /// Drives the color-management requests an HDR client (mpv gpu-next) sends: build a parametric
++    /// image description and attach it to a surface.
++    pub fn create_and_attach_hdr_description(
++        &mut self,
++        surface: &WlSurface,
++        tf: TransferFunction,
++        primaries: Primaries,
++        intent: RenderIntent,
++    ) {
++        let manager = self.state.color_manager.clone().expect("manager not bound");
++
++        let creator = manager.create_parametric_creator(&self.qh, ());
++        creator.set_tf_named(tf);
++        creator.set_primaries_named(primaries);
++        // min L = 0.005 cd/m² (×10000), max L = 1000 cd/m².
++        creator.set_mastering_luminance(50, 1000);
++        creator.set_max_cll(1000);
++        creator.set_max_fall(400);
++        let image = creator.create(&self.qh, ());
++
++        let cm_surface = manager.get_surface(surface, &self.qh, ());
++        cm_surface.set_image_description(&image, intent);
++        self.connection.flush().unwrap();
++    }
++
+     pub fn create_layer(
+         &mut self,
+         output: Option<&WlOutput>,
+@@ -518,6 +571,9 @@ impl Dispatch<WlRegistry, ()> for State {
+                 } else if interface == WpViewporter::interface().name {
+                     let version = min(version, WpViewporter::interface().version);
+                     state.viewporter = Some(registry.bind(name, version, qh, ()));
++                } else if interface == WpColorManagerV1::interface().name {
++                    let version = min(version, WpColorManagerV1::interface().version);
++                    state.color_manager = Some(registry.bind(name, version, qh, ()));
+                 } else if interface == WlOutput::interface().name {
+                     let version = min(version, WlOutput::interface().version);
+                     let output = registry.bind(name, version, qh, ());
+@@ -775,3 +831,81 @@ impl Dispatch<WpViewport, ()> for State {
+         unreachable!()
+     }
+ }
++
++impl Dispatch<WpColorManagerV1, ()> for State {
++    fn event(
++        _state: &mut Self,
++        _proxy: &WpColorManagerV1,
++        _event: <WpColorManagerV1 as wayland_client::Proxy>::Event,
++        _data: &(),
++        _conn: &Connection,
++        _qhandle: &QueueHandle<Self>,
++    ) {
++        // supported_intent / supported_feature / supported_tf_named / supported_primaries_named /
++        // done — all ignored; binding alone exercises the server's bind handler.
++    }
++}
++
++impl Dispatch<WpColorManagementOutputV1, ()> for State {
++    fn event(
++        _state: &mut Self,
++        _proxy: &WpColorManagementOutputV1,
++        _event: wp_color_management_output_v1::Event,
++        _data: &(),
++        _conn: &Connection,
++        _qhandle: &QueueHandle<Self>,
++    ) {
++    }
++}
++
++impl Dispatch<WpImageDescriptionV1, ()> for State {
++    fn event(
++        _state: &mut Self,
++        _proxy: &WpImageDescriptionV1,
++        _event: wp_image_description_v1::Event,
++        _data: &(),
++        _conn: &Connection,
++        _qhandle: &QueueHandle<Self>,
++    ) {
++        // ready / failed — ignored for these tests.
++    }
++}
++
++impl Dispatch<WpImageDescriptionInfoV1, ()> for State {
++    fn event(
++        _state: &mut Self,
++        _proxy: &WpImageDescriptionInfoV1,
++        _event: wp_image_description_info_v1::Event,
++        _data: &(),
++        _conn: &Connection,
++        _qhandle: &QueueHandle<Self>,
++    ) {
++        // primaries_named / tf_named / done / ... — ignored.
++    }
++}
++
++impl Dispatch<WpImageDescriptionCreatorParamsV1, ()> for State {
++    fn event(
++        _state: &mut Self,
++        _proxy: &WpImageDescriptionCreatorParamsV1,
++        _event: <WpImageDescriptionCreatorParamsV1 as wayland_client::Proxy>::Event,
++        _data: &(),
++        _conn: &Connection,
++        _qhandle: &QueueHandle<Self>,
++    ) {
++        // No events.
++    }
++}
++
++impl Dispatch<WpColorManagementSurfaceV1, ()> for State {
++    fn event(
++        _state: &mut Self,
++        _proxy: &WpColorManagementSurfaceV1,
++        _event: <WpColorManagementSurfaceV1 as wayland_client::Proxy>::Event,
++        _data: &(),
++        _conn: &Connection,
++        _qhandle: &QueueHandle<Self>,
++    ) {
++        // No events.
++    }
++}
+diff --git a/src/tests/color_management.rs b/src/tests/color_management.rs
+new file mode 100644
+index 00000000..f34206e4
+--- /dev/null
++++ b/src/tests/color_management.rs
+@@ -0,0 +1,88 @@
++//! Reproduction/regression tests for the color-management protocol handlers. These drive the same
++//! requests that real clients (wayland-info, mpv gpu-next) send. Because niri builds smithay with
++//! `use_system_lib`, a panic in a server dispatch handler unwinds across the C libwayland frame and
++//! aborts the process — so any handler panic shows up here as a failing test.
++
++use niri_config::output::Hdr;
++use niri_config::{Config, Output};
++use smithay::reexports::wayland_protocols::wp::color_management::v1::client::wp_color_manager_v1::{
++    Primaries, RenderIntent, TransferFunction,
++};
++
++use super::*;
++
++/// A fixture whose config opts an output into HDR, so the (gated) `wp_color_manager_v1` global is
++/// advertised. Without an HDR-enabled output, niri does not advertise color management at all.
++fn fixture_with_hdr() -> Fixture {
++    let mut config = Config::default();
++    config.outputs.0.push(Output {
++        name: "headless-1".to_owned(),
++        hdr: Some(Hdr::default()),
++        ..Default::default()
++    });
++    Fixture::with_config(config)
++}
++
++#[test]
++fn global_is_advertised_and_bound() {
++    let mut f = fixture_with_hdr();
++    f.add_output(1, (1920, 1080));
++
++    let id = f.add_client();
++    f.double_roundtrip(id);
++
++    assert!(
++        f.client(id).state.color_manager.is_some(),
++        "wp_color_manager_v1 was not advertised/bound"
++    );
++}
++
++#[test]
++fn global_not_advertised_without_hdr_config() {
++    // Default config (no `hdr` on any output) must not advertise color management.
++    let mut f = Fixture::new();
++    f.add_output(1, (1920, 1080));
++
++    let id = f.add_client();
++    f.double_roundtrip(id);
++
++    assert!(
++        f.client(id).state.color_manager.is_none(),
++        "wp_color_manager_v1 must not be advertised without an HDR-enabled output"
++    );
++}
++
++#[test]
++fn probe_output_image_description_like_wayland_info() {
++    let mut f = fixture_with_hdr();
++    f.add_output(1, (1920, 1080));
++
++    let id = f.add_client();
++    f.double_roundtrip(id);
++
++    // get_output -> get_image_description -> get_information, as wayland-info does.
++    f.client(id).probe_output_color_management();
++    f.double_roundtrip(id);
++}
++
++#[test]
++fn create_parametric_hdr_description_like_mpv() {
++    let mut f = fixture_with_hdr();
++    f.add_output(1, (1920, 1080));
++
++    let id = f.add_client();
++    let window = f.client(id).create_window();
++    let surface = window.surface.clone();
++    window.commit();
++    f.roundtrip(id);
++
++    // create_parametric_creator -> set BT.2020 + PQ + mastering metadata -> create -> attach to the
++    // surface, as mpv --vo=gpu-next does for HDR content.
++    f.client(id).create_and_attach_hdr_description(
++        &surface,
++        TransferFunction::St2084Pq,
++        Primaries::Bt2020,
++        RenderIntent::Perceptual,
++    );
++    f.double_roundtrip(id);
++}
+diff --git a/src/tests/mod.rs b/src/tests/mod.rs
+index 92a40569..1df103dd 100644
+--- a/src/tests/mod.rs
++++ b/src/tests/mod.rs
+@@ -5,6 +5,7 @@ mod fixture;
+ mod server;
+ 
+ mod animations;
++mod color_management;
+ mod floating;
+ mod fullscreen;
+ mod layer_shell;
+diff --git a/test-hdr.kdl b/test-hdr.kdl
+new file mode 100644
+index 00000000..fec09f25
+--- /dev/null
++++ b/test-hdr.kdl
+@@ -0,0 +1,31 @@
++// Throwaway niri config for testing HDR signalling on eDP-1.
++// Run from a spare VT:  ./target/debug/niri -c test-hdr.kdl
++// Quit with Mod(Super)+Shift+E. Open a terminal with Mod+Return.
++
++spawn-at-startup "alacritty"
++
++// A bright background makes the HDR mode switch easy to see by eye.
++layout {
++    background-color "#c0c0c0"
++}
++
++output "eDP-1" {
++    // The `hdr` node ALLOWS HDR on this output. niri now only actually signals HDR
++    // (Colorspace=BT2020_RGB + PQ HDR_OUTPUT_METADATA) when a fullscreen client tags its
++    // surface as HDR via wp-color-management-v1 — e.g. mpv --vo=gpu-next on an HDR file.
++    // So the desktop stays normal SDR until such a client goes fullscreen.
++    // max-bpc 10 is implied by `hdr`; set explicitly here for clarity.
++    max-bpc 10
++    hdr {
++        reference-luminance 203
++    }
++}
++
++binds {
++    Mod+Shift+E { quit skip-confirmation=true; }
++    Mod+Return { spawn "alacritty"; }
++    Mod+Q { close-window; }
++    // Toggle fullscreen on the focused window. HDR signalling only engages while the HDR client is
++    // fullscreen, so use this on the mpv window.
++    Mod+F { fullscreen-window; }
++}
+-- 
+2.56.0
+

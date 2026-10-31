@@ -1,0 +1,1469 @@
+From ad48c78e25abc27fdf0443767f4a9b170aa990e7 Mon Sep 17 00:00:00 2001
+From: dividebysandwich <josef.jahn@gmail.com>
+Date: Sat, 4 Jul 2026 14:42:26 +0200
+Subject: [PATCH 09/10] hdr: composite SDR content into the blend space of
+ always-HDR outputs
+
+---
+ docs/wiki/Configuration:-Outputs.md           |  29 +-
+ niri-config/src/output.rs                     |   7 +-
+ src/backend/headless.rs                       |   1 +
+ src/backend/tty.rs                            | 101 ++++--
+ src/backend/winit.rs                          |   1 +
+ src/layer/mapped.rs                           |   4 +-
+ src/layout/mod.rs                             |   4 +-
+ src/layout/tile.rs                            |  11 +-
+ src/niri.rs                                   |  19 +-
+ src/render_helpers/blend.rs                   | 334 ++++++++++++++++++
+ src/render_helpers/clipped_surface.rs         |  38 +-
+ src/render_helpers/framebuffer_effect.rs      |  10 +-
+ src/render_helpers/gradient_fade_texture.rs   |  13 +-
+ src/render_helpers/mod.rs                     |   1 +
+ src/render_helpers/shader_element.rs          |  24 +-
+ src/render_helpers/shaders/border.frag        |   4 +-
+ .../shaders/clipped_surface.frag              |   4 +-
+ .../shaders/close_epilogue.frag               |   4 +-
+ src/render_helpers/shaders/gradient_fade.frag |   4 +-
+ src/render_helpers/shaders/hdr.frag           |  40 +++
+ src/render_helpers/shaders/mod.rs             |  29 +-
+ src/render_helpers/shaders/open_epilogue.frag |   4 +-
+ .../shaders/resize_epilogue.frag              |   4 +-
+ src/render_helpers/shaders/shadow.frag        |   4 +-
+ src/render_helpers/shaders/texture_hdr.frag   |  44 +++
+ src/render_helpers/surface.rs                 |  18 +-
+ src/render_helpers/xray.rs                    |   7 +-
+ src/ui/mru.rs                                 |  13 +-
+ src/window/mapped.rs                          |   4 +-
+ 29 files changed, 692 insertions(+), 88 deletions(-)
+ create mode 100644 src/render_helpers/blend.rs
+ create mode 100644 src/render_helpers/shaders/hdr.frag
+ create mode 100644 src/render_helpers/shaders/texture_hdr.frag
+
+diff --git a/docs/wiki/Configuration:-Outputs.md b/docs/wiki/Configuration:-Outputs.md
+index 77f7b71f..3f001113 100644
+--- a/docs/wiki/Configuration:-Outputs.md
++++ b/docs/wiki/Configuration:-Outputs.md
+@@ -324,19 +324,26 @@ With no `hdr` node on any output, color management is not advertised at all and
+ HDR signalling only works on the TTY backend, and requires a GPU/display that exposes the HDR
+ connector properties (amdgpu, recent Intel, and nvidia do).
+ 
+-The optional `mode` property controls when applications are told the output prefers HDR:
++The optional `mode` property controls when the output is in HDR:
+ 
+-- `mode="auto"` (the default): applications are told to prefer HDR (PQ / BT.2020) only while they are
+-  the active fullscreen window on this output. Applications that listen for preference changes (SDL3
+-  games, mpv with `--target-colorspace-hint`) switch to HDR when they go fullscreen.
+-- `mode="on"`: applications on this output are told to prefer HDR upfront. Use this for games that
+-  only probe HDR support once at startup and never re-check — with `auto`, such applications never
+-  detect HDR. Note: until color-managed compositing lands, HDR content still only displays correctly
+-  while fullscreen; a window rendering HDR while windowed will look washed out.
++- `mode="auto"` (the default): the output stays SDR and switches into HDR while a fullscreen
++  application shows HDR content (passthrough). Applications are told to prefer HDR (PQ / BT.2020)
++  once they are the active fullscreen window, so clients that listen for preference changes (SDL3
++  games, mpv with `--target-colorspace-hint`) switch to HDR when they go fullscreen. Entering and
++  leaving HDR is a modeset (expect a brief blank).
++- `mode="on"`: the output is always in HDR. SDR content (the desktop, windowed applications) is
++  composited into the HDR blend space, windowed HDR content displays correctly alongside it, and
++  applications are told to prefer HDR upfront — use this for games that only probe HDR support once
++  at startup. There is no modeset when entering or leaving fullscreen. Costs: SDR-only fullscreen
++  applications lose direct scanout on this output, and the cursor is rendered without the cursor
++  plane.
+ 
+-The optional `reference-luminance` child (in cd/m²) is the luminance that SDR white is mapped to in
+-HDR mode; it is reported to clients as the reference white level and defaults to 203 (the BT.2408
+-reference). Its full effect arrives with the upcoming color-managed compositing.
++The optional `reference-luminance` child (in cd/m²) is the luminance that SDR white (full white in
++an SDR application) is displayed at while the output is in HDR. Defaults to 203 (the BT.2408
++reference); raise it if the SDR desktop looks too dim next to HDR content.
++
++Screenshots and screencasts of HDR outputs are rendered in SDR; HDR application content appears
++washed out in them.
+ 
+ ```kdl
+ // Enable HDR on the internal display.
+diff --git a/niri-config/src/output.rs b/niri-config/src/output.rs
+index ede5ccc7..70751047 100644
+--- a/niri-config/src/output.rs
++++ b/niri-config/src/output.rs
+@@ -167,9 +167,10 @@ pub enum HdrMode {
+     /// output stays SDR otherwise.
+     #[default]
+     Auto,
+-    /// The output is always treated as HDR: clients are told upfront that the output prefers
+-    /// PQ/BT.2020 content, so applications that only probe HDR support once at startup (e.g. many
+-    /// SDL games) detect it.
++    /// The output is always in HDR: the connector stays in BT.2020 + PQ, SDR content is
++    /// composited into the HDR blend space, and clients are told upfront that the output prefers
++    /// PQ/BT.2020 content — so applications that only probe HDR support once at startup (e.g.
++    /// many SDL games) detect it.
+     On,
+ }
+ 
+diff --git a/src/backend/headless.rs b/src/backend/headless.rs
+index 9bd97930..4e872d45 100644
+--- a/src/backend/headless.rs
++++ b/src/backend/headless.rs
+@@ -53,6 +53,7 @@ impl Headless {
+ 
+         resources::init(&mut renderer);
+         shaders::init(&mut renderer);
++        crate::render_helpers::blend::FrameBlendState::init(&mut renderer);
+ 
+         self.renderer = Some(renderer);
+         Ok(())
+diff --git a/src/backend/tty.rs b/src/backend/tty.rs
+index 5e068960..fa65c2b5 100644
+--- a/src/backend/tty.rs
++++ b/src/backend/tty.rs
+@@ -15,7 +15,7 @@ use anyhow::{anyhow, bail, ensure, Context};
+ use bytemuck::cast_slice_mut;
+ use drm_ffi::drm_mode_modeinfo;
+ use libc::dev_t;
+-use niri_config::output::Modeline;
++use niri_config::output::{HdrMode, Modeline};
+ use niri_config::{Config, OutputName};
+ use niri_ipc::{HSyncPolarity, VSyncPolarity};
+ use smithay::backend::allocator::dmabuf::Dmabuf;
+@@ -66,7 +66,11 @@ use wayland_protocols::wp::presentation_time::server::wp_presentation_feedback;
+ use super::{IpcOutputMap, OutputHdrCaps, RenderResult};
+ use crate::backend::OutputId;
+ use crate::frame_clock::FrameClock;
+-use smithay::wayland::color::management::ImageDescription;
++use smithay::wayland::color::management::{
++    ImageDescription, Primaries as CmPrimaries, TransferFunction as CmTransferFunction,
++};
++
++use crate::render_helpers::blend::{self, set_frame_blend, DEFAULT_REFERENCE_LUMINANCE};
+ 
+ use crate::niri::{Niri, RedrawState, State};
+ use crate::render_helpers::debug::draw_damage;
+@@ -405,6 +409,10 @@ struct Surface {
+     /// The last color state we tried to stage and the driver rejected. Tracked so a rejected
+     /// state isn't re-tested every frame (each test is an atomic TEST_ONLY commit).
+     failed_color_state: Option<ConnectorColorState>,
++    /// The blend space of the last rendered frame: `Some(reference luminance)` = HDR, `None`
++    /// = SDR. Blend changes alter shader output without damaging anything, so a change forces
++    /// a full redraw.
++    last_blend: Option<Option<f64>>,
+     dmabuf_feedback: Option<SurfaceDmabufFeedback>,
+     gamma_props: Option<GammaProps>,
+     /// Gamma change to apply upon session resume.
+@@ -888,6 +896,7 @@ impl Tty {
+             let gles_renderer = renderer.as_gles_renderer();
+             resources::init(gles_renderer);
+             shaders::init(gles_renderer);
++            blend::FrameBlendState::init(gles_renderer);
+ 
+             let config = self.config.borrow();
+             if let Some(src) = config.animations.window_resize.custom_shader.as_deref() {
+@@ -1683,6 +1692,7 @@ impl Tty {
+             edid_hdr,
+             max_bpc_range,
+             failed_color_state: None,
++            last_blend: None,
+             compositor,
+             dmabuf_feedback,
+             gamma_props,
+@@ -2024,33 +2034,58 @@ impl Tty {
+             return rv;
+         }
+ 
+-        // Reconcile HDR signalling with the content about to be shown. HDR must be enabled for the
+-        // output in the config, supported by driver and sink, and the output must be showing a
+-        // fullscreen surface tagged as HDR (Phase 1 passthrough). The desired state is only
+-        // *staged* here; smithay applies it inside its own commit as a single atomic modeset
+-        // together with mode, CRTC and plane state (committing connector color properties
+-        // standalone hangs some drivers, notably nvidia).
+-        {
++        // Reconcile the output's blend space and HDR signalling with the config and content.
++        //
++        // With hdr mode="on", the connector stays in HDR (BT.2020 + PQ) and the desktop is
++        // composited into that blend space. In auto mode, HDR engages only while a fullscreen
++        // surface carries an HDR image description (passthrough), so the output is SDR
++        // otherwise.
++        //
++        // The connector state is only *staged* here; smithay applies it inside its own commit
++        // as a single atomic modeset together with mode, CRTC and plane state (committing
++        // connector color properties standalone hangs some drivers, notably nvidia).
++        let (blend_hdr, hdr_content, reference_luminance) = {
+             let config = self.config.borrow();
+             let output_config = config.outputs.find(&surface.name);
+-            let hdr_allowed =
+-                output_config.is_some_and(|o| o.hdr.is_some()) && surface.hdr_supported;
++            let hdr_config = output_config.and_then(|o| o.hdr.clone());
++            let hdr_allowed = hdr_config.is_some() && surface.hdr_supported;
+             let max_bpc = output_config
+                 .map(|o| effective_max_bpc(o, &surface.max_bpc_range))
+                 .unwrap_or(None);
++            let always_on = hdr_config.as_ref().is_some_and(|h| h.mode == HdrMode::On);
++            let reference_luminance = hdr_config
++                .as_ref()
++                .and_then(|h| h.reference_luminance)
++                .map(|v| v.0)
++                .unwrap_or(DEFAULT_REFERENCE_LUMINANCE);
+             drop(config);
+ 
+             let hdr_desc = hdr_allowed
+                 .then(|| niri.output_hdr_image_description(output))
+                 .flatten();
+-            let desired = ConnectorColorState {
+-                colorspace: if hdr_desc.is_some() {
+-                    Colorspace::Bt2020Rgb
+-                } else {
+-                    Colorspace::Default
+-                },
+-                hdr_metadata: hdr_desc.map(|desc| build_hdr_metadata(&desc, &surface.edid_hdr)),
+-                max_bpc,
++            let blend_hdr = hdr_allowed && (always_on || hdr_desc.is_some());
++
++            let desired = if blend_hdr {
++                // Without fullscreen HDR content, the metadata comes from the sink's EDID.
++                let desc = hdr_desc.unwrap_or(ImageDescription {
++                    transfer: CmTransferFunction::St2084Pq,
++                    primaries: CmPrimaries::Bt2020,
++                    max_cll: None,
++                    max_fall: None,
++                    mastering_luminance: None,
++                    luminances: None,
++                });
++                ConnectorColorState {
++                    colorspace: Colorspace::Bt2020Rgb,
++                    hdr_metadata: Some(build_hdr_metadata(&desc, &surface.edid_hdr)),
++                    max_bpc,
++                }
++            } else {
++                ConnectorColorState {
++                    colorspace: Colorspace::Default,
++                    hdr_metadata: None,
++                    max_bpc,
++                }
+             };
+ 
+             if surface.compositor.pending_color_state() != desired
+@@ -2071,6 +2106,16 @@ impl Tty {
+                     }
+                 }
+             }
++
++            (blend_hdr, hdr_desc.is_some(), reference_luminance)
++        };
++
++        // A blend-space change alters what every shader outputs without any element damage;
++        // force a full redraw.
++        let blend = blend_hdr.then_some(reference_luminance);
++        if surface.last_blend != Some(blend) {
++            surface.last_blend = Some(blend);
++            surface.compositor.reset_buffers();
+         }
+ 
+         let mut renderer = match self.gpu_manager.renderer(
+@@ -2128,12 +2173,28 @@ impl Tty {
+                 }
+             }
+ 
++            if blend_hdr {
++                // The cursor plane is filled without going through GLES, so its content would
++                // bypass the blend transform; render the cursor on the primary plane instead.
++                flags.remove(FrameFlags::ALLOW_CURSOR_PLANE_SCANOUT);
++                flags.remove(FrameFlags::ALLOW_OVERLAY_PLANE_SCANOUT);
++                if !hdr_content {
++                    // SDR content must go through the blend shader.
++                    flags.remove(FrameFlags::ALLOW_PRIMARY_PLANE_SCANOUT);
++                    flags.remove(FrameFlags::ALLOW_PRIMARY_PLANE_SCANOUT_ANY);
++                }
++            }
++
+             flags
+         };
+ 
+         // Hand them over to the DRM.
++        set_frame_blend(renderer.as_gles_renderer(), blend);
+         let drm_compositor = &mut surface.compositor;
+-        match drm_compositor.render_frame::<_, _>(&mut renderer, &elements, [0.; 4], flags) {
++        let render_frame_result =
++            drm_compositor.render_frame::<_, _>(&mut renderer, &elements, [0.; 4], flags);
++        set_frame_blend(renderer.as_gles_renderer(), None);
++        match render_frame_result {
+             Ok(res) => {
+                 let needs_sync = res.needs_sync()
+                     || self
+diff --git a/src/backend/winit.rs b/src/backend/winit.rs
+index f25b6733..cfea0097 100644
+--- a/src/backend/winit.rs
++++ b/src/backend/winit.rs
+@@ -158,6 +158,7 @@ impl Winit {
+ 
+         resources::init(renderer);
+         shaders::init(renderer);
++        crate::render_helpers::blend::FrameBlendState::init(renderer);
+ 
+         let config = self.config.borrow();
+         if let Some(src) = config.animations.window_resize.custom_shader.as_deref() {
+diff --git a/src/layer/mapped.rs b/src/layer/mapped.rs
+index fbaa6fc6..68f66a9b 100644
+--- a/src/layer/mapped.rs
++++ b/src/layer/mapped.rs
+@@ -1,6 +1,5 @@
+ use niri_config::utils::MergeWith as _;
+ use niri_config::{Config, LayerRule};
+-use smithay::backend::renderer::element::surface::WaylandSurfaceRenderElement;
+ use smithay::backend::renderer::element::Kind;
+ use smithay::desktop::{LayerSurface, PopupKind, PopupManager};
+ use smithay::utils::{Logical, Point, Rectangle, Scale, Size};
+@@ -12,6 +11,7 @@ use crate::animation::Clock;
+ use crate::layout::shadow::Shadow;
+ use crate::niri_render_elements;
+ use crate::render_helpers::background_effect::BackgroundEffectElement;
++use crate::render_helpers::blend::BlendSurfaceRenderElement;
+ use crate::render_helpers::renderer::NiriRenderer;
+ use crate::render_helpers::shadow::ShadowRenderElement;
+ use crate::render_helpers::solid_color::{SolidColorBuffer, SolidColorRenderElement};
+@@ -57,7 +57,7 @@ pub struct MappedLayer {
+ 
+ niri_render_elements! {
+     LayerSurfaceRenderElement<R> => {
+-        Wayland = WaylandSurfaceRenderElement<R>,
++        Wayland = BlendSurfaceRenderElement<R>,
+         SolidColor = SolidColorRenderElement,
+         Shadow = ShadowRenderElement,
+         BackgroundEffect = BackgroundEffectElement,
+diff --git a/src/layout/mod.rs b/src/layout/mod.rs
+index 5c4dd639..000772ff 100644
+--- a/src/layout/mod.rs
++++ b/src/layout/mod.rs
+@@ -43,7 +43,6 @@ use niri_config::{
+ };
+ use niri_ipc::{ColumnDisplay, PositionChange, SizeChange, WindowLayout};
+ use scrolling::{Column, ColumnWidth};
+-use smithay::backend::renderer::element::surface::WaylandSurfaceRenderElement;
+ use smithay::backend::renderer::element::utils::RescaleRenderElement;
+ use smithay::backend::renderer::gles::{GlesRenderer, GlesTexture};
+ use smithay::output::{self, Output};
+@@ -60,6 +59,7 @@ use crate::input::swipe_tracker::SwipeTracker;
+ use crate::layout::scrolling::ScrollDirection;
+ use crate::niri_render_elements;
+ use crate::render_helpers::background_effect::BackgroundEffectElement;
++use crate::render_helpers::blend::BlendSurfaceRenderElement;
+ use crate::render_helpers::offscreen::OffscreenData;
+ use crate::render_helpers::renderer::NiriRenderer;
+ use crate::render_helpers::snapshot::RenderSnapshot;
+@@ -112,7 +112,7 @@ pub struct SizeFrac;
+ 
+ niri_render_elements! {
+     LayoutElementRenderElement<R> => {
+-        Wayland = WaylandSurfaceRenderElement<R>,
++        Wayland = BlendSurfaceRenderElement<R>,
+         SolidColor = SolidColorRenderElement,
+         BackgroundEffect = BackgroundEffectElement,
+     }
+diff --git a/src/layout/tile.rs b/src/layout/tile.rs
+index 86c7ebad..6f67e96f 100644
+--- a/src/layout/tile.rs
++++ b/src/layout/tile.rs
+@@ -1175,13 +1175,20 @@ impl<W: LayoutElement> Tile<W> {
+                     // If we should clip to geometry, render a clipped window.
+                     if clip_to_geometry {
+                         if let Some(shader) = clip_shader.clone() {
+-                            if ClippedSurfaceRenderElement::will_clip(&elem, scale, geo, radius) {
++                            if ClippedSurfaceRenderElement::will_clip(
++                                elem.inner(),
++                                scale,
++                                geo,
++                                radius,
++                            ) {
++                                let content_hdr = elem.content_hdr();
+                                 return ClippedSurfaceRenderElement::new(
+-                                    elem,
++                                    elem.into_inner(),
+                                     scale,
+                                     geo,
+                                     shader.clone(),
+                                     radius,
++                                    content_hdr,
+                                 )
+                                 .into();
+                             }
+diff --git a/src/niri.rs b/src/niri.rs
+index c0d19cce..3e93ae36 100644
+--- a/src/niri.rs
++++ b/src/niri.rs
+@@ -23,7 +23,6 @@ use smithay::backend::allocator::Fourcc;
+ use smithay::backend::input::Keycode;
+ use smithay::backend::renderer::damage::OutputDamageTracker;
+ use smithay::backend::renderer::element::memory::MemoryRenderBufferRenderElement;
+-use smithay::backend::renderer::element::surface::WaylandSurfaceRenderElement;
+ use smithay::backend::renderer::element::utils::{
+     select_dmabuf_feedback, CropRenderElement, Relocate, RelocateRenderElement,
+     RescaleRenderElement,
+@@ -148,9 +147,8 @@ use crate::niri_render_elements;
+ use crate::protocols::ext_workspace::{self, ExtWorkspaceManagerState};
+ use crate::protocols::foreign_toplevel::{self, ForeignToplevelManagerState};
+ use smithay::wayland::color::management::{
+-    get_surface_description, ColorManagementState, ColorManagementSurfaceCachedState, Feature,
+-    ImageDescription, Primaries as CmPrimaries, RenderIntent,
+-    TransferFunction as CmTransferFunction,
++    ColorManagementState, ColorManagementSurfaceCachedState, Feature, ImageDescription,
++    Primaries as CmPrimaries, RenderIntent, TransferFunction as CmTransferFunction,
+ };
+ 
+ use crate::protocols::gamma_control::GammaControlManagerState;
+@@ -158,6 +156,7 @@ use crate::protocols::mutter_x11_interop::MutterX11InteropManagerState;
+ use crate::protocols::output_management::OutputManagementManagerState;
+ use crate::protocols::screencopy::{Screencopy, ScreencopyBuffer, ScreencopyManagerState};
+ use crate::protocols::virtual_pointer::VirtualPointerManagerState;
++use crate::render_helpers::blend::BlendSurfaceRenderElement;
+ use crate::render_helpers::blur::BlurOptions;
+ use crate::render_helpers::debug::push_opaque_regions;
+ use crate::render_helpers::primary_gpu_texture::PrimaryGpuTextureRenderElement;
+@@ -2236,10 +2235,10 @@ impl State {
+ }
+ 
+ impl Niri {
+-    /// For Phase 1 HDR passthrough: if `output` is showing a fullscreen window whose surface carries
+-    /// an HDR (PQ / BT.2020) image description, returns that description. The TTY backend uses this
+-    /// to decide whether to signal HDR on the connector. Requires the window to be fullscreen so the
+-    /// HDR signal covers the whole output and doesn't wash out surrounding SDR content.
++    /// For fullscreen HDR passthrough: if `output` is showing a fullscreen window whose surface
++    /// carries an HDR (PQ / BT.2020) image description, returns that description. The TTY backend
++    /// uses this to decide whether to signal HDR on the connector in auto mode, and which metadata
++    /// to attach.
+     ///
+     /// The whole surface tree is searched, not just the toplevel surface: winewayland (Proton)
+     /// presents Vulkan content on a subsurface of the toplevel and attaches the HDR image
+@@ -6732,7 +6731,7 @@ fn scale_relocate_crop<E: Element>(
+ 
+ niri_render_elements! {
+     PointerRenderElements<R> => {
+-        Wayland = WaylandSurfaceRenderElement<R>,
++        Wayland = BlendSurfaceRenderElement<R>,
+         NamedPointer = MemoryRenderBufferRenderElement<R>,
+     }
+ }
+@@ -6756,7 +6755,7 @@ niri_render_elements! {
+             SolidColorRenderElement
+         >>>,
+         Pointer = PointerRenderElements<R>,
+-        Wayland = WaylandSurfaceRenderElement<R>,
++        Wayland = BlendSurfaceRenderElement<R>,
+         SolidColor = SolidColorRenderElement,
+         ScreenshotUi = ScreenshotUiRenderElement,
+         WindowMruUi = WindowMruUiRenderElement<R>,
+diff --git a/src/render_helpers/blend.rs b/src/render_helpers/blend.rs
+new file mode 100644
+index 00000000..f402147a
+--- /dev/null
++++ b/src/render_helpers/blend.rs
+@@ -0,0 +1,334 @@
++//! Per-output blend space for windowed HDR support.
++//!
++//! An output is either SDR (electrical sRGB, the default) or HDR (the framebuffer holds
++//! PQ/BT.2020 electrical values and the connector is signalled accordingly). On HDR outputs,
++//! SDR content is encoded into the blend space at draw time by the shaders' `niri_blend`
++//! stage; surfaces that already carry an HDR image description pass through numerically.
++//!
++//! Blending happens directly in PQ-encoded space. Alpha blending in an encoded space is an
++//! approximation (the same class of error as regular sRGB-space blending).
++
++use std::cell::Cell;
++
++use smithay::backend::renderer::element::surface::WaylandSurfaceRenderElement;
++use smithay::backend::renderer::element::{Element, Id, Kind, RenderElement, UnderlyingStorage};
++use smithay::backend::renderer::gles::{GlesError, GlesFrame, GlesRenderer, Uniform};
++use smithay::backend::renderer::utils::{CommitCounter, DamageSet, OpaqueRegions};
++use smithay::backend::renderer::Color32F;
++use smithay::utils::user_data::UserDataMap;
++use smithay::utils::{Buffer, Physical, Point, Rectangle, Scale, Transform};
++
++use smithay::backend::renderer::{ImportAll, Renderer};
++
++use super::renderer::AsGlesFrame as _;
++use super::shaders::Shaders;
++use crate::backend::tty::{TtyFrame, TtyRenderer, TtyRendererError};
++
++/// Default SDR reference white in cd/m² (BT.2408).
++pub const DEFAULT_REFERENCE_LUMINANCE: f64 = 203.;
++
++/// The blend state of the frame currently being rendered, stored in the renderer's EGL user
++/// data (like [`super::shaders::Shaders`]).
++///
++/// Shader uniform values persist in GL program objects across draws, so on HDR frames every
++/// draw sets the blend uniforms from this state, and on SDR frames sets them back to zero.
++#[derive(Debug, Default)]
++pub struct FrameBlendState {
++    hdr_pq: Cell<bool>,
++    ref_lum_scale: Cell<f32>,
++}
++
++impl FrameBlendState {
++    pub fn init(renderer: &mut GlesRenderer) {
++        let data = renderer.egl_context().user_data();
++        data.insert_if_missing(FrameBlendState::default);
++    }
++
++    fn get(renderer: &GlesRenderer) -> &Self {
++        renderer
++            .egl_context()
++            .user_data()
++            .get()
++            .expect("FrameBlendState::init() must be called when creating the renderer")
++    }
++
++    /// Marks the frames rendered from now on as HDR with the given SDR reference luminance,
++    /// or as SDR (`None`).
++    pub fn set(renderer: &mut GlesRenderer, reference_luminance: Option<f64>) {
++        let state = Self::get(renderer);
++        match reference_luminance {
++            Some(lum) => {
++                state.hdr_pq.set(true);
++                state.ref_lum_scale.set((lum / 10000.) as f32);
++            }
++            None => state.hdr_pq.set(false),
++        }
++    }
++
++    fn values_from_frame(frame: &GlesFrame) -> (bool, f32) {
++        let state: &Self = frame
++            .egl_context()
++            .user_data()
++            .get()
++            .expect("FrameBlendState::init() must be called when creating the renderer");
++        (state.hdr_pq.get(), state.ref_lum_scale.get())
++    }
++
++    /// The `niri_blend` uniform values for a draw of SDR content in this frame.
++    pub fn uniforms(frame: &GlesFrame) -> [Uniform<'static>; 2] {
++        Self::uniforms_for_content(frame, false)
++    }
++
++    /// The `niri_blend` uniform values for a draw in this frame; `content_hdr` exempts
++    /// content already encoded in the blend space.
++    pub fn uniforms_for_content(frame: &GlesFrame, content_hdr: bool) -> [Uniform<'static>; 2] {
++        let (hdr_pq, scale) = Self::values_from_frame(frame);
++        let apply = hdr_pq && !content_hdr;
++        [
++            Uniform::new("niri_hdr_pq", if apply { 1.0f32 } else { 0.0 }),
++            Uniform::new("niri_ref_lum_scale", scale),
++        ]
++    }
++}
++
++/// Configures the renderer for rendering frames in the given blend space: `Some(reference
++/// luminance)` = HDR (PQ/BT.2020), `None` = SDR.
++///
++/// In HDR, texture draws using the default program go through the blend-space texture shader,
++/// solid colors are encoded on the CPU, and niri's own shader programs read the frame blend
++/// state for their `niri_blend` stage. Call with `None` after rendering the output so
++/// screencasts, screenshots and other outputs stay SDR.
++pub fn set_frame_blend(renderer: &mut GlesRenderer, reference_luminance: Option<f64>) {
++    FrameBlendState::set(renderer, reference_luminance);
++
++    match reference_luminance {
++        Some(lum) => {
++            let scale = (lum / 10000.) as f32;
++            let program = Shaders::get(renderer).texture_hdr.clone();
++            if let Some(program) = program {
++                renderer.set_default_tex_program_override(Some((
++                    program,
++                    vec![
++                        Uniform::new("niri_hdr_pq", 1.0f32),
++                        Uniform::new("niri_ref_lum_scale", scale),
++                    ],
++                )));
++            } else {
++                warn!("HDR texture shader missing; SDR content will render raw");
++            }
++            renderer
++                .set_solid_color_transform(Some(Box::new(move |color| srgb_to_pq(color, scale))));
++        }
++        None => {
++            renderer.set_default_tex_program_override(None);
++            renderer.set_solid_color_transform(None);
++        }
++    }
++}
++
++/// CPU counterpart of the shaders' `niri_blend`: encodes an electrical sRGB premultiplied
++/// color into PQ/BT.2020 for the given SDR reference luminance scale (reference / 10000).
++pub fn srgb_to_pq(color: Color32F, ref_lum_scale: f32) -> Color32F {
++    let a = color.a();
++    let unpremul = |c: f32| if a > 0. { c / a } else { c };
++
++    let pq = |lin: f32| {
++        const M1: f32 = 0.1593017578125;
++        const M2: f32 = 78.84375;
++        const C1: f32 = 0.8359375;
++        const C2: f32 = 18.8515625;
++        const C3: f32 = 18.6875;
++        let y = lin.clamp(0., 1.).powf(M1);
++        ((C1 + C2 * y) / (1. + C3 * y)).powf(M2)
++    };
++
++    let r = unpremul(color.r()).max(0.).powf(2.2);
++    let g = unpremul(color.g()).max(0.).powf(2.2);
++    let b = unpremul(color.b()).max(0.).powf(2.2);
++
++    // BT.709 -> BT.2020, linear light, D65.
++    let r2020 = 0.627404 * r + 0.329283 * g + 0.043313 * b;
++    let g2020 = 0.069097 * r + 0.919540 * g + 0.011362 * b;
++    let b2020 = 0.016391 * r + 0.088013 * g + 0.895595 * b;
++
++    Color32F::new(
++        pq(r2020 * ref_lum_scale) * a,
++        pq(g2020 * ref_lum_scale) * a,
++        pq(b2020 * ref_lum_scale) * a,
++        a,
++    )
++}
++
++/// A surface-tree render element that knows whether its content is already encoded in an HDR
++/// blend space (carries an HDR image description).
++///
++/// For HDR content the frame-wide blend-space texture program is suspended around the draw,
++/// so the client's PQ values pass through numerically. Underlying storage is delegated, so
++/// direct scanout keeps working.
++#[derive(Debug)]
++pub struct BlendSurfaceRenderElement<R: Renderer> {
++    inner: WaylandSurfaceRenderElement<R>,
++    content_hdr: bool,
++}
++
++impl<R: Renderer> BlendSurfaceRenderElement<R> {
++    pub fn new(inner: WaylandSurfaceRenderElement<R>, content_hdr: bool) -> Self {
++        Self { inner, content_hdr }
++    }
++
++    pub fn inner(&self) -> &WaylandSurfaceRenderElement<R> {
++        &self.inner
++    }
++
++    pub fn into_inner(self) -> WaylandSurfaceRenderElement<R> {
++        self.inner
++    }
++
++    pub fn content_hdr(&self) -> bool {
++        self.content_hdr
++    }
++}
++
++impl<R: Renderer + ImportAll> Element for BlendSurfaceRenderElement<R>
++where
++    R::TextureId: Clone + 'static,
++{
++    fn id(&self) -> &Id {
++        self.inner.id()
++    }
++
++    fn current_commit(&self) -> CommitCounter {
++        self.inner.current_commit()
++    }
++
++    fn geometry(&self, scale: Scale<f64>) -> Rectangle<i32, Physical> {
++        self.inner.geometry(scale)
++    }
++
++    fn location(&self, scale: Scale<f64>) -> Point<i32, Physical> {
++        self.inner.location(scale)
++    }
++
++    fn src(&self) -> Rectangle<f64, Buffer> {
++        self.inner.src()
++    }
++
++    fn transform(&self) -> Transform {
++        self.inner.transform()
++    }
++
++    fn damage_since(
++        &self,
++        scale: Scale<f64>,
++        commit: Option<CommitCounter>,
++    ) -> DamageSet<i32, Physical> {
++        self.inner.damage_since(scale, commit)
++    }
++
++    fn opaque_regions(&self, scale: Scale<f64>) -> OpaqueRegions<i32, Physical> {
++        self.inner.opaque_regions(scale)
++    }
++
++    fn alpha(&self) -> f32 {
++        self.inner.alpha()
++    }
++
++    fn kind(&self) -> Kind {
++        self.inner.kind()
++    }
++}
++
++impl RenderElement<GlesRenderer> for BlendSurfaceRenderElement<GlesRenderer> {
++    fn draw(
++        &self,
++        frame: &mut GlesFrame<'_, '_>,
++        src: Rectangle<f64, Buffer>,
++        dst: Rectangle<i32, Physical>,
++        damage: &[Rectangle<i32, Physical>],
++        opaque_regions: &[Rectangle<i32, Physical>],
++        cache: Option<&UserDataMap>,
++    ) -> Result<(), GlesError> {
++        let saved = if self.content_hdr {
++            frame.take_tex_program_override()
++        } else {
++            None
++        };
++        let res = RenderElement::<GlesRenderer>::draw(
++            &self.inner,
++            frame,
++            src,
++            dst,
++            damage,
++            opaque_regions,
++            cache,
++        );
++        if saved.is_some() {
++            frame.set_tex_program_override(saved);
++        }
++        res
++    }
++
++    fn underlying_storage(&self, renderer: &mut GlesRenderer) -> Option<UnderlyingStorage<'_>> {
++        self.inner.underlying_storage(renderer)
++    }
++}
++
++impl<'render> RenderElement<TtyRenderer<'render>>
++    for BlendSurfaceRenderElement<TtyRenderer<'render>>
++{
++    fn draw(
++        &self,
++        frame: &mut TtyFrame<'render, '_, '_>,
++        src: Rectangle<f64, Buffer>,
++        dst: Rectangle<i32, Physical>,
++        damage: &[Rectangle<i32, Physical>],
++        opaque_regions: &[Rectangle<i32, Physical>],
++        cache: Option<&UserDataMap>,
++    ) -> Result<(), TtyRendererError<'render>> {
++        let gles_frame = frame.as_gles_frame();
++        let saved = if self.content_hdr {
++            gles_frame.take_tex_program_override()
++        } else {
++            None
++        };
++        let res = RenderElement::draw(&self.inner, frame, src, dst, damage, opaque_regions, cache);
++        if saved.is_some() {
++            frame.as_gles_frame().set_tex_program_override(saved);
++        }
++        res
++    }
++
++    fn underlying_storage(
++        &self,
++        renderer: &mut TtyRenderer<'render>,
++    ) -> Option<UnderlyingStorage<'_>> {
++        self.inner.underlying_storage(renderer)
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn srgb_to_pq_reference_values() {
++        let scale = (203. / 10000.) as f32;
++
++        // Opaque white at reference luminance 203 cd/m²: PQ(0.0203) ≈ 0.5806.
++        let white = srgb_to_pq(Color32F::new(1., 1., 1., 1.), scale);
++        assert!((white.r() - 0.5806).abs() < 0.002, "got {}", white.r());
++        // BT.709 white maps to BT.2020 white (rows sum to 1) => neutral stays neutral.
++        assert!((white.r() - white.g()).abs() < 0.0005);
++        assert!((white.g() - white.b()).abs() < 0.0005);
++
++        // Black stays (essentially) black — PQ(0) is ~4e-7 — and alpha is preserved.
++        let black = srgb_to_pq(Color32F::new(0., 0., 0., 0.5), scale);
++        assert!(black.r() < 1e-6, "got {}", black.r());
++        assert_eq!(black.a(), 0.5);
++
++        // Premultiplied 50% white: unpremultiplied value is 1.0, so the encoded result is
++        // the white point rescaled by alpha.
++        let half = srgb_to_pq(Color32F::new(0.5, 0.5, 0.5, 0.5), scale);
++        assert!((half.r() - white.r() * 0.5).abs() < 0.0005);
++    }
++}
+diff --git a/src/render_helpers/clipped_surface.rs b/src/render_helpers/clipped_surface.rs
+index e357895e..63f77415 100644
+--- a/src/render_helpers/clipped_surface.rs
++++ b/src/render_helpers/clipped_surface.rs
+@@ -10,6 +10,7 @@ use smithay::backend::renderer::utils::{CommitCounter, DamageSet, OpaqueRegions}
+ use smithay::utils::user_data::UserDataMap;
+ use smithay::utils::{Buffer, Logical, Physical, Point, Rectangle, Scale, Size, Transform};
+ 
++use super::blend::FrameBlendState;
+ use super::damage::ExtraDamage;
+ use super::renderer::{AsGlesFrame as _, NiriRenderer};
+ use super::shaders::{mat3_uniform, Shaders};
+@@ -22,6 +23,8 @@ pub struct ClippedSurfaceRenderElement<R: NiriRenderer> {
+     corner_radius: CornerRadius,
+     geometry: Rectangle<f64, Logical>,
+     scale: f32,
++    /// Content already encoded in the output blend space (HDR image description attached).
++    content_hdr: bool,
+ }
+ 
+ #[derive(Debug, Default, Clone)]
+@@ -37,6 +40,7 @@ impl<R: NiriRenderer> ClippedSurfaceRenderElement<R> {
+         geometry: Rectangle<f64, Logical>,
+         program: GlesTexProgram,
+         corner_radius: CornerRadius,
++        content_hdr: bool,
+     ) -> Self {
+         Self {
+             inner: elem,
+@@ -44,6 +48,7 @@ impl<R: NiriRenderer> ClippedSurfaceRenderElement<R> {
+             corner_radius,
+             geometry,
+             scale: scale.x as f32,
++            content_hdr,
+         }
+     }
+ 
+@@ -238,8 +243,14 @@ impl RenderElement<GlesRenderer> for ClippedSurfaceRenderElement<GlesRenderer> {
+         opaque_regions: &[Rectangle<i32, Physical>],
+         cache: Option<&UserDataMap>,
+     ) -> Result<(), GlesError> {
+-        frame.override_default_tex_program(self.program.clone(), self.compute_uniforms());
+-        RenderElement::<GlesRenderer>::draw(
++        let mut uniforms = self.compute_uniforms();
++        uniforms.extend(FrameBlendState::uniforms_for_content(
++            frame,
++            self.content_hdr,
++        ));
++        let saved = frame.take_tex_program_override();
++        frame.override_default_tex_program(self.program.clone(), uniforms);
++        let res = RenderElement::<GlesRenderer>::draw(
+             &self.inner,
+             frame,
+             src,
+@@ -247,9 +258,9 @@ impl RenderElement<GlesRenderer> for ClippedSurfaceRenderElement<GlesRenderer> {
+             damage,
+             opaque_regions,
+             cache,
+-        )?;
+-        frame.clear_tex_program_override();
+-        Ok(())
++        );
++        frame.set_tex_program_override(saved);
++        res
+     }
+ 
+     fn underlying_storage(&self, _renderer: &mut GlesRenderer) -> Option<UnderlyingStorage<'_>> {
+@@ -271,12 +282,17 @@ impl<'render> RenderElement<TtyRenderer<'render>>
+         opaque_regions: &[Rectangle<i32, Physical>],
+         cache: Option<&UserDataMap>,
+     ) -> Result<(), TtyRendererError<'render>> {
+-        frame
+-            .as_gles_frame()
+-            .override_default_tex_program(self.program.clone(), self.compute_uniforms());
+-        RenderElement::draw(&self.inner, frame, src, dst, damage, opaque_regions, cache)?;
+-        frame.as_gles_frame().clear_tex_program_override();
+-        Ok(())
++        let gles_frame = frame.as_gles_frame();
++        let mut uniforms = self.compute_uniforms();
++        uniforms.extend(FrameBlendState::uniforms_for_content(
++            gles_frame,
++            self.content_hdr,
++        ));
++        let saved = gles_frame.take_tex_program_override();
++        gles_frame.override_default_tex_program(self.program.clone(), uniforms);
++        let res = RenderElement::draw(&self.inner, frame, src, dst, damage, opaque_regions, cache);
++        frame.as_gles_frame().set_tex_program_override(saved);
++        res
+     }
+ 
+     fn underlying_storage(
+diff --git a/src/render_helpers/framebuffer_effect.rs b/src/render_helpers/framebuffer_effect.rs
+index 4dc529db..b176df88 100644
+--- a/src/render_helpers/framebuffer_effect.rs
++++ b/src/render_helpers/framebuffer_effect.rs
+@@ -15,6 +15,7 @@ use smithay::utils::{Buffer, Logical, Physical, Rectangle, Scale, Transform};
+ 
+ use crate::backend::tty::{TtyFrame, TtyRenderer, TtyRendererError};
+ use crate::render_helpers::background_effect::RenderParams;
++use crate::render_helpers::blend::FrameBlendState;
+ use crate::render_helpers::blur::{Blur, BlurOptions};
+ use crate::render_helpers::renderer::AsGlesFrame as _;
+ use crate::render_helpers::shaders::{mat3_uniform, Shaders};
+@@ -389,9 +390,12 @@ impl RenderElement<GlesRenderer> for FramebufferEffectElement {
+         );
+ 
+         let program = Shaders::get_from_frame(frame).postprocess_and_clip.clone();
+-        let uniforms = program
+-            .is_some()
+-            .then(|| self.compute_uniforms(crop, frame.transformation()));
++        let uniforms = program.is_some().then(|| {
++            let mut uniforms = self.compute_uniforms(crop, frame.transformation()).to_vec();
++            // The sampled framebuffer content is already in the output blend space.
++            uniforms.extend(FrameBlendState::uniforms_for_content(frame, true));
++            uniforms
++        });
+         let uniforms = uniforms.as_ref().map_or(&[][..], |x| &x[..]);
+ 
+         frame.render_texture_from_to(
+diff --git a/src/render_helpers/gradient_fade_texture.rs b/src/render_helpers/gradient_fade_texture.rs
+index bbdfef40..1e85757f 100644
+--- a/src/render_helpers/gradient_fade_texture.rs
++++ b/src/render_helpers/gradient_fade_texture.rs
+@@ -6,6 +6,7 @@ use smithay::backend::renderer::utils::{CommitCounter, DamageSet, OpaqueRegions}
+ use smithay::utils::user_data::UserDataMap;
+ use smithay::utils::{Buffer, Physical, Rectangle, Scale, Transform};
+ 
++use super::blend::FrameBlendState;
+ use super::texture::TextureRenderElement;
+ use crate::backend::tty::{TtyFrame, TtyRenderer, TtyRendererError};
+ use crate::render_helpers::renderer::AsGlesFrame as _;
+@@ -99,9 +100,11 @@ impl RenderElement<GlesRenderer> for GradientFadeTextureRenderElement {
+         opaque_regions: &[Rectangle<i32, Physical>],
+         cache: Option<&UserDataMap>,
+     ) -> Result<(), GlesError> {
+-        let uniforms = vec![Uniform::new("cutoff", self.cutoff)];
++        let mut uniforms = vec![Uniform::new("cutoff", self.cutoff)];
++        uniforms.extend(FrameBlendState::uniforms(frame));
++        let saved = frame.take_tex_program_override();
+         frame.override_default_tex_program(self.program.0.clone(), uniforms);
+-        RenderElement::<GlesRenderer>::draw(
++        let res = RenderElement::<GlesRenderer>::draw(
+             &self.inner,
+             frame,
+             src,
+@@ -109,9 +112,9 @@ impl RenderElement<GlesRenderer> for GradientFadeTextureRenderElement {
+             damage,
+             opaque_regions,
+             cache,
+-        )?;
+-        frame.clear_tex_program_override();
+-        Ok(())
++        );
++        frame.set_tex_program_override(saved);
++        res
+     }
+ 
+     fn underlying_storage(&self, _renderer: &mut GlesRenderer) -> Option<UnderlyingStorage<'_>> {
+diff --git a/src/render_helpers/mod.rs b/src/render_helpers/mod.rs
+index 474437af..3fdb76fa 100644
+--- a/src/render_helpers/mod.rs
++++ b/src/render_helpers/mod.rs
+@@ -27,6 +27,7 @@ use crate::render_helpers::renderer::AsGlesRenderer;
+ use crate::render_helpers::xray::Xray;
+ 
+ pub mod background_effect;
++pub mod blend;
+ pub mod blur;
+ pub mod border;
+ pub mod clipped_surface;
+diff --git a/src/render_helpers/shader_element.rs b/src/render_helpers/shader_element.rs
+index f1bf978b..8175b97b 100644
+--- a/src/render_helpers/shader_element.rs
++++ b/src/render_helpers/shader_element.rs
+@@ -6,13 +6,14 @@ use glam::{Mat3, Vec2};
+ use smithay::backend::renderer::element::{Element, Id, Kind, RenderElement, UnderlyingStorage};
+ use smithay::backend::renderer::gles::{
+     ffi, link_program, Capability, GlesError, GlesFrame, GlesRenderer, GlesTexture, Uniform,
+-    UniformDesc, UniformName,
++    UniformDesc, UniformName, UniformType,
+ };
+ use smithay::backend::renderer::utils::{CommitCounter, OpaqueRegions};
+ use smithay::backend::renderer::DebugFlags;
+ use smithay::utils::user_data::UserDataMap;
+ use smithay::utils::{Buffer, Logical, Physical, Point, Rectangle, Scale, Size};
+ 
++use super::blend::FrameBlendState;
+ use super::renderer::AsGlesFrame;
+ use super::resources::Resources;
+ use super::shaders::{ProgramType, Shaders};
+@@ -164,8 +165,17 @@ impl ShaderProgram {
+         additional_uniforms: &[UniformName<'_>],
+         texture_uniforms: &[&str],
+     ) -> Result<Self, GlesError> {
++        // All niri shader programs get the blend-space transform (and its uniforms), so their
++        // output is correct on HDR outputs. The uniforms are set per draw from the frame's
++        // blend state.
++        let mut src = src.to_string();
++        src.push_str(include_str!("shaders/hdr.frag"));
++        let mut additional_uniforms = additional_uniforms.to_vec();
++        additional_uniforms.push(UniformName::new("niri_hdr_pq", UniformType::_1f));
++        additional_uniforms.push(UniformName::new("niri_ref_lum_scale", UniformType::_1f));
++
+         renderer.with_context(move |gl| unsafe {
+-            compile_program(gl, src, additional_uniforms, texture_uniforms)
++            compile_program(gl, &src, &additional_uniforms, texture_uniforms)
+         })?
+     }
+ 
+@@ -304,6 +314,8 @@ impl RenderElement<GlesRenderer> for ShaderRenderElement {
+             return Ok(());
+         };
+ 
++        let blend_uniforms = FrameBlendState::uniforms(frame);
++
+         let Some(resources) = Resources::get(frame) else {
+             return Ok(());
+         };
+@@ -441,6 +453,14 @@ impl RenderElement<GlesRenderer> for ShaderRenderElement {
+                     uniform.value.set(gl, desc)?;
+                 }
+ 
++                // Uniform values persist in the program object, so set the blend uniforms on
++                // every draw.
++                for uniform in &blend_uniforms {
++                    if let Some(desc) = program.additional_uniforms.get(&*uniform.name) {
++                        uniform.value.set(gl, desc)?;
++                    }
++                }
++
+                 gl.EnableVertexAttribArray(program.attrib_vert as u32);
+                 gl.BindBuffer(ffi::ARRAY_BUFFER, resources.vbos[0]);
+                 gl.VertexAttribPointer(
+diff --git a/src/render_helpers/shaders/border.frag b/src/render_helpers/shaders/border.frag
+index ed0e0887..b80545c0 100644
+--- a/src/render_helpers/shaders/border.frag
++++ b/src/render_helpers/shaders/border.frag
+@@ -210,6 +210,8 @@ vec4 gradient_color(vec2 coords) {
+ 
+ float niri_rounding_alpha(vec2 coords, vec2 size, vec4 corner_radius);
+ 
++vec4 niri_blend(vec4 color);
++
+ void main() {
+     vec3 coords_geo = input_to_geo * vec3(niri_v_coords, 1.0);
+     vec4 color = gradient_color(coords_geo.xy);
+@@ -233,5 +235,5 @@ void main() {
+         color = vec4(0.0, 0.2, 0.0, 0.2) + color * 0.8;
+ #endif
+ 
+-    gl_FragColor = color;
++    gl_FragColor = niri_blend(color);
+ }
+diff --git a/src/render_helpers/shaders/clipped_surface.frag b/src/render_helpers/shaders/clipped_surface.frag
+index e97f18c0..42688370 100644
+--- a/src/render_helpers/shaders/clipped_surface.frag
++++ b/src/render_helpers/shaders/clipped_surface.frag
+@@ -29,6 +29,8 @@ uniform mat3 input_to_geo;
+ float niri_rounding_alpha(vec2 coords, vec2 size, vec4 corner_radius);
+ vec4 postprocess(vec4 color);
+ 
++vec4 niri_blend(vec4 color);
++
+ void main() {
+     vec3 coords_geo = input_to_geo * vec3(v_coords, 1.0);
+ 
+@@ -56,5 +58,5 @@ void main() {
+         color = vec4(0.0, 0.2, 0.0, 0.2) + color * 0.8;
+ #endif
+ 
+-    gl_FragColor = color;
++    gl_FragColor = niri_blend(color);
+ }
+diff --git a/src/render_helpers/shaders/close_epilogue.frag b/src/render_helpers/shaders/close_epilogue.frag
+index ed05c110..155ab3ec 100644
+--- a/src/render_helpers/shaders/close_epilogue.frag
++++ b/src/render_helpers/shaders/close_epilogue.frag
+@@ -1,4 +1,6 @@
+ 
++vec4 niri_blend(vec4 color);
++
+ void main() {
+     vec3 coords_geo = niri_input_to_geo * vec3(niri_v_coords, 1.0);
+     vec3 size_geo = vec3(niri_geo_size, 1.0);
+@@ -12,5 +14,5 @@ void main() {
+         color = vec4(0.0, 0.2, 0.0, 0.2) + color * 0.8;
+ #endif
+ 
+-    gl_FragColor = color;
++    gl_FragColor = niri_blend(color);
+ }
+diff --git a/src/render_helpers/shaders/gradient_fade.frag b/src/render_helpers/shaders/gradient_fade.frag
+index eccc7066..52b83464 100644
+--- a/src/render_helpers/shaders/gradient_fade.frag
++++ b/src/render_helpers/shaders/gradient_fade.frag
+@@ -23,6 +23,8 @@ uniform float tint;
+ // x is left edge, y is right edge of the gradient.
+ uniform vec2 cutoff;
+ 
++vec4 niri_blend(vec4 color);
++
+ void main() {
+     // Sample the texture.
+     vec4 color = texture2D(tex, v_coords);
+@@ -43,5 +45,5 @@ void main() {
+         color = vec4(0.0, 0.2, 0.0, 0.2) + color * 0.8;
+ #endif
+ 
+-    gl_FragColor = color;
++    gl_FragColor = niri_blend(color);
+ }
+diff --git a/src/render_helpers/shaders/hdr.frag b/src/render_helpers/shaders/hdr.frag
+new file mode 100644
+index 00000000..97786e2a
+--- /dev/null
++++ b/src/render_helpers/shaders/hdr.frag
+@@ -0,0 +1,40 @@
++// Blend-space transform for HDR outputs: encodes electrical sRGB content into PQ/BT.2020.
++//
++// niri_hdr_pq = 1.0 enables the transform, 0.0 passes through (SDR outputs; uniforms
++// default to 0). niri_ref_lum_scale = reference luminance / 10000 (PQ peak).
++
++uniform float niri_hdr_pq;
++uniform float niri_ref_lum_scale;
++
++vec3 niri_pq_inv_eotf(vec3 lin) {
++    const float pq_m1 = 0.1593017578125;
++    const float pq_m2 = 78.84375;
++    const float pq_c1 = 0.8359375;
++    const float pq_c2 = 18.8515625;
++    const float pq_c3 = 18.6875;
++    vec3 y = pow(clamp(lin, 0.0, 1.0), vec3(pq_m1));
++    return pow((pq_c1 + pq_c2 * y) / (1.0 + pq_c3 * y), vec3(pq_m2));
++}
++
++// Premultiplied in, premultiplied out.
++vec4 niri_blend(vec4 color) {
++    if (niri_hdr_pq < 0.5)
++        return color;
++
++    float a = color.a;
++    vec3 rgb = a > 0.0 ? color.rgb / a : color.rgb;
++
++    // Pure 2.2 power decode: matches how SDR displays actually respond to the signal
++    // (the piecewise sRGB curve would lift shadows).
++    rgb = pow(max(rgb, vec3(0.0)), vec3(2.2));
++
++    // BT.709 -> BT.2020 primaries, linear light, D65 (column-major).
++    const mat3 to_bt2020 = mat3(
++        0.627404, 0.069097, 0.016391,
++        0.329283, 0.919540, 0.088013,
++        0.043313, 0.011362, 0.895595);
++    rgb = to_bt2020 * rgb;
++
++    rgb = niri_pq_inv_eotf(rgb * niri_ref_lum_scale);
++    return vec4(rgb * a, a);
++}
+diff --git a/src/render_helpers/shaders/mod.rs b/src/render_helpers/shaders/mod.rs
+index 7be9b159..11ae22d5 100644
+--- a/src/render_helpers/shaders/mod.rs
++++ b/src/render_helpers/shaders/mod.rs
+@@ -11,6 +11,7 @@ use super::shader_element::ShaderProgram;
+ use crate::render_helpers::blur::BlurProgram;
+ 
+ pub struct Shaders {
++    pub texture_hdr: Option<GlesTexProgram>,
+     pub border: Option<ShaderProgram>,
+     pub shadow: Option<ShaderProgram>,
+     pub clipped_surface: Option<GlesTexProgram>,
+@@ -36,6 +37,19 @@ impl Shaders {
+     fn compile(renderer: &mut GlesRenderer) -> Self {
+         let _span = tracy_client::span!("Shaders::compile");
+ 
++        let texture_hdr = renderer
++            .compile_custom_texture_shader(
++                concat!(include_str!("texture_hdr.frag"), include_str!("hdr.frag"),),
++                &[
++                    UniformName::new("niri_hdr_pq", UniformType::_1f),
++                    UniformName::new("niri_ref_lum_scale", UniformType::_1f),
++                ],
++            )
++            .map_err(|err| {
++                warn!("error compiling HDR texture shader: {err:?}");
++            })
++            .ok();
++
+         let border = ShaderProgram::compile(
+             renderer,
+             concat!(
+@@ -90,6 +104,7 @@ impl Shaders {
+                 concat!(
+                     include_str!("clipped_surface.frag"),
+                     include_str!("rounding_alpha.frag"),
++                    include_str!("hdr.frag"),
+                     "\nvec4 postprocess(vec4 color) { return color; }",
+                 ),
+                 &[
+@@ -97,6 +112,8 @@ impl Shaders {
+                     UniformName::new("geo_size", UniformType::_2f),
+                     UniformName::new("corner_radius", UniformType::_4f),
+                     UniformName::new("input_to_geo", UniformType::Matrix3x3),
++                    UniformName::new("niri_hdr_pq", UniformType::_1f),
++                    UniformName::new("niri_ref_lum_scale", UniformType::_1f),
+                 ],
+             )
+             .map_err(|err| {
+@@ -110,6 +127,7 @@ impl Shaders {
+                     include_str!("clipped_surface.frag"),
+                     include_str!("rounding_alpha.frag"),
+                     include_str!("postprocess.frag"),
++                    include_str!("hdr.frag"),
+                 ),
+                 &[
+                     UniformName::new("niri_scale", UniformType::_1f),
+@@ -119,6 +137,8 @@ impl Shaders {
+                     UniformName::new("noise", UniformType::_1f),
+                     UniformName::new("saturation", UniformType::_1f),
+                     UniformName::new("bg_color", UniformType::_4f),
++                    UniformName::new("niri_hdr_pq", UniformType::_1f),
++                    UniformName::new("niri_ref_lum_scale", UniformType::_1f),
+                 ],
+             )
+             .map_err(|err| {
+@@ -134,8 +154,12 @@ impl Shaders {
+ 
+         let gradient_fade = renderer
+             .compile_custom_texture_shader(
+-                include_str!("gradient_fade.frag"),
+-                &[UniformName::new("cutoff", UniformType::_2f)],
++                concat!(include_str!("gradient_fade.frag"), include_str!("hdr.frag")),
++                &[
++                    UniformName::new("cutoff", UniformType::_2f),
++                    UniformName::new("niri_hdr_pq", UniformType::_1f),
++                    UniformName::new("niri_ref_lum_scale", UniformType::_1f),
++                ],
+             )
+             .map_err(|err| {
+                 warn!("error compiling gradient fade shader: {err:?}");
+@@ -149,6 +173,7 @@ impl Shaders {
+             .ok();
+ 
+         Self {
++            texture_hdr,
+             border,
+             shadow,
+             clipped_surface,
+diff --git a/src/render_helpers/shaders/open_epilogue.frag b/src/render_helpers/shaders/open_epilogue.frag
+index 1e5f5375..d1f37dc5 100644
+--- a/src/render_helpers/shaders/open_epilogue.frag
++++ b/src/render_helpers/shaders/open_epilogue.frag
+@@ -1,4 +1,6 @@
+ 
++vec4 niri_blend(vec4 color);
++
+ void main() {
+     vec3 coords_geo = niri_input_to_geo * vec3(niri_v_coords, 1.0);
+     vec3 size_geo = vec3(niri_geo_size, 1.0);
+@@ -12,5 +14,5 @@ void main() {
+         color = vec4(0.0, 0.2, 0.0, 0.2) + color * 0.8;
+ #endif
+ 
+-    gl_FragColor = color;
++    gl_FragColor = niri_blend(color);
+ }
+diff --git a/src/render_helpers/shaders/resize_epilogue.frag b/src/render_helpers/shaders/resize_epilogue.frag
+index 82c20d67..d1a0de76 100644
+--- a/src/render_helpers/shaders/resize_epilogue.frag
++++ b/src/render_helpers/shaders/resize_epilogue.frag
+@@ -1,4 +1,6 @@
+ 
++vec4 niri_blend(vec4 color);
++
+ void main() {
+     vec3 coords_curr_geo = niri_input_to_curr_geo * vec3(niri_v_coords, 1.0);
+     vec3 size_curr_geo = vec3(niri_curr_geo_size, 1.0);
+@@ -23,5 +25,5 @@ void main() {
+         color = vec4(0.0, 0.2, 0.0, 0.2) + color * 0.8;
+ #endif
+ 
+-    gl_FragColor = color;
++    gl_FragColor = niri_blend(color);
+ }
+diff --git a/src/render_helpers/shaders/shadow.frag b/src/render_helpers/shaders/shadow.frag
+index 98d5fd60..1ddd4399 100644
+--- a/src/render_helpers/shaders/shadow.frag
++++ b/src/render_helpers/shaders/shadow.frag
+@@ -74,6 +74,8 @@ float roundedBoxShadow(vec2 lower, vec2 upper, vec2 point, float sigma, float co
+ 
+ float niri_rounding_alpha(vec2 coords, vec2 size, vec4 corner_radius);
+ 
++vec4 niri_blend(vec4 color);
++
+ void main() {
+     vec3 coords_geo = input_to_geo * vec3(niri_v_coords, 1.0);
+     vec3 coords_window_geo = window_input_to_geo * vec3(niri_v_coords, 1.0);
+@@ -115,5 +117,5 @@ void main() {
+         color = vec4(0.0, 0.2, 0.0, 0.2) + color * 0.8;
+ #endif
+ 
+-    gl_FragColor = color;
++    gl_FragColor = niri_blend(color);
+ }
+diff --git a/src/render_helpers/shaders/texture_hdr.frag b/src/render_helpers/shaders/texture_hdr.frag
+new file mode 100644
+index 00000000..91ac81c9
+--- /dev/null
++++ b/src/render_helpers/shaders/texture_hdr.frag
+@@ -0,0 +1,44 @@
++#version 100
++
++//_DEFINES_
++
++#if defined(EXTERNAL)
++#extension GL_OES_EGL_image_external : require
++#endif
++
++precision highp float;
++#if defined(EXTERNAL)
++uniform samplerExternalOES tex;
++#else
++uniform sampler2D tex;
++#endif
++
++uniform float alpha;
++varying vec2 v_coords;
++
++#if defined(DEBUG_FLAGS)
++uniform float tint;
++#endif
++
++vec4 niri_blend(vec4 color);
++
++// Same as the default texture shader, but encoding into the output blend space. Installed
++// as the frame-wide default texture program on HDR outputs.
++void main() {
++    vec4 color = texture2D(tex, v_coords);
++
++#if defined(NO_ALPHA)
++    color = vec4(color.rgb, 1.0) * alpha;
++#else
++    color = color * alpha;
++#endif
++
++    color = niri_blend(color);
++
++#if defined(DEBUG_FLAGS)
++    if (tint == 1.0)
++        color = vec4(0.0, 0.2, 0.0, 0.2) + color * 0.8;
++#endif
++
++    gl_FragColor = color;
++}
+diff --git a/src/render_helpers/surface.rs b/src/render_helpers/surface.rs
+index 629a65ca..27f8481a 100644
+--- a/src/render_helpers/surface.rs
++++ b/src/render_helpers/surface.rs
+@@ -7,6 +7,9 @@ use smithay::reexports::wayland_server::protocol::wl_surface::WlSurface;
+ use smithay::utils::{Logical, Physical, Point, Scale};
+ use smithay::wayland::compositor::{with_surface_tree_downward, TraversalAction};
+ 
++use smithay::wayland::color::management::ColorManagementSurfaceCachedState;
++
++use super::blend::BlendSurfaceRenderElement;
+ use super::texture::TextureBuffer;
+ use super::BakedBuffer;
+ 
+@@ -89,7 +92,7 @@ pub fn push_elements_from_surface_tree<R>(
+     scale: Scale<f64>,
+     alpha: f32,
+     kind: Kind,
+-    push: &mut dyn FnMut(WaylandSurfaceRenderElement<R>),
++    push: &mut dyn FnMut(BlendSurfaceRenderElement<R>),
+ ) where
+     R: Renderer + ImportAll,
+     R::TextureId: Clone + 'static,
+@@ -129,10 +132,21 @@ pub fn push_elements_from_surface_tree<R>(
+                 };
+ 
+                 if has_view {
++                    // Content carrying an HDR image description is already encoded in the
++                    // output blend space and must not be re-encoded when composited.
++                    let content_hdr = states
++                        .cached_state
++                        .get::<ColorManagementSurfaceCachedState>()
++                        .current()
++                        .description
++                        .is_some_and(|desc| desc.is_hdr());
++
+                     match WaylandSurfaceRenderElement::from_surface(
+                         renderer, surface, states, location, alpha, kind,
+                     ) {
+-                        Ok(Some(surface)) => push(surface),
++                        Ok(Some(surface)) => {
++                            push(BlendSurfaceRenderElement::new(surface, content_hdr))
++                        }
+                         Ok(None) => {} // surface is not mapped
+                         Err(err) => {
+                             warn!("failed to import surface: {}", err);
+diff --git a/src/render_helpers/xray.rs b/src/render_helpers/xray.rs
+index f4b4f861..03265a73 100644
+--- a/src/render_helpers/xray.rs
++++ b/src/render_helpers/xray.rs
+@@ -15,6 +15,7 @@ use smithay::utils::{Buffer, Logical, Physical, Point, Rectangle, Scale, Size, T
+ 
+ use crate::backend::tty::{TtyFrame, TtyRenderer, TtyRendererError};
+ use crate::render_helpers::background_effect::RenderParams;
++use crate::render_helpers::blend::FrameBlendState;
+ use crate::render_helpers::effect_buffer::EffectBuffer;
+ use crate::render_helpers::renderer::AsGlesFrame as _;
+ use crate::render_helpers::shaders::{mat3_uniform, Shaders};
+@@ -339,7 +340,11 @@ impl RenderElement<GlesRenderer> for XrayElement {
+             damage
+         };
+ 
+-        let uniforms = self.program.is_some().then(|| self.compute_uniforms());
++        let uniforms = self.program.is_some().then(|| {
++            let mut uniforms = self.compute_uniforms().to_vec();
++            uniforms.extend(FrameBlendState::uniforms(frame));
++            uniforms
++        });
+         let uniforms = uniforms.as_ref().map_or(&[][..], |x| &x[..]);
+ 
+         frame.render_texture_from_to(
+diff --git a/src/ui/mru.rs b/src/ui/mru.rs
+index d8ec6de1..09e4ceb4 100644
+--- a/src/ui/mru.rs
++++ b/src/ui/mru.rs
+@@ -382,9 +382,16 @@ impl Thumbnail {
+         let clip = move |elem| match elem {
+             LayoutElementRenderElement::Wayland(elem) => {
+                 if let Some(shader) = clip_shader.clone() {
+-                    if ClippedSurfaceRenderElement::will_clip(&elem, s, geo, radius) {
+-                        let elem =
+-                            ClippedSurfaceRenderElement::new(elem, s, geo, shader.clone(), radius);
++                    if ClippedSurfaceRenderElement::will_clip(elem.inner(), s, geo, radius) {
++                        let content_hdr = elem.content_hdr();
++                        let elem = ClippedSurfaceRenderElement::new(
++                            elem.into_inner(),
++                            s,
++                            geo,
++                            shader.clone(),
++                            radius,
++                            content_hdr,
++                        );
+                         return ThumbnailRenderElement::ClippedSurface(elem);
+                     }
+                 }
+diff --git a/src/window/mapped.rs b/src/window/mapped.rs
+index 3db1f66c..a8667a9b 100644
+--- a/src/window/mapped.rs
++++ b/src/window/mapped.rs
+@@ -2,7 +2,6 @@ use std::cell::{Cell, Ref, RefCell};
+ use std::time::Duration;
+ 
+ use niri_config::{Color, Config, CornerRadius, GradientInterpolation, WindowRule};
+-use smithay::backend::renderer::element::surface::WaylandSurfaceRenderElement;
+ use smithay::backend::renderer::element::Kind;
+ use smithay::backend::renderer::gles::GlesRenderer;
+ use smithay::desktop::space::SpaceElement as _;
+@@ -29,6 +28,7 @@ use crate::layout::{
+ };
+ use crate::niri_render_elements;
+ use crate::render_helpers::background_effect::BackgroundEffectElement;
++use crate::render_helpers::blend::BlendSurfaceRenderElement;
+ use crate::render_helpers::border::BorderRenderElement;
+ use crate::render_helpers::offscreen::OffscreenData;
+ use crate::render_helpers::renderer::NiriRenderer;
+@@ -660,7 +660,7 @@ impl LayoutElement for Mapped {
+         } else {
+             let buf_pos = location - self.window.geometry().loc.to_f64();
+             let surface = self.toplevel().wl_surface();
+-            let mut push = |elem: WaylandSurfaceRenderElement<R>| push(elem.into());
++            let mut push = |elem: BlendSurfaceRenderElement<R>| push(elem.into());
+             push_elements_from_surface_tree(
+                 ctx.renderer,
+                 surface,
+-- 
+2.56.0
+

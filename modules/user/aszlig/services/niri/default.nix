@@ -2,15 +2,28 @@
 
 let
   cfg = config.vuizvui.user.aszlig.services.niri;
+  inherit (lib) types;
 
 in {
   options.vuizvui.user.aszlig.services.niri = {
     enable = lib.mkEnableOption "Niri";
+
+    outputs = lib.mkOption {
+      type = types.attrsOf types.lines;
+      default = {};
+      example.DP1 = ''
+        scale 2
+        transform "normal"
+      '';
+      description = "Custom per-output configuration in KDL format.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
     programs.niri.enable = true;
-    programs.niri.package = pkgs.vuizvui.aszlig.niri;
+    programs.niri.package = pkgs.vuizvui.aszlig.niri.override {
+      inherit (cfg) outputs;
+    };
     programs.niri.useNautilus = false;
 
     systemd.user.services.kitty = {

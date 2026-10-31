@@ -1,0 +1,241 @@
+From 3397cbc57a4f47b5c22c9455db006a9f67b727d8 Mon Sep 17 00:00:00 2001
+From: dividebysandwich <josef.jahn@gmail.com>
+Date: Sat, 4 Jul 2026 11:17:31 +0200
+Subject: [PATCH 08/10] hdr: search the surface tree for HDR image descriptions
+
+---
+ src/niri.rs                   | 45 +++++++++++++++++++++++++----
+ src/tests/client.rs           | 54 +++++++++++++++++++++++++++++++++++
+ src/tests/color_management.rs | 44 ++++++++++++++++++++++++++++
+ 3 files changed, 138 insertions(+), 5 deletions(-)
+
+diff --git a/src/niri.rs b/src/niri.rs
+index 0f7d3798..c0d19cce 100644
+--- a/src/niri.rs
++++ b/src/niri.rs
+@@ -148,8 +148,9 @@ use crate::niri_render_elements;
+ use crate::protocols::ext_workspace::{self, ExtWorkspaceManagerState};
+ use crate::protocols::foreign_toplevel::{self, ForeignToplevelManagerState};
+ use smithay::wayland::color::management::{
+-    get_surface_description, ColorManagementState, Feature, ImageDescription,
+-    Primaries as CmPrimaries, RenderIntent, TransferFunction as CmTransferFunction,
++    get_surface_description, ColorManagementState, ColorManagementSurfaceCachedState, Feature,
++    ImageDescription, Primaries as CmPrimaries, RenderIntent,
++    TransferFunction as CmTransferFunction,
+ };
+ 
+ use crate::protocols::gamma_control::GammaControlManagerState;
+@@ -2239,14 +2240,16 @@ impl Niri {
+     /// an HDR (PQ / BT.2020) image description, returns that description. The TTY backend uses this
+     /// to decide whether to signal HDR on the connector. Requires the window to be fullscreen so the
+     /// HDR signal covers the whole output and doesn't wash out surrounding SDR content.
++    ///
++    /// The whole surface tree is searched, not just the toplevel surface: winewayland (Proton)
++    /// presents Vulkan content on a subsurface of the toplevel and attaches the HDR image
++    /// description there.
+     pub fn output_hdr_image_description(&self, output: &Output) -> Option<ImageDescription> {
+         let window = self.layout.monitor_for_output(output)?.active_window()?;
+         if !window.sizing_mode().is_fullscreen() {
+             return None;
+         }
+-        let (desc, _intent) = get_surface_description(window.toplevel().wl_surface());
+-        let desc = desc?;
+-        desc.is_hdr().then_some(desc)
++        surface_tree_hdr_description(window.toplevel().wl_surface())
+     }
+ 
+     /// Returns the HDR config of an output, but only if the output can actually do HDR
+@@ -6683,6 +6686,38 @@ impl ClientData for ClientState {
+     fn disconnected(&self, _client_id: ClientId, _reason: DisconnectReason) {}
+ }
+ 
++/// Searches a surface and its subsurfaces for a committed HDR image description, returning the
++/// first one found.
++///
++/// Clients differ in where they attach the description: mpv attaches it to the toplevel surface
++/// itself, while winewayland (Proton) presents Vulkan content on a subsurface and attaches it
++/// there.
++fn surface_tree_hdr_description(surface: &WlSurface) -> Option<ImageDescription> {
++    let mut found = None;
++    with_surface_tree_downward(
++        surface,
++        (),
++        |_, _, _| TraversalAction::DoChildren(()),
++        |_, states, _| {
++            if found.is_none() {
++                // The surface's states are already locked by the traversal, so read the cached
++                // state through them rather than via get_surface_description() (which would
++                // re-lock and deadlock).
++                let mut guard = states
++                    .cached_state
++                    .get::<ColorManagementSurfaceCachedState>();
++                if let Some(desc) = guard.current().description {
++                    if desc.is_hdr() {
++                        found = Some(desc);
++                    }
++                }
++            }
++        },
++        |_, _, _| true,
++    );
++    found
++}
++
+ fn scale_relocate_crop<E: Element>(
+     elem: E,
+     output_scale: Scale<f64>,
+diff --git a/src/tests/client.rs b/src/tests/client.rs
+index 5e9fc213..b14ddbd1 100644
+--- a/src/tests/client.rs
++++ b/src/tests/client.rs
+@@ -39,6 +39,8 @@ use wayland_client::protocol::wl_compositor::WlCompositor;
+ use wayland_client::protocol::wl_display::WlDisplay;
+ use wayland_client::protocol::wl_output::{self, WlOutput};
+ use wayland_client::protocol::wl_registry::{self, WlRegistry};
++use wayland_client::protocol::wl_subcompositor::WlSubcompositor;
++use wayland_client::protocol::wl_subsurface::{self, WlSubsurface};
+ use wayland_client::protocol::wl_surface::{self, WlSurface};
+ use wayland_client::{Connection, Dispatch, Proxy as _, QueueHandle};
+ 
+@@ -64,6 +66,7 @@ pub struct State {
+     pub layer_shell: Option<ZwlrLayerShellV1>,
+     pub spbm: Option<WpSinglePixelBufferManagerV1>,
+     pub viewporter: Option<WpViewporter>,
++    pub subcompositor: Option<WlSubcompositor>,
+     pub color_manager: Option<WpColorManagerV1>,
+     /// Feedback objects kept alive so preferred_changed events can arrive.
+     pub surface_feedbacks: Vec<WpColorManagementSurfaceFeedbackV1>,
+@@ -200,6 +203,7 @@ impl Client {
+             layer_shell: None,
+             spbm: None,
+             viewporter: None,
++            subcompositor: None,
+             color_manager: None,
+             surface_feedbacks: Vec::new(),
+             preferred_changed: Vec::new(),
+@@ -257,6 +261,27 @@ impl Client {
+         self.connection.flush().unwrap();
+     }
+ 
++    /// Creates a subsurface of `parent` with a buffer attached and committed, like winewayland does
++    /// for Vulkan swapchain presentation. Returns the subsurface's wl_surface.
++    pub fn create_committed_subsurface(&mut self, parent: &WlSurface) -> WlSurface {
++        let compositor = self.state.compositor.as_ref().unwrap();
++        let subcompositor = self
++            .state
++            .subcompositor
++            .as_ref()
++            .expect("no wl_subcompositor");
++        let spbm = self.state.spbm.as_ref().unwrap();
++
++        let surface = compositor.create_surface(&self.qh, ());
++        let _subsurface = subcompositor.get_subsurface(&surface, parent, &self.qh, ());
++        let buffer = spbm.create_u32_rgba_buffer(0, 0, 0, u32::MAX, &self.qh, ());
++        surface.attach(Some(&buffer), 0, 0);
++        surface.commit();
++        parent.commit();
++        self.connection.flush().unwrap();
++        surface
++    }
++
+     /// Drives the color-management requests an HDR-aware client (SDL3) sends at startup: create a
+     /// surface feedback object and query the preferred image description and its information. The
+     /// feedback object is kept alive so later preferred_changed events arrive.
+@@ -604,6 +629,9 @@ impl Dispatch<WlRegistry, ()> for State {
+                 } else if interface == WpViewporter::interface().name {
+                     let version = min(version, WpViewporter::interface().version);
+                     state.viewporter = Some(registry.bind(name, version, qh, ()));
++                } else if interface == WlSubcompositor::interface().name {
++                    let version = min(version, WlSubcompositor::interface().version);
++                    state.subcompositor = Some(registry.bind(name, version, qh, ()));
+                 } else if interface == WpColorManagerV1::interface().name {
+                     let version = min(version, WpColorManagerV1::interface().version);
+                     state.color_manager = Some(registry.bind(name, version, qh, ()));
+@@ -662,6 +690,32 @@ impl Dispatch<WlCompositor, ()> for State {
+     }
+ }
+ 
++impl Dispatch<WlSubcompositor, ()> for State {
++    fn event(
++        _state: &mut Self,
++        _proxy: &WlSubcompositor,
++        _event: <WlSubcompositor as wayland_client::Proxy>::Event,
++        _data: &(),
++        _conn: &Connection,
++        _qhandle: &QueueHandle<Self>,
++    ) {
++        unreachable!()
++    }
++}
++
++impl Dispatch<WlSubsurface, ()> for State {
++    fn event(
++        _state: &mut Self,
++        _proxy: &WlSubsurface,
++        _event: wl_subsurface::Event,
++        _data: &(),
++        _conn: &Connection,
++        _qhandle: &QueueHandle<Self>,
++    ) {
++        unreachable!()
++    }
++}
++
+ impl Dispatch<XdgWmBase, ()> for State {
+     fn event(
+         _state: &mut Self,
+diff --git a/src/tests/color_management.rs b/src/tests/color_management.rs
+index 8902f305..23869561 100644
+--- a/src/tests/color_management.rs
++++ b/src/tests/color_management.rs
+@@ -190,3 +190,47 @@ fn preferred_identities_are_stable() {
+         "the same preferred description must keep the same identity"
+     );
+ }
++
++#[test]
++fn hdr_description_on_subsurface_engages() {
++    // winewayland (Proton) attaches the HDR image description to a Vulkan *subsurface* of the
++    // toplevel, not the toplevel surface itself. Engagement must search the surface tree.
++    let mut f = fixture_with_hdr_mode_on();
++
++    let id = f.add_client();
++    let window = f.client(id).create_window();
++    let surface = window.surface.clone();
++    window.commit();
++    f.roundtrip(id);
++    let window = f.client(id).window(&surface);
++    window.attach_new_buffer();
++    window.set_fullscreen(None);
++    window.ack_last_and_commit();
++    f.double_roundtrip(id);
++    let window = f.client(id).window(&surface);
++    window.ack_last_and_commit();
++    f.double_roundtrip(id);
++
++    // Vulkan-style subsurface carrying the HDR description.
++    let subsurface = f.client(id).create_committed_subsurface(&surface);
++    f.roundtrip(id);
++    f.client(id).create_and_attach_hdr_description(
++        &subsurface,
++        TransferFunction::St2084Pq,
++        Primaries::Bt2020,
++        RenderIntent::Perceptual,
++    );
++    f.roundtrip(id);
++    // The description is double-buffered; commit the subsurface and sync via the parent.
++    let subsurface_clone = subsurface.clone();
++    subsurface_clone.commit();
++    f.client(id).window(&surface).surface.commit();
++    f.double_roundtrip(id);
++
++    let output = f.niri_output(1);
++    let desc = f.niri().output_hdr_image_description(&output);
++    assert!(
++        desc.is_some_and(|d| d.is_hdr()),
++        "HDR description on a subsurface must engage HDR, got {desc:?}"
++    );
++}
+-- 
+2.56.0
+

@@ -1,0 +1,19 @@
+diff --git a/src/wayland/color/management/mod.rs b/src/wayland/color/management/mod.rs
+--- a/src/wayland/color/management/mod.rs
++++ b/src/wayland/color/management/mod.rs
+@@ -219,7 +219,14 @@ pub fn send_image_description_info(info: &WpImageDescriptionInfoV1, desc: &Image
+     info.primaries_named(desc.primaries);
+     info.tf_named(desc.transfer);
+-    if let Some((min, max)) = desc.mastering_luminance {
++    if let Some((min, max, reference)) = desc.luminances {
++        info.luminances(min, max, reference);
++    }
++
++    if let Some((min, max)) = desc
++        .mastering_luminance
++        .or_else(|| desc.luminances.map(|(min, max, _)| (min, max)))
++    {
+         info.target_luminance(min, max);
+     }
+     if let Some(max_cll) = desc.max_cll {
+         info.target_max_cll(max_cll);

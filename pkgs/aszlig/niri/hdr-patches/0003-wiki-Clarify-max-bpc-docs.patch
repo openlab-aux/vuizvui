@@ -1,0 +1,41 @@
+From 8680ba2ee97c6066b7008d5317bbe7a3528dd751 Mon Sep 17 00:00:00 2001
+From: Ivan Molodetskikh <yalterz@gmail.com>
+Date: Fri, 29 May 2026 14:59:25 +0300
+Subject: [PATCH 03/10] wiki: Clarify max-bpc docs
+
+As discussed: https://oftc.catirclogs.org/wayland/2026-05-29
+---
+ docs/wiki/Configuration:-Outputs.md | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/docs/wiki/Configuration:-Outputs.md b/docs/wiki/Configuration:-Outputs.md
+index e804ba86..29241c04 100644
+--- a/docs/wiki/Configuration:-Outputs.md
++++ b/docs/wiki/Configuration:-Outputs.md
+@@ -15,7 +15,7 @@ output "eDP-1" {
+     variable-refresh-rate // on-demand=true
+     focus-at-startup
+     backdrop-color "#001100"
+-    max-bpc 8
++    // max-bpc 8
+ 
+     hot-corners {
+         // off
+@@ -285,8 +285,12 @@ output "HDMI-A-1" {
+ <sup>Since: next release</sup>
+ 
+ Set the maximum bits per channel (BPC) for this output.
+-You *do not* need to set this option unless you hit bandwidth issues (can't set a monitor configuration that works on other compositor) or lower-than-expected color depth.
+-Particularly, 10-bit color output may work even if max-bpc is 8.
++
++You *do not* need to set this option normally.
++It influences the encoding of the display signal on the wire and *is not* directly related to the color bitness or framebuffer format.
++
++Setting `max-bpc` to a low value may help if you hit a bandwidth issue (can't set a monitor configuration that works on other compositor).
++Otherwise, you're advised to leave it unset (keeping a default, usually high value) and let the GPU driver figure things out automatically.
+ 
+ Valid values are `6`, `8`, `10`, `12`, `14`, `16`.
+ 
+-- 
+2.56.0
+

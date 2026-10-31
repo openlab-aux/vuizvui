@@ -92,4 +92,21 @@ in {
   }) cryptDevices.swap;
 
   users.users.aszlig.extraGroups = [ "scanner" ];
+
+  vuizvui.user.aszlig.services.niri.outputs = {
+    DP-1 = ''
+      scale 1.25
+      position x=0 y=0
+      hdr mode="on" {
+        reference-luminance 30
+      }
+    '';
+    DP-2 = ''
+      scale 1.25
+      position x=3072 y=0
+      hdr mode="on" {
+        reference-luminance 30
+      }
+    '';
+  };
 }
