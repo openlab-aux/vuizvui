@@ -1,5 +1,5 @@
 diff --git a/niri-config/src/lib.rs b/niri-config/src/lib.rs
-index 329b7669..9f57d8eb 100644
+index 329b7669..287706e2 100644
 --- a/niri-config/src/lib.rs
 +++ b/niri-config/src/lib.rs
 @@ -460,11 +460,16 @@ where
@@ -50,17 +50,20 @@ index 329b7669..9f57d8eb 100644
      }
  
      /// Loads the config, or creates it if it doesn't exist.
-@@ -555,7 +556,8 @@ impl ConfigPath {
+@@ -555,7 +556,11 @@ impl ConfigPath {
      ///
      /// If the config was created, but for some reason could not be read afterwards,
      /// this may return `(Some(_), Err(_))`.
 -    pub fn load_or_create(&self) -> (Option<&Path>, ConfigParseResult<Config, miette::Report>) {
-+    #[expect(unused)]
-+    fn load_or_create(&self) -> (Option<&Path>, ConfigParseResult<Config, miette::Report>) {
++    ///
++    /// This function was originally called `load_or_create` but in order to
++    /// avoid new code from accidentally creating the config file if we don't
++    /// want to, it's called `tinker`.
++    pub fn tinker(&self) -> (Option<&Path>, ConfigParseResult<Config, miette::Report>) {
          let _span = tracy_client::span!("ConfigPath::load_or_create");
  
          let mut created_at = None;
-@@ -563,7 +565,7 @@ impl ConfigPath {
+@@ -563,7 +568,7 @@ impl ConfigPath {
          let result = self
              .load_inner(|user_path, _| {
                  Self::create(user_path, &mut created_at)
@@ -69,7 +72,7 @@ index 329b7669..9f57d8eb 100644
                      .with_context(|| format!("error creating config at {user_path:?}"))
              })
              .map_config_res(|res| res.context("error loading config"));
-@@ -573,18 +575,18 @@ impl ConfigPath {
+@@ -573,18 +578,18 @@ impl ConfigPath {
  
      fn load_inner<'a>(
          &'a self,
@@ -92,7 +95,7 @@ index 329b7669..9f57d8eb 100644
                  } else {
                      match maybe_create(user_path.as_path(), system_path.as_path()) {
                          Ok(x) => x,
-@@ -593,7 +595,8 @@ impl ConfigPath {
+@@ -593,7 +598,8 @@ impl ConfigPath {
                  }
              }
          };
@@ -511,6 +514,22 @@ index ccad1ac2..770d33e3 100644
      Ctrl+Alt+Delete { quit; }
  
      // Powers off the monitors. To turn them back on, do any input like
+diff --git a/src/cli.rs b/src/cli.rs
+index 308b3127..1e6ee690 100644
+--- a/src/cli.rs
++++ b/src/cli.rs
+@@ -57,6 +57,11 @@ pub enum Sub {
+     Panic,
+     /// Generate shell completions.
+     Completions { shell: CompletionShell },
++    /// Create local configuration file for tinkering.
++    ///
++    /// This dumps the current Niri configuration so that one can experiment
++    /// around and later add the changes to the Nix build (or not).
++    Tinker,
+ }
+ 
+ #[derive(Subcommand)]
 diff --git a/src/cursor.rs b/src/cursor.rs
 index a856de94..8d4f3ba9 100644
 --- a/src/cursor.rs
@@ -524,7 +543,7 @@ index a856de94..8d4f3ba9 100644
      }
  
 diff --git a/src/main.rs b/src/main.rs
-index e80992ee..59ddc37a 100644
+index e80992ee..0aa45cf9 100644
 --- a/src/main.rs
 +++ b/src/main.rs
 @@ -25,7 +25,7 @@ use niri::utils::spawning::{
@@ -536,7 +555,18 @@ index e80992ee..59ddc37a 100644
  use niri_ipc::socket::SOCKET_PATH_ENV;
  use sd_notify::NotifyState;
  use smithay::reexports::wayland_server::Display;
-@@ -148,12 +148,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
+@@ -133,6 +133,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
+                 }
+                 return Ok(());
+             }
++            Sub::Tinker => {
++                config_path(cli.config.clone()).tinker().1.config?;
++                return Ok(());
++            }
+         }
+     }
+ 
+@@ -148,12 +152,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
      // Load the config.
      let config_path = config_path(cli.config);
      env::remove_var("NIRI_CONFIG");
@@ -551,7 +581,7 @@ index e80992ee..59ddc37a 100644
      let config_includes = config_load_result.includes;
  
      let spawn_at_startup = mem::take(&mut config.spawn_at_startup);
-@@ -261,8 +258,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
+@@ -261,8 +262,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
      if config_errored {
          state.niri.config_error_notification.show();
          state.ipc_config_loaded(true);
