@@ -4,6 +4,7 @@
   vuizvui.user.devhell.profiles.base.enable = true;
 
   boot = {
+    kernelPackages = lib.mkForce pkgs.linuxPackages;
     loader = {
       timeout = 2;
       systemd-boot = {
