@@ -59,7 +59,7 @@ in
 
   vuizvui.hardware.thinkpad = {
     enable = true;
-    powerManagement = "auto-cpufreq";
+    powerManagement = "tlp";
   };
   hardware.graphics.extraPackages = [
     # EOL / multiple CVEs: pkgs.intel-media-sdk # KBL GT2 gpu
