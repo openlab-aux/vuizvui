@@ -22,13 +22,36 @@ in
     "i915.enable_psr=0"
   ];
 
-  boot.initrd.availableKernelModules = [
-    "xhci_pci"
-    "nvme"
-    "usb_storage"
-    "sd_mod"
-    "rtsx_pci_sdmmc"
-  ];
+  boot.initrd = {
+    compressor = "zstd";
+    compressorArgs = [ "-19" ];
+
+    includeDefaultModules = false;
+    availableKernelModules = [
+      # nixos-generate-config
+      "xhci_pci"
+      "nvme"
+      "rtsx_pci_sdmmc"
+
+      # keyboards for unlock
+      "hid_generic"
+      "i8042"
+      "atkbd"
+      "uhid"
+      "usbhid"
+
+      # disk driver
+      "sd_mod"
+
+      # LUKS
+      "dm_mod"
+      "dm_crypt"
+    ];
+    kernelModules = [
+      "i8042"
+      "dm_mod"
+    ];
+  };
   boot.kernelModules = [
     # nixos-generate-config
     "kvm-intel"
