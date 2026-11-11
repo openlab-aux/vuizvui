@@ -9,6 +9,7 @@ in
     ./base-laptop.nix
     ./wireguard.nix
     ./user-lukas.nix
+    ./iphone.nix
   ] ++ lib.optionals (builtins.pathExists ./local.nix) [
     ./local.nix
   ];
@@ -120,6 +121,7 @@ in
     quasselClient
     ricochet-refresh
     anki
+    shotwell
     # signal-desktop # regularly looses tokens
     # scribus gimp inkscape audacity # rarely need them
     # gpxsee # rarely need it nowadays
