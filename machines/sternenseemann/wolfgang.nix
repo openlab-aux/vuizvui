@@ -30,7 +30,9 @@ in
     "rtsx_pci_sdmmc"
   ];
   boot.kernelModules = [
+    # nixos-generate-config
     "kvm-intel"
+
     "snd-seq"
     "snd-rawmidi"
   ];
@@ -113,7 +115,7 @@ in
     nix-derivation
     nixfmt
     xdg-utils                  # TODO(sterni): fix xdg stuff
-    networkmanagerapplet       # for nm-connection-ediotr
+    networkmanagerapplet
     imv                        # TODO(sterni): is slow and clunky
     zathura                    # TODO(sterni): annotations would be nice
     pcmanfm
