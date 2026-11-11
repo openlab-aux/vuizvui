@@ -161,6 +161,7 @@ in
     ps.latexmk
     ps.libertine
     ps.minted
+    ps.multirow
     ps.noto
     ps.noto-emoji
     ps.notomath
