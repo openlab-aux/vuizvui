@@ -119,7 +119,6 @@ in
     pcmanfm
     browser
     quasselClient
-    ricochet-refresh
     anki
     shotwell
     # signal-desktop # regularly looses tokens
