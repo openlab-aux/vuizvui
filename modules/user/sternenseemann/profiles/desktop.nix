@@ -394,6 +394,8 @@ in
 
    services = {
      displayManager = {
+       gdm.enable = true;
+       defaultSession = "niri";
        sessionPackages = [
          niri
        ];
@@ -406,7 +408,6 @@ in
          variant = "neo";
        };
      };
-     displayManager.gdm.enable = true;
      # Don't need it, personally
      speechd.enable = false;
    };
