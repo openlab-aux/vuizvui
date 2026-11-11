@@ -15,7 +15,7 @@ in
   ];
 
   # From nixos-hardware: common/pc/ssd
-  services.fstrim.enable = lib.mkDefault true;
+  services.fstrim.enable = true;
 
   boot.kernelParams = [
     # Try to work around random freezes
