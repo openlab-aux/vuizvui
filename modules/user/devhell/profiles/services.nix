@@ -46,6 +46,7 @@ in {
     services.dbus.packages = [ pkgs.mako ];
 
     services = {
+      bootvine.enable = true;
       avahi.enable = true;
       pcscd.enable = true;
       gpm.enable = true;
