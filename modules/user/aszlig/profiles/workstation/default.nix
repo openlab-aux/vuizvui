@@ -153,6 +153,8 @@ in {
           ATTRS{idProduct}=="6001", GROUP="dmx"
       '';
 
+      bootvine.enable = true;
+
       displayManager = {
         ly.enable = true;
       } // lib.optionalAttrs (config.boot.initrd.luks.devices != {}) {
