@@ -85,7 +85,12 @@ in {
     "/" = {
       label = "dnyarri-root";
       fsType = "btrfs";
-      options = [ "space_cache" "compress=zstd" "noatime" "discard=async" ];
+      options = [
+        "space_cache" "compress=zstd" "noatime" "discard=async"
+        # My LUKS volumes take a long time to unlock, this avoids the device
+        # unit to time out.
+        "x-systemd.device-timeout=infinity"
+      ];
     };
   };
 
