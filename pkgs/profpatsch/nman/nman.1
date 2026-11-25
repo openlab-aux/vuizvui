@@ -7,6 +7,7 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl hv
+.Op Fl f Ar path
 .Ar ATTR
 .Op Ar PAGE | SECTION Op PAGE
 .Sh DESCRIPTION
@@ -36,6 +37,11 @@ of
 and searches all its outputs for a man page named
 .Ar ATTR
 which may be in any section.
+For dotted attribute paths like
+.Ql pkgs.profpatsch.nman ,
+only the last component
+.Po Ql nman Pc
+is used as the man page name to search for.
 If multiple matches are found, the one that is alphanumerically
 lower is preferred:
 For example,
@@ -47,6 +53,7 @@ Like above, but
 .Nm
 will only look for the man page in the given section
 .Ar SECTION .
+For dotted attributes, the last component is used as the page name to search for.
 Note that
 .Ar SECTION
 must be a number or
@@ -80,6 +87,13 @@ Print usage information.
 Put
 .Nm
 into verbose mode, where it prints all commands it executes.
+.It Fl -file Ar path | f Ar path
+Use the specified .nix file
+.Ar path
+instead of
+.Ql <nixpkgs>
+from the Nix search path. This allows using local package definitions
+or custom package sets.
 .El
 
 .Sh EXAMPLES
@@ -97,6 +111,15 @@ nman mandoc man
 
 # open man(7) from the same package
 nman mandoc 7 man
+
+# open lowdown(1) from the default.nix in the current directory
+nman -f . lowdown
+
+# open nman(1) from dotted attribute path (searches for "nman", not "pkgs.profpatsch.nman")
+nman -f . pkgs.profpatsch.nman
+
+# open man page from a custom package set
+nman -f ./my-packages.nix myCustomPackage
 .Ed
 .Sh DISCLAIMER
 .Nm
