@@ -85,7 +85,7 @@ in {
       btdu
       caligula
       catgirl
-      catppuccin-cursors
+      catppuccin-cursors.macchiatoDark
       cbonsai
       ccrypt
       chromaprint
