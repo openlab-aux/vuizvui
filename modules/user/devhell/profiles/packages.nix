@@ -61,6 +61,7 @@ in {
       #wordgrinder
       #wtfutil
       #wuzz
+      #zotero
       abook
       accountsservice
       adwaita-icon-theme
@@ -84,6 +85,7 @@ in {
       btdu
       caligula
       catgirl
+      catppuccin-cursors
       cbonsai
       ccrypt
       chromaprint
@@ -339,7 +341,6 @@ in {
       zbar
       zellij
       zip
-      #zotero
       zstd
     ];
   };
