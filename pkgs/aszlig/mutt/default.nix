@@ -3,6 +3,7 @@
 , programName ? "mutt"
 , realName ? "aszlig"
 , gopassEntry ? "misc/mailfresser"
+, htmlTrolling ? true
 }:
 
 let
@@ -28,7 +29,7 @@ let
     record = "+sent-mail";
     postponed = "+Drafts";
 
-    send_multipart_alternative = askYes;
+    send_multipart_alternative = if htmlTrolling then askYes else false;
     send_multipart_alternative_filter = writeShellScript "multipart" ''
       echo ${lib.escapeShellArg ''
         text/html

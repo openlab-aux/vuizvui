@@ -43,6 +43,7 @@ pkgs: with pkgs; [
   (vuizvui.aszlig.mutt.override {
     programName = "tdf-mutt";
     gopassEntry = "tdf/mail";
+    htmlTrolling = false;
   })
   ncdu
   nix-prefetch-scripts
