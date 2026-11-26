@@ -64,6 +64,7 @@ in {
       htop
       iotop
       moreutils
+      nix-diff
       vuizvui.aszlig.nlast
       psmisc
       termdown
